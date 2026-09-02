@@ -1,0 +1,13 @@
+/*
+Theme Name: Kadence Child
+Description: Child theme of Kadence. Carries only what this project changes; the parent keeps the design and stays updatable.
+Author:
+Author URI:
+Template: kadence
+Version: 1.0.0
+License: GNU General Public License v3.0 (or later)
+License URI: https://www.gnu.org/licenses/gpl-3.0.html
+Text Domain: kadence-child
+*/
+
+/* Project styles go here. Loaded after the parent's, so these win. */
