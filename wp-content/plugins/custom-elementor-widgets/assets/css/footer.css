@@ -11,9 +11,10 @@
 	border-top: 1px solid currentColor;
 }
 
-/* The design's own texture, carried by the build rather than uploaded. It is a
-   layer of its own so it can hold the fifteen per cent the file gives it, and
-   it tiles sideways so a viewport wider than the cap carries it too. */
+/* The design's own texture, carried by the build rather than uploaded. The
+   file's own fifteen per cent is already in the exported asset, so nothing here
+   dims it again. It tiles sideways so a viewport wider than the cap carries
+   it too. */
 .custom-footer::before {
 	content: "";
 	position: absolute;
@@ -26,7 +27,6 @@
 	background-position: top center;
 	background-size: 1440px auto;
 	mix-blend-mode: multiply;
-	opacity: 0.15;
 	pointer-events: none;
 }
 
