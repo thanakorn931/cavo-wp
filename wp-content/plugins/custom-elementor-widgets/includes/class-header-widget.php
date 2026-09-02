@@ -306,9 +306,8 @@ abstract class Header_Widget extends Base_Widget {
 				'type'      => Controls_Manager::COLOR,
 				'default'   => $this->ink(),
 				'selectors' => array(
-					'{{WRAPPER}} .custom-header__menu a:hover'           => 'color: {{VALUE}};',
-					'{{WRAPPER}} .custom-header__menu a'                 => 'text-decoration-color: {{VALUE}};',
-					'{{WRAPPER}} .custom-header__menu a:hover'           => 'text-decoration: underline;',
+					'{{WRAPPER}} .custom-header__menu a:hover'        => 'color: {{VALUE}};',
+					'{{WRAPPER}} .custom-header__menu a:hover::after' => 'background: {{VALUE}};',
 				),
 			)
 		);

@@ -170,6 +170,36 @@
 	height: 100%;
 }
 
+/* Motion — the same 300ms, ease in and out, the file gives every hover. */
+
+.custom-footer__menu a,
+.custom-footer__social-link,
+.custom-footer__submit,
+.custom-footer__field {
+	transition:
+		background-color 300ms ease-in-out,
+		border-color 300ms ease-in-out,
+		color 300ms ease-in-out,
+		opacity 300ms ease-in-out;
+}
+
+.custom-footer__social-link:hover {
+	opacity: 0.7;
+}
+
+.custom-footer__submit:hover {
+	opacity: 0.85;
+}
+
+@media ( prefers-reduced-motion: reduce ) {
+	.custom-footer__menu a,
+	.custom-footer__social-link,
+	.custom-footer__submit,
+	.custom-footer__field {
+		transition: none;
+	}
+}
+
 /* Tablet — 768px to 1024px. Not drawn; the two halves keep their row until
    the lists have nowhere left to go. */
 @media (max-width: 1024px) {

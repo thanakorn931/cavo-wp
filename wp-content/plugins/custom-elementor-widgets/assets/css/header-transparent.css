@@ -118,6 +118,56 @@
 	height: 100%;
 }
 
+/* Motion — the file gives every hover 300ms, ease in and out. The menu's
+   underline is the `Line 1` the design draws inside each item. */
+
+.custom-header__menu a {
+	position: relative;
+}
+
+.custom-header__menu a::after {
+	content: "";
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	height: 1px;
+	background: currentColor;
+	transform: scaleX(0);
+	transform-origin: left center;
+	transition: transform 300ms ease-in-out;
+}
+
+.custom-header__menu a:hover::after {
+	transform: scaleX(1);
+}
+
+.custom-header__button,
+.custom-header__icon-link,
+.custom-header__menu a,
+.custom-header__logo {
+	transition:
+		background-color 300ms ease-in-out,
+		border-color 300ms ease-in-out,
+		color 300ms ease-in-out,
+		opacity 300ms ease-in-out;
+}
+
+.custom-header__icon-link:hover,
+.custom-header__logo:hover {
+	opacity: 0.7;
+}
+
+@media ( prefers-reduced-motion: reduce ) {
+	.custom-header__menu a::after,
+	.custom-header__button,
+	.custom-header__icon-link,
+	.custom-header__menu a,
+	.custom-header__logo {
+		transition: none;
+	}
+}
+
 /* Tablet — 768px to 1024px. Not drawn; the row keeps its shape, the side
    padding comes in to the tier's own edge. */
 @media (max-width: 1024px) {
