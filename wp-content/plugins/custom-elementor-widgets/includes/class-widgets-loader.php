@@ -2,10 +2,10 @@
 /**
  * Category, widgets, assets.
  *
- * @package Custom_Elementor
+ * @package Custom_Elementor_Widgets
  */
 
-namespace Custom_Elementor;
+namespace Custom_Elementor_Widgets;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -69,7 +69,7 @@ final class Widgets_Loader {
 		$elements_manager->add_category(
 			self::CATEGORY,
 			array(
-				'title' => esc_html__( 'Custom', 'custom-elementor' ),
+				'title' => esc_html__( 'Custom', 'custom-elementor-widgets' ),
 			)
 		);
 	}
@@ -79,15 +79,15 @@ final class Widgets_Loader {
 	 *
 	 * Each file in includes/widgets/ holds one section's widget, named after the
 	 * file in the project's capitalised form: `hero-banner.php` holds
-	 * `Custom_Elementor\Widgets\Hero_Banner`. No design has been supplied yet,
+	 * `Custom_Elementor_Widgets\Widgets\Hero_Banner`. No design has been supplied yet,
 	 * so the folder is empty and the plugin ships with no widgets.
 	 *
 	 * @param \Elementor\Widgets_Manager $widgets_manager Elementor's widget manager.
 	 */
 	public function register_widgets( $widgets_manager ) {
-		require_once CUSTOM_ELEMENTOR_PATH . 'includes/class-base-widget.php';
+		require_once CUSTOM_ELEMENTOR_WIDGETS_PATH . 'includes/class-base-widget.php';
 
-		$files = glob( CUSTOM_ELEMENTOR_PATH . 'includes/widgets/*.php' );
+		$files = glob( CUSTOM_ELEMENTOR_WIDGETS_PATH . 'includes/widgets/*.php' );
 
 		if ( empty( $files ) ) {
 			return;

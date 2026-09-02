@@ -2,10 +2,10 @@
 /**
  * What every widget shares.
  *
- * @package Custom_Elementor
+ * @package Custom_Elementor_Widgets
  */
 
-namespace Custom_Elementor;
+namespace Custom_Elementor_Widgets;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;

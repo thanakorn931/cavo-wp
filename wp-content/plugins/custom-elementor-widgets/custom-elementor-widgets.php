@@ -5,22 +5,22 @@
  * Version:     1.0.0
  * Author:      Yes
  * Author URI:  https://yeswebdesignstudio.com/
- * Text Domain: custom-elementor
+ * Text Domain: custom-elementor-widgets
  * Requires PHP: 7.4
  *
- * @package Custom_Elementor
+ * @package Custom_Elementor_Widgets
  */
 
-namespace Custom_Elementor;
+namespace Custom_Elementor_Widgets;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'CUSTOM_ELEMENTOR_VERSION', '1.0.0' );
-define( 'CUSTOM_ELEMENTOR_FILE', __FILE__ );
-define( 'CUSTOM_ELEMENTOR_PATH', plugin_dir_path( __FILE__ ) );
-define( 'CUSTOM_ELEMENTOR_URL', plugin_dir_url( __FILE__ ) );
+define( 'CUSTOM_ELEMENTOR_WIDGETS_VERSION', '1.0.0' );
+define( 'CUSTOM_ELEMENTOR_WIDGETS_FILE', __FILE__ );
+define( 'CUSTOM_ELEMENTOR_WIDGETS_PATH', plugin_dir_path( __FILE__ ) );
+define( 'CUSTOM_ELEMENTOR_WIDGETS_URL', plugin_dir_url( __FILE__ ) );
 
 /**
  * The bootstrap: constants above, then nothing until `plugins_loaded`.
@@ -77,7 +77,7 @@ final class Bootstrap {
 	 * Elementor's classes exist from `elementor/init` onwards, and not before.
 	 */
 	public static function load_widgets() {
-		require_once CUSTOM_ELEMENTOR_PATH . 'includes/class-widgets-loader.php';
+		require_once CUSTOM_ELEMENTOR_WIDGETS_PATH . 'includes/class-widgets-loader.php';
 
 		Widgets_Loader::instance();
 	}
@@ -89,9 +89,9 @@ final class Bootstrap {
 		self::notice(
 			sprintf(
 				/* translators: 1: this plugin's name, 2: Elementor. */
-				esc_html__( '%1$s needs %2$s to be installed and active.', 'custom-elementor' ),
-				'<strong>' . esc_html__( 'Custom Elementor Widgets', 'custom-elementor' ) . '</strong>',
-				'<strong>' . esc_html__( 'Elementor', 'custom-elementor' ) . '</strong>'
+				esc_html__( '%1$s needs %2$s to be installed and active.', 'custom-elementor-widgets' ),
+				'<strong>' . esc_html__( 'Custom Elementor Widgets', 'custom-elementor-widgets' ) . '</strong>',
+				'<strong>' . esc_html__( 'Elementor', 'custom-elementor-widgets' ) . '</strong>'
 			)
 		);
 	}
@@ -103,9 +103,9 @@ final class Bootstrap {
 		self::notice(
 			sprintf(
 				/* translators: 1: this plugin's name, 2: Elementor, 3: the minimum Elementor version. */
-				esc_html__( '%1$s needs %2$s version %3$s or newer.', 'custom-elementor' ),
-				'<strong>' . esc_html__( 'Custom Elementor Widgets', 'custom-elementor' ) . '</strong>',
-				'<strong>' . esc_html__( 'Elementor', 'custom-elementor' ) . '</strong>',
+				esc_html__( '%1$s needs %2$s version %3$s or newer.', 'custom-elementor-widgets' ),
+				'<strong>' . esc_html__( 'Custom Elementor Widgets', 'custom-elementor-widgets' ) . '</strong>',
+				'<strong>' . esc_html__( 'Elementor', 'custom-elementor-widgets' ) . '</strong>',
 				esc_html( self::MINIMUM_ELEMENTOR_VERSION )
 			)
 		);
@@ -118,9 +118,9 @@ final class Bootstrap {
 		self::notice(
 			sprintf(
 				/* translators: 1: this plugin's name, 2: PHP, 3: the minimum PHP version. */
-				esc_html__( '%1$s needs %2$s version %3$s or newer.', 'custom-elementor' ),
-				'<strong>' . esc_html__( 'Custom Elementor Widgets', 'custom-elementor' ) . '</strong>',
-				'<strong>' . esc_html__( 'PHP', 'custom-elementor' ) . '</strong>',
+				esc_html__( '%1$s needs %2$s version %3$s or newer.', 'custom-elementor-widgets' ),
+				'<strong>' . esc_html__( 'Custom Elementor Widgets', 'custom-elementor-widgets' ) . '</strong>',
+				'<strong>' . esc_html__( 'PHP', 'custom-elementor-widgets' ) . '</strong>',
 				esc_html( self::MINIMUM_PHP_VERSION )
 			)
 		);
