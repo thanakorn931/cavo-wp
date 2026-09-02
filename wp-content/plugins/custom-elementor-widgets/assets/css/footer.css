@@ -8,10 +8,12 @@
 	width: 100%;
 	border-top: 1px solid currentColor;
 
-	/* The design's own texture, carried by the build rather than uploaded.
-	   It blends with whatever background the Style tab is given. */
+	/* The design's own texture, carried by the build rather than uploaded. It
+	   keeps the size the design drew it at and tiles sideways, so a viewport
+	   wider than the cap carries it too. It blends with whatever background
+	   the Style tab is given. */
 	background-image: url( "../img/footer-watermark.webp" );
-	background-repeat: no-repeat;
+	background-repeat: repeat-x;
 	background-position: top center;
 	background-size: 1440px auto;
 	background-blend-mode: multiply;
