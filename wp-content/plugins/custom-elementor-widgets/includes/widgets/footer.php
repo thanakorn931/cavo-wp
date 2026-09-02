@@ -461,11 +461,23 @@ class Footer extends Base_Widget {
 		);
 
 		$this->add_control(
+			'field_border_color',
+			array(
+				'label'     => esc_html__( 'Field border', 'custom-elementor-widgets' ),
+				'type'      => Controls_Manager::COLOR,
+				'default'   => '#C9BCA6',
+				'selectors' => array(
+					'{{WRAPPER}} .custom-footer__field' => 'border-color: {{VALUE}};',
+				),
+			)
+		);
+
+		$this->add_control(
 			'submit_color',
 			array(
 				'label'     => esc_html__( 'Button text', 'custom-elementor-widgets' ),
 				'type'      => Controls_Manager::COLOR,
-				'default'   => '#4C2513',
+				'default'   => '#9D5434',
 				'selectors' => array(
 					'{{WRAPPER}} .custom-footer__submit' => 'color: {{VALUE}};',
 				),
@@ -477,7 +489,7 @@ class Footer extends Base_Widget {
 			array(
 				'label'     => esc_html__( 'Button background', 'custom-elementor-widgets' ),
 				'type'      => Controls_Manager::COLOR,
-				'default'   => '#F9F8F6',
+				'default'   => '#FFFFFF',
 				'selectors' => array(
 					'{{WRAPPER}} .custom-footer__submit' => 'background-color: {{VALUE}};',
 				),
