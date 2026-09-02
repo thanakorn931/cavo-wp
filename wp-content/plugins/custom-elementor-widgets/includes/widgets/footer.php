@@ -100,7 +100,7 @@ class Footer extends Base_Widget {
 			array(
 				'label'   => esc_html__( 'Heading', 'custom-elementor-widgets' ),
 				'type'    => Controls_Manager::TEXT,
-				'default' => esc_html__( 'Signup to our newsletter', 'custom-elementor-widgets' ),
+				'placeholder' => esc_html__( 'Signup to our newsletter', 'custom-elementor-widgets' ),
 			)
 		);
 
@@ -124,7 +124,7 @@ class Footer extends Base_Widget {
 			array(
 				'label'   => esc_html__( 'Field placeholder', 'custom-elementor-widgets' ),
 				'type'    => Controls_Manager::TEXT,
-				'default' => esc_html__( 'Enter your email', 'custom-elementor-widgets' ),
+				'placeholder' => esc_html__( 'Enter your email', 'custom-elementor-widgets' ),
 			)
 		);
 
@@ -133,7 +133,7 @@ class Footer extends Base_Widget {
 			array(
 				'label'   => esc_html__( 'Button text', 'custom-elementor-widgets' ),
 				'type'    => Controls_Manager::TEXT,
-				'default' => esc_html__( 'Submit', 'custom-elementor-widgets' ),
+				'placeholder' => esc_html__( 'Submit', 'custom-elementor-widgets' ),
 			)
 		);
 
@@ -166,7 +166,7 @@ class Footer extends Base_Widget {
 			array(
 				'label'   => esc_html__( 'Label', 'custom-elementor-widgets' ),
 				'type'    => Controls_Manager::TEXT,
-				'default' => esc_html__( 'Contact Info', 'custom-elementor-widgets' ),
+				'placeholder' => esc_html__( 'Contact Info', 'custom-elementor-widgets' ),
 			)
 		);
 
@@ -176,7 +176,7 @@ class Footer extends Base_Widget {
 				'label'   => esc_html__( 'Address', 'custom-elementor-widgets' ),
 				'type'    => Controls_Manager::TEXTAREA,
 				'rows'    => 5,
-				'default' => esc_html__( 'Town Hall Sukhumvit 49, Sukhumvit 49, Khlong Tan Nuea, Watthana, Bangkok 10110', 'custom-elementor-widgets' ),
+				'placeholder' => esc_html__( 'Town Hall Sukhumvit 49, Sukhumvit 49, Khlong Tan Nuea, Watthana, Bangkok 10110', 'custom-elementor-widgets' ),
 			)
 		);
 
@@ -186,7 +186,7 @@ class Footer extends Base_Widget {
 				'label'   => esc_html__( 'Telephone and email', 'custom-elementor-widgets' ),
 				'type'    => Controls_Manager::TEXTAREA,
 				'rows'    => 5,
-				'default' => "0xx-xxx-xxxx\nexample@gmail.com",
+				'placeholder' => "0xx-xxx-xxxx\nexample@gmail.com",
 			)
 		);
 
@@ -291,7 +291,7 @@ class Footer extends Base_Widget {
 			array(
 				'label'   => esc_html__( 'Copyright', 'custom-elementor-widgets' ),
 				'type'    => Controls_Manager::TEXT,
-				'default' => esc_html__( '© 2026 CAVO design by Yes Web Design.', 'custom-elementor-widgets' ),
+				'placeholder' => esc_html__( '© 2026 CAVO design by Yes Web Design.', 'custom-elementor-widgets' ),
 			)
 		);
 
@@ -505,6 +505,45 @@ class Footer extends Base_Widget {
 	}
 
 	/**
+	 * What the design settles, for a control the client has left alone.
+	 *
+	 * The control carries none of this as a stored value — it shows it as a
+	 * hint and stands empty — so the value is read from here on the way out.
+	 *
+	 * @return array
+	 */
+	private function design_text() {
+		return array(
+			'signup_heading'     => esc_html__( 'Signup to our newsletter', 'custom-elementor-widgets' ),
+			'signup_placeholder' => esc_html__( 'Enter your email', 'custom-elementor-widgets' ),
+			'signup_button'      => esc_html__( 'Submit', 'custom-elementor-widgets' ),
+			'contact_label'      => esc_html__( 'Contact Info', 'custom-elementor-widgets' ),
+			'contact_address'    => esc_html__( 'Town Hall Sukhumvit 49, Sukhumvit 49, Khlong Tan Nuea, Watthana, Bangkok 10110', 'custom-elementor-widgets' ),
+			'contact_details'    => "0xx-xxx-xxxx\nexample@gmail.com",
+			'copyright'          => esc_html__( '© 2026 CAVO design by Yes Web Design.', 'custom-elementor-widgets' ),
+		);
+	}
+
+	/**
+	 * One control's text: what the client typed, or what the design settles.
+	 *
+	 * @param array  $settings The widget's settings.
+	 * @param string $key      The control's name.
+	 * @return string
+	 */
+	private function text( $settings, $key ) {
+		$typed = isset( $settings[ $key ] ) ? trim( (string) $settings[ $key ] ) : '';
+
+		if ( '' !== $typed ) {
+			return $typed;
+		}
+
+		$design = $this->design_text();
+
+		return isset( $design[ $key ] ) ? $design[ $key ] : '';
+	}
+
+	/**
 	 * Print the section.
 	 */
 	protected function render() {
@@ -532,7 +571,7 @@ class Footer extends Base_Widget {
 						?>
 					</div>
 
-					<?php $this->render_editor_hint( $settings ); ?>
+					<?php $this->render_editor_hint(); ?>
 				</div>
 			</div>
 		</div>
@@ -541,40 +580,13 @@ class Footer extends Base_Widget {
 
 	/**
 	 * Say what the footer is still waiting for, in the editor only.
-	 *
-	 * @param array $settings The widget's settings.
 	 */
-	private function render_editor_hint( $settings ) {
-		$waiting = array();
-
-		$text = array( 'signup_heading', 'signup_button', 'contact_address', 'copyright' );
-
-		foreach ( $text as $key ) {
-			if ( '' !== trim( (string) ( isset( $settings[ $key ] ) ? $settings[ $key ] : '' ) ) ) {
-				$text = array();
-				break;
-			}
-		}
-
-		if ( ! empty( $text ) ) {
-			$waiting[] = __( 'its text, on the Content tab', 'custom-elementor-widgets' );
-		}
-
-		if ( empty( array_filter( self::MENU_LOCATIONS, 'has_nav_menu' ) ) ) {
-			$waiting[] = __( 'a menu on the Footer or Footer Secondary location, from Appearance → Menus', 'custom-elementor-widgets' );
-		}
-
-		if ( empty( $waiting ) ) {
+	private function render_editor_hint() {
+		if ( ! empty( array_filter( self::MENU_LOCATIONS, 'has_nav_menu' ) ) ) {
 			return;
 		}
 
-		$this->editor_hint(
-			sprintf(
-				/* translators: %s: a list of what the section has still to be given. */
-				__( 'This footer is waiting for %s.', 'custom-elementor-widgets' ),
-				implode( __( ', and ', 'custom-elementor-widgets' ), $waiting )
-			)
-		);
+		$this->editor_hint( __( 'This footer is waiting for a menu on the Footer or Footer Secondary location, from Appearance → Menus.', 'custom-elementor-widgets' ) );
 	}
 
 	/**
@@ -583,8 +595,8 @@ class Footer extends Base_Widget {
 	 * @param array $settings The widget's settings.
 	 */
 	private function render_signup( $settings ) {
-		$heading = isset( $settings['signup_heading'] ) ? trim( (string) $settings['signup_heading'] ) : '';
-		$button  = isset( $settings['signup_button'] ) ? trim( (string) $settings['signup_button'] ) : '';
+		$heading = $this->text( $settings, 'signup_heading' );
+		$button  = $this->text( $settings, 'signup_button' );
 		$tag     = isset( $settings['signup_heading_tag'] ) ? $settings['signup_heading_tag'] : '';
 		$allowed = array( 'h2', 'h3', 'h4', 'span' );
 		$tag     = in_array( $tag, $allowed, true ) ? $tag : 'span';
@@ -608,7 +620,7 @@ class Footer extends Base_Widget {
 				id="custom-footer-email-<?php echo esc_attr( $this->get_id() ); ?>"
 				type="email"
 				name="email"
-				placeholder="<?php echo esc_attr( isset( $settings['signup_placeholder'] ) ? $settings['signup_placeholder'] : '' ); ?>"
+				placeholder="<?php echo esc_attr( $this->text( $settings, 'signup_placeholder' ) ); ?>"
 			/>
 			<button class="custom-footer__submit" type="submit"><?php echo esc_html( $button ); ?></button>
 		</form>
@@ -621,9 +633,9 @@ class Footer extends Base_Widget {
 	 * @param array $settings The widget's settings.
 	 */
 	private function render_contact( $settings ) {
-		$label   = isset( $settings['contact_label'] ) ? trim( (string) $settings['contact_label'] ) : '';
-		$address = isset( $settings['contact_address'] ) ? trim( (string) $settings['contact_address'] ) : '';
-		$details = isset( $settings['contact_details'] ) ? trim( (string) $settings['contact_details'] ) : '';
+		$label   = $this->text( $settings, 'contact_label' );
+		$address = $this->text( $settings, 'contact_address' );
+		$details = $this->text( $settings, 'contact_details' );
 
 		if ( '' === $label && '' === $address && '' === $details ) {
 			return;
@@ -678,7 +690,7 @@ class Footer extends Base_Widget {
 	 * @param array $settings The widget's settings.
 	 */
 	private function render_copyright( $settings ) {
-		$copyright = isset( $settings['copyright'] ) ? trim( (string) $settings['copyright'] ) : '';
+		$copyright = $this->text( $settings, 'copyright' );
 
 		if ( '' === $copyright ) {
 			return;
