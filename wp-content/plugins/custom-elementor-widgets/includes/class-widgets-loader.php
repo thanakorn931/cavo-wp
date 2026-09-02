@@ -87,6 +87,11 @@ final class Widgets_Loader {
 	public function register_widgets( $widgets_manager ) {
 		require_once CUSTOM_ELEMENTOR_WIDGETS_PATH . 'includes/class-base-widget.php';
 
+		// Whatever the widgets share sits beside the base, outside the register.
+		foreach ( (array) glob( CUSTOM_ELEMENTOR_WIDGETS_PATH . 'includes/class-*-widget.php' ) as $shared ) {
+			require_once $shared;
+		}
+
 		$files = glob( CUSTOM_ELEMENTOR_WIDGETS_PATH . 'includes/widgets/*.php' );
 
 		if ( empty( $files ) ) {

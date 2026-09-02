@@ -131,8 +131,9 @@ class Footer extends Base_Widget {
 		$this->add_control(
 			'signup_button',
 			array(
-				'label' => esc_html__( 'Button text', 'custom-elementor-widgets' ),
-				'type'  => Controls_Manager::TEXT,
+				'label'   => esc_html__( 'Button text', 'custom-elementor-widgets' ),
+				'type'    => Controls_Manager::TEXT,
+				'default' => esc_html__( 'Submit', 'custom-elementor-widgets' ),
 			)
 		);
 

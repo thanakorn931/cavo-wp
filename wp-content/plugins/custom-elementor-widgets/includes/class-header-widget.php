@@ -1,16 +1,18 @@
 <?php
 /**
- * Header — one section of the design.
+ * What the two headers share.
  *
- * The bar is a menu, built in Appearance → Menus and rendered from the theme's
- * registered location. Everything beside it is a control on this widget.
+ * The design draws the bar twice — solid and transparent — and each is its own
+ * widget, so a page picks one and cannot hold both. Everything but the name,
+ * the title and the variant class is the same, and lives here rather than
+ * twice. It sits outside the widgets folder, which is the register: only a
+ * section of the design belongs in there.
  *
  * @package Custom_Elementor_Widgets
  */
 
-namespace Custom_Elementor_Widgets\Widgets;
+namespace Custom_Elementor_Widgets;
 
-use Custom_Elementor_Widgets\Base_Widget;
 use Elementor\Controls_Manager;
 use Elementor\Group_Control_Typography;
 use Elementor\Icons_Manager;
@@ -22,7 +24,21 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * The header section.
  */
-class Header extends Base_Widget {
+abstract class Header_Widget extends Base_Widget {
+
+	/**
+	 * The class that tells the two bars apart.
+	 *
+	 * @return string
+	 */
+	abstract protected function variant_class();
+
+	/**
+	 * The background the design gives this bar.
+	 *
+	 * @return string
+	 */
+	abstract protected function background_default();
 
 	/**
 	 * The menu location the bar renders.
@@ -31,24 +47,6 @@ class Header extends Base_Widget {
 	 * location renders nothing until a menu is assigned to it.
 	 */
 	const MENU_LOCATION = 'primary';
-
-	/**
-	 * The widget's name, and its asset handle's suffix.
-	 *
-	 * @return string
-	 */
-	public function get_name() {
-		return 'header';
-	}
-
-	/**
-	 * The title shown in the panel.
-	 *
-	 * @return string
-	 */
-	public function get_title() {
-		return esc_html__( 'Header', 'custom-elementor-widgets' );
-	}
 
 	/**
 	 * The icon shown in the panel.
@@ -72,41 +70,12 @@ class Header extends Base_Widget {
 	 * The Content tab and the Style tab.
 	 */
 	protected function register_controls() {
-		$this->register_bar_controls();
 		$this->register_logo_controls();
 		$this->register_menu_controls();
 		$this->register_action_controls();
 		$this->register_bar_style_controls();
 		$this->register_menu_style_controls();
 		$this->register_button_style_controls();
-	}
-
-	/**
-	 * Content → Bar.
-	 *
-	 * The design draws the bar two ways. Solid is what the markup is, so the
-	 * switch adds the transparent one rather than choosing between two.
-	 */
-	private function register_bar_controls() {
-		$this->start_controls_section(
-			'section_bar',
-			array(
-				'label' => esc_html__( 'Bar', 'custom-elementor-widgets' ),
-				'tab'   => Controls_Manager::TAB_CONTENT,
-			)
-		);
-
-		$this->add_control(
-			'transparent',
-			array(
-				'label'        => esc_html__( 'Transparent', 'custom-elementor-widgets' ),
-				'type'         => Controls_Manager::SWITCHER,
-				'description'  => esc_html__( 'Sits over what is behind it, and takes the top space the solid bar does not.', 'custom-elementor-widgets' ),
-				'return_value' => 'yes',
-			)
-		);
-
-		$this->end_controls_section();
 	}
 
 	/**
@@ -255,7 +224,7 @@ class Header extends Base_Widget {
 			array(
 				'label'     => esc_html__( 'Background', 'custom-elementor-widgets' ),
 				'type'      => Controls_Manager::COLOR,
-				'default'   => '#FAF6EA',
+				'default'   => $this->background_default(),
 				'selectors' => array(
 					'{{WRAPPER}} .custom-header' => 'background-color: {{VALUE}};',
 				),
@@ -409,14 +378,8 @@ class Header extends Base_Widget {
 	 */
 	protected function render() {
 		$settings = $this->get_settings_for_display();
-
-		$classes = 'custom-header';
-
-		if ( ! empty( $settings['transparent'] ) ) {
-			$classes .= ' custom-header--transparent';
-		}
 		?>
-		<div class="<?php echo esc_attr( $classes ); ?>">
+		<div class="custom-header <?php echo esc_attr( $this->variant_class() ); ?>">
 			<div class="custom-header__bar">
 				<div class="custom-header__row">
 					<?php $this->render_logo( $settings ); ?>
