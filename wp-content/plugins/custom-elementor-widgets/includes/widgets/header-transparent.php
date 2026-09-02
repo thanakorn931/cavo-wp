@@ -56,4 +56,22 @@ class Header_Transparent extends Header_Widget {
 	protected function background_default() {
 		return '';
 	}
+
+	/**
+	 * The bar's own colour.
+	 *
+	 * @return string
+	 */
+	protected function ink() {
+		return '#FAF6EA';
+	}
+
+	/**
+	 * What reads against the ink.
+	 *
+	 * @return string
+	 */
+	protected function paper() {
+		return '#3A2114';
+	}
 }

@@ -41,6 +41,21 @@ abstract class Header_Widget extends Base_Widget {
 	abstract protected function background_default();
 
 	/**
+	 * The bar's own colour — its type, its outline, its icon, and the fill of
+	 * the button the design fills.
+	 *
+	 * @return string
+	 */
+	abstract protected function ink();
+
+	/**
+	 * What reads against the ink: the filled button's type.
+	 *
+	 * @return string
+	 */
+	abstract protected function paper();
+
+	/**
 	 * The menu location the bar renders.
 	 *
 	 * Registered by the parent theme, so nothing here registers it again. The
@@ -236,6 +251,7 @@ abstract class Header_Widget extends Base_Widget {
 			array(
 				'label'     => esc_html__( 'Bottom border', 'custom-elementor-widgets' ),
 				'type'      => Controls_Manager::COLOR,
+				'default'   => $this->ink(),
 				'selectors' => array(
 					'{{WRAPPER}} .custom-header__row' => 'border-bottom: 1px solid {{VALUE}};',
 				),
@@ -260,8 +276,14 @@ abstract class Header_Widget extends Base_Widget {
 		$this->add_group_control(
 			Group_Control_Typography::get_type(),
 			array(
-				'name'     => 'menu_typography',
-				'selector' => '{{WRAPPER}} .custom-header__menu a',
+				'name'           => 'menu_typography',
+				'selector'       => '{{WRAPPER}} .custom-header__menu a',
+				'fields_options' => array(
+					'typography'  => array( 'default' => 'yes' ),
+					'font_family' => array( 'default' => 'Roboto' ),
+					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 14 ) ),
+					'line_height' => array( 'default' => array( 'unit' => 'px', 'size' => 16 ) ),
+				),
 			)
 		);
 
@@ -270,6 +292,7 @@ abstract class Header_Widget extends Base_Widget {
 			array(
 				'label'     => esc_html__( 'Colour', 'custom-elementor-widgets' ),
 				'type'      => Controls_Manager::COLOR,
+				'default'   => $this->ink(),
 				'selectors' => array(
 					'{{WRAPPER}} .custom-header__menu a' => 'color: {{VALUE}};',
 				),
@@ -281,6 +304,7 @@ abstract class Header_Widget extends Base_Widget {
 			array(
 				'label'     => esc_html__( 'Colour on hover', 'custom-elementor-widgets' ),
 				'type'      => Controls_Manager::COLOR,
+				'default'   => $this->ink(),
 				'selectors' => array(
 					'{{WRAPPER}} .custom-header__menu a:hover'           => 'color: {{VALUE}};',
 					'{{WRAPPER}} .custom-header__menu a'                 => 'text-decoration-color: {{VALUE}};',
@@ -307,8 +331,14 @@ abstract class Header_Widget extends Base_Widget {
 		$this->add_group_control(
 			Group_Control_Typography::get_type(),
 			array(
-				'name'     => 'button_typography',
-				'selector' => '{{WRAPPER}} .custom-header__button',
+				'name'           => 'button_typography',
+				'selector'       => '{{WRAPPER}} .custom-header__button',
+				'fields_options' => array(
+					'typography'  => array( 'default' => 'yes' ),
+					'font_family' => array( 'default' => 'Roboto' ),
+					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 14 ) ),
+					'line_height' => array( 'default' => array( 'unit' => 'px', 'size' => 16 ) ),
+				),
 			)
 		);
 
@@ -317,6 +347,7 @@ abstract class Header_Widget extends Base_Widget {
 			array(
 				'label'     => esc_html__( 'First button text', 'custom-elementor-widgets' ),
 				'type'      => Controls_Manager::COLOR,
+				'default'   => $this->ink(),
 				'selectors' => array(
 					'{{WRAPPER}} .custom-header__button--outline' => 'color: {{VALUE}}; border-color: {{VALUE}};',
 				),
@@ -339,6 +370,7 @@ abstract class Header_Widget extends Base_Widget {
 			array(
 				'label'     => esc_html__( 'Second button text', 'custom-elementor-widgets' ),
 				'type'      => Controls_Manager::COLOR,
+				'default'   => $this->paper(),
 				'separator' => 'before',
 				'selectors' => array(
 					'{{WRAPPER}} .custom-header__button--solid' => 'color: {{VALUE}};',
@@ -351,6 +383,7 @@ abstract class Header_Widget extends Base_Widget {
 			array(
 				'label'     => esc_html__( 'Second button background', 'custom-elementor-widgets' ),
 				'type'      => Controls_Manager::COLOR,
+				'default'   => $this->ink(),
 				'selectors' => array(
 					'{{WRAPPER}} .custom-header__button--solid' => 'background-color: {{VALUE}};',
 				),
@@ -362,6 +395,7 @@ abstract class Header_Widget extends Base_Widget {
 			array(
 				'label'     => esc_html__( 'Icon', 'custom-elementor-widgets' ),
 				'type'      => Controls_Manager::COLOR,
+				'default'   => $this->ink(),
 				'separator' => 'before',
 				'selectors' => array(
 					'{{WRAPPER}} .custom-header__icon-link'      => 'color: {{VALUE}};',

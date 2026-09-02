@@ -337,17 +337,42 @@ class Footer extends Base_Widget {
 		$this->add_group_control(
 			Group_Control_Typography::get_type(),
 			array(
-				'name'     => 'footer_typography',
-				'selector' => '{{WRAPPER}} .custom-footer',
+				'name'           => 'footer_typography',
+				'selector'       => '{{WRAPPER}} .custom-footer',
+				'fields_options' => array(
+					'typography'  => array( 'default' => 'yes' ),
+					'font_family' => array( 'default' => 'Roboto' ),
+					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 14 ) ),
+					'line_height' => array( 'default' => array( 'unit' => 'px', 'size' => 16 ) ),
+				),
 			)
 		);
 
 		$this->add_group_control(
 			Group_Control_Typography::get_type(),
 			array(
-				'name'     => 'heading_typography',
-				'label'    => esc_html__( 'Heading', 'custom-elementor-widgets' ),
-				'selector' => '{{WRAPPER}} .custom-footer__heading',
+				'name'           => 'heading_typography',
+				'label'          => esc_html__( 'Heading', 'custom-elementor-widgets' ),
+				'selector'       => '{{WRAPPER}} .custom-footer__heading',
+				'fields_options' => array(
+					'typography'     => array( 'default' => 'yes' ),
+					'font_family'    => array( 'default' => 'Fenul Compressed' ),
+					'font_size'      => array( 'default' => array( 'unit' => 'px', 'size' => 48 ) ),
+					'font_weight'    => array( 'default' => '500' ),
+					'text_transform' => array( 'default' => 'uppercase' ),
+				),
+			)
+		);
+
+		$this->add_control(
+			'heading_color',
+			array(
+				'label'     => esc_html__( 'Heading colour', 'custom-elementor-widgets' ),
+				'type'      => Controls_Manager::COLOR,
+				'default'   => '#FFFFFF',
+				'selectors' => array(
+					'{{WRAPPER}} .custom-footer__heading' => 'color: {{VALUE}};',
+				),
 			)
 		);
 
@@ -390,6 +415,7 @@ class Footer extends Base_Widget {
 			array(
 				'label'     => esc_html__( 'Button text', 'custom-elementor-widgets' ),
 				'type'      => Controls_Manager::COLOR,
+				'default'   => '#4C2513',
 				'selectors' => array(
 					'{{WRAPPER}} .custom-footer__submit' => 'color: {{VALUE}};',
 				),
@@ -401,6 +427,7 @@ class Footer extends Base_Widget {
 			array(
 				'label'     => esc_html__( 'Button background', 'custom-elementor-widgets' ),
 				'type'      => Controls_Manager::COLOR,
+				'default'   => '#F9F8F6',
 				'selectors' => array(
 					'{{WRAPPER}} .custom-footer__submit' => 'background-color: {{VALUE}};',
 				),
@@ -425,8 +452,14 @@ class Footer extends Base_Widget {
 		$this->add_group_control(
 			Group_Control_Typography::get_type(),
 			array(
-				'name'     => 'menu_typography',
-				'selector' => '{{WRAPPER}} .custom-footer__menu a',
+				'name'           => 'menu_typography',
+				'selector'       => '{{WRAPPER}} .custom-footer__menu a',
+				'fields_options' => array(
+					'typography'  => array( 'default' => 'yes' ),
+					'font_family' => array( 'default' => 'Roboto' ),
+					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 14 ) ),
+					'line_height' => array( 'default' => array( 'unit' => 'px', 'size' => 16 ) ),
+				),
 			)
 		);
 
@@ -435,6 +468,7 @@ class Footer extends Base_Widget {
 			array(
 				'label'     => esc_html__( 'Link', 'custom-elementor-widgets' ),
 				'type'      => Controls_Manager::COLOR,
+				'default'   => '#F9F8F6',
 				'selectors' => array(
 					'{{WRAPPER}} .custom-footer__menu a' => 'color: {{VALUE}};',
 				),
@@ -446,6 +480,7 @@ class Footer extends Base_Widget {
 			array(
 				'label'     => esc_html__( 'Link on hover', 'custom-elementor-widgets' ),
 				'type'      => Controls_Manager::COLOR,
+				'default'   => '#C9BCA6',
 				'selectors' => array(
 					'{{WRAPPER}} .custom-footer__menu a:hover' => 'color: {{VALUE}};',
 				),
@@ -457,6 +492,7 @@ class Footer extends Base_Widget {
 			array(
 				'label'     => esc_html__( 'Social icon', 'custom-elementor-widgets' ),
 				'type'      => Controls_Manager::COLOR,
+				'default'   => '#F9F8F6',
 				'separator' => 'before',
 				'selectors' => array(
 					'{{WRAPPER}} .custom-footer__social-link'     => 'color: {{VALUE}};',

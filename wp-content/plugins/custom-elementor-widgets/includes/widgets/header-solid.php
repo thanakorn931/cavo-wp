@@ -56,4 +56,22 @@ class Header_Solid extends Header_Widget {
 	protected function background_default() {
 		return '#FAF6EA';
 	}
+
+	/**
+	 * The bar's own colour.
+	 *
+	 * @return string
+	 */
+	protected function ink() {
+		return '#3A2114';
+	}
+
+	/**
+	 * What reads against the ink.
+	 *
+	 * @return string
+	 */
+	protected function paper() {
+		return '#FAF6EA';
+	}
 }
