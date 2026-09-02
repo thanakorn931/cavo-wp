@@ -180,8 +180,9 @@ class Header extends Base_Widget {
 		$this->add_control(
 			'button_one_text',
 			array(
-				'label' => esc_html__( 'First button text', 'custom-elementor-widgets' ),
-				'type'  => Controls_Manager::TEXT,
+				'label'   => esc_html__( 'First button text', 'custom-elementor-widgets' ),
+				'type'    => Controls_Manager::TEXT,
+				'default' => esc_html__( 'Membership', 'custom-elementor-widgets' ),
 			)
 		);
 
@@ -199,6 +200,7 @@ class Header extends Base_Widget {
 			array(
 				'label'     => esc_html__( 'Second button text', 'custom-elementor-widgets' ),
 				'type'      => Controls_Manager::TEXT,
+				'default'   => esc_html__( 'Reserve', 'custom-elementor-widgets' ),
 				'separator' => 'before',
 			)
 		);
@@ -253,6 +255,7 @@ class Header extends Base_Widget {
 			array(
 				'label'     => esc_html__( 'Background', 'custom-elementor-widgets' ),
 				'type'      => Controls_Manager::COLOR,
+				'default'   => '#FAF6EA',
 				'selectors' => array(
 					'{{WRAPPER}} .custom-header' => 'background-color: {{VALUE}};',
 				),

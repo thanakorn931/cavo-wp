@@ -98,8 +98,9 @@ class Footer extends Base_Widget {
 		$this->add_control(
 			'signup_heading',
 			array(
-				'label' => esc_html__( 'Heading', 'custom-elementor-widgets' ),
-				'type'  => Controls_Manager::TEXT,
+				'label'   => esc_html__( 'Heading', 'custom-elementor-widgets' ),
+				'type'    => Controls_Manager::TEXT,
+				'default' => esc_html__( 'Signup to our newsletter', 'custom-elementor-widgets' ),
 			)
 		);
 
@@ -108,6 +109,7 @@ class Footer extends Base_Widget {
 			array(
 				'label'   => esc_html__( 'Heading level', 'custom-elementor-widgets' ),
 				'type'    => Controls_Manager::SELECT,
+				'default' => 'h2',
 				'options' => array(
 					'h2'   => 'H2',
 					'h3'   => 'H3',
@@ -120,8 +122,9 @@ class Footer extends Base_Widget {
 		$this->add_control(
 			'signup_placeholder',
 			array(
-				'label' => esc_html__( 'Field placeholder', 'custom-elementor-widgets' ),
-				'type'  => Controls_Manager::TEXT,
+				'label'   => esc_html__( 'Field placeholder', 'custom-elementor-widgets' ),
+				'type'    => Controls_Manager::TEXT,
+				'default' => esc_html__( 'Enter your email', 'custom-elementor-widgets' ),
 			)
 		);
 
@@ -160,26 +163,29 @@ class Footer extends Base_Widget {
 		$this->add_control(
 			'contact_label',
 			array(
-				'label' => esc_html__( 'Label', 'custom-elementor-widgets' ),
-				'type'  => Controls_Manager::TEXT,
+				'label'   => esc_html__( 'Label', 'custom-elementor-widgets' ),
+				'type'    => Controls_Manager::TEXT,
+				'default' => esc_html__( 'Contact Info', 'custom-elementor-widgets' ),
 			)
 		);
 
 		$this->add_control(
 			'contact_address',
 			array(
-				'label' => esc_html__( 'Address', 'custom-elementor-widgets' ),
-				'type'  => Controls_Manager::TEXTAREA,
-				'rows'  => 5,
+				'label'   => esc_html__( 'Address', 'custom-elementor-widgets' ),
+				'type'    => Controls_Manager::TEXTAREA,
+				'rows'    => 5,
+				'default' => esc_html__( 'Town Hall Sukhumvit 49, Sukhumvit 49, Khlong Tan Nuea, Watthana, Bangkok 10110', 'custom-elementor-widgets' ),
 			)
 		);
 
 		$this->add_control(
 			'contact_details',
 			array(
-				'label' => esc_html__( 'Telephone and email', 'custom-elementor-widgets' ),
-				'type'  => Controls_Manager::TEXTAREA,
-				'rows'  => 5,
+				'label'   => esc_html__( 'Telephone and email', 'custom-elementor-widgets' ),
+				'type'    => Controls_Manager::TEXTAREA,
+				'rows'    => 5,
+				'default' => "0xx-xxx-xxxx\nexample@gmail.com",
 			)
 		);
 
@@ -282,8 +288,9 @@ class Footer extends Base_Widget {
 		$this->add_control(
 			'copyright',
 			array(
-				'label' => esc_html__( 'Copyright', 'custom-elementor-widgets' ),
-				'type'  => Controls_Manager::TEXT,
+				'label'   => esc_html__( 'Copyright', 'custom-elementor-widgets' ),
+				'type'    => Controls_Manager::TEXT,
+				'default' => esc_html__( '© 2026 CAVO design by Yes Web Design.', 'custom-elementor-widgets' ),
 			)
 		);
 
@@ -307,6 +314,7 @@ class Footer extends Base_Widget {
 			array(
 				'label'     => esc_html__( 'Background', 'custom-elementor-widgets' ),
 				'type'      => Controls_Manager::COLOR,
+				'default'   => '#4C2513',
 				'selectors' => array(
 					'{{WRAPPER}} .custom-footer' => 'background-color: {{VALUE}};',
 				),
@@ -318,6 +326,7 @@ class Footer extends Base_Widget {
 			array(
 				'label'     => esc_html__( 'Text', 'custom-elementor-widgets' ),
 				'type'      => Controls_Manager::COLOR,
+				'default'   => '#F9F8F6',
 				'selectors' => array(
 					'{{WRAPPER}} .custom-footer' => 'color: {{VALUE}};',
 				),
