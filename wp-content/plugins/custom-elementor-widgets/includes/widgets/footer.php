@@ -686,6 +686,7 @@ class Footer extends Base_Widget {
 			return;
 		}
 		?>
+		<div class="custom-footer__actions">
 		<form class="custom-footer__form" method="post">
 			<label class="screen-reader-text" for="custom-footer-email-<?php echo esc_attr( $this->get_id() ); ?>">
 				<?php echo esc_html__( 'Email address', 'custom-elementor-widgets' ); ?>
@@ -699,6 +700,7 @@ class Footer extends Base_Widget {
 			/>
 			<button class="custom-footer__submit" type="submit"><?php echo esc_html( $button ); ?></button>
 		</form>
+		</div>
 		<?php
 	}
 

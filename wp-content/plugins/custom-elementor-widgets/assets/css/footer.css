@@ -76,26 +76,41 @@
 	align-self: stretch;
 }
 
-.custom-footer__field {
+/* The theme dresses every input and button of its own accord, so these say it
+   again from inside the section, where they win. */
+.custom-footer .custom-footer__field,
+.custom-footer input.custom-footer__field {
 	flex: 1 0 0;
 	min-width: 0;
+	height: 40px;
 	padding: 12px 24px;
 	border: 1px solid currentColor;
 	border-radius: 28px;
 	background: transparent;
 	color: inherit;
 	font: inherit;
+	line-height: normal;
+	box-shadow: none;
 	box-sizing: border-box;
 }
 
-.custom-footer__submit {
+.custom-footer .custom-footer__field::placeholder {
+	color: inherit;
+	opacity: 1;
+}
+
+.custom-footer .custom-footer__submit,
+.custom-footer button.custom-footer__submit {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
+	height: 40px;
 	padding: 12px 24px;
 	border: 0;
 	border-radius: 24px;
 	font: inherit;
+	line-height: normal;
+	box-shadow: none;
 	cursor: pointer;
 	white-space: nowrap;
 }
