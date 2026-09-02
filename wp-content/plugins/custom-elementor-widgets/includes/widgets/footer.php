@@ -171,6 +171,15 @@ class Footer extends Base_Widget {
 		);
 
 		$this->add_control(
+			'location_label',
+			array(
+				'label'       => esc_html__( 'Second label', 'custom-elementor-widgets' ),
+				'type'        => Controls_Manager::TEXT,
+				'placeholder' => esc_html__( 'Location', 'custom-elementor-widgets' ),
+			)
+		);
+
+		$this->add_control(
 			'contact_address',
 			array(
 				'label'   => esc_html__( 'Address', 'custom-elementor-widgets' ),
@@ -327,7 +336,7 @@ class Footer extends Base_Widget {
 			array(
 				'label'     => esc_html__( 'Text', 'custom-elementor-widgets' ),
 				'type'      => Controls_Manager::COLOR,
-				'default'   => '#F9F8F6',
+				'default'   => '#FFFFFF',
 				'selectors' => array(
 					'{{WRAPPER}} .custom-footer' => 'color: {{VALUE}};',
 				),
@@ -342,8 +351,49 @@ class Footer extends Base_Widget {
 				'fields_options' => array(
 					'typography'  => array( 'default' => 'yes' ),
 					'font_family' => array( 'default' => 'Roboto' ),
-					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 14 ) ),
-					'line_height' => array( 'default' => array( 'unit' => 'px', 'size' => 16 ) ),
+					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 16 ) ),
+				),
+			)
+		);
+
+		$this->add_group_control(
+			Group_Control_Typography::get_type(),
+			array(
+				'name'           => 'label_typography',
+				'label'          => esc_html__( 'Label', 'custom-elementor-widgets' ),
+				'selector'       => '{{WRAPPER}} .custom-footer__contact-label',
+				'fields_options' => array(
+					'typography'     => array( 'default' => 'yes' ),
+					'font_family'    => array( 'default' => 'Roboto' ),
+					'font_size'      => array( 'default' => array( 'unit' => 'px', 'size' => 16 ) ),
+					'font_weight'    => array( 'default' => '500' ),
+					'text_transform' => array( 'default' => 'uppercase' ),
+				),
+			)
+		);
+
+		$this->add_control(
+			'label_color',
+			array(
+				'label'     => esc_html__( 'Label colour', 'custom-elementor-widgets' ),
+				'type'      => Controls_Manager::COLOR,
+				'default'   => '#C9BCA6',
+				'selectors' => array(
+					'{{WRAPPER}} .custom-footer__contact-label' => 'color: {{VALUE}};',
+				),
+			)
+		);
+
+		$this->add_group_control(
+			Group_Control_Typography::get_type(),
+			array(
+				'name'           => 'copyright_typography',
+				'label'          => esc_html__( 'Copyright', 'custom-elementor-widgets' ),
+				'selector'       => '{{WRAPPER}} .custom-footer__copyright',
+				'fields_options' => array(
+					'typography'  => array( 'default' => 'yes' ),
+					'font_family' => array( 'default' => 'Roboto' ),
+					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 12 ) ),
 				),
 			)
 		);
@@ -457,8 +507,7 @@ class Footer extends Base_Widget {
 				'fields_options' => array(
 					'typography'  => array( 'default' => 'yes' ),
 					'font_family' => array( 'default' => 'Roboto' ),
-					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 14 ) ),
-					'line_height' => array( 'default' => array( 'unit' => 'px', 'size' => 16 ) ),
+					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 16 ) ),
 				),
 			)
 		);
@@ -488,11 +537,24 @@ class Footer extends Base_Widget {
 		);
 
 		$this->add_control(
+			'social_background',
+			array(
+				'label'     => esc_html__( 'Social background', 'custom-elementor-widgets' ),
+				'type'      => Controls_Manager::COLOR,
+				'default'   => '#3A2114',
+				'separator' => 'before',
+				'selectors' => array(
+					'{{WRAPPER}} .custom-footer__social-link' => 'background-color: {{VALUE}};',
+				),
+			)
+		);
+
+		$this->add_control(
 			'social_color',
 			array(
 				'label'     => esc_html__( 'Social icon', 'custom-elementor-widgets' ),
 				'type'      => Controls_Manager::COLOR,
-				'default'   => '#F9F8F6',
+				'default'   => '#C9BCA6',
 				'separator' => 'before',
 				'selectors' => array(
 					'{{WRAPPER}} .custom-footer__social-link'     => 'color: {{VALUE}};',
@@ -518,6 +580,7 @@ class Footer extends Base_Widget {
 			'signup_placeholder' => esc_html__( 'Enter your email', 'custom-elementor-widgets' ),
 			'signup_button'      => esc_html__( 'Submit', 'custom-elementor-widgets' ),
 			'contact_label'      => esc_html__( 'Contact Info', 'custom-elementor-widgets' ),
+			'location_label'     => esc_html__( 'Location', 'custom-elementor-widgets' ),
 			'contact_address'    => esc_html__( 'Town Hall Sukhumvit 49, Sukhumvit 49, Khlong Tan Nuea, Watthana, Bangkok 10110', 'custom-elementor-widgets' ),
 			'contact_details'    => "0xx-xxx-xxxx\nexample@gmail.com",
 			'copyright'          => esc_html__( '© 2026 CAVO design by Yes Web Design.', 'custom-elementor-widgets' ),
@@ -633,24 +696,33 @@ class Footer extends Base_Widget {
 	 * @param array $settings The widget's settings.
 	 */
 	private function render_contact( $settings ) {
-		$label   = $this->text( $settings, 'contact_label' );
-		$address = $this->text( $settings, 'contact_address' );
-		$details = $this->text( $settings, 'contact_details' );
+		$columns = array(
+			array( $this->text( $settings, 'contact_label' ), $this->text( $settings, 'contact_details' ) ),
+			array( $this->text( $settings, 'location_label' ), $this->text( $settings, 'contact_address' ) ),
+		);
 
-		if ( '' === $label && '' === $address && '' === $details ) {
+		$columns = array_filter(
+			$columns,
+			static function ( $column ) {
+				return '' !== $column[0] || '' !== $column[1];
+			}
+		);
+
+		if ( empty( $columns ) ) {
 			return;
 		}
 		?>
 		<div class="custom-footer__contact">
-			<?php if ( '' !== $label ) : ?>
-				<p><?php echo esc_html( $label ); ?></p>
-			<?php endif; ?>
-			<?php if ( '' !== $address ) : ?>
-				<p><?php echo nl2br( esc_html( $address ) ); ?></p>
-			<?php endif; ?>
-			<?php if ( '' !== $details ) : ?>
-				<p><?php echo nl2br( esc_html( $details ) ); ?></p>
-			<?php endif; ?>
+			<?php foreach ( $columns as $column ) : ?>
+				<div class="custom-footer__contact-column">
+					<?php if ( '' !== $column[0] ) : ?>
+						<p class="custom-footer__contact-label"><?php echo esc_html( $column[0] ); ?></p>
+					<?php endif; ?>
+					<?php if ( '' !== $column[1] ) : ?>
+						<p><?php echo nl2br( esc_html( $column[1] ) ); ?></p>
+					<?php endif; ?>
+				</div>
+			<?php endforeach; ?>
 		</div>
 		<?php
 	}

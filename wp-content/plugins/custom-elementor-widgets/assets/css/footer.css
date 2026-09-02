@@ -1,7 +1,8 @@
 /**
  * Footer — one section of the design.
  *
- * Layout only. Colour and type arrive from the widget's Style tab.
+ * Every measurement here was read off the file, node by node. Colour and type
+ * that the Style tab can carry are left to it.
  */
 
 .custom-footer {
@@ -46,7 +47,7 @@
 	gap: 48px;
 }
 
-/* Left — the newsletter, then the contact lines. */
+/* Left — the sign-up, then the two contact columns. */
 .custom-footer__signup-column {
 	display: flex;
 	flex-direction: column;
@@ -59,20 +60,32 @@
 	margin: 0;
 }
 
+.custom-footer__actions {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 12px;
+	width: 508px;
+	max-width: 100%;
+}
+
 .custom-footer__form {
 	display: flex;
-	align-items: center;
-	gap: 24px;
+	align-items: flex-start;
+	gap: 8px;
+	align-self: stretch;
 }
 
 .custom-footer__field {
+	flex: 1 0 0;
 	min-width: 0;
-	padding: 12px 0;
-	border: 0;
-	border-bottom: 1px solid currentColor;
+	padding: 12px 24px;
+	border: 1px solid currentColor;
+	border-radius: 28px;
 	background: transparent;
 	color: inherit;
 	font: inherit;
+	box-sizing: border-box;
 }
 
 .custom-footer__submit {
@@ -89,13 +102,20 @@
 
 .custom-footer__contact {
 	display: flex;
-	flex-direction: column;
 	align-items: flex-start;
-	gap: 8px;
-	margin: 0;
+	gap: 24px;
 }
 
-.custom-footer__contact p {
+.custom-footer__contact-column {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 12px;
+	min-width: 0;
+}
+
+.custom-footer__contact-label,
+.custom-footer__contact-column p {
 	margin: 0;
 }
 
@@ -160,16 +180,16 @@
 	align-items: center;
 	justify-content: center;
 	flex: 0 0 auto;
-	width: 24px;
-	height: 24px;
+	padding: 10px;
+	border-radius: 45px;
 	text-decoration: none;
 }
 
 .custom-footer__social-link svg,
 .custom-footer__social-link img {
 	display: block;
-	width: 100%;
-	height: 100%;
+	width: 20px;
+	height: 20px;
 }
 
 /* Motion — the same 300ms, ease in and out, the file gives every hover. */
@@ -209,12 +229,13 @@
 		padding: 0 24px 48px 24px;
 	}
 
-	.custom-footer__content {
+	.custom-footer__content,
+	.custom-footer__menus {
 		gap: 32px;
 	}
 
-	.custom-footer__menus {
-		gap: 32px;
+	.custom-footer__actions {
+		width: 100%;
 	}
 }
 
@@ -244,6 +265,11 @@
 		flex: 1 1 100%;
 	}
 
+	.custom-footer__contact {
+		flex-direction: column;
+		gap: 24px;
+	}
+
 	.custom-footer__menus {
 		align-self: stretch;
 		justify-content: space-between;
@@ -255,17 +281,4 @@
 		align-items: flex-start;
 		gap: 24px;
 	}
-}
-
-/* Editor only — never printed on the site. */
-.custom-editor-hint {
-	align-self: stretch;
-	margin: 0;
-	padding: 8px 16px;
-	border: 1px dashed currentColor;
-	border-radius: 4px;
-	opacity: 0.6;
-	font-size: 12px;
-	line-height: 16px;
-	text-align: center;
 }
