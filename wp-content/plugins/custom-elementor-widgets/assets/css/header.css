@@ -1,0 +1,175 @@
+/**
+ * Header — one section of the design.
+ *
+ * Layout only. Colour and type arrive from the widget's Style tab, so nothing
+ * here ships a value the design has not been asked for.
+ */
+
+.custom-header {
+	width: 100%;
+}
+
+.custom-header__bar {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 100%;
+	max-width: 1440px;
+	margin: 0 auto;
+	padding: 0 48px;
+	box-sizing: border-box;
+}
+
+/* The transparent bar sits over what is behind it and carries the top space
+   the solid one does not. */
+.custom-header--transparent {
+	background-color: transparent;
+}
+
+.custom-header--transparent .custom-header__bar {
+	padding-top: 16px;
+}
+
+.custom-header__row {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+	height: 72px;
+}
+
+/* The logo keeps its box whether or not a picture has been uploaded. */
+.custom-header__logo {
+	display: flex;
+	align-items: center;
+	padding: 4px 80px 4px 0;
+	text-decoration: none;
+}
+
+.custom-header__logo-box {
+	display: block;
+	flex: 0 0 auto;
+	width: 154px;
+	height: 64px;
+	overflow: hidden;
+}
+
+.custom-header__logo-box img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
+}
+
+.custom-header__menu ul {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 36px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.custom-header__menu li {
+	margin: 0;
+	padding: 0;
+}
+
+.custom-header__menu a {
+	display: block;
+	padding: 4px 0;
+	text-decoration: none;
+	white-space: nowrap;
+}
+
+.custom-header__actions {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	gap: 8px;
+	margin-left: 24px;
+}
+
+.custom-header__button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	padding: 12px 24px;
+	border: 0;
+	border-radius: 24px;
+	text-decoration: none;
+	white-space: nowrap;
+}
+
+.custom-header__button--outline {
+	border: 1px solid currentColor;
+}
+
+.custom-header__icon-link {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	flex: 0 0 auto;
+	width: 24px;
+	height: 24px;
+	text-decoration: none;
+}
+
+.custom-header__icon-link svg,
+.custom-header__icon-link img {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+/* Tablet — 768px to 1024px. Not drawn; the row keeps its shape, the side
+   padding comes in to the tier's own edge. */
+@media (max-width: 1024px) {
+	.custom-header__bar {
+		padding: 0 24px;
+	}
+
+	.custom-header__logo {
+		padding-right: 24px;
+	}
+
+	.custom-header__menu ul {
+		gap: 24px;
+	}
+}
+
+/* Mobile — up to 767px. Not drawn; the menu drops under the row so nothing
+   reaches past the viewport. */
+@media (max-width: 767px) {
+	.custom-header__bar {
+		padding: 0 16px;
+	}
+
+	.custom-header__row {
+		height: auto;
+		padding: 8px 0;
+	}
+
+	.custom-header__logo {
+		padding-right: 0;
+	}
+
+	.custom-header__menu {
+		order: 3;
+		width: 100%;
+	}
+
+	.custom-header__menu ul {
+		flex-wrap: wrap;
+		justify-content: flex-start;
+		gap: 16px;
+		padding: 8px 0 16px 0;
+	}
+
+	.custom-header__actions {
+		margin-left: 16px;
+	}
+}

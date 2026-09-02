@@ -64,4 +64,33 @@ abstract class Base_Widget extends \Elementor\Widget_Base {
 	protected function asset_handle() {
 		return Widgets_Loader::HANDLE_PREFIX . $this->get_name();
 	}
+
+	/**
+	 * The attributes for one link, from the value the client typed.
+	 *
+	 * A link field takes a path, an anchor or a whole address. Where it opens
+	 * follows from where it goes, not from a checkbox: a value with no scheme is
+	 * this site and opens in the same tab; otherwise the host decides. Settled
+	 * here once, for every link the plugin prints.
+	 *
+	 * @param string $value Raw control value.
+	 * @return string Escaped href, and off the domain a target and rel with it.
+	 */
+	protected function link_attributes( $value ) {
+		$value = trim( (string) $value );
+
+		if ( '' === $value ) {
+			return '';
+		}
+
+		$attributes = ' href="' . esc_url( $value ) . '"';
+		$host       = wp_parse_url( $value, PHP_URL_HOST );
+		$site       = wp_parse_url( home_url(), PHP_URL_HOST );
+
+		if ( $host && strtolower( $host ) !== strtolower( (string) $site ) ) {
+			$attributes .= ' target="_blank" rel="noopener noreferrer"';
+		}
+
+		return $attributes;
+	}
 }

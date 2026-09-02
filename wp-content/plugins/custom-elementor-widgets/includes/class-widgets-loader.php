@@ -121,9 +121,44 @@ final class Widgets_Loader {
 	 * widget, so Elementor loads a section's CSS only on the pages that use it.
 	 *
 	 * A widget declares its handle through the base widget; nothing is enqueued
-	 * from here. There are no sections yet, so there is nothing to register.
+	 * from here. The widgets folder is the register here too: a section named
+	 * `header` takes `assets/css/header.css` and `assets/js/header.js` if they
+	 * are there, under the handle `custom-header`.
 	 */
 	public function register_assets() {
+		$files = glob( CUSTOM_ELEMENTOR_WIDGETS_PATH . 'includes/widgets/*.php' );
+
+		if ( empty( $files ) ) {
+			return;
+		}
+
+		foreach ( $files as $file ) {
+			$slug   = basename( $file, '.php' );
+			$handle = self::HANDLE_PREFIX . $slug;
+
+			$style = CUSTOM_ELEMENTOR_WIDGETS_PATH . 'assets/css/' . $slug . '.css';
+
+			if ( file_exists( $style ) ) {
+				wp_register_style(
+					$handle,
+					CUSTOM_ELEMENTOR_WIDGETS_URL . 'assets/css/' . $slug . '.css',
+					array(),
+					(string) filemtime( $style )
+				);
+			}
+
+			$script = CUSTOM_ELEMENTOR_WIDGETS_PATH . 'assets/js/' . $slug . '.js';
+
+			if ( file_exists( $script ) ) {
+				wp_register_script(
+					$handle,
+					CUSTOM_ELEMENTOR_WIDGETS_URL . 'assets/js/' . $slug . '.js',
+					array(),
+					(string) filemtime( $script ),
+					true
+				);
+			}
+		}
 	}
 
 	/**
