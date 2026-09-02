@@ -53,27 +53,25 @@ function kadence_child_classic_widgets() {
 add_action( 'after_setup_theme', 'kadence_child_classic_widgets', 20 );
 
 /**
- * Let the media library take SVG, for administrators.
+ * Let the media library take SVG.
  *
  * WordPress already carries PDF and every video format a site has reason to
  * use. SVG is the one it refuses, and the refusal is deliberate: an SVG is XML
  * that can hold a script, and it is served from this site's own domain, so what
  * it holds runs in the browser of whoever opens it.
  *
- * The type joins the allowed list here, for users who can `manage_options` and
- * nobody else. kadence_child_svg_filetype() answers the check core makes
- * against the file's own bytes, and kadence_child_reject_unsafe_svg() turns
- * away anything executable. All three are needed — the first on its own changes
- * nothing.
+ * The type joins the allowed list here, for everyone the media library already
+ * opens to. kadence_child_svg_filetype() answers the check core makes against
+ * the file's own bytes, and kadence_child_reject_unsafe_svg() turns away
+ * anything executable — that last one is what keeps the type safe, rather than
+ * a narrower door. All three are needed; the first on its own changes nothing.
  *
  * @param array $mimes Extension-to-MIME map.
  * @return array
  */
 function kadence_child_allow_svg( $mimes ) {
-	if ( current_user_can( 'manage_options' ) ) {
-		$mimes['svg']  = 'image/svg+xml';
-		$mimes['svgz'] = 'image/svg+xml';
-	}
+	$mimes['svg']  = 'image/svg+xml';
+	$mimes['svgz'] = 'image/svg+xml';
 
 	return $mimes;
 }
@@ -84,8 +82,7 @@ add_filter( 'upload_mimes', 'kadence_child_allow_svg' );
  *
  * `wp_check_filetype_and_ext()` reads the bytes with finfo, which calls an SVG
  * text rather than an image, and refuses the upload on the mismatch between
- * that and the extension. Answered for an administrator only, so the type stays
- * shut for everyone the filter above leaves it shut for.
+ * that and the extension.
  *
  * @param array       $data      Ext, type and proper filename, or empties.
  * @param string      $file      Full path to the file.
@@ -95,10 +92,6 @@ add_filter( 'upload_mimes', 'kadence_child_allow_svg' );
  * @return array
  */
 function kadence_child_svg_filetype( $data, $file, $filename, $mimes = null, $real_mime = false ) {
-	if ( ! current_user_can( 'manage_options' ) ) {
-		return $data;
-	}
-
 	if ( ! empty( $data['ext'] ) && ! empty( $data['type'] ) ) {
 		return $data;
 	}
