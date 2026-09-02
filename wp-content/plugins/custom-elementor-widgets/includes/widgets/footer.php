@@ -485,10 +485,50 @@ class Footer extends Base_Widget {
 						$this->render_social( $settings );
 						?>
 					</div>
+
+					<?php $this->render_editor_hint( $settings ); ?>
 				</div>
 			</div>
 		</div>
 		<?php
+	}
+
+	/**
+	 * Say what the footer is still waiting for, in the editor only.
+	 *
+	 * @param array $settings The widget's settings.
+	 */
+	private function render_editor_hint( $settings ) {
+		$waiting = array();
+
+		$text = array( 'signup_heading', 'signup_button', 'contact_address', 'copyright' );
+
+		foreach ( $text as $key ) {
+			if ( '' !== trim( (string) ( isset( $settings[ $key ] ) ? $settings[ $key ] : '' ) ) ) {
+				$text = array();
+				break;
+			}
+		}
+
+		if ( ! empty( $text ) ) {
+			$waiting[] = __( 'its text, on the Content tab', 'custom-elementor-widgets' );
+		}
+
+		if ( empty( array_filter( self::MENU_LOCATIONS, 'has_nav_menu' ) ) ) {
+			$waiting[] = __( 'a menu on the Footer or Footer Secondary location, from Appearance → Menus', 'custom-elementor-widgets' );
+		}
+
+		if ( empty( $waiting ) ) {
+			return;
+		}
+
+		$this->editor_hint(
+			sprintf(
+				/* translators: %s: a list of what the section has still to be given. */
+				__( 'This footer is waiting for %s.', 'custom-elementor-widgets' ),
+				implode( __( ', and ', 'custom-elementor-widgets' ), $waiting )
+			)
+		);
 	}
 
 	/**

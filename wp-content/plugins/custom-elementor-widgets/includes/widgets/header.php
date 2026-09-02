@@ -420,6 +420,11 @@ class Header extends Base_Widget {
 					<?php $this->render_menu(); ?>
 					<?php $this->render_actions( $settings ); ?>
 				</div>
+				<?php
+				if ( ! has_nav_menu( self::MENU_LOCATION ) ) {
+					$this->editor_hint( __( 'The bar is empty: build a menu in Appearance → Menus and assign it to the Primary location.', 'custom-elementor-widgets' ) );
+				}
+				?>
 			</div>
 		</div>
 		<?php

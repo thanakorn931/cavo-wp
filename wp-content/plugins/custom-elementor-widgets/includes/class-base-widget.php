@@ -66,6 +66,35 @@ abstract class Base_Widget extends \Elementor\Widget_Base {
 	}
 
 	/**
+	 * Whether Elementor is showing this in its editor rather than on the site.
+	 *
+	 * A section with nothing in it yet prints nothing, which on the site is
+	 * right and in the editor is a blank the client cannot act on. Asked here
+	 * so a widget file does not reach for Elementor itself.
+	 *
+	 * @return bool
+	 */
+	protected function is_editing() {
+		return \Elementor\Plugin::$instance->editor->is_edit_mode();
+	}
+
+	/**
+	 * Say what the section is waiting for, in the editor only.
+	 *
+	 * @param string $message What the client has still to give it.
+	 */
+	protected function editor_hint( $message ) {
+		if ( ! $this->is_editing() ) {
+			return;
+		}
+
+		printf(
+			'<p class="custom-editor-hint">%s</p>',
+			esc_html( $message )
+		);
+	}
+
+	/**
 	 * The attributes for one link, from the value the client typed.
 	 *
 	 * A link field takes a path, an anchor or a whole address. Where it opens

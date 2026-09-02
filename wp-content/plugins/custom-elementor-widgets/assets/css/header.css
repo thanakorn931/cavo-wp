@@ -173,3 +173,15 @@
 		margin-left: 16px;
 	}
 }
+
+/* Editor only — never printed on the site. */
+.custom-editor-hint {
+	margin: 8px 0 0 0;
+	padding: 8px 16px;
+	border: 1px dashed currentColor;
+	border-radius: 4px;
+	opacity: 0.6;
+	font-size: 12px;
+	line-height: 16px;
+	text-align: center;
+}
