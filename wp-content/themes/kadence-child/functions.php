@@ -53,24 +53,27 @@ function kadence_child_classic_widgets() {
 add_action( 'after_setup_theme', 'kadence_child_classic_widgets', 20 );
 
 /**
- * Let the media library take SVG.
+ * Let the media library take SVG, for administrators.
  *
  * WordPress already carries PDF and every video format a site has reason to
  * use. SVG is the one it refuses, and the refusal is deliberate: an SVG is XML
  * that can hold a script, and it is served from this site's own domain, so what
  * it holds runs in the browser of whoever opens it.
  *
- * The type joins the allowed list here; kadence_child_svg_filetype() answers
- * the check core makes against the file's own bytes, and
- * kadence_child_reject_unsafe_svg() turns away anything executable. All three
- * are needed — the first on its own changes nothing.
+ * The type joins the allowed list here, for users who can `manage_options` and
+ * nobody else. kadence_child_svg_filetype() answers the check core makes
+ * against the file's own bytes, and kadence_child_reject_unsafe_svg() turns
+ * away anything executable. All three are needed — the first on its own changes
+ * nothing.
  *
  * @param array $mimes Extension-to-MIME map.
  * @return array
  */
 function kadence_child_allow_svg( $mimes ) {
-	$mimes['svg']  = 'image/svg+xml';
-	$mimes['svgz'] = 'image/svg+xml';
+	if ( current_user_can( 'manage_options' ) ) {
+		$mimes['svg']  = 'image/svg+xml';
+		$mimes['svgz'] = 'image/svg+xml';
+	}
 
 	return $mimes;
 }
@@ -81,7 +84,8 @@ add_filter( 'upload_mimes', 'kadence_child_allow_svg' );
  *
  * `wp_check_filetype_and_ext()` reads the bytes with finfo, which calls an SVG
  * text rather than an image, and refuses the upload on the mismatch between
- * that and the extension.
+ * that and the extension. Answered for an administrator only, so the type stays
+ * shut for everyone the filter above leaves it shut for.
  *
  * @param array       $data      Ext, type and proper filename, or empties.
  * @param string      $file      Full path to the file.
@@ -91,6 +95,10 @@ add_filter( 'upload_mimes', 'kadence_child_allow_svg' );
  * @return array
  */
 function kadence_child_svg_filetype( $data, $file, $filename, $mimes = null, $real_mime = false ) {
+	if ( ! current_user_can( 'manage_options' ) ) {
+		return $data;
+	}
+
 	if ( ! empty( $data['ext'] ) && ! empty( $data['type'] ) ) {
 		return $data;
 	}
@@ -110,8 +118,8 @@ add_filter( 'wp_check_filetype_and_ext', 'kadence_child_svg_filetype', 10, 5 );
  * Turn away an SVG that carries anything executable.
  *
  * An icon holds shapes and nothing else. A file holding a script, an event
- * handler, an embedded frame or an XML entity was not drawn to be an icon, and
- * it is refused at upload with the reason said rather than stored and served.
+ * handler, an embedded document or an XML entity was not drawn to be an icon,
+ * and it is refused whole with the reason said rather than stripped and stored.
  *
  * @param array $file One entry of $_FILES, as wp_handle_upload() received it.
  * @return array
@@ -141,11 +149,12 @@ function kadence_child_reject_unsafe_svg( $file ) {
 
 	$forbidden = array(
 		'#<\s*script#i',
-		'#<\s*(?:iframe|embed|object|foreignObject|set|animate)#i',
+		'#<\s*(?:iframe|embed|object|foreignObject|handler|listener|set|animate)#i',
 		'#\son[a-z]+\s*=#i',
 		'#javascript\s*:#i',
 		'#data\s*:\s*text/html#i',
 		'#<!ENTITY#i',
+		'#<!DOCTYPE#i',
 		'#<\?php#i',
 	);
 
@@ -160,3 +169,39 @@ function kadence_child_reject_unsafe_svg( $file ) {
 	return $file;
 }
 add_filter( 'wp_handle_upload_prefilter', 'kadence_child_reject_unsafe_svg' );
+
+/**
+ * Give an SVG a size in the admin.
+ *
+ * An SVG carries no pixel size for WordPress to read, so the media grid and an
+ * image field render it collapsed until the theme gives it one.
+ *
+ * @param array    $response   The attachment as the admin's JavaScript sees it.
+ * @param \WP_Post $attachment The attachment itself.
+ * @return array
+ */
+function kadence_child_svg_admin_size( $response, $attachment ) {
+	if ( 'image/svg+xml' !== ( isset( $response['mime'] ) ? $response['mime'] : '' ) ) {
+		return $response;
+	}
+
+	$response['sizes'] = array(
+		'full' => array(
+			'url'         => $response['url'],
+			'width'       => 1024,
+			'height'      => 1024,
+			'orientation' => 'landscape',
+		),
+	);
+
+	return $response;
+}
+add_filter( 'wp_prepare_attachment_for_js', 'kadence_child_svg_admin_size', 10, 2 );
+
+/**
+ * Let the sized SVG fill its thumbnail rather than sit at its own scale.
+ */
+function kadence_child_svg_admin_css() {
+	echo '<style>.attachment .thumbnail img[src$=".svg"], .media-icon img[src$=".svg"], .attachment-preview .thumbnail img[src$=".svg"] { width: 100%; height: auto; }</style>';
+}
+add_action( 'admin_head', 'kadence_child_svg_admin_css' );
