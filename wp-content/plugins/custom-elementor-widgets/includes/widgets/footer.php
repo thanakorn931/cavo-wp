@@ -465,7 +465,7 @@ class Footer extends Base_Widget {
 			array(
 				'label'     => esc_html__( 'Field border', 'custom-elementor-widgets' ),
 				'type'      => Controls_Manager::COLOR,
-				'default'   => '#C9BCA6',
+				'default'   => '#F9F8F6',
 				'selectors' => array(
 					'{{WRAPPER}} .custom-footer__field' => 'border-color: {{VALUE}};',
 				),
@@ -678,6 +678,7 @@ class Footer extends Base_Widget {
 
 		if ( '' !== $heading ) :
 			?>
+			<div class="custom-footer__column">
 			<<?php echo esc_attr( $tag ); ?> class="custom-footer__heading"><?php echo esc_html( $heading ); ?></<?php echo esc_attr( $tag ); ?>>
 			<?php
 		endif;
@@ -700,6 +701,7 @@ class Footer extends Base_Widget {
 			/>
 			<button class="custom-footer__submit" type="submit"><?php echo esc_html( $button ); ?></button>
 		</form>
+		</div>
 		</div>
 		<?php
 	}
@@ -733,7 +735,11 @@ class Footer extends Base_Widget {
 						<p class="custom-footer__contact-label"><?php echo esc_html( $column[0] ); ?></p>
 					<?php endif; ?>
 					<?php if ( '' !== $column[1] ) : ?>
-						<p><?php echo nl2br( esc_html( $column[1] ) ); ?></p>
+						<div class="custom-footer__contact-lines">
+							<?php foreach ( preg_split( '/\r\n|\r|\n/', $column[1] ) as $line ) : ?>
+								<p><?php echo esc_html( $line ); ?></p>
+							<?php endforeach; ?>
+						</div>
 					<?php endif; ?>
 				</div>
 			<?php endforeach; ?>
