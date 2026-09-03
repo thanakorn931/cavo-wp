@@ -1,11 +1,8 @@
 /**
  * Header (transparent) — one section of the design.
  *
- * It sits over what is behind it and carries the top space the solid bar
- * does not.
- *
- * Layout only. Colour and type arrive from the widget's Style tab, so nothing
- * here ships a value the design has not been asked for.
+ * Every measurement here was read from the design file. Colour and type that
+ * the Style tab can carry are left to it.
  */
 
 .custom-header {
@@ -16,6 +13,7 @@
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+	justify-content: center;
 	width: 100%;
 	max-width: 1440px;
 	margin: 0 auto;
@@ -33,18 +31,22 @@
 
 /* The logo keeps its box whether or not a picture has been uploaded. */
 .custom-header__logo {
-	display: flex;
-	align-items: center;
-	padding: 4px 80px 4px 0;
+	position: relative;
+	flex: 0 0 auto;
+	width: 234px;
+	height: 72px;
 	text-decoration: none;
 }
 
 .custom-header__logo-box {
+	position: absolute;
+	top: 50%;
+	left: 0;
 	display: block;
-	flex: 0 0 auto;
 	width: 154px;
 	height: 64px;
 	overflow: hidden;
+	transform: translateY( -50% );
 }
 
 .custom-header__logo-box img {
@@ -71,9 +73,14 @@
 }
 
 .custom-header__menu a {
-	display: block;
-	padding: 4px 0;
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding-top: 4px;
 	text-decoration: none;
+	text-transform: uppercase;
 	white-space: nowrap;
 }
 
@@ -82,14 +89,13 @@
 	align-items: center;
 	justify-content: flex-end;
 	gap: 8px;
-	margin-left: 24px;
+	flex: 0 0 auto;
 }
 
 .custom-header__button {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	gap: 8px;
 	padding: 12px 24px;
 	border: 0;
 	border-radius: 24px;
@@ -119,27 +125,22 @@
 }
 
 /* Motion — the file gives every hover 300ms, ease in and out. The menu's
-   underline is the `Line 1` the design draws inside each item. */
-
-.custom-header__menu a {
-	position: relative;
-}
+   underline is the line the design draws under each item, four below it. */
 
 .custom-header__menu a::after {
 	content: "";
-	position: absolute;
-	right: 0;
-	bottom: 0;
-	left: 0;
+	display: block;
+	width: 100%;
 	height: 1px;
+	margin-top: 4px;
 	background: currentColor;
-	transform: scaleX(0);
+	transform: scaleX( 0 );
 	transform-origin: left center;
 	transition: transform 300ms ease-in-out;
 }
 
 .custom-header__menu a:hover::after {
-	transform: scaleX(1);
+	transform: scaleX( 1 );
 }
 
 .custom-header__button,
@@ -168,7 +169,7 @@
 	}
 }
 
-/* Tablet — 768px to 1024px. Not drawn; the row keeps its shape, the side
+/* Tablet — 768px to 1024px. Not drawn; the row keeps its shape and the side
    padding comes in to the tier's own edge. */
 @media (max-width: 1024px) {
 	.custom-header__bar {
@@ -176,7 +177,7 @@
 	}
 
 	.custom-header__logo {
-		padding-right: 24px;
+		width: 154px;
 	}
 
 	.custom-header__menu ul {
@@ -193,11 +194,8 @@
 
 	.custom-header__row {
 		height: auto;
+		flex-wrap: wrap;
 		padding: 8px 0;
-	}
-
-	.custom-header__logo {
-		padding-right: 0;
 	}
 
 	.custom-header__menu {
@@ -211,20 +209,4 @@
 		gap: 16px;
 		padding: 8px 0 16px 0;
 	}
-
-	.custom-header__actions {
-		margin-left: 16px;
-	}
-}
-
-/* Editor only — never printed on the site. */
-.custom-editor-hint {
-	margin: 8px 0 0 0;
-	padding: 8px 16px;
-	border: 1px dashed currentColor;
-	border-radius: 4px;
-	opacity: 0.6;
-	font-size: 12px;
-	line-height: 16px;
-	text-align: center;
 }

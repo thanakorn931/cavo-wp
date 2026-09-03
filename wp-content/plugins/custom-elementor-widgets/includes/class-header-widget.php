@@ -166,7 +166,7 @@ abstract class Header_Widget extends Base_Widget {
 			array(
 				'label'   => esc_html__( 'First button text', 'custom-elementor-widgets' ),
 				'type'    => Controls_Manager::TEXT,
-				'default' => esc_html__( 'Membership', 'custom-elementor-widgets' ),
+				'placeholder' => esc_html__( 'Membership', 'custom-elementor-widgets' ),
 			)
 		);
 
@@ -184,7 +184,7 @@ abstract class Header_Widget extends Base_Widget {
 			array(
 				'label'     => esc_html__( 'Second button text', 'custom-elementor-widgets' ),
 				'type'      => Controls_Manager::TEXT,
-				'default'   => esc_html__( 'Reserve', 'custom-elementor-widgets' ),
+				'placeholder'   => esc_html__( 'Reserve', 'custom-elementor-widgets' ),
 				'separator' => 'before',
 			)
 		);
@@ -194,7 +194,7 @@ abstract class Header_Widget extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Second button link', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
-				'placeholder' => '/reserve',
+				'placeholder' => 'https://nightify.co/',
 			)
 		);
 
@@ -282,7 +282,6 @@ abstract class Header_Widget extends Base_Widget {
 					'typography'  => array( 'default' => 'yes' ),
 					'font_family' => array( 'default' => 'Roboto' ),
 					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 14 ) ),
-					'line_height' => array( 'default' => array( 'unit' => 'px', 'size' => 16 ) ),
 				),
 			)
 		);
@@ -336,7 +335,6 @@ abstract class Header_Widget extends Base_Widget {
 					'typography'  => array( 'default' => 'yes' ),
 					'font_family' => array( 'default' => 'Roboto' ),
 					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 14 ) ),
-					'line_height' => array( 'default' => array( 'unit' => 'px', 'size' => 16 ) ),
 				),
 			)
 		);
@@ -404,6 +402,41 @@ abstract class Header_Widget extends Base_Widget {
 		);
 
 		$this->end_controls_section();
+	}
+
+	/**
+	 * What the design settles, for a control the client has left alone.
+	 *
+	 * The control carries none of this as a stored value — it shows it as a
+	 * hint and stands empty — so the value is read from here on the way out.
+	 *
+	 * @return array
+	 */
+	private function design_text() {
+		return array(
+			'button_one_text' => esc_html__( 'Membership', 'custom-elementor-widgets' ),
+			'button_two_text' => esc_html__( 'Reserve', 'custom-elementor-widgets' ),
+			'button_two_link' => 'https://nightify.co/',
+		);
+	}
+
+	/**
+	 * One control's text: what the client typed, or what the design settles.
+	 *
+	 * @param array  $settings The widget's settings.
+	 * @param string $key      The control's name.
+	 * @return string
+	 */
+	protected function text( $settings, $key ) {
+		$typed = isset( $settings[ $key ] ) ? trim( (string) $settings[ $key ] ) : '';
+
+		if ( '' !== $typed ) {
+			return $typed;
+		}
+
+		$design = $this->design_text();
+
+		return isset( $design[ $key ] ) ? $design[ $key ] : '';
 	}
 
 	/**
@@ -480,8 +513,8 @@ abstract class Header_Widget extends Base_Widget {
 	 * @param array $settings The widget's settings.
 	 */
 	private function render_actions( $settings ) {
-		$one_text = isset( $settings['button_one_text'] ) ? trim( (string) $settings['button_one_text'] ) : '';
-		$two_text = isset( $settings['button_two_text'] ) ? trim( (string) $settings['button_two_text'] ) : '';
+		$one_text = $this->text( $settings, 'button_one_text' );
+		$two_text = $this->text( $settings, 'button_two_text' );
 		$icon     = isset( $settings['icon_link_icon'] ) ? $settings['icon_link_icon'] : array();
 		$has_icon = ! empty( $icon['value'] );
 
@@ -498,7 +531,7 @@ abstract class Header_Widget extends Base_Widget {
 
 			<?php if ( '' !== $two_text ) : ?>
 				<a class="custom-header__button custom-header__button--solid"<?php
-					echo $this->link_attributes( isset( $settings['button_two_link'] ) ? $settings['button_two_link'] : '' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in link_attributes().
+					echo $this->link_attributes( $this->text( $settings, 'button_two_link' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in link_attributes().
 				?>><?php echo esc_html( $two_text ); ?></a>
 			<?php endif; ?>
 
