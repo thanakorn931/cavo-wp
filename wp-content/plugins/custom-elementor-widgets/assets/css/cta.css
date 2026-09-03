@@ -67,3 +67,9 @@
 		transition: none;
 	}
 }
+
+/* An anchor takes the browser's own colour unless it is told not to. */
+.custom-cta__button {
+	color: inherit;
+	text-decoration: none;
+}

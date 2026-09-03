@@ -210,3 +210,12 @@
 		padding: 8px 0 16px 0;
 	}
 }
+
+/* An anchor takes the browser's own colour unless it is told not to. */
+.custom-header__logo,
+.custom-header__menu a,
+.custom-header__button,
+.custom-header__icon-link {
+	color: inherit;
+	text-decoration: none;
+}

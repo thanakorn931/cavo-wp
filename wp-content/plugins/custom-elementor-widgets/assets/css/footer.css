@@ -330,3 +330,10 @@
 		gap: 24px;
 	}
 }
+
+/* An anchor takes the browser's own colour unless it is told not to. */
+.custom-footer__menu a,
+.custom-footer__social-link {
+	color: inherit;
+	text-decoration: none;
+}

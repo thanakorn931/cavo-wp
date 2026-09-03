@@ -331,6 +331,7 @@ class The_Space_Hero_Carousel extends Base_Widget {
 				'separator' => 'before',
 				'selectors' => array(
 					'{{WRAPPER}} .custom-space-hero__tour'      => 'color: {{VALUE}};',
+					'{{WRAPPER}} .custom-space-hero__tour-link' => 'color: {{VALUE}};',
 					'{{WRAPPER}} .custom-space-hero__tour svg'  => 'fill: {{VALUE}};',
 				),
 			)
