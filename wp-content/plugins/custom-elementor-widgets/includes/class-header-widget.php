@@ -118,7 +118,6 @@ abstract class Header_Widget extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Link', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
-				'placeholder' => '/',
 			)
 		);
 
@@ -175,7 +174,6 @@ abstract class Header_Widget extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'First button link', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
-				'placeholder' => '/membership',
 			)
 		);
 
@@ -194,7 +192,6 @@ abstract class Header_Widget extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Second button link', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
-				'placeholder' => 'https://nightify.co/',
 			)
 		);
 
@@ -215,7 +212,6 @@ abstract class Header_Widget extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Icon link', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
-				'placeholder' => '/account',
 			)
 		);
 
@@ -416,7 +412,6 @@ abstract class Header_Widget extends Base_Widget {
 		return array(
 			'button_one_text' => esc_html__( 'Membership', 'custom-elementor-widgets' ),
 			'button_two_text' => esc_html__( 'Reserve', 'custom-elementor-widgets' ),
-			'button_two_link' => 'https://nightify.co/',
 		);
 	}
 

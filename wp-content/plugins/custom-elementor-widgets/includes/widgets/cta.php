@@ -129,7 +129,6 @@ class Cta extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Button link', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
-				'placeholder' => '/reserve',
 			)
 		);
 

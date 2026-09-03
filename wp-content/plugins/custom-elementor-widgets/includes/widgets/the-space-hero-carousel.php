@@ -109,7 +109,6 @@ class The_Space_Hero_Carousel extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Host the area link', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
-				'placeholder' => 'https://nightify.co/',
 			)
 		);
 
@@ -118,7 +117,6 @@ class The_Space_Hero_Carousel extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Virtual tour link', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
-				'placeholder' => 'https://',
 			)
 		);
 
@@ -425,7 +423,6 @@ class The_Space_Hero_Carousel extends Base_Widget {
 		$tour = '' !== $tour ? $tour : esc_html__( 'Virtual tour', 'custom-elementor-widgets' );
 
 		$button_link = isset( $first['slide_host_link'] ) ? trim( (string) $first['slide_host_link'] ) : '';
-		$button_link = '' !== $button_link ? $button_link : 'https://nightify.co/';
 		?>
 		<div class="custom-space-hero__actions">
 			<a class="custom-space-hero__button"<?php

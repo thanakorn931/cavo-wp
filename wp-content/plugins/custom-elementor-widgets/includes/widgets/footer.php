@@ -266,7 +266,6 @@ class Footer extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Link', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
-				'placeholder' => 'https://',
 			)
 		);
 
