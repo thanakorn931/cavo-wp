@@ -360,13 +360,10 @@ class The_Space_Hero_Carousel extends Base_Widget {
 
 		$slides = isset( $settings['slides'] ) ? (array) $settings['slides'] : array();
 
-		if ( empty( $slides ) ) {
-			$this->editor_hint( __( 'This carousel is waiting for its slides, on the Content tab.', 'custom-elementor-widgets' ) );
-
-			return;
-		}
-
-		$first = reset( $slides );
+		// The repeater is the slides. The title, the actions and the band the
+		// slides run through are the section, and stand whether or not any
+		// slides have been added yet.
+		$first = ! empty( $slides ) ? reset( $slides ) : array();
 		$tag   = isset( $settings['title_tag'] ) ? $settings['title_tag'] : 'h1';
 		$tag   = in_array( $tag, array( 'h1', 'h2', 'span' ), true ) ? $tag : 'h1';
 		?>
@@ -396,10 +393,19 @@ class The_Space_Hero_Carousel extends Base_Widget {
 				</div>
 
 				<?php
-				$this->render_arrow( $settings, 'arrow_previous', 'prev', __( 'Previous', 'custom-elementor-widgets' ) );
-				$this->render_arrow( $settings, 'arrow_next', 'next', __( 'Next', 'custom-elementor-widgets' ) );
+				// An arrow means nothing until there is somewhere else to go.
+				if ( count( $slides ) > 1 ) {
+					$this->render_arrow( $settings, 'arrow_previous', 'prev', __( 'Previous', 'custom-elementor-widgets' ) );
+					$this->render_arrow( $settings, 'arrow_next', 'next', __( 'Next', 'custom-elementor-widgets' ) );
+				}
 				?>
 			</div>
+
+			<?php
+			if ( empty( $slides ) ) {
+				$this->editor_hint( __( 'This carousel is waiting for its slides, on the Content tab.', 'custom-elementor-widgets' ) );
+			}
+			?>
 		</div>
 		<?php
 	}
