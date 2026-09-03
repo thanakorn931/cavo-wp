@@ -242,6 +242,19 @@ class The_Space_Hero_Carousel extends Base_Widget {
 			)
 		);
 
+		$this->add_control(
+			'band_background',
+			array(
+				'label'       => esc_html__( 'Background', 'custom-elementor-widgets' ),
+				'type'        => Controls_Manager::COLOR,
+				'default'     => '#FAF6EA',
+				'description' => esc_html__( 'The file leaves this band clear and puts the colour on the page behind it. The band carries it here so the page needs no setting of its own; clear this to give it back to the page.', 'custom-elementor-widgets' ),
+				'selectors'   => array(
+					'{{WRAPPER}} .custom-space-hero' => 'background-color: {{VALUE}};',
+				),
+			)
+		);
+
 		$this->add_group_control(
 			Group_Control_Typography::get_type(),
 			array(
