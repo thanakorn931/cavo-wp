@@ -105,6 +105,15 @@ class The_Space_Hero_Carousel extends Base_Widget {
 		);
 
 		$repeater->add_control(
+			'slide_host_link',
+			array(
+				'label'       => esc_html__( 'Host the area link', 'custom-elementor-widgets' ),
+				'type'        => Controls_Manager::TEXT,
+				'placeholder' => 'https://nightify.co/',
+			)
+		);
+
+		$repeater->add_control(
 			'slide_link',
 			array(
 				'label'       => esc_html__( 'Virtual tour link', 'custom-elementor-widgets' ),
@@ -162,11 +171,11 @@ class The_Space_Hero_Carousel extends Base_Widget {
 		);
 
 		$this->add_control(
-			'button_link',
+			'link_note',
 			array(
-				'label'       => esc_html__( 'Button link', 'custom-elementor-widgets' ),
-				'type'        => Controls_Manager::TEXT,
-				'placeholder' => 'https://nightify.co/',
+				'type'            => Controls_Manager::RAW_HTML,
+				'raw'             => esc_html__( 'The words and the icon are the same on every slide. Where each of the two links goes is the slide\'s own, on the Slides tab.', 'custom-elementor-widgets' ),
+				'content_classes' => 'elementor-descriptor',
 			)
 		);
 
@@ -374,6 +383,7 @@ class The_Space_Hero_Carousel extends Base_Widget {
 						<div
 							class="custom-space-hero__slide"
 							data-title="<?php echo esc_attr( isset( $slide['slide_title'] ) ? $slide['slide_title'] : '' ); ?>"
+							data-host="<?php echo esc_attr( isset( $slide['slide_host_link'] ) ? $slide['slide_host_link'] : '' ); ?>"
 							data-link="<?php echo esc_attr( isset( $slide['slide_link'] ) ? $slide['slide_link'] : '' ); ?>"
 						>
 							<?php if ( ! empty( $slide['slide_picture']['url'] ) ) : ?>
@@ -407,7 +417,7 @@ class The_Space_Hero_Carousel extends Base_Widget {
 		$tour = isset( $settings['tour_text'] ) ? trim( (string) $settings['tour_text'] ) : '';
 		$tour = '' !== $tour ? $tour : esc_html__( 'Virtual tour', 'custom-elementor-widgets' );
 
-		$button_link = isset( $settings['button_link'] ) ? trim( (string) $settings['button_link'] ) : '';
+		$button_link = isset( $first['slide_host_link'] ) ? trim( (string) $first['slide_host_link'] ) : '';
 		$button_link = '' !== $button_link ? $button_link : 'https://nightify.co/';
 		?>
 		<div class="custom-space-hero__actions">

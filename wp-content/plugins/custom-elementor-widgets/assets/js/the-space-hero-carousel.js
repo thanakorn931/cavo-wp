@@ -14,12 +14,25 @@
 		var stage  = root.querySelector( '.custom-space-hero__stage' );
 		var title  = root.querySelector( '.custom-space-hero__title' );
 		var tour   = root.querySelector( '.custom-space-hero__tour-link' );
+		var host   = root.querySelector( '.custom-space-hero__button' );
 
 		if ( ! track || slides.length === 0 || ! stage ) {
 			return;
 		}
 
 		var current = 0;
+
+		function follow( link, address ) {
+			if ( ! link ) {
+				return;
+			}
+
+			if ( address ) {
+				link.setAttribute( 'href', address );
+			} else {
+				link.removeAttribute( 'href' );
+			}
+		}
 
 		function show( index ) {
 			current = ( index + slides.length ) % slides.length;
@@ -38,20 +51,14 @@
 			} );
 
 			var slideTitle = slides[ current ].getAttribute( 'data-title' );
-			var slideLink  = slides[ current ].getAttribute( 'data-link' );
 
 			if ( title && slideTitle ) {
 				title.textContent = slideTitle;
 			}
 
-			if ( tour ) {
-				if ( slideLink ) {
-					tour.setAttribute( 'href', slideLink );
-					tour.hidden = false;
-				} else {
-					tour.removeAttribute( 'href' );
-				}
-			}
+			// Both addresses belong to the slide, so both travel with it.
+			follow( tour, slides[ current ].getAttribute( 'data-link' ) );
+			follow( host, slides[ current ].getAttribute( 'data-host' ) );
 		}
 
 		root.addEventListener( 'click', function ( event ) {
