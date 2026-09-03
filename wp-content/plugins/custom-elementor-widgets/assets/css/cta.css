@@ -1,0 +1,69 @@
+/**
+ * CTA — one section of the design.
+ *
+ * Not one page's section: the band is drawn once and used wherever a page
+ * needs it, so nothing here is named for the page it first appeared on.
+ */
+
+.custom-cta {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 16px;
+	width: 100%;
+	padding: 130px 254px 134px 254px;
+	box-sizing: border-box;
+	overflow: hidden;
+}
+
+/* The picture is a box first: it keeps the band's shape whether or not one has
+   been uploaded, and whatever arrives covers it. */
+.custom-cta__picture {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+}
+
+.custom-cta__picture img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
+}
+
+.custom-cta__veil {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+}
+
+.custom-cta__heading {
+	position: relative;
+	margin: 0;
+	text-align: center;
+	text-transform: uppercase;
+}
+
+.custom-cta__button {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 12px 24px;
+	border: 1px solid currentColor;
+	border-radius: 24px;
+	text-decoration: none;
+	white-space: nowrap;
+	transition:
+		background-color 300ms ease-in-out,
+		border-color 300ms ease-in-out,
+		color 300ms ease-in-out;
+}
+
+@media ( prefers-reduced-motion: reduce ) {
+	.custom-cta__button {
+		transition: none;
+	}
+}

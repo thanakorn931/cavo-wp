@@ -1,0 +1,177 @@
+/**
+ * The Space, hero carousel — one section of the design.
+ *
+ * The title and the two actions above, then the slides. The slide in the middle
+ * is the one the title belongs to; its neighbours sit shorter either side and
+ * are cut off by the band's own edges.
+ */
+
+.custom-space-hero {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 24px;
+	width: 100%;
+	overflow: hidden;
+}
+
+.custom-space-hero__title {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 10px;
+	margin: 0;
+	text-align: center;
+	text-transform: uppercase;
+	white-space: nowrap;
+}
+
+.custom-space-hero__actions {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 24px;
+}
+
+.custom-space-hero__button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 12px 24px;
+	border: 0;
+	border-radius: 24px;
+	text-decoration: none;
+	white-space: nowrap;
+}
+
+.custom-space-hero__tour {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+}
+
+.custom-space-hero__tour-link {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding-top: 4px;
+	text-decoration: none;
+	text-transform: uppercase;
+	white-space: nowrap;
+}
+
+.custom-space-hero__tour-link::after {
+	content: "";
+	display: block;
+	width: 100%;
+	height: 1px;
+	margin-top: 4px;
+	background: currentColor;
+	transform: scaleX( 0 );
+	transform-origin: left center;
+	transition: transform 300ms ease-in-out;
+}
+
+.custom-space-hero__tour-link:hover::after {
+	transform: scaleX( 1 );
+}
+
+.custom-space-hero__tour-icon {
+	display: inline-flex;
+	flex: 0 0 auto;
+	width: 24px;
+	height: 24px;
+}
+
+.custom-space-hero__tour-icon svg,
+.custom-space-hero__tour-icon img {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+/* The band the slides run through. */
+.custom-space-hero__stage {
+	position: relative;
+	width: 100%;
+	height: 812px;
+	overflow: hidden;
+}
+
+.custom-space-hero__track {
+	display: flex;
+	align-items: center;
+	gap: 56px;
+	height: 720px;
+	transition: transform 500ms ease-in-out;
+	will-change: transform;
+}
+
+.custom-space-hero__slide {
+	position: relative;
+	flex: 0 0 auto;
+	width: 840px;
+	height: 560px;
+	border-radius: 24px;
+	overflow: hidden;
+	transition:
+		width 500ms ease-in-out,
+		height 500ms ease-in-out;
+}
+
+.custom-space-hero__slide.is-current {
+	width: 1080px;
+	height: 720px;
+}
+
+.custom-space-hero__slide img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
+}
+
+.custom-space-hero__arrow {
+	position: absolute;
+	top: 312px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 96px;
+	height: 96px;
+	padding: 0;
+	border: 0;
+	background: transparent;
+	cursor: pointer;
+	transition: opacity 300ms ease-in-out;
+}
+
+.custom-space-hero__arrow:hover {
+	opacity: 0.7;
+}
+
+.custom-space-hero__arrow--prev {
+	left: 76px;
+}
+
+.custom-space-hero__arrow--next {
+	right: 76px;
+}
+
+.custom-space-hero__arrow svg,
+.custom-space-hero__arrow img {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+@media ( prefers-reduced-motion: reduce ) {
+	.custom-space-hero__track,
+	.custom-space-hero__slide,
+	.custom-space-hero__arrow,
+	.custom-space-hero__tour-link::after {
+		transition: none;
+	}
+}

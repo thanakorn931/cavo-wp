@@ -1,0 +1,96 @@
+/**
+ * The Space, content — one section of the design.
+ *
+ * Two bands: the statement, then the pictures on the gradient beneath it.
+ * Positions in the file become a layout here, not offsets.
+ */
+
+.custom-space-content__statement {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	padding: 96px 48px;
+	box-sizing: border-box;
+}
+
+.custom-space-content__statement p {
+	width: 100%;
+	max-width: 940px;
+	margin: 0;
+	text-align: center;
+	text-transform: uppercase;
+}
+
+.custom-space-content__gallery {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 100%;
+	padding: 68px 56px 76px 56px;
+	box-sizing: border-box;
+	overflow: hidden;
+
+	/* The band's own gradient, read from the file. */
+	background-image: radial-gradient(
+		1464px 1250px at 50% -22px,
+		#faf6ea 0%,
+		#cac1b5 25%,
+		#9a8c7f 50%,
+		#827164 62.5%,
+		#6a564a 75%,
+		#523c2f 87.5%,
+		#3a2114 100%
+	);
+}
+
+.custom-space-content__grid {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 48px;
+	width: 100%;
+	max-width: 1328px;
+}
+
+.custom-space-content__row {
+	display: flex;
+	align-items: center;
+	gap: 48px;
+	width: 100%;
+}
+
+/* Every picture keeps its box whether or not one has been uploaded. */
+.custom-space-content__slot {
+	position: relative;
+	display: block;
+	border-radius: 24px;
+	overflow: hidden;
+}
+
+.custom-space-content__slot--wide {
+	flex: 1 0 0;
+	min-width: 0;
+	height: 476px;
+}
+
+.custom-space-content__slot--tall {
+	flex: 0 0 auto;
+	width: 400px;
+	height: 476px;
+}
+
+.custom-space-content__slot--full {
+	width: 100%;
+	height: 560px;
+}
+
+.custom-space-content__slot img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
+}
