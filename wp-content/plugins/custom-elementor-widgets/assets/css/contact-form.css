@@ -1,0 +1,185 @@
+/**
+ * Contact, get in touch — one section of the design.
+ *
+ * A picture the band holds, the name on it, and the form standing in a column
+ * of its own. The band is as tall as its padding and what stands in it.
+ */
+
+.custom-contact-form {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 48px;
+	width: 100%;
+	padding: 96px 48px;
+	box-sizing: border-box;
+	overflow: hidden;
+}
+
+.custom-contact-form__picture {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+}
+
+.custom-contact-form__picture img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
+}
+
+.custom-contact-form__veil {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+}
+
+.custom-contact-form__heading {
+	position: relative;
+	width: 100%;
+	margin: 0;
+	text-align: center;
+	text-transform: uppercase;
+}
+
+.custom-contact-form__column {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 24px;
+	width: 660px;
+	max-width: 100%;
+	padding: 0 48px;
+	box-sizing: border-box;
+}
+
+.custom-contact-form__form {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 100%;
+}
+
+/* The fields, two to a row where one is asked to take half of it. */
+.custom-contact-form__fields {
+	display: grid;
+	grid-template-columns: repeat( 2, minmax( 0, 1fr ) );
+	gap: 24px;
+	width: 100%;
+}
+
+.custom-contact-form__field {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 8px;
+	min-width: 0;
+}
+
+.custom-contact-form__field--full {
+	grid-column: 1 / -1;
+}
+
+.custom-contact-form__label {
+	width: 100%;
+	margin: 0;
+}
+
+.custom-contact-form__input {
+	width: 100%;
+	padding: 12px;
+	border: 1px solid currentColor;
+	border-radius: 8px;
+	background: none;
+	color: inherit;
+	box-sizing: border-box;
+	appearance: none;
+}
+
+.custom-contact-form__input:focus {
+	outline: none;
+}
+
+.custom-contact-form__input::placeholder {
+	opacity: 1;
+}
+
+/* A message has a shape to hold; the fields above it take a line each. */
+.custom-contact-form__input--area {
+	height: 180px;
+	resize: vertical;
+}
+
+/* What is chosen rather than typed carries the mark the file draws beside it. */
+select.custom-contact-form__input,
+input[ type="date" ].custom-contact-form__input {
+	background-image: url( "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='%23FFFFFF'%3E%3Cpath d='M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6z'/%3E%3C/svg%3E" );
+	background-repeat: no-repeat;
+	background-position: right 12px center;
+	padding-right: 44px;
+}
+
+/* What the reader has to answer stands directly above the button. */
+.custom-contact-form__captcha:not( :empty ) {
+	width: 100%;
+	padding-top: 24px;
+}
+
+.custom-contact-form__actions {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	padding-top: 48px;
+	box-sizing: border-box;
+}
+
+.custom-contact-form__send {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 120px;
+	padding: 12px 24px;
+	border: 0;
+	border-radius: 24px;
+	cursor: pointer;
+	box-sizing: border-box;
+	white-space: nowrap;
+	transition: opacity 300ms ease-in-out;
+}
+
+.custom-contact-form__send:hover {
+	opacity: 0.85;
+}
+
+/* A press that has been heard, and cannot be repeated by accident. */
+.custom-contact-form__send[ disabled ] {
+	cursor: progress;
+	opacity: 0.6;
+}
+
+.custom-contact-form__result {
+	width: 100%;
+	margin: 0;
+	text-align: center;
+}
+
+/* The field the eye cannot see. Off the page rather than display:none, which a
+   filler reads as "skip this". */
+.custom-contact-form__trap {
+	position: absolute;
+	left: -9999px;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+}
+
+@media ( prefers-reduced-motion: reduce ) {
+	.custom-contact-form__send {
+		transition: none;
+	}
+}
