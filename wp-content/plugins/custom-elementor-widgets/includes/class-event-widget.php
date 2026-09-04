@@ -288,18 +288,14 @@ abstract class Event_Widget extends Base_Widget {
 	}
 
 	/**
-	 * One card, or the card-shaped space one will take.
+	 * One card.
 	 *
-	 * Nothing to show is not nothing on the page: the section keeps the shape
-	 * the design gives it, so an empty list is a row of empty cards rather than
-	 * a band that has closed up.
-	 *
-	 * @param \WP_Post|null $post   The item, where there is one.
-	 * @param bool          $hidden Whether it waits for the button before it shows.
+	 * @param \WP_Post $post   The item.
+	 * @param bool     $hidden Whether it waits for the button before it shows.
 	 */
-	protected function render_card( $post = null, $hidden = false ) {
-		$picture = $post ? get_the_post_thumbnail_url( $post, 'large' ) : '';
-		$title   = $post ? get_the_title( $post ) : '';
+	protected function render_card( $post, $hidden = false ) {
+		$picture = get_the_post_thumbnail_url( $post, 'large' );
+		$title   = get_the_title( $post );
 		?>
 		<article class="custom-event-card<?php echo $hidden ? ' is-waiting' : ''; ?>"<?php echo $hidden ? ' hidden' : ''; ?>>
 			<span class="custom-event-card__picture">
@@ -308,13 +304,11 @@ abstract class Event_Widget extends Base_Widget {
 			</span>
 
 			<div class="custom-event-card__words">
-				<?php if ( $post ) : ?>
-					<?php $this->render_meta( $post ); ?>
+				<?php $this->render_meta( $post ); ?>
 
-					<h3 class="custom-event-card__title"><?php echo esc_html( $title ); ?></h3>
+				<h3 class="custom-event-card__title"><?php echo esc_html( $title ); ?></h3>
 
-					<p class="custom-event-card__body"><?php echo esc_html( get_the_excerpt( $post ) ); ?></p>
-				<?php endif; ?>
+				<p class="custom-event-card__body"><?php echo esc_html( get_the_excerpt( $post ) ); ?></p>
 			</div>
 		</article>
 		<?php

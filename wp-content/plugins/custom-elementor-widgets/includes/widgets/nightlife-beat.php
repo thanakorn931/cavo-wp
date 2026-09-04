@@ -28,11 +28,6 @@ class Nightlife_Beat extends Base_Widget {
 	const LOADED = 10;
 
 	/**
-	 * How many cards stand while there are none — what the band shows at once.
-	 */
-	const EMPTY_CARDS = 4;
-
-	/**
 	 * The widget's name, and its asset handle's suffix.
 	 *
 	 * @return string
@@ -303,15 +298,9 @@ class Nightlife_Beat extends Base_Widget {
 
 				<div class="custom-nightlife-beat__stage">
 					<div class="custom-nightlife-beat__track">
-						<?php if ( ! empty( $cards ) ) : ?>
-							<?php foreach ( $cards as $index => $card ) : ?>
-								<?php $this->render_card( $card, $index < self::LOADED ); ?>
-							<?php endforeach; ?>
-						<?php else : ?>
-							<?php for ( $i = 0; $i < self::EMPTY_CARDS; $i++ ) : ?>
-								<?php $this->render_card( array(), true ); ?>
-							<?php endfor; ?>
-						<?php endif; ?>
+						<?php foreach ( $cards as $index => $card ) : ?>
+							<?php $this->render_card( $card, $index < self::LOADED ); ?>
+						<?php endforeach; ?>
 					</div>
 				</div>
 

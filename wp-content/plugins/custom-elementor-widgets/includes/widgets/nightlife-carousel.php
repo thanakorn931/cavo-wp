@@ -22,11 +22,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Nightlife_Carousel extends Base_Widget {
 
 	/**
-	 * How many slides stand while there are none — what the band shows at once.
-	 */
-	const EMPTY_SLIDES = 3;
-
-	/**
 	 * The widget's name, and its asset handle's suffix.
 	 *
 	 * @return string
@@ -177,17 +172,11 @@ class Nightlife_Carousel extends Base_Widget {
 
 			<div class="custom-nightlife-carousel__stage">
 				<div class="custom-nightlife-carousel__track">
-					<?php if ( ! empty( $slides ) ) : ?>
-						<?php foreach ( $slides as $slide ) : ?>
-							<div class="custom-nightlife-carousel__slide"><?php
-								$this->media( isset( $slide['picture']['url'] ) ? $slide['picture']['url'] : '' );
-							?></div>
-						<?php endforeach; ?>
-					<?php else : ?>
-						<?php for ( $i = 0; $i < self::EMPTY_SLIDES; $i++ ) : ?>
-							<div class="custom-nightlife-carousel__slide"><?php $this->media( '' ); ?></div>
-						<?php endfor; ?>
-					<?php endif; ?>
+					<?php foreach ( $slides as $slide ) : ?>
+						<div class="custom-nightlife-carousel__slide"><?php
+							$this->media( isset( $slide['picture']['url'] ) ? $slide['picture']['url'] : '' );
+						?></div>
+					<?php endforeach; ?>
 				</div>
 			</div>
 

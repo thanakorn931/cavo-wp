@@ -316,12 +316,6 @@ class Dining_Food_Menu extends Base_Widget {
 
 			<div class="custom-dining-menu__gallery">
 				<div class="custom-dining-menu__slides">
-					<?php if ( empty( $pictures ) ) : ?>
-						<div class="custom-dining-menu__slide is-current">
-							<?php $this->media( '' ); ?>
-						</div>
-					<?php endif; ?>
-
 					<?php foreach ( $pictures as $index => $picture ) : ?>
 						<div class="custom-dining-menu__slide<?php echo 0 === $index ? ' is-current' : ''; ?>">
 							<?php $this->media( isset( $picture['picture']['url'] ) ? $picture['picture']['url'] : '' ); ?>

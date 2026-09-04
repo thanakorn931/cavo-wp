@@ -27,12 +27,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 class The_Space_Hero_Carousel extends Base_Widget {
 
 	/**
-	 * How many slides stand while there are none — the one in the middle and
-	 * the two the design cuts at the band's edges.
-	 */
-	const EMPTY_SLIDES = 3;
-
-	/**
 	 * The widget's name, and its asset handle's suffix.
 	 *
 	 * @return string
@@ -382,14 +376,6 @@ class The_Space_Hero_Carousel extends Base_Widget {
 
 			<div class="custom-space-hero__stage">
 				<div class="custom-space-hero__track">
-					<?php if ( empty( $slides ) ) : ?>
-						<?php for ( $i = 0; $i < self::EMPTY_SLIDES; $i++ ) : ?>
-							<div class="custom-space-hero__slide<?php echo 0 === $i ? ' is-current' : ''; ?>">
-								<?php $this->media( '' ); ?>
-							</div>
-						<?php endfor; ?>
-					<?php endif; ?>
-
 					<?php foreach ( $slides as $slide ) : ?>
 						<div
 							class="custom-space-hero__slide"

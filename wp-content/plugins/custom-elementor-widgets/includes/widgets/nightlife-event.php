@@ -315,17 +315,13 @@ class Nightlife_Event extends Event_Widget {
 				echo esc_html( $this->text( $settings, 'heading' ) );
 			?></<?php echo esc_attr( $tag ); ?>>
 
-			<div class="custom-nightlife-event__grid">
-				<?php if ( ! empty( $items ) ) : ?>
+			<?php if ( ! empty( $items ) ) : ?>
+				<div class="custom-nightlife-event__grid">
 					<?php foreach ( $items as $item ) : ?>
 						<?php $this->render_card( $item ); ?>
 					<?php endforeach; ?>
-				<?php else : ?>
-					<?php for ( $i = 0; $i < self::SHOWN; $i++ ) : ?>
-						<?php $this->render_card(); ?>
-					<?php endfor; ?>
-				<?php endif; ?>
-			</div>
+				</div>
+			<?php endif; ?>
 
 			<div class="custom-nightlife-event__actions">
 				<a class="custom-nightlife-event__button"<?php

@@ -22,11 +22,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Nightlife_Program extends Base_Widget {
 
 	/**
-	 * How many tickets stand while there are none — the one the design draws.
-	 */
-	const EMPTY_SLIDES = 1;
-
-	/**
 	 * The widget's name, and its asset handle's suffix.
 	 *
 	 * @return string
@@ -385,15 +380,6 @@ class Nightlife_Program extends Base_Widget {
 			?></<?php echo esc_attr( $tag ); ?>>
 
 			<div class="custom-nightlife-program__card">
-				<?php if ( empty( $nights ) ) : ?>
-					<?php for ( $i = 0; $i < self::EMPTY_SLIDES; $i++ ) : ?>
-						<div class="custom-nightlife-program__slide is-current">
-							<div class="custom-nightlife-program__stamp"><?php $this->media( '' ); ?></div>
-							<span class="custom-nightlife-program__perforation" aria-hidden="true"></span>
-						</div>
-					<?php endfor; ?>
-				<?php endif; ?>
-
 				<?php foreach ( $nights as $index => $night ) : ?>
 					<div class="custom-nightlife-program__slide<?php echo 0 === $index ? ' is-current' : ''; ?>">
 						<div class="custom-nightlife-program__words">

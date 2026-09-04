@@ -21,12 +21,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Event_Events extends Event_Widget {
 
 	/**
-	 * How many cards stand while the list is empty — the two rows of three the
-	 * design draws under the one across the width.
-	 */
-	const EMPTY_CARDS = 6;
-
-	/**
 	 * The widget's name, and its asset handle's suffix.
 	 *
 	 * @return string
@@ -228,19 +222,17 @@ class Event_Events extends Event_Widget {
 		?>
 		<div class="custom-event-list" data-event-feed>
 			<div class="custom-event-list__band">
-				<?php $this->render_lead( $lead ); ?>
+				<?php if ( $lead ) : ?>
+					<?php $this->render_lead( $lead ); ?>
+				<?php endif; ?>
 
-				<div class="custom-event-list__grid">
-					<?php if ( ! empty( $items ) ) : ?>
+				<?php if ( ! empty( $items ) ) : ?>
+					<div class="custom-event-list__grid">
 						<?php foreach ( $items as $index => $item ) : ?>
 							<?php $this->render_card( $item, $index >= $step ); ?>
 						<?php endforeach; ?>
-					<?php else : ?>
-						<?php for ( $i = 0; $i < self::EMPTY_CARDS; $i++ ) : ?>
-							<?php $this->render_card(); ?>
-						<?php endfor; ?>
-					<?php endif; ?>
-				</div>
+					</div>
+				<?php endif; ?>
 
 				<?php if ( $waiting ) : ?>
 					<div class="custom-event-list__actions">
@@ -261,29 +253,27 @@ class Event_Events extends Event_Widget {
 	}
 
 	/**
-	 * The newest item, across the width of the band — or the space it will take.
+	 * The newest item, across the width of the band.
 	 *
-	 * @param \WP_Post|null $post The item, where there is one.
+	 * @param \WP_Post $post The item.
 	 */
-	private function render_lead( $post = null ) {
-		$picture = $post ? get_the_post_thumbnail_url( $post, 'full' ) : '';
+	private function render_lead( $post ) {
+		$picture = get_the_post_thumbnail_url( $post, 'full' );
 		?>
 		<div class="custom-event-list__lead">
 			<span class="custom-event-list__lead-picture" aria-hidden="true">
 				<?php $this->media( $picture ); ?>
 			</span>
 
-			<?php if ( $post ) : ?>
-				<span class="custom-event-list__lead-veil" aria-hidden="true"></span>
+			<span class="custom-event-list__lead-veil" aria-hidden="true"></span>
 
-				<div class="custom-event-card__words">
-					<?php $this->render_meta( $post ); ?>
+			<div class="custom-event-card__words">
+				<?php $this->render_meta( $post ); ?>
 
-					<h3 class="custom-event-card__title"><?php echo esc_html( get_the_title( $post ) ); ?></h3>
+				<h3 class="custom-event-card__title"><?php echo esc_html( get_the_title( $post ) ); ?></h3>
 
-					<p class="custom-event-card__body"><?php echo esc_html( get_the_excerpt( $post ) ); ?></p>
-				</div>
-			<?php endif; ?>
+				<p class="custom-event-card__body"><?php echo esc_html( get_the_excerpt( $post ) ); ?></p>
+			</div>
 		</div>
 		<?php
 	}
