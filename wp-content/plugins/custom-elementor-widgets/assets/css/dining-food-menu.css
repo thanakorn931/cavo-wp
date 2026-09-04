@@ -1,0 +1,132 @@
+/**
+ * Dining, food menu — one section of the design.
+ *
+ * The statement and its button on the left, the pictures on the right. Where
+ * the file places them becomes a layout here, not offsets.
+ */
+
+.custom-dining-menu {
+	display: flex;
+	align-items: flex-start;
+	justify-content: center;
+	gap: 126px;
+	width: 100%;
+	padding: 90px 48px 132px 48px;
+	box-sizing: border-box;
+
+	background-image: radial-gradient(
+		1080px 1874px at 20% 41%,
+		#faf6ea 0%,
+		#ebe4ca 100%
+	);
+}
+
+.custom-dining-menu__column {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 12px;
+	flex: 0 0 auto;
+	width: 578px;
+	min-height: 608px;
+}
+
+.custom-dining-menu__heading {
+	margin: 0;
+	text-transform: uppercase;
+}
+
+.custom-dining-menu__body {
+	margin: 0;
+	white-space: pre-wrap;
+}
+
+.custom-dining-menu__button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	margin-top: auto;
+	padding: 12px 24px;
+	border: 0;
+	border-radius: 24px;
+	color: inherit;
+	text-decoration: none;
+	white-space: nowrap;
+	transition:
+		background-color 300ms ease-in-out,
+		color 300ms ease-in-out,
+		opacity 300ms ease-in-out;
+}
+
+/* The pictures, and the dots that say which one is showing. */
+.custom-dining-menu__gallery {
+	position: relative;
+	flex: 0 0 auto;
+	width: 640px;
+	height: 548px;
+	overflow: hidden;
+}
+
+.custom-dining-menu__slides {
+	position: absolute;
+	top: 28px;
+	right: 0;
+	left: 0;
+	height: 492px;
+}
+
+.custom-dining-menu__slide {
+	position: absolute;
+	inset: 0;
+	border-radius: 24px;
+	overflow: hidden;
+	opacity: 0;
+	transition: opacity 500ms ease-in-out;
+}
+
+.custom-dining-menu__slide.is-current {
+	opacity: 1;
+}
+
+.custom-dining-menu__slide img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
+}
+
+.custom-dining-menu__dots {
+	position: absolute;
+	top: 486px;
+	right: 0;
+	left: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+}
+
+.custom-dining-menu__dot {
+	width: 14px;
+	height: 14px;
+	padding: 0;
+	border: 0;
+	border-radius: 14px;
+	background: currentColor;
+	opacity: 0.4;
+	cursor: pointer;
+	transition: opacity 300ms ease-in-out;
+}
+
+.custom-dining-menu__dot.is-current {
+	opacity: 1;
+}
+
+@media ( prefers-reduced-motion: reduce ) {
+	.custom-dining-menu__slide,
+	.custom-dining-menu__dot,
+	.custom-dining-menu__button {
+		transition: none;
+	}
+}

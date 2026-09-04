@@ -1,0 +1,69 @@
+/**
+ * Dining, hero — one section of the design.
+ *
+ * A picture the band holds, the veil the file lays over it, and the heading and
+ * its button standing on top. Where the file places that block becomes padding
+ * here rather than an offset.
+ */
+
+.custom-dining-hero {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 48px;
+	width: 100%;
+	min-height: 670px;
+	padding: 256px 48px 0 48px;
+	box-sizing: border-box;
+	overflow: hidden;
+}
+
+.custom-dining-hero__picture,
+.custom-dining-hero__veil {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+}
+
+.custom-dining-hero__picture img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
+}
+
+.custom-dining-hero__heading {
+	position: relative;
+	margin: 0;
+	text-align: center;
+	text-transform: uppercase;
+}
+
+.custom-dining-hero__button {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 16px 24px;
+	border: 0;
+	border-radius: 24px;
+	text-decoration: none;
+	white-space: nowrap;
+	transition:
+		background-color 300ms ease-in-out,
+		color 300ms ease-in-out,
+		opacity 300ms ease-in-out;
+}
+
+@media ( prefers-reduced-motion: reduce ) {
+	.custom-dining-hero__button {
+		transition: none;
+	}
+}
+
+/* An anchor takes the browser's own colour unless it is told not to. */
+.custom-dining-hero__button {
+	color: inherit;
+}
