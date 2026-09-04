@@ -22,15 +22,40 @@
 
 		var current = 0;
 
-		function follow( link, address ) {
+		// One address and the two toggles that travel with it, the same three
+		// the widget prints for the slide it starts on.
+		function follow( link, slide, name ) {
 			if ( ! link ) {
 				return;
 			}
+
+			var address  = slide.getAttribute( 'data-' + name );
+			var blank    = slide.getAttribute( 'data-' + name + '-blank' ) === 'yes';
+			var nofollow = slide.getAttribute( 'data-' + name + '-nofollow' ) === 'yes';
+			var rel      = [];
 
 			if ( address ) {
 				link.setAttribute( 'href', address );
 			} else {
 				link.removeAttribute( 'href' );
+			}
+
+			if ( blank ) {
+				link.setAttribute( 'target', '_blank' );
+				rel.push( 'noopener' );
+				rel.push( 'noreferrer' );
+			} else {
+				link.removeAttribute( 'target' );
+			}
+
+			if ( nofollow ) {
+				rel.push( 'nofollow' );
+			}
+
+			if ( rel.length ) {
+				link.setAttribute( 'rel', rel.join( ' ' ) );
+			} else {
+				link.removeAttribute( 'rel' );
 			}
 		}
 
@@ -57,8 +82,8 @@
 			}
 
 			// Both addresses belong to the slide, so both travel with it.
-			follow( tour, slides[ current ].getAttribute( 'data-link' ) );
-			follow( host, slides[ current ].getAttribute( 'data-host' ) );
+			follow( tour, slides[ current ], 'link' );
+			follow( host, slides[ current ], 'host' );
 		}
 
 		root.addEventListener( 'click', function ( event ) {

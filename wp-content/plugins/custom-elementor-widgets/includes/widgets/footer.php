@@ -261,13 +261,7 @@ class Footer extends Base_Widget {
 			)
 		);
 
-		$repeater->add_control(
-			'social_link',
-			array(
-				'label'       => esc_html__( 'Link', 'custom-elementor-widgets' ),
-				'type'        => Controls_Manager::TEXT,
-			)
-		);
+		$this->add_link_controls( $repeater, 'social_link', esc_html__( 'Link', 'custom-elementor-widgets' ) );
 
 		$this->add_control(
 			'social_links',
@@ -814,7 +808,7 @@ class Footer extends Base_Widget {
 		<div class="custom-footer__social">
 			<?php foreach ( $links as $link ) : ?>
 				<a class="custom-footer__social-link"<?php
-					echo $this->link_attributes( isset( $link['social_link'] ) ? $link['social_link'] : '' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in link_attributes().
+					echo $this->link_from( $link, 'social_link' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in link_attributes().
 				?>>
 					<?php Icons_Manager::render_icon( $link['social_icon'], array( 'aria-hidden' => 'true' ) ); ?>
 					<span class="screen-reader-text"><?php echo esc_html( isset( $link['social_name'] ) ? $link['social_name'] : '' ); ?></span>

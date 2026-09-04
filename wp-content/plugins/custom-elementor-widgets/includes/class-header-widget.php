@@ -113,13 +113,7 @@ abstract class Header_Widget extends Base_Widget {
 			)
 		);
 
-		$this->add_control(
-			'logo_link',
-			array(
-				'label'       => esc_html__( 'Link', 'custom-elementor-widgets' ),
-				'type'        => Controls_Manager::TEXT,
-			)
-		);
+		$this->add_link_controls( $this, 'logo_link', esc_html__( 'Link', 'custom-elementor-widgets' ) );
 
 		$this->end_controls_section();
 	}
@@ -169,13 +163,7 @@ abstract class Header_Widget extends Base_Widget {
 			)
 		);
 
-		$this->add_control(
-			'button_one_link',
-			array(
-				'label'       => esc_html__( 'First button link', 'custom-elementor-widgets' ),
-				'type'        => Controls_Manager::TEXT,
-			)
-		);
+		$this->add_link_controls( $this, 'button_one_link', esc_html__( 'First button link', 'custom-elementor-widgets' ) );
 
 		$this->add_control(
 			'button_two_text',
@@ -187,13 +175,7 @@ abstract class Header_Widget extends Base_Widget {
 			)
 		);
 
-		$this->add_control(
-			'button_two_link',
-			array(
-				'label'       => esc_html__( 'Second button link', 'custom-elementor-widgets' ),
-				'type'        => Controls_Manager::TEXT,
-			)
-		);
+		$this->add_link_controls( $this, 'button_two_link', esc_html__( 'Second button link', 'custom-elementor-widgets' ) );
 
 		$this->add_control(
 			'icon_link_icon',
@@ -207,13 +189,7 @@ abstract class Header_Widget extends Base_Widget {
 			)
 		);
 
-		$this->add_control(
-			'icon_link_url',
-			array(
-				'label'       => esc_html__( 'Icon link', 'custom-elementor-widgets' ),
-				'type'        => Controls_Manager::TEXT,
-			)
-		);
+		$this->add_link_controls( $this, 'icon_link_url', esc_html__( 'Icon link', 'custom-elementor-widgets' ) );
 
 		$this->end_controls_section();
 	}
@@ -468,7 +444,7 @@ abstract class Header_Widget extends Base_Widget {
 		$tag   = '' === trim( (string) $link ) ? 'span' : 'a';
 		?>
 		<<?php echo esc_attr( $tag ); ?> class="custom-header__logo"<?php
-			echo 'a' === $tag ? $this->link_attributes( $link ) : ''; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in link_attributes().
+			echo 'a' === $tag ? $this->link_from( $settings, 'logo_link' ) : ''; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in link_attributes().
 		?>>
 			<span class="custom-header__logo-box">
 				<?php if ( '' !== $image ) : ?>
@@ -520,19 +496,19 @@ abstract class Header_Widget extends Base_Widget {
 		<div class="custom-header__actions">
 			<?php if ( '' !== $one_text ) : ?>
 				<a class="custom-header__button custom-header__button--outline"<?php
-					echo $this->link_attributes( isset( $settings['button_one_link'] ) ? $settings['button_one_link'] : '' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in link_attributes().
+					echo $this->link_from( $settings, 'button_one_link' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in link_attributes().
 				?>><?php echo esc_html( $one_text ); ?></a>
 			<?php endif; ?>
 
 			<?php if ( '' !== $two_text ) : ?>
 				<a class="custom-header__button custom-header__button--solid"<?php
-					echo $this->link_attributes( $this->text( $settings, 'button_two_link' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in link_attributes().
+					echo $this->link_from( $settings, 'button_two_link' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in link_attributes().
 				?>><?php echo esc_html( $two_text ); ?></a>
 			<?php endif; ?>
 
 			<?php if ( $has_icon ) : ?>
 				<a class="custom-header__icon-link"<?php
-					echo $this->link_attributes( isset( $settings['icon_link_url'] ) ? $settings['icon_link_url'] : '' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in link_attributes().
+					echo $this->link_from( $settings, 'icon_link_url' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in link_attributes().
 				?>><?php Icons_Manager::render_icon( $icon, array( 'aria-hidden' => 'true' ) ); ?></a>
 			<?php endif; ?>
 		</div>

@@ -88,13 +88,7 @@ class Dining_Membership extends Base_Widget {
 			)
 		);
 
-		$this->add_control(
-			'button_link',
-			array(
-				'label' => esc_html__( 'Button link', 'custom-elementor-widgets' ),
-				'type'  => Controls_Manager::TEXT,
-			)
-		);
+		$this->add_link_controls( $this, 'button_link', esc_html__( 'Button link', 'custom-elementor-widgets' ) );
 
 		foreach ( array( 'one', 'two' ) as $index => $which ) {
 			$this->add_control(
@@ -110,15 +104,13 @@ class Dining_Membership extends Base_Widget {
 				)
 			);
 
-			$this->add_control(
+			$this->add_link_controls(
+				$this,
 				'side_' . $which . '_link',
-				array(
-					'label' => sprintf(
-						/* translators: %d: which of the two narrow panels. */
-						esc_html__( 'Narrow panel %d link', 'custom-elementor-widgets' ),
-						$index + 1
-					),
-					'type'  => Controls_Manager::TEXT,
+				sprintf(
+					/* translators: %d: which of the two narrow panels. */
+					esc_html__( 'Narrow panel %d link', 'custom-elementor-widgets' ),
+					$index + 1
 				)
 			);
 		}
@@ -200,7 +192,7 @@ class Dining_Membership extends Base_Widget {
 				<?php $this->render_picture( $settings, 'picture' ); ?>
 
 				<a class="custom-dining-membership__button"<?php
-					echo $this->link_attributes( isset( $settings['button_link'] ) ? $settings['button_link'] : '' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in link_attributes().
+					echo $this->link_from( $settings, 'button_link' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in link_attributes().
 				?>><?php echo esc_html( $button ); ?></a>
 			</div>
 
@@ -208,7 +200,7 @@ class Dining_Membership extends Base_Widget {
 				<a
 					class="custom-dining-membership__panel custom-dining-membership__panel--side"
 					<?php
-					echo $this->link_attributes( isset( $settings[ 'side_' . $which . '_link' ] ) ? $settings[ 'side_' . $which . '_link' ] : '' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in link_attributes().
+					echo $this->link_from( $settings, 'side_' . $which . '_link' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in link_attributes().
 					?>
 				>
 					<?php $this->render_picture( $settings, 'side_' . $which . '_picture' ); ?>

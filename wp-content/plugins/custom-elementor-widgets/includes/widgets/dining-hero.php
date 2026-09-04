@@ -111,13 +111,7 @@ class Dining_Hero extends Base_Widget {
 			)
 		);
 
-		$this->add_control(
-			'button_link',
-			array(
-				'label' => esc_html__( 'Button link', 'custom-elementor-widgets' ),
-				'type'  => Controls_Manager::TEXT,
-			)
-		);
+		$this->add_link_controls( $this, 'button_link', esc_html__( 'Button link', 'custom-elementor-widgets' ) );
 
 		$this->end_controls_section();
 
@@ -238,7 +232,7 @@ class Dining_Hero extends Base_Widget {
 			?></<?php echo esc_attr( $tag ); ?>>
 
 			<a class="custom-dining-hero__button"<?php
-				echo $this->link_attributes( isset( $settings['button_link'] ) ? $settings['button_link'] : '' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in link_attributes().
+				echo $this->link_from( $settings, 'button_link' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in link_attributes().
 			?>><?php echo esc_html( $button ); ?></a>
 		</div>
 		<?php

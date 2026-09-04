@@ -95,17 +95,76 @@ abstract class Base_Widget extends \Elementor\Widget_Base {
 	}
 
 	/**
-	 * The attributes for one link, from the value the client typed.
+	 * One address control and the two toggles that travel with it.
 	 *
-	 * A link field takes a path, an anchor or a whole address. Where it opens
-	 * follows from where it goes, not from a checkbox: a value with no scheme is
-	 * this site and opens in the same tab; otherwise the host decides. Settled
-	 * here once, for every link the plugin prints.
+	 * Every address in the build is one field and two switches, on a widget or
+	 * on a repeater's row alike, so the client meets the same three controls
+	 * wherever a link is asked for.
 	 *
-	 * @param string $value Raw control value.
-	 * @return string Escaped href, and off the domain a target and rel with it.
+	 * @param object $target The widget, or the repeater the row belongs to.
+	 * @param string $key    The address control's name.
+	 * @param string $label  What the address control is called.
+	 * @param array  $args   Anything else the address control carries.
 	 */
-	protected function link_attributes( $value ) {
+	protected function add_link_controls( $target, $key, $label, $args = array() ) {
+		$target->add_control(
+			$key,
+			array_merge(
+				array(
+					'label' => $label,
+					'type'  => \Elementor\Controls_Manager::TEXT,
+				),
+				$args
+			)
+		);
+
+		$target->add_control(
+			$key . '_blank',
+			array(
+				'label'   => esc_html__( 'Open in a new tab', 'custom-elementor-widgets' ),
+				'type'    => \Elementor\Controls_Manager::SWITCHER,
+				'default' => '',
+			)
+		);
+
+		$target->add_control(
+			$key . '_nofollow',
+			array(
+				'label'   => esc_html__( 'nofollow', 'custom-elementor-widgets' ),
+				'type'    => \Elementor\Controls_Manager::SWITCHER,
+				'default' => '',
+			)
+		);
+	}
+
+	/**
+	 * One address and its two toggles, read together.
+	 *
+	 * @param array  $settings The widget's settings, or one repeater row.
+	 * @param string $key      The address control's name.
+	 * @return string The attributes for that link.
+	 */
+	protected function link_from( $settings, $key ) {
+		return $this->link_attributes(
+			isset( $settings[ $key ] ) ? $settings[ $key ] : '',
+			isset( $settings[ $key . '_blank' ] ) ? $settings[ $key . '_blank' ] : '',
+			isset( $settings[ $key . '_nofollow' ] ) ? $settings[ $key . '_nofollow' ] : ''
+		);
+	}
+
+	/**
+	 * The attributes for one link.
+	 *
+	 * A link field takes a path, an anchor or a whole address; a value with no
+	 * scheme is this site. Which tab it opens in is the toggle's answer, never
+	 * the address's. Settled here once, for every link the plugin prints.
+	 *
+	 * @param string $value    Raw control value.
+	 * @param string $blank    The new-tab toggle.
+	 * @param string $nofollow The nofollow toggle.
+	 * @return string Escaped href, and whatever the toggles add to it.
+	 */
+	protected function link_attributes( $value, $blank = '', $nofollow = '' ) {
 		$value = trim( (string) $value );
 
 		if ( '' === $value ) {
@@ -113,11 +172,20 @@ abstract class Base_Widget extends \Elementor\Widget_Base {
 		}
 
 		$attributes = ' href="' . esc_url( $value ) . '"';
-		$host       = wp_parse_url( $value, PHP_URL_HOST );
-		$site       = wp_parse_url( home_url(), PHP_URL_HOST );
+		$rel        = array();
 
-		if ( $host && strtolower( $host ) !== strtolower( (string) $site ) ) {
-			$attributes .= ' target="_blank" rel="noopener noreferrer"';
+		if ( 'yes' === $blank ) {
+			$attributes .= ' target="_blank"';
+			$rel[]       = 'noopener';
+			$rel[]       = 'noreferrer';
+		}
+
+		if ( 'yes' === $nofollow ) {
+			$rel[] = 'nofollow';
+		}
+
+		if ( ! empty( $rel ) ) {
+			$attributes .= ' rel="' . esc_attr( implode( ' ', $rel ) ) . '"';
 		}
 
 		return $attributes;

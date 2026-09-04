@@ -104,21 +104,9 @@ class The_Space_Hero_Carousel extends Base_Widget {
 			)
 		);
 
-		$repeater->add_control(
-			'slide_host_link',
-			array(
-				'label'       => esc_html__( 'Host the area link', 'custom-elementor-widgets' ),
-				'type'        => Controls_Manager::TEXT,
-			)
-		);
+		$this->add_link_controls( $repeater, 'slide_host_link', esc_html__( 'Host the area link', 'custom-elementor-widgets' ) );
 
-		$repeater->add_control(
-			'slide_link',
-			array(
-				'label'       => esc_html__( 'Virtual tour link', 'custom-elementor-widgets' ),
-				'type'        => Controls_Manager::TEXT,
-			)
-		);
+		$this->add_link_controls( $repeater, 'slide_link', esc_html__( 'Virtual tour link', 'custom-elementor-widgets' ) );
 
 		$this->add_control(
 			'slides',
@@ -393,7 +381,11 @@ class The_Space_Hero_Carousel extends Base_Widget {
 							class="custom-space-hero__slide"
 							data-title="<?php echo esc_attr( isset( $slide['slide_title'] ) ? $slide['slide_title'] : '' ); ?>"
 							data-host="<?php echo esc_attr( isset( $slide['slide_host_link'] ) ? $slide['slide_host_link'] : '' ); ?>"
+							data-host-blank="<?php echo esc_attr( isset( $slide['slide_host_link_blank'] ) ? $slide['slide_host_link_blank'] : '' ); ?>"
+							data-host-nofollow="<?php echo esc_attr( isset( $slide['slide_host_link_nofollow'] ) ? $slide['slide_host_link_nofollow'] : '' ); ?>"
 							data-link="<?php echo esc_attr( isset( $slide['slide_link'] ) ? $slide['slide_link'] : '' ); ?>"
+							data-link-blank="<?php echo esc_attr( isset( $slide['slide_link_blank'] ) ? $slide['slide_link_blank'] : '' ); ?>"
+							data-link-nofollow="<?php echo esc_attr( isset( $slide['slide_link_nofollow'] ) ? $slide['slide_link_nofollow'] : '' ); ?>"
 						>
 							<?php if ( ! empty( $slide['slide_picture']['url'] ) ) : ?>
 								<img src="<?php echo esc_url( $slide['slide_picture']['url'] ); ?>" alt="<?php
@@ -435,16 +427,15 @@ class The_Space_Hero_Carousel extends Base_Widget {
 		$tour = isset( $settings['tour_text'] ) ? trim( (string) $settings['tour_text'] ) : '';
 		$tour = '' !== $tour ? $tour : esc_html__( 'Virtual tour', 'custom-elementor-widgets' );
 
-		$button_link = isset( $first['slide_host_link'] ) ? trim( (string) $first['slide_host_link'] ) : '';
 		?>
 		<div class="custom-space-hero__actions">
 			<a class="custom-space-hero__button"<?php
-				echo $this->link_attributes( $button_link ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in link_attributes().
+				echo $this->link_from( $first, 'slide_host_link' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in link_attributes().
 			?>><?php echo esc_html( $button ); ?></a>
 
 			<span class="custom-space-hero__tour">
 				<a class="custom-space-hero__tour-link"<?php
-					echo $this->link_attributes( isset( $first['slide_link'] ) ? $first['slide_link'] : '' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in link_attributes().
+					echo $this->link_from( $first, 'slide_link' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in link_attributes().
 				?>><?php echo esc_html( $tour ); ?></a>
 				<?php if ( ! empty( $settings['tour_icon']['value'] ) ) : ?>
 					<span class="custom-space-hero__tour-icon">
