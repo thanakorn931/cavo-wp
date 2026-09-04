@@ -116,9 +116,13 @@ abstract class Event_Widget extends Base_Widget {
 		$this->add_control(
 			'order',
 			array(
-				'label'   => esc_html__( 'Newest first', 'custom-elementor-widgets' ),
-				'type'    => Controls_Manager::SWITCHER,
-				'default' => 'yes',
+				'label'   => esc_html__( 'Order', 'custom-elementor-widgets' ),
+				'type'    => Controls_Manager::SELECT,
+				'default' => 'DESC',
+				'options' => array(
+					'DESC' => esc_html__( 'Newest first', 'custom-elementor-widgets' ),
+					'ASC'  => esc_html__( 'Oldest first', 'custom-elementor-widgets' ),
+				),
 			)
 		);
 
@@ -201,7 +205,7 @@ abstract class Event_Widget extends Base_Widget {
 	protected function items( $settings ) {
 		$source   = isset( $settings['source'] ) ? $settings['source'] : 'post';
 		$taxonomy = isset( $settings['taxonomy'] ) ? $settings['taxonomy'] : '';
-		$order    = isset( $settings['order'] ) && 'yes' === $settings['order'] ? 'DESC' : 'ASC';
+		$order    = isset( $settings['order'] ) && 'ASC' === $settings['order'] ? 'ASC' : 'DESC';
 
 		$query = array(
 			'post_type'           => $source,

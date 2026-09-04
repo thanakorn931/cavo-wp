@@ -96,16 +96,6 @@ class Event_Events extends Event_Widget {
 			)
 		);
 
-		$this->add_control(
-			'lead',
-			array(
-				'label'       => esc_html__( 'Lead the list with the newest', 'custom-elementor-widgets' ),
-				'type'        => Controls_Manager::SWITCHER,
-				'default'     => 'yes',
-				'description' => esc_html__( 'The first item runs the width of the band, as the design draws it.', 'custom-elementor-widgets' ),
-			)
-		);
-
 		$this->end_controls_section();
 
 		$this->register_style_controls();
@@ -226,10 +216,10 @@ class Event_Events extends Event_Widget {
 	protected function render() {
 		$settings = $this->get_settings_for_display();
 
+		// The first item runs the width of the band, as the design draws it. It
+		// is the same list, not a slot of its own.
 		$items = $this->items( $settings );
-		$lead  = ( ! isset( $settings['lead'] ) || 'yes' === $settings['lead'] ) && ! empty( $items )
-			? array_shift( $items )
-			: null;
+		$lead  = ! empty( $items ) ? array_shift( $items ) : null;
 
 		$step    = isset( $settings['step'] ) ? max( 1, (int) $settings['step'] ) : 6;
 		$button  = isset( $settings['button_text'] ) ? trim( (string) $settings['button_text'] ) : '';
