@@ -93,7 +93,7 @@ abstract class Event_Widget extends Base_Widget {
 					array( '' => esc_html__( 'All', 'custom-elementor-widgets' ) ),
 					self::taxonomy_options()
 				),
-				'description' => esc_html__( 'Left on All, the whole source is shown.', 'custom-elementor-widgets' ),
+				'description' => esc_html__( 'Left on All, the whole source is shown. Choose one and an item with no term in it is not shown at all.', 'custom-elementor-widgets' ),
 			)
 		);
 
@@ -221,15 +221,20 @@ abstract class Event_Widget extends Base_Widget {
 			$terms = isset( $settings[ 'terms_' . $taxonomy ] ) ? (array) $settings[ 'terms_' . $taxonomy ] : array();
 			$terms = array_filter( $terms );
 
-			if ( ! empty( $terms ) ) {
-				$query['tax_query'] = array(
-					array(
+			// Terms left alone are the whole taxonomy: whatever has a term in
+			// it, and nothing that has none.
+			$query['tax_query'] = array(
+				empty( $terms )
+					? array(
+						'taxonomy' => $taxonomy,
+						'operator' => 'EXISTS',
+					)
+					: array(
 						'taxonomy' => $taxonomy,
 						'field'    => 'slug',
 						'terms'    => $terms,
 					),
-				);
-			}
+			);
 		}
 
 		return get_posts( $query );
