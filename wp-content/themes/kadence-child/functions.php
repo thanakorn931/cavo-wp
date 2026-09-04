@@ -596,31 +596,18 @@ function kadence_child_form_key( $slug ) {
  * @return array Slug to label and url.
  */
 function kadence_child_form_tabs() {
-	$forms = kadence_child_forms();
-	$tabs  = array(
-		'inbox' => array(
+	$tabs = array(
+		'inbox'  => array(
 			'label' => esc_html__( 'Inbox', 'kadence-child' ),
 			'url'   => admin_url( 'edit.php?post_type=cavo_message' ),
 			'page'  => 'edit-cavo_message',
 		),
-	);
-
-	if ( count( $forms ) > 1 ) {
-		foreach ( $forms as $slug => $name ) {
-			$tabs[ 'editor-' . $slug ] = array(
-				/* translators: %s: the form's name. */
-				'label' => sprintf( esc_html__( '%s form editor', 'kadence-child' ), $name ),
-				'url'   => admin_url( 'admin.php?page=cavo-form-editor-' . $slug ),
-				'page'  => 'cavo-form-editor-' . $slug,
-			);
-		}
-	} else {
-		$tabs['editor'] = array(
+		'editor' => array(
 			'label' => esc_html__( 'Form editor', 'kadence-child' ),
 			'url'   => admin_url( 'admin.php?page=cavo-form-editor' ),
 			'page'  => 'cavo-form-editor',
-		);
-	}
+		),
+	);
 
 	$tabs['settings'] = array(
 		'label' => esc_html__( 'Settings', 'kadence-child' ),
@@ -772,26 +759,37 @@ function kadence_child_form_field_groups() {
 		return;
 	}
 
-	$forms = kadence_child_forms();
-	$many  = count( $forms ) > 1;
+	$forms  = kadence_child_forms();
+	$many   = count( $forms ) > 1;
+	$editor = array();
 
 	foreach ( $forms as $slug => $name ) {
-		$key  = $many ? $slug : 'form';
-		$page = $many ? 'cavo-form-editor-' . $slug : 'cavo-form-editor';
+		$key = $many ? $slug : 'form';
 
-		acf_add_local_field_group(
-			array(
-				'key'      => 'group_cavo_editor_' . $key,
-				'title'    => esc_html__( 'Form', 'kadence-child' ),
-				'location' => array( array( array( 'param' => 'options_page', 'operator' => '==', 'value' => $page ) ) ),
-				'fields'   => array( kadence_child_form_fields_repeater( $key ) ),
-			)
-		);
+		if ( $many ) {
+			$editor[] = array(
+				'key'   => 'field_cavo_editor_tab_' . $key,
+				/* translators: %s: the form's name. */
+				'label' => sprintf( esc_html__( '%s form', 'kadence-child' ), $name ),
+				'type'  => 'tab',
+			);
+		}
+
+		$editor[] = kadence_child_form_fields_repeater( $key );
 
 		if ( ! $many ) {
 			break;
 		}
 	}
+
+	acf_add_local_field_group(
+		array(
+			'key'      => 'group_cavo_editor',
+			'title'    => esc_html__( 'Form', 'kadence-child' ),
+			'location' => array( array( array( 'param' => 'options_page', 'operator' => '==', 'value' => 'cavo-form-editor' ) ) ),
+			'fields'   => $editor,
+		)
+	);
 
 	acf_add_local_field_group( kadence_child_form_settings_group( $forms, $many ) );
 

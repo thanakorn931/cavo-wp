@@ -167,3 +167,15 @@ select.custom-private-form__input:invalid {
 	height: 1px;
 	overflow: hidden;
 }
+
+/* What the reader has to answer stands directly above the button. */
+.custom-private-form__captcha:not( :empty ) {
+	width: 100%;
+	padding-top: 24px;
+}
+
+/* A press that has been heard, and cannot be repeated by accident. */
+.custom-private-form__send[disabled] {
+	cursor: progress;
+	opacity: 0.6;
+}

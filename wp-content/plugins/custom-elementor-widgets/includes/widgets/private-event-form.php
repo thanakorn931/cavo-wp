@@ -408,11 +408,13 @@ class Private_Event_Form extends Base_Widget {
 						<?php endforeach; ?>
 					</div>
 
-					<?php
-					if ( function_exists( 'kadence_child_form_captcha_field' ) ) {
-						kadence_child_form_captcha_field( $slug );
-					}
-					?>
+					<div class="custom-private-form__captcha">
+						<?php
+						if ( function_exists( 'kadence_child_form_captcha_field' ) ) {
+							kadence_child_form_captcha_field( $slug );
+						}
+						?>
+					</div>
 
 					<div class="custom-private-form__actions">
 						<button type="submit" class="custom-private-form__send"><?php
