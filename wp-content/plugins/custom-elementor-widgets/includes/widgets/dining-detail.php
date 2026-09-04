@@ -401,9 +401,7 @@ class Dining_Detail extends Base_Widget {
 		$url = isset( $settings[ $key ]['url'] ) ? $settings[ $key ]['url'] : '';
 		?>
 		<div class="custom-dining-detail__picture custom-dining-detail__picture--<?php echo esc_attr( $which ); ?>">
-			<?php if ( '' !== $url ) : ?>
-				<img src="<?php echo esc_url( $url ); ?>" alt="" />
-			<?php endif; ?>
+			<?php $this->media( $url ); ?>
 		</div>
 		<?php
 	}

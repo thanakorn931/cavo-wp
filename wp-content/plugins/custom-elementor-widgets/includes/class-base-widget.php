@@ -40,9 +40,16 @@ abstract class Base_Widget extends \Elementor\Widget_Base {
 	 * @return array
 	 */
 	public function get_style_depends(): array {
+		$shared = Widgets_Loader::HANDLE_PREFIX . 'base-widget';
 		$handle = $this->asset_handle();
 
-		return wp_style_is( $handle, 'registered' ) ? array( $handle ) : array();
+		$depends = wp_style_is( $shared, 'registered' ) ? array( $shared ) : array();
+
+		if ( wp_style_is( $handle, 'registered' ) ) {
+			$depends[] = $handle;
+		}
+
+		return $depends;
 	}
 
 	/**
@@ -63,6 +70,38 @@ abstract class Base_Widget extends \Elementor\Widget_Base {
 	 */
 	protected function asset_handle() {
 		return Widgets_Loader::HANDLE_PREFIX . $this->get_name();
+	}
+
+	/**
+	 * One media slot's contents: what was uploaded, or the box saying nothing
+	 * has been.
+	 *
+	 * A slot the client has not filled is still a slot, and is seen as one. The
+	 * box itself belongs to the section around it; only what stands inside it
+	 * while it is empty is settled here, for every section at once.
+	 *
+	 * @param string $url  What the client uploaded, if anything.
+	 * @param string $alt  What a reader who cannot see it is told.
+	 * @param bool   $lazy Whether it waits until it is on screen to load.
+	 */
+	protected function media( $url, $alt = '', $lazy = false ) {
+		$url = trim( (string) $url );
+
+		if ( '' !== $url ) {
+			printf(
+				'<img src="%s" alt="%s"%s />',
+				esc_url( $url ),
+				esc_attr( $alt ),
+				$lazy ? ' loading="lazy"' : ''
+			);
+
+			return;
+		}
+
+		printf(
+			'<span class="custom-media-empty"><span>%s</span></span>',
+			esc_html__( 'no content', 'custom-elementor-widgets' )
+		);
 	}
 
 	/**

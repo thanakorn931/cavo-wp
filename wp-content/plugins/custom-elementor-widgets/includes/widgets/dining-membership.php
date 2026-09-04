@@ -221,9 +221,7 @@ class Dining_Membership extends Base_Widget {
 		$url = isset( $settings[ $key ]['url'] ) ? $settings[ $key ]['url'] : '';
 		?>
 		<span class="custom-dining-membership__picture" aria-hidden="true">
-			<?php if ( '' !== $url ) : ?>
-				<img src="<?php echo esc_url( $url ); ?>" alt="" />
-			<?php endif; ?>
+			<?php $this->media( $url ); ?>
 		</span>
 		<?php
 	}

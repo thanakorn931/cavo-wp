@@ -447,9 +447,7 @@ abstract class Header_Widget extends Base_Widget {
 			echo 'a' === $tag ? $this->link_from( $settings, 'logo_link' ) : ''; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in link_attributes().
 		?>>
 			<span class="custom-header__logo-box">
-				<?php if ( '' !== $image ) : ?>
-					<img src="<?php echo esc_url( $image ); ?>" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>" />
-				<?php endif; ?>
+				<?php $this->media( $image, get_bloginfo( 'name' ) ); ?>
 			</span>
 		</<?php echo esc_attr( $tag ); ?>>
 		<?php

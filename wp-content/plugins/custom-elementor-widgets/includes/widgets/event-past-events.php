@@ -21,6 +21,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Event_Past_Events extends Event_Widget {
 
 	/**
+	 * How many cards stand while the list is empty — the row of three the
+	 * design draws.
+	 */
+	const EMPTY_CARDS = 3;
+
+	/**
 	 * The widget's name, and its asset handle's suffix.
 	 *
 	 * @return string
@@ -335,13 +341,17 @@ class Event_Past_Events extends Event_Widget {
 				?>><?php echo esc_html( $this->text( $settings, 'action_text' ) ); ?></a>
 			</div>
 
-			<?php if ( ! empty( $items ) ) : ?>
-				<div class="custom-event-past__grid">
+			<div class="custom-event-past__grid">
+				<?php if ( ! empty( $items ) ) : ?>
 					<?php foreach ( $items as $index => $item ) : ?>
 						<?php $this->render_card( $item, $index >= $shown ); ?>
 					<?php endforeach; ?>
-				</div>
-			<?php endif; ?>
+				<?php else : ?>
+					<?php for ( $i = 0; $i < self::EMPTY_CARDS; $i++ ) : ?>
+						<?php $this->render_card(); ?>
+					<?php endfor; ?>
+				<?php endif; ?>
+			</div>
 
 			<?php if ( count( $items ) > $shown ) : ?>
 				<div class="custom-event-past__actions">

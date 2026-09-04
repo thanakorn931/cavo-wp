@@ -279,9 +279,7 @@ class Cta extends Base_Widget {
 		?>
 		<div class="custom-cta">
 			<span class="custom-cta__picture" aria-hidden="true">
-				<?php if ( '' !== $picture ) : ?>
-					<img src="<?php echo esc_url( $picture ); ?>" alt="" />
-				<?php endif; ?>
+				<?php $this->media( $picture ); ?>
 			</span>
 			<span class="custom-cta__veil" aria-hidden="true"></span>
 

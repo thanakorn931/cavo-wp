@@ -301,9 +301,7 @@ class Dining_Beverage_Menu extends Base_Widget {
 		?>
 		<div class="custom-dining-beverage">
 			<div class="custom-dining-beverage__picture" aria-hidden="true">
-				<?php if ( '' !== $background ) : ?>
-					<img src="<?php echo esc_url( $background ); ?>" alt="" />
-				<?php endif; ?>
+				<?php $this->media( $background ); ?>
 			</div>
 
 			<div class="custom-dining-beverage__veil" aria-hidden="true"></div>
@@ -351,9 +349,7 @@ class Dining_Beverage_Menu extends Base_Widget {
 		$url = isset( $settings[ $key ]['url'] ) ? $settings[ $key ]['url'] : '';
 		?>
 		<div class="custom-dining-beverage__tile custom-dining-beverage__tile--<?php echo esc_attr( $which ); ?>">
-			<?php if ( '' !== $url ) : ?>
-				<img src="<?php echo esc_url( $url ); ?>" alt="" />
-			<?php endif; ?>
+			<?php $this->media( $url ); ?>
 		</div>
 		<?php
 	}

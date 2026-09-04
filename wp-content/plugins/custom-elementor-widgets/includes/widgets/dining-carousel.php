@@ -27,6 +27,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Dining_Carousel extends Base_Widget {
 
 	/**
+	 * How many slides stand while there are none — the one in the middle and
+	 * the two the design cuts at the band's edges.
+	 */
+	const EMPTY_SLIDES = 3;
+
+	/**
 	 * The widget's name, and its asset handle's suffix.
 	 *
 	 * @return string
@@ -235,11 +241,17 @@ class Dining_Carousel extends Base_Widget {
 
 			<div class="custom-dining-carousel__stage">
 				<div class="custom-dining-carousel__track">
+					<?php if ( empty( $slides ) ) : ?>
+						<?php for ( $i = 0; $i < self::EMPTY_SLIDES; $i++ ) : ?>
+							<div class="custom-dining-carousel__slide<?php echo 0 === $i ? ' is-current' : ''; ?>">
+								<?php $this->media( '' ); ?>
+							</div>
+						<?php endfor; ?>
+					<?php endif; ?>
+
 					<?php foreach ( $slides as $slide ) : ?>
 						<div class="custom-dining-carousel__slide">
-							<?php if ( ! empty( $slide['slide_picture']['url'] ) ) : ?>
-								<img src="<?php echo esc_url( $slide['slide_picture']['url'] ); ?>" alt="" />
-							<?php endif; ?>
+							<?php $this->media( isset( $slide['slide_picture']['url'] ) ? $slide['slide_picture']['url'] : '' ); ?>
 						</div>
 					<?php endforeach; ?>
 				</div>

@@ -221,9 +221,7 @@ class Dining_Hero extends Base_Widget {
 		?>
 		<div class="custom-dining-hero">
 			<span class="custom-dining-hero__picture" aria-hidden="true">
-				<?php if ( '' !== $picture ) : ?>
-					<img src="<?php echo esc_url( $picture ); ?>" alt="" />
-				<?php endif; ?>
+				<?php $this->media( $picture ); ?>
 			</span>
 			<span class="custom-dining-hero__veil" aria-hidden="true"></span>
 

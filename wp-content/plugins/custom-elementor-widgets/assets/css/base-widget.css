@@ -1,0 +1,38 @@
+/**
+ * What every section shares: the state a media slot is in before anything has
+ * been put in it.
+ *
+ * The box is drawn by the section around it; this is only what stands inside
+ * one while it is empty, so nothing here reaches a page unless a section on it
+ * has a slot of its own.
+ */
+
+.custom-media-empty {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: min( 8px, 10% );
+	box-sizing: border-box;
+	background-color: #ffffff;
+	color: #000000;
+	overflow: hidden;
+	pointer-events: none;
+	container-type: inline-size;
+}
+
+/* The words fit the box rather than the box them: they wrap, they come down in
+   size where the box is narrow, and they never push it out of shape. */
+.custom-media-empty > span {
+	max-width: 100%;
+	font-family: Roboto, -apple-system, "Segoe UI", sans-serif;
+	font-size: 14px;
+	font-size: clamp( 7px, 12cqw, 16px );
+	font-weight: 400;
+	line-height: 1.2;
+	text-align: center;
+	text-transform: none;
+	letter-spacing: 0;
+	overflow-wrap: anywhere;
+}
