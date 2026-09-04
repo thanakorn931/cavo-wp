@@ -556,8 +556,7 @@ add_filter( 'rank_math/admin/disable_primary_term', '__return_true' );
  */
 function kadence_child_forms() {
 	return array(
-		'proposal'   => esc_html__( 'Proposal', 'kadence-child' ),
-		'newsletter' => esc_html__( 'Newsletter', 'kadence-child' ),
+		'proposal' => esc_html__( 'Proposal', 'kadence-child' ),
 	);
 }
 
