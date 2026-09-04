@@ -1,0 +1,126 @@
+/**
+ * Dining, carousel — one section of the design.
+ *
+ * A title, then the slides running through a band that cuts them at its own
+ * edges, and the mark the section ends on. The slide in the middle stands
+ * taller than the two beside it.
+ */
+
+.custom-dining-carousel {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	gap: 16px;
+	width: 100%;
+	padding-top: 96px;
+	box-sizing: border-box;
+	overflow: hidden;
+
+	background-image: linear-gradient( 180deg, #29180e 2.743%, #e8e4db 100% );
+}
+
+.custom-dining-carousel__title {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin: 0;
+	padding: 10px 64px;
+	text-align: center;
+	text-transform: uppercase;
+}
+
+/* The band the slides run through. */
+.custom-dining-carousel__stage {
+	position: relative;
+	width: 100%;
+	height: 720px;
+	overflow: hidden;
+}
+
+.custom-dining-carousel__track {
+	display: flex;
+	align-items: center;
+	gap: 56px;
+	height: 720px;
+	transition: transform 500ms ease-in-out;
+	will-change: transform;
+}
+
+.custom-dining-carousel__slide {
+	position: relative;
+	flex: 0 0 auto;
+	width: 840px;
+	height: 560px;
+	border-radius: 24px;
+	overflow: hidden;
+	transition:
+		width 500ms ease-in-out,
+		height 500ms ease-in-out;
+}
+
+.custom-dining-carousel__slide.is-current {
+	width: 1080px;
+	height: 720px;
+}
+
+.custom-dining-carousel__slide img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
+}
+
+.custom-dining-carousel__arrow {
+	position: absolute;
+	top: 312px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 96px;
+	height: 96px;
+	padding: 0;
+	border: 0;
+	background: transparent;
+	cursor: pointer;
+	transition: opacity 300ms ease-in-out;
+}
+
+.custom-dining-carousel__arrow:hover {
+	opacity: 0.7;
+}
+
+.custom-dining-carousel__arrow--prev {
+	left: calc( 50% - 644px );
+}
+
+.custom-dining-carousel__arrow--next {
+	left: calc( 50% + 548px );
+}
+
+.custom-dining-carousel__arrow svg,
+.custom-dining-carousel__arrow img {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+/* The mark the section ends on: the design's, not the client's. */
+.custom-dining-carousel__mark {
+	display: block;
+	width: 100%;
+	aspect-ratio: 1443 / 300;
+	background-image: url( "../img/dining-carousel-logo.webp" );
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+}
+
+@media ( prefers-reduced-motion: reduce ) {
+	.custom-dining-carousel__track,
+	.custom-dining-carousel__slide,
+	.custom-dining-carousel__arrow {
+		transition: none;
+	}
+}
