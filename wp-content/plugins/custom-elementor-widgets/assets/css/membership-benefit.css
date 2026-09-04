@@ -1,0 +1,194 @@
+/**
+ * Membership, benefits — one section of the design.
+ *
+ * One benefit at a time: its picture across the left of the band, its words and
+ * a second picture down the right. The arrows turn to the next.
+ */
+
+.custom-membership-benefit {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	gap: 83px;
+	width: 100%;
+	padding: 96px 0 143px 0;
+	box-sizing: border-box;
+	overflow: hidden;
+	box-shadow: 0 4px 4px #9d5434;
+
+	background-image: linear-gradient(
+		28.163deg,
+		rgba( 157, 84, 52, 0.7 ) 17.466%,
+		rgba( 100, 49, 26, 0.7 ) 62.65%,
+		rgba( 76, 37, 19, 0.7 ) 81.22%
+	);
+}
+
+.custom-membership-benefit__picture,
+.custom-membership-benefit__veil {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+}
+
+.custom-membership-benefit__picture img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
+}
+
+.custom-membership-benefit__veil {
+	background-color: rgba( 0, 0, 0, 0.5 );
+}
+
+.custom-membership-benefit__heading {
+	position: relative;
+	margin: 0;
+	text-align: center;
+	text-transform: uppercase;
+}
+
+/* The band the benefits run through. */
+.custom-membership-benefit__row {
+	position: relative;
+	width: 100%;
+	height: 562px;
+}
+
+.custom-membership-benefit__slide {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	align-items: flex-start;
+	gap: 16px;
+	padding-right: 7px;
+	box-sizing: border-box;
+	opacity: 0;
+	visibility: hidden;
+	transition:
+		opacity 400ms ease-in-out,
+		visibility 400ms ease-in-out;
+}
+
+.custom-membership-benefit__slide.is-current {
+	opacity: 1;
+	visibility: visible;
+}
+
+/* The picture across the left, running off the edge of the band. */
+.custom-membership-benefit__stage {
+	position: relative;
+	flex: 0 0 1000px;
+	height: 562px;
+	margin-left: -1px;
+	border-radius: 0 24px 24px 0;
+	overflow: hidden;
+}
+
+.custom-membership-benefit__stage img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
+}
+
+/* The words and the second picture down the right. */
+.custom-membership-benefit__side {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 116px;
+	flex: 0 0 418px;
+	height: 562px;
+}
+
+.custom-membership-benefit__words {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 24px;
+	width: 392px;
+}
+
+.custom-membership-benefit__title,
+.custom-membership-benefit__body {
+	margin: 0;
+	width: 100%;
+}
+
+.custom-membership-benefit__title {
+	text-transform: uppercase;
+}
+
+.custom-membership-benefit__thumb {
+	position: relative;
+	width: 418px;
+	height: 260px;
+	border-radius: 24px;
+	overflow: hidden;
+}
+
+.custom-membership-benefit__thumb img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
+}
+
+.custom-membership-benefit__thumb-veil {
+	position: absolute;
+	inset: 0;
+	background-color: rgba( 0, 0, 0, 0.5 );
+	pointer-events: none;
+}
+
+/* The arrows stand on the picture, and do not turn with it. */
+.custom-membership-benefit__arrow {
+	position: absolute;
+	top: 253px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 56px;
+	height: 56px;
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
+	box-shadow: 0 4px 10px rgba( 0, 0, 0, 0.06 );
+	cursor: pointer;
+	transition: opacity 300ms ease-in-out;
+}
+
+.custom-membership-benefit__arrow:hover {
+	opacity: 0.85;
+}
+
+.custom-membership-benefit__arrow--prev {
+	left: 48px;
+}
+
+.custom-membership-benefit__arrow--next {
+	left: 896px;
+}
+
+.custom-membership-benefit__arrow svg {
+	display: block;
+	width: 56px;
+	height: 56px;
+}
+
+.custom-membership-benefit__arrow--next svg {
+	transform: scaleX( -1 );
+}
+
+@media ( prefers-reduced-motion: reduce ) {
+	.custom-membership-benefit__slide,
+	.custom-membership-benefit__arrow {
+		transition: none;
+	}
+}

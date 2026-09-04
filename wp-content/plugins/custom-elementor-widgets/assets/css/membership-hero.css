@@ -1,0 +1,253 @@
+/**
+ * Membership, hero — one section of the design.
+ *
+ * The page's own words on cream, then the plans running off the right edge of
+ * the band beneath. The arrows move the row one plan at a time.
+ */
+
+.custom-membership-hero__intro {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 48px;
+	width: 100%;
+	padding: 96px 48px 0 48px;
+	box-sizing: border-box;
+}
+
+.custom-membership-hero__heading,
+.custom-membership-hero__body {
+	margin: 0;
+	width: 100%;
+	text-align: center;
+	text-transform: uppercase;
+}
+
+.custom-membership-hero__body {
+	max-width: 1076px;
+}
+
+/* The band the plans run through. */
+.custom-membership-hero__plans {
+	width: 100%;
+	padding: 90px 0 92px 48px;
+	box-sizing: border-box;
+	overflow: hidden;
+
+	background-image: radial-gradient(
+		1924px 713px at 50% 0%,
+		#faf6ea 34.84%,
+		#c6bfb3 49.9%,
+		#aca398 57.43%,
+		#92877c 64.96%,
+		#776b61 72.49%,
+		#5d5045 80.02%,
+		#43342a 87.55%,
+		#36261c 91.31%,
+		#29180e 95.08%
+	);
+}
+
+.custom-membership-hero__inner {
+	display: flex;
+	align-items: flex-start;
+	gap: 48px;
+	height: 532px;
+}
+
+/* The words and the two arrows, and the way in at the foot of them. */
+.custom-membership-hero__aside {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	justify-content: space-between;
+	flex: 0 0 359px;
+	height: 532px;
+}
+
+.custom-membership-hero__aside-top {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 24px;
+	width: 100%;
+}
+
+.custom-membership-hero__title {
+	margin: 0;
+	width: 243px;
+	text-transform: uppercase;
+}
+
+.custom-membership-hero__arrows {
+	display: flex;
+	align-items: flex-end;
+	gap: 24px;
+}
+
+.custom-membership-hero__arrow {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 56px;
+	height: 56px;
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
+	box-shadow: 0 4px 10px rgba( 0, 0, 0, 0.06 );
+	cursor: pointer;
+	transition:
+		background-color 300ms ease-in-out,
+		opacity 300ms ease-in-out;
+}
+
+.custom-membership-hero__arrow[disabled] {
+	cursor: default;
+}
+
+.custom-membership-hero__arrow svg {
+	display: block;
+	width: 56px;
+	height: 56px;
+}
+
+.custom-membership-hero__arrow--next svg {
+	transform: scaleX( -1 );
+}
+
+.custom-membership-hero__join {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	height: 48px;
+	padding: 16px 24px;
+	border: 0;
+	border-radius: 24px;
+	color: inherit;
+	text-decoration: none;
+	white-space: nowrap;
+	box-sizing: border-box;
+	transition: opacity 300ms ease-in-out;
+}
+
+.custom-membership-hero__join:hover {
+	opacity: 0.85;
+}
+
+/* The plans themselves. */
+.custom-membership-hero__track {
+	display: flex;
+	align-items: flex-start;
+	gap: 27px;
+	transition: transform 500ms ease-in-out;
+	will-change: transform;
+}
+
+.custom-membership-hero__card {
+	position: relative;
+	flex: 0 0 430px;
+	width: 430px;
+	height: 532px;
+	border-radius: 24px;
+	overflow: hidden;
+}
+
+.custom-membership-hero__words {
+	position: absolute;
+	top: 26px;
+	left: 28px;
+	right: 28px;
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	gap: 24px;
+}
+
+.custom-membership-hero__head {
+	display: flex;
+	align-items: flex-end;
+	justify-content: space-between;
+	height: 50px;
+}
+
+.custom-membership-hero__name {
+	margin: 0;
+	text-transform: uppercase;
+}
+
+/* The house mark, carried by the build rather than uploaded. */
+.custom-membership-hero__badge {
+	flex: 0 0 auto;
+	width: 53px;
+	height: 50px;
+	-webkit-mask-image: url( "../img/event-badge.webp" );
+	mask-image: url( "../img/event-badge.webp" );
+	-webkit-mask-size: contain;
+	mask-size: contain;
+	-webkit-mask-repeat: no-repeat;
+	mask-repeat: no-repeat;
+	-webkit-mask-position: center;
+	mask-position: center;
+}
+
+.custom-membership-hero__rule {
+	height: 1px;
+	background-color: currentColor;
+}
+
+.custom-membership-hero__features {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 16px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.custom-membership-hero__feature {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	width: 100%;
+}
+
+.custom-membership-hero__feature svg {
+	display: block;
+	flex: 0 0 auto;
+	width: 24px;
+	height: 24px;
+	fill: currentColor;
+}
+
+.custom-membership-hero__feature-text {
+	width: 165px;
+}
+
+/* The card the plan carries a picture of. */
+.custom-membership-hero__picture {
+	position: absolute;
+	top: 247px;
+	left: 3px;
+	width: 424px;
+	height: 280px;
+	border-radius: 24px;
+	overflow: hidden;
+}
+
+.custom-membership-hero__picture img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
+}
+
+@media ( prefers-reduced-motion: reduce ) {
+	.custom-membership-hero__track,
+	.custom-membership-hero__arrow,
+	.custom-membership-hero__join {
+		transition: none;
+	}
+}
