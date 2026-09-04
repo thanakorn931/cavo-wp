@@ -534,3 +534,824 @@ function kadence_child_edit_screen_script() {
  * The plugin's primary-term radios, turned off through its own filter.
  */
 add_filter( 'rank_math/admin/disable_primary_term', '__return_true' );
+
+/**
+ * The forms, and the inbox behind them.
+ *
+ * One menu holds all of it: the messages that have come in, the editor that
+ * says what a form asks, the settings that say what happens when one is sent,
+ * and the captcha keys, which are the domain's rather than any one form's.
+ */
+
+/**
+ * Where the messages live.
+ *
+ * A message is a record, not something anybody writes: the post type is shut to
+ * the public, to queries, to REST and to search, and the screen that lists them
+ * adds nothing.
+ */
+function kadence_child_message_post_type() {
+	register_post_type(
+		'cavo_message',
+		array(
+			'labels'              => array(
+				'name'          => esc_html__( 'Inbox', 'kadence-child' ),
+				'singular_name' => esc_html__( 'Message', 'kadence-child' ),
+				'menu_name'     => esc_html__( 'Inbox', 'kadence-child' ),
+				'search_items'  => esc_html__( 'Search messages', 'kadence-child' ),
+				'not_found'     => esc_html__( 'No messages yet', 'kadence-child' ),
+			),
+			'public'              => false,
+			'publicly_queryable'  => false,
+			'exclude_from_search' => true,
+			'show_ui'             => true,
+			'show_in_menu'        => 'cavo-form',
+			'show_in_rest'        => false,
+			'has_archive'         => false,
+			'rewrite'             => false,
+			'query_var'           => false,
+			'supports'            => array( 'title' ),
+			'capabilities'        => array( 'create_posts' => 'do_not_allow' ),
+			'map_meta_cap'        => true,
+		)
+	);
+}
+add_action( 'init', 'kadence_child_message_post_type' );
+
+/**
+ * The forms the site has, by name.
+ *
+ * Everything else on the menu is registered from this list, so adding a form is
+ * adding a name here and nothing more.
+ *
+ * @return array Slug to name.
+ */
+function kadence_child_forms() {
+	$forms = array();
+
+	if ( ! function_exists( 'get_field' ) ) {
+		return $forms;
+	}
+
+	foreach ( (array) get_field( 'forms', 'option' ) as $row ) {
+		$name = isset( $row['form_name'] ) ? trim( (string) $row['form_name'] ) : '';
+
+		if ( '' === $name ) {
+			continue;
+		}
+
+		$forms[ sanitize_title( $name ) ] = $name;
+	}
+
+	return $forms;
+}
+
+/**
+ * The menu: the inbox, an editor, the settings, and the keys.
+ *
+ * With one form the editor and the settings are a page each. With more than one
+ * the editor becomes a page per form and the settings grow a tab per form, so
+ * the shape of the menu follows the number of forms rather than the other way
+ * round.
+ */
+function kadence_child_form_pages() {
+	if ( ! function_exists( 'acf_add_options_page' ) ) {
+		return;
+	}
+
+	acf_add_options_page(
+		array(
+			'page_title' => esc_html__( 'WP Form', 'kadence-child' ),
+			'menu_title' => esc_html__( 'WP Form', 'kadence-child' ),
+			'menu_slug'  => 'cavo-form',
+			'capability' => 'manage_options',
+			'icon_url'   => 'dashicons-email-alt',
+			'position'   => 26,
+			'redirect'   => false,
+		)
+	);
+
+	$forms = kadence_child_forms();
+
+	if ( count( $forms ) > 1 ) {
+		foreach ( $forms as $slug => $name ) {
+			acf_add_options_sub_page(
+				array(
+					/* translators: %s: the form's name. */
+					'page_title'  => sprintf( esc_html__( '%s form editor', 'kadence-child' ), $name ),
+					'menu_title'  => sprintf( esc_html__( '%s form editor', 'kadence-child' ), $name ),
+					'menu_slug'   => 'cavo-form-editor-' . $slug,
+					'parent_slug' => 'cavo-form',
+					'capability'  => 'manage_options',
+				)
+			);
+		}
+	} else {
+		acf_add_options_sub_page(
+			array(
+				'page_title'  => esc_html__( 'Form editor', 'kadence-child' ),
+				'menu_title'  => esc_html__( 'Form editor', 'kadence-child' ),
+				'menu_slug'   => 'cavo-form-editor',
+				'parent_slug' => 'cavo-form',
+				'capability'  => 'manage_options',
+			)
+		);
+	}
+
+	acf_add_options_sub_page(
+		array(
+			'page_title'  => esc_html__( 'Settings', 'kadence-child' ),
+			'menu_title'  => esc_html__( 'Settings', 'kadence-child' ),
+			'menu_slug'   => 'cavo-form-settings',
+			'parent_slug' => 'cavo-form',
+			'capability'  => 'manage_options',
+		)
+	);
+
+	acf_add_options_sub_page(
+		array(
+			'page_title'  => esc_html__( 'reCAPTCHA', 'kadence-child' ),
+			'menu_title'  => esc_html__( 'reCAPTCHA', 'kadence-child' ),
+			'menu_slug'   => 'cavo-form-recaptcha',
+			'parent_slug' => 'cavo-form',
+			'capability'  => 'manage_options',
+		)
+	);
+}
+add_action( 'acf/init', 'kadence_child_form_pages' );
+
+/**
+ * The inbox stands first on the menu, whatever order the pages registered in.
+ */
+function kadence_child_form_menu_order() {
+	global $submenu;
+
+	if ( empty( $submenu['cavo-form'] ) ) {
+		return;
+	}
+
+	$inbox = array();
+	$rest  = array();
+
+	foreach ( $submenu['cavo-form'] as $item ) {
+		if ( isset( $item[2] ) && false !== strpos( $item[2], 'post_type=cavo_message' ) ) {
+			$inbox[] = $item;
+		} elseif ( isset( $item[2] ) && 'cavo-form' !== $item[2] ) {
+			$rest[] = $item;
+		}
+	}
+
+	$submenu['cavo-form'] = array_merge( $inbox, $rest ); // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- the menu is ours to order.
+}
+add_action( 'admin_menu', 'kadence_child_form_menu_order', 999 );
+
+/**
+ * What a form asks, and what happens when one is sent.
+ *
+ * The fields are the client's to arrange; the settings are the client's to
+ * word. Nothing here is a field on the page that shows the form.
+ */
+function kadence_child_form_fields() {
+	if ( ! function_exists( 'acf_add_local_field_group' ) ) {
+		return;
+	}
+
+	$forms = kadence_child_forms();
+
+	// The list every other screen is built from.
+	acf_add_local_field_group(
+		array(
+			'key'      => 'group_cavo_forms',
+			'title'    => esc_html__( 'Forms', 'kadence-child' ),
+			'location' => array( array( array( 'param' => 'options_page', 'operator' => '==', 'value' => 'cavo-form' ) ) ),
+			'fields'   => array(
+				array(
+					'key'          => 'field_cavo_forms',
+					'label'        => esc_html__( 'Forms', 'kadence-child' ),
+					'name'         => 'forms',
+					'type'         => 'repeater',
+					'layout'       => 'block',
+					'collapsed'    => 'field_cavo_form_name',
+					'button_label' => esc_html__( 'Add form', 'kadence-child' ),
+					'sub_fields'   => array(
+						array(
+							'key'      => 'field_cavo_form_name',
+							'label'    => esc_html__( 'Name', 'kadence-child' ),
+							'name'     => 'form_name',
+							'type'     => 'text',
+							'required' => 1,
+						),
+					),
+				),
+			),
+		)
+	);
+
+	// One editor for the one form, or one for each of several.
+	if ( count( $forms ) > 1 ) {
+		foreach ( $forms as $slug => $name ) {
+			acf_add_local_field_group( kadence_child_form_editor_group( $slug, $name, 'cavo-form-editor-' . $slug ) );
+		}
+	} else {
+		$slug = key( $forms );
+		$slug = $slug ? $slug : 'form';
+
+		acf_add_local_field_group( kadence_child_form_editor_group( $slug, current( $forms ), 'cavo-form-editor' ) );
+	}
+
+	acf_add_local_field_group( kadence_child_form_settings_group( $forms ) );
+
+	// The keys are the domain's, once for the site.
+	acf_add_local_field_group(
+		array(
+			'key'      => 'group_cavo_recaptcha',
+			'title'    => esc_html__( 'reCAPTCHA', 'kadence-child' ),
+			'location' => array( array( array( 'param' => 'options_page', 'operator' => '==', 'value' => 'cavo-form-recaptcha' ) ) ),
+			'fields'   => array(
+				array(
+					'key'   => 'field_cavo_v2_site',
+					'label' => esc_html__( 'v2 site key', 'kadence-child' ),
+					'name'  => 'recaptcha_v2_site',
+					'type'  => 'text',
+				),
+				array(
+					'key'   => 'field_cavo_v2_secret',
+					'label' => esc_html__( 'v2 secret key', 'kadence-child' ),
+					'name'  => 'recaptcha_v2_secret',
+					'type'  => 'text',
+				),
+				array(
+					'key'   => 'field_cavo_v3_site',
+					'label' => esc_html__( 'v3 site key', 'kadence-child' ),
+					'name'  => 'recaptcha_v3_site',
+					'type'  => 'text',
+				),
+				array(
+					'key'   => 'field_cavo_v3_secret',
+					'label' => esc_html__( 'v3 secret key', 'kadence-child' ),
+					'name'  => 'recaptcha_v3_secret',
+					'type'  => 'text',
+				),
+				array(
+					'key'           => 'field_cavo_v3_threshold',
+					'label'         => esc_html__( 'v3 threshold', 'kadence-child' ),
+					'name'          => 'recaptcha_v3_threshold',
+					'type'          => 'number',
+					'min'           => 0,
+					'max'           => 1,
+					'step'          => 0.1,
+					'default_value' => 0.5,
+				),
+			),
+		)
+	);
+}
+add_action( 'acf/init', 'kadence_child_form_fields', 20 );
+
+/**
+ * One form's fields, on its own editor page.
+ *
+ * @param string $slug The form's slug.
+ * @param string $name The form's name.
+ * @param string $page The options page it sits on.
+ * @return array
+ */
+function kadence_child_form_editor_group( $slug, $name, $page ) {
+	return array(
+		'key'      => 'group_cavo_editor_' . $slug,
+		'title'    => $name ? $name : esc_html__( 'Fields', 'kadence-child' ),
+		'location' => array( array( array( 'param' => 'options_page', 'operator' => '==', 'value' => $page ) ) ),
+		'fields'   => array(
+			array(
+				'key'          => 'field_cavo_fields_' . $slug,
+				'label'        => esc_html__( 'Fields', 'kadence-child' ),
+				'name'         => 'form_fields_' . $slug,
+				'type'         => 'repeater',
+				'layout'       => 'block',
+				'collapsed'    => 'field_cavo_label_' . $slug,
+				'button_label' => esc_html__( 'Add field', 'kadence-child' ),
+				'sub_fields'   => array(
+					array(
+						'key'      => 'field_cavo_label_' . $slug,
+						'label'    => esc_html__( 'Label', 'kadence-child' ),
+						'name'     => 'label',
+						'type'     => 'text',
+						'required' => 1,
+					),
+					array(
+						'key'           => 'field_cavo_type_' . $slug,
+						'label'         => esc_html__( 'Type', 'kadence-child' ),
+						'name'          => 'type',
+						'type'          => 'select',
+						'default_value' => 'text',
+						'choices'       => array(
+							'text'     => esc_html__( 'Text', 'kadence-child' ),
+							'email'    => esc_html__( 'Email', 'kadence-child' ),
+							'tel'      => esc_html__( 'Phone', 'kadence-child' ),
+							'select'   => esc_html__( 'Choice', 'kadence-child' ),
+							'date'     => esc_html__( 'Date', 'kadence-child' ),
+							'textarea' => esc_html__( 'Message', 'kadence-child' ),
+						),
+					),
+					array(
+						'key'           => 'field_cavo_width_' . $slug,
+						'label'         => esc_html__( 'Width', 'kadence-child' ),
+						'name'          => 'width',
+						'type'          => 'select',
+						'default_value' => '100',
+						'choices'       => array(
+							'50'  => '50%',
+							'100' => '100%',
+						),
+					),
+					array(
+						'key'           => 'field_cavo_required_' . $slug,
+						'label'         => esc_html__( 'Required', 'kadence-child' ),
+						'name'          => 'required',
+						'type'          => 'true_false',
+						'ui'            => 1,
+						'default_value' => 0,
+					),
+					array(
+						'key'   => 'field_cavo_placeholder_' . $slug,
+						'label' => esc_html__( 'Placeholder', 'kadence-child' ),
+						'name'  => 'placeholder',
+						'type'  => 'text',
+					),
+					array(
+						'key'               => 'field_cavo_choices_' . $slug,
+						'label'             => esc_html__( 'Choices', 'kadence-child' ),
+						'name'              => 'choices',
+						'type'              => 'textarea',
+						'rows'              => 5,
+						'conditional_logic' => array(
+							array(
+								array(
+									'field'    => 'field_cavo_type_' . $slug,
+									'operator' => '==',
+									'value'    => 'select',
+								),
+							),
+						),
+					),
+				),
+			),
+		),
+	);
+}
+
+/**
+ * What happens when a form is sent: three sections, in this order.
+ *
+ * @param array $forms Slug to name.
+ * @return array
+ */
+function kadence_child_form_settings_group( $forms ) {
+	$fields = array();
+	$many   = count( $forms ) > 1;
+
+	if ( empty( $forms ) ) {
+		$forms = array( 'form' => '' );
+	}
+
+	foreach ( $forms as $slug => $name ) {
+		if ( $many ) {
+			$fields[] = array(
+				'key'   => 'field_cavo_tab_' . $slug,
+				/* translators: %s: the form's name. */
+				'label' => sprintf( esc_html__( '%s form', 'kadence-child' ), $name ),
+				'type'  => 'tab',
+			);
+		}
+
+		$fields = array_merge( $fields, kadence_child_form_settings_fields( $slug ) );
+	}
+
+	return array(
+		'key'      => 'group_cavo_settings',
+		'title'    => esc_html__( 'Settings', 'kadence-child' ),
+		'location' => array( array( array( 'param' => 'options_page', 'operator' => '==', 'value' => 'cavo-form-settings' ) ) ),
+		'fields'   => $fields,
+	);
+}
+
+/**
+ * One form's three sections.
+ *
+ * @param string $slug The form's slug.
+ * @return array
+ */
+function kadence_child_form_settings_fields( $slug ) {
+	return array(
+		array(
+			'key'   => 'field_cavo_notifications_' . $slug,
+			'label' => esc_html__( 'Notifications', 'kadence-child' ),
+			'type'  => 'message',
+			'message' => esc_html__( 'The team always receives the answers. The copy to whoever wrote them is a courtesy on top of that.', 'kadence-child' ),
+		),
+		array(
+			'key'          => 'field_cavo_team_' . $slug,
+			'label'        => esc_html__( 'Team', 'kadence-child' ),
+			'name'         => 'team_to_' . $slug,
+			'type'         => 'text',
+			'instructions' => '',
+			'placeholder'  => 'name@example.com',
+		),
+		array(
+			'key'           => 'field_cavo_client_copy_' . $slug,
+			'label'         => esc_html__( 'Client — send a copy', 'kadence-child' ),
+			'name'          => 'client_copy_' . $slug,
+			'type'          => 'true_false',
+			'ui'            => 1,
+			'default_value' => 1,
+		),
+		array(
+			'key'           => 'field_cavo_client_answers_' . $slug,
+			'label'         => esc_html__( 'Client — attach their answers', 'kadence-child' ),
+			'name'          => 'client_answers_' . $slug,
+			'type'          => 'true_false',
+			'ui'            => 1,
+			'default_value' => 0,
+		),
+		array(
+			'key'   => 'field_cavo_result_' . $slug,
+			'label' => esc_html__( 'Submit result', 'kadence-child' ),
+			'type'  => 'message',
+			'message' => '',
+		),
+		array(
+			'key'   => 'field_cavo_success_' . $slug,
+			'label' => esc_html__( 'Success', 'kadence-child' ),
+			'name'  => 'success_' . $slug,
+			'type'  => 'text',
+		),
+		array(
+			'key'   => 'field_cavo_fail_' . $slug,
+			'label' => esc_html__( 'Fail', 'kadence-child' ),
+			'name'  => 'fail_' . $slug,
+			'type'  => 'text',
+		),
+		array(
+			'key'   => 'field_cavo_captcha_' . $slug,
+			'label' => esc_html__( 'reCAPTCHA', 'kadence-child' ),
+			'type'  => 'message',
+			'message' => esc_html__( 'A version chosen with no keys behind it means off.', 'kadence-child' ),
+		),
+		array(
+			'key'           => 'field_cavo_version_' . $slug,
+			'label'         => esc_html__( 'Version', 'kadence-child' ),
+			'name'          => 'captcha_version_' . $slug,
+			'type'          => 'select',
+			'default_value' => 'off',
+			'choices'       => array(
+				'off' => esc_html__( 'Off', 'kadence-child' ),
+				'v2'  => esc_html__( 'v2 checkbox', 'kadence-child' ),
+				'v3'  => esc_html__( 'v3', 'kadence-child' ),
+			),
+		),
+	);
+}
+
+/**
+ * One form's definition, as the client left it.
+ *
+ * @param string $slug The form's slug.
+ * @return array
+ */
+function kadence_child_form_definition( $slug ) {
+	if ( ! function_exists( 'get_field' ) ) {
+		return array();
+	}
+
+	return (array) get_field( 'form_fields_' . $slug, 'option' );
+}
+
+/**
+ * What comes in when a form is sent.
+ *
+ * The row is the record and the email a courtesy on top of it, so the answers
+ * are stored before anything is sent and a notification that never leaves
+ * cannot lose the enquiry.
+ */
+function kadence_child_form_submit() {
+	$slug  = isset( $_POST['cavo_form'] ) ? sanitize_title( wp_unslash( $_POST['cavo_form'] ) ) : '';
+	$forms = kadence_child_forms();
+	$name  = isset( $forms[ $slug ] ) ? $forms[ $slug ] : '';
+	$back  = wp_get_referer() ? wp_get_referer() : home_url( '/' );
+
+	if ( '' === $slug || ! isset( $_POST['cavo_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['cavo_nonce'] ) ), 'cavo_form_' . $slug ) ) {
+		wp_safe_redirect( add_query_arg( 'sent', 'no', $back ) );
+		exit;
+	}
+
+	// A field the form does not ask for is not an answer.
+	$definition = kadence_child_form_definition( $slug );
+	$answers    = array();
+	$sender     = '';
+
+	foreach ( $definition as $index => $field ) {
+		$label = isset( $field['label'] ) ? trim( (string) $field['label'] ) : '';
+
+		if ( '' === $label ) {
+			continue;
+		}
+
+		$key   = 'field_' . $index;
+		$value = isset( $_POST[ $key ] ) ? wp_unslash( $_POST[ $key ] ) : '';
+		$value = 'textarea' === $field['type'] ? sanitize_textarea_field( $value ) : sanitize_text_field( $value );
+
+		if ( ! empty( $field['required'] ) && '' === $value ) {
+			wp_safe_redirect( add_query_arg( 'sent', 'no', $back ) );
+			exit;
+		}
+
+		if ( '' === $sender && 'email' === $field['type'] && is_email( $value ) ) {
+			$sender = $value;
+		}
+
+		$answers[] = array(
+			'label' => $label,
+			'value' => $value,
+		);
+	}
+
+	// Store first.
+	$message = wp_insert_post(
+		array(
+			'post_type'   => 'cavo_message',
+			'post_status' => 'publish',
+			'post_title'  => trim( $name . ' — ' . ( '' !== $sender ? $sender : __( 'no address', 'kadence-child' ) ) ),
+		),
+		true
+	);
+
+	if ( is_wp_error( $message ) ) {
+		wp_safe_redirect( add_query_arg( 'sent', 'no', $back ) );
+		exit;
+	}
+
+	update_post_meta( $message, 'cavo_form_slug', $slug );
+	update_post_meta( $message, 'cavo_form_name', $name );
+	update_post_meta( $message, 'cavo_sender', $sender );
+	update_post_meta( $message, 'cavo_answers', wp_json_encode( $answers ) );
+	update_post_meta( $message, 'cavo_unread', 1 );
+
+	// Mail second.
+	kadence_child_form_mail( $slug, $name, $sender, $answers, $message );
+
+	wp_safe_redirect( add_query_arg( 'sent', 'yes', $back ) );
+	exit;
+}
+add_action( 'admin_post_nopriv_cavo_form', 'kadence_child_form_submit' );
+add_action( 'admin_post_cavo_form', 'kadence_child_form_submit' );
+
+/**
+ * The two emails. They are not one email with different words.
+ *
+ * The team always receives the answers, and its subject carries the form's name
+ * and whoever wrote them. The copy back is a courtesy, and carries the answers
+ * only where that has been asked for.
+ *
+ * @param string $slug    The form's slug.
+ * @param string $name    The form's name.
+ * @param string $sender  Whoever wrote them, where they gave an address.
+ * @param array  $answers What they wrote.
+ * @param int    $message The record already stored.
+ */
+function kadence_child_form_mail( $slug, $name, $sender, $answers, $message ) {
+	$domain = wp_parse_url( home_url(), PHP_URL_HOST );
+	$domain = preg_replace( '/^www\./', '', (string) $domain );
+
+	// From is the domain. The sender's own address goes in Reply-To, where it
+	// does not stop the mail arriving at all.
+	$headers = array( sprintf( 'From: %s <no-reply@%s>', wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES ), $domain ) );
+
+	if ( '' !== $sender ) {
+		$headers[] = 'Reply-To: ' . $sender;
+	}
+
+	$body = '';
+
+	foreach ( $answers as $answer ) {
+		$body .= $answer['label'] . ': ' . $answer['value'] . "\r\n";
+	}
+
+	$team = function_exists( 'get_field' ) ? trim( (string) get_field( 'team_to_' . $slug, 'option' ) ) : '';
+	$team = '' !== $team ? $team : get_option( 'admin_email' );
+
+	$sent = wp_mail(
+		$team,
+		/* translators: 1: the form's name, 2: whoever sent it. */
+		sprintf( __( '%1$s — %2$s', 'kadence-child' ), $name, '' !== $sender ? $sender : __( 'no address', 'kadence-child' ) ),
+		$body,
+		$headers
+	);
+
+	update_post_meta( $message, 'cavo_team_mail', $sent ? 1 : 0 );
+
+	if ( '' === $sender || ! function_exists( 'get_field' ) || ! get_field( 'client_copy_' . $slug, 'option' ) ) {
+		return;
+	}
+
+	$copy = get_field( 'client_answers_' . $slug, 'option' ) ? $body : '';
+
+	update_post_meta(
+		$message,
+		'cavo_client_mail',
+		wp_mail(
+			$sender,
+			/* translators: %s: the form's name. */
+			sprintf( __( '%s — we have your message', 'kadence-child' ), $name ),
+			$copy,
+			$headers
+		) ? 1 : 0
+	);
+}
+
+/**
+ * The inbox is a list of messages, not a list of posts.
+ *
+ * One inbox holds every form's, so it says which form each came from. What is
+ * unread is said with a dot and a count, and reading one is a row action and a
+ * bulk action rather than an edit.
+ */
+function kadence_child_inbox_columns( $columns ) {
+	return array(
+		'cb'          => isset( $columns['cb'] ) ? $columns['cb'] : '',
+		'cavo_unread' => '<span class="screen-reader-text">' . esc_html__( 'Unread', 'kadence-child' ) . '</span>',
+		'title'       => esc_html__( 'Message', 'kadence-child' ),
+		'cavo_form'   => esc_html__( 'Form', 'kadence-child' ),
+		'cavo_sender' => esc_html__( 'From', 'kadence-child' ),
+		'date'        => esc_html__( 'Received', 'kadence-child' ),
+	);
+}
+add_filter( 'manage_cavo_message_posts_columns', 'kadence_child_inbox_columns' );
+
+/**
+ * What each column says.
+ *
+ * @param string $column  The column.
+ * @param int    $post_id The message.
+ */
+function kadence_child_inbox_column( $column, $post_id ) {
+	if ( 'cavo_unread' === $column ) {
+		echo get_post_meta( $post_id, 'cavo_unread', true ) ? '<span class="cavo-unread" aria-label="' . esc_attr__( 'Unread', 'kadence-child' ) . '"></span>' : '';
+	}
+
+	if ( 'cavo_form' === $column ) {
+		echo esc_html( get_post_meta( $post_id, 'cavo_form_name', true ) );
+	}
+
+	if ( 'cavo_sender' === $column ) {
+		echo esc_html( get_post_meta( $post_id, 'cavo_sender', true ) );
+	}
+}
+add_action( 'manage_cavo_message_posts_custom_column', 'kadence_child_inbox_column', 10, 2 );
+
+/**
+ * The dot, and how many are still wearing one.
+ */
+function kadence_child_inbox_css() {
+	$screen = get_current_screen();
+
+	if ( ! $screen || 'edit-cavo_message' !== $screen->id ) {
+		return;
+	}
+
+	echo '<style>.column-cavo_unread{width:24px}.cavo-unread{display:inline-block;width:8px;height:8px;border-radius:50%;background:#d63638}</style>';
+}
+add_action( 'admin_head', 'kadence_child_inbox_css' );
+
+/**
+ * How many are unread, beside the menu.
+ */
+function kadence_child_inbox_count() {
+	global $menu, $submenu;
+
+	$unread = get_posts(
+		array(
+			'post_type'      => 'cavo_message',
+			'post_status'    => 'publish',
+			'posts_per_page' => 100,
+			'fields'         => 'ids',
+			'meta_key'       => 'cavo_unread', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+			'meta_value'     => 1, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value
+			'no_found_rows'  => true,
+		)
+	);
+
+	if ( empty( $unread ) ) {
+		return;
+	}
+
+	$bubble = ' <span class="awaiting-mod"><span class="pending-count">' . count( $unread ) . '</span></span>';
+
+	foreach ( (array) $menu as $index => $item ) {
+		if ( isset( $item[2] ) && 'cavo-form' === $item[2] ) {
+			$menu[ $index ][0] .= $bubble; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- the menu is ours to mark.
+		}
+	}
+
+	if ( empty( $submenu['cavo-form'] ) ) {
+		return;
+	}
+
+	foreach ( $submenu['cavo-form'] as $index => $item ) {
+		if ( isset( $item[2] ) && false !== strpos( $item[2], 'post_type=cavo_message' ) ) {
+			$submenu['cavo-form'][ $index ][0] .= $bubble; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- the menu is ours to mark.
+		}
+	}
+}
+add_action( 'admin_menu', 'kadence_child_inbox_count', 1000 );
+
+/**
+ * Reading one is an action on the row, not an edit.
+ *
+ * @param array    $actions What the row offers.
+ * @param \WP_Post $post    The message.
+ * @return array
+ */
+function kadence_child_inbox_actions( $actions, $post ) {
+	if ( 'cavo_message' !== $post->post_type ) {
+		return $actions;
+	}
+
+	unset( $actions['inline hide-if-no-js'] );
+
+	if ( get_post_meta( $post->ID, 'cavo_unread', true ) ) {
+		$actions['cavo_read'] = sprintf(
+			'<a href="%s">%s</a>',
+			esc_url(
+				wp_nonce_url(
+					add_query_arg(
+						array(
+							'post_type'  => 'cavo_message',
+							'cavo_read'  => $post->ID,
+						),
+						admin_url( 'edit.php' )
+					),
+					'cavo_read_' . $post->ID
+				)
+			),
+			esc_html__( 'Mark as read', 'kadence-child' )
+		);
+	}
+
+	return $actions;
+}
+add_filter( 'post_row_actions', 'kadence_child_inbox_actions', 10, 2 );
+
+/**
+ * And a bulk action beside it.
+ *
+ * @param array $actions What the screen offers.
+ * @return array
+ */
+function kadence_child_inbox_bulk( $actions ) {
+	$actions['cavo_read'] = esc_html__( 'Mark as read', 'kadence-child' );
+
+	return $actions;
+}
+add_filter( 'bulk_actions-edit-cavo_message', 'kadence_child_inbox_bulk' );
+
+/**
+ * Marking them, one or many.
+ *
+ * @param string $redirect Where the screen goes next.
+ * @param string $action   What was asked for.
+ * @param array  $ids      Which messages.
+ * @return string
+ */
+function kadence_child_inbox_bulk_handle( $redirect, $action, $ids ) {
+	if ( 'cavo_read' !== $action ) {
+		return $redirect;
+	}
+
+	foreach ( (array) $ids as $id ) {
+		delete_post_meta( (int) $id, 'cavo_unread' );
+	}
+
+	return $redirect;
+}
+add_filter( 'handle_bulk_actions-edit-cavo_message', 'kadence_child_inbox_bulk_handle', 10, 3 );
+
+/**
+ * The row action's own answer.
+ */
+function kadence_child_inbox_read() {
+	if ( ! isset( $_GET['cavo_read'] ) ) {
+		return;
+	}
+
+	$id = (int) $_GET['cavo_read'];
+
+	if ( ! current_user_can( 'edit_posts' ) || ! isset( $_GET['_wpnonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'cavo_read_' . $id ) ) {
+		return;
+	}
+
+	delete_post_meta( $id, 'cavo_unread' );
+
+	wp_safe_redirect( remove_query_arg( array( 'cavo_read', '_wpnonce' ) ) );
+	exit;
+}
+add_action( 'admin_init', 'kadence_child_inbox_read' );
