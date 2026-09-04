@@ -1,0 +1,79 @@
+/**
+ * Nightlife, atmosphere — one section of the design.
+ *
+ * A row of pictures wider than the band, moved by taking hold of it. No arrows:
+ * the row is the control.
+ */
+
+.custom-nightlife-carousel {
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	gap: 16px;
+	width: 100%;
+	padding: 96px 0 64px 0;
+	box-sizing: border-box;
+
+	background-image: linear-gradient( 180deg, #29180e 0%, #e8e4db 100% );
+}
+
+.custom-nightlife-carousel__heading {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin: 0;
+	padding: 10px 64px;
+	text-align: center;
+	text-transform: uppercase;
+}
+
+.custom-nightlife-carousel__stage {
+	width: 100%;
+	height: 640px;
+	overflow-x: auto;
+	overflow-y: hidden;
+	scrollbar-width: none;
+	-ms-overflow-style: none;
+	cursor: grab;
+	overscroll-behavior-x: contain;
+}
+
+.custom-nightlife-carousel__stage::-webkit-scrollbar {
+	display: none;
+}
+
+.custom-nightlife-carousel__stage.is-holding {
+	cursor: grabbing;
+}
+
+.custom-nightlife-carousel__track {
+	display: flex;
+	align-items: center;
+	gap: 48px;
+	width: max-content;
+	height: 640px;
+
+	/* Half a card either side, so the first and the last can stand in the
+	   middle of the band like the ones between them. */
+	padding: 0 calc( 50% - 420px );
+}
+
+.custom-nightlife-carousel__slide {
+	position: relative;
+	flex: 0 0 auto;
+	width: 840px;
+	height: 560px;
+	border-radius: 24px;
+	overflow: hidden;
+}
+
+.custom-nightlife-carousel__slide img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
+	-webkit-user-drag: none;
+	user-select: none;
+	pointer-events: none;
+}

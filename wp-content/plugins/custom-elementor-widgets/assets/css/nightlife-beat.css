@@ -1,0 +1,219 @@
+/**
+ * Nightlife, hall of beats — one section of the design.
+ *
+ * A row of cards that runs off the edge of the band, moved one card at a time.
+ * Each card is a picture in a metal edge with the house mark on it. The strip
+ * of picture beneath closes the band; it is the design's own.
+ */
+
+.custom-nightlife-beat__band {
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	gap: 40px;
+	width: 100%;
+	padding: 90px 0 48px 0;
+	box-sizing: border-box;
+
+	background-image:
+		linear-gradient( rgba( 0, 0, 0, 0.2 ), rgba( 0, 0, 0, 0.2 ) ),
+		linear-gradient( 0deg, #3a2114 10.033%, #64311a 99.702% );
+}
+
+.custom-nightlife-beat__heading {
+	margin: 0 0 0 48px;
+	text-transform: uppercase;
+}
+
+/* The band the cards run through. */
+.custom-nightlife-beat__stage {
+	width: 100%;
+	height: 547px;
+	padding-top: 49px;
+	box-sizing: border-box;
+	overflow: hidden;
+}
+
+.custom-nightlife-beat__track {
+	display: flex;
+	align-items: flex-start;
+	gap: 18px;
+	padding-left: 48px;
+	transition: transform 500ms ease-in-out;
+	will-change: transform;
+}
+
+/* One card: a metal edge, and the picture set into it. */
+.custom-nightlife-beat__card {
+	position: relative;
+	flex: 0 0 auto;
+	width: 346px;
+	height: 450px;
+	border-radius: 24px;
+
+	background-image: linear-gradient(
+		-36.817deg,
+		#3a2114 0.483%,
+		#d4c894 50%,
+		#faf6ea 99.517%
+	);
+}
+
+.custom-nightlife-beat__inner {
+	position: absolute;
+	top: 8px;
+	left: 6px;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	justify-content: flex-end;
+	width: 334px;
+	height: 434px;
+	padding: 332px 172px 40px 30px;
+	border-radius: 16px;
+	box-sizing: border-box;
+	overflow: hidden;
+}
+
+.custom-nightlife-beat__picture,
+.custom-nightlife-beat__veil {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+}
+
+.custom-nightlife-beat__picture img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
+}
+
+.custom-nightlife-beat__veil {
+	background-image: linear-gradient(
+		0deg,
+		rgba( 0, 0, 0, 0.8 ) 20.363%,
+		rgba( 255, 255, 255, 0 ) 72.694%
+	);
+}
+
+.custom-nightlife-beat__words {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 8px;
+}
+
+.custom-nightlife-beat__name,
+.custom-nightlife-beat__note {
+	margin: 0;
+	white-space: nowrap;
+}
+
+.custom-nightlife-beat__name {
+	text-transform: uppercase;
+}
+
+.custom-nightlife-beat__chips {
+	display: flex;
+	align-items: flex-start;
+	gap: 8px;
+}
+
+.custom-nightlife-beat__chip {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	height: 31px;
+	padding: 10px;
+	border: 1px solid currentColor;
+	color: inherit;
+	text-decoration: none;
+	white-space: nowrap;
+	box-sizing: border-box;
+}
+
+.custom-nightlife-beat__chip svg {
+	display: block;
+	flex: 0 0 auto;
+	width: 20px;
+	height: 20px;
+	fill: currentColor;
+}
+
+/* The house mark, carried by the build rather than uploaded. */
+.custom-nightlife-beat__badge {
+	position: absolute;
+	top: 24px;
+	right: 22px;
+	width: 53px;
+	height: 50px;
+	background-image: url( "../img/event-badge.webp" );
+	background-repeat: no-repeat;
+	background-size: contain;
+	background-position: center;
+	pointer-events: none;
+}
+
+/* The two arrows, at the end of the band. */
+.custom-nightlife-beat__actions {
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	gap: 24px;
+	width: 100%;
+	margin-top: -30px;
+	padding-right: 48px;
+	box-sizing: border-box;
+}
+
+.custom-nightlife-beat__arrow {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 56px;
+	height: 56px;
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
+	box-shadow: 0 4px 10px rgba( 0, 0, 0, 0.06 );
+	cursor: pointer;
+	transition:
+		background-color 300ms ease-in-out,
+		opacity 300ms ease-in-out;
+}
+
+.custom-nightlife-beat__arrow[disabled] {
+	cursor: default;
+}
+
+.custom-nightlife-beat__arrow svg {
+	display: block;
+	width: 56px;
+	height: 56px;
+}
+
+.custom-nightlife-beat__arrow--next svg {
+	transform: scaleX( -1 );
+}
+
+/* The strip the band ends on — the design's own picture, not the client's. */
+.custom-nightlife-beat__strip {
+	display: block;
+	width: 100%;
+	aspect-ratio: 1440 / 260;
+	background-image: url( "../img/nightlife-beat-strip.webp" );
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: cover;
+}
+
+@media ( prefers-reduced-motion: reduce ) {
+	.custom-nightlife-beat__track,
+	.custom-nightlife-beat__arrow {
+		transition: none;
+	}
+}
