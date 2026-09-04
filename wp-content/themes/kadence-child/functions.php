@@ -600,7 +600,7 @@ function kadence_child_form_key( $slug ) {
  * @return string
  */
 function kadence_child_form_url( $page ) {
-	return admin_url( 'edit.php?post_type=cavo_message&page=' . $page );
+	return admin_url( 'admin.php?page=' . $page );
 }
 
 /**
@@ -658,13 +658,11 @@ function kadence_child_message_post_type() {
 			'publicly_queryable'  => false,
 			'exclude_from_search' => true,
 			'show_ui'             => true,
-			'show_in_menu'        => true,
+			'show_in_menu'        => 'cavo-form',
 			'show_in_rest'        => false,
 			'has_archive'         => false,
 			'rewrite'             => false,
 			'query_var'           => false,
-			'menu_icon'           => 'dashicons-email-alt',
-			'menu_position'       => 26,
 			'supports'            => array( 'title' ),
 			'capabilities'        => array( 'create_posts' => 'do_not_allow' ),
 			'map_meta_cap'        => true,
@@ -684,19 +682,30 @@ function kadence_child_form_pages() {
 		return;
 	}
 
+	acf_add_options_page(
+		array(
+			'page_title' => esc_html__( 'WP Form', 'kadence-child' ),
+			'menu_title' => esc_html__( 'WP Form', 'kadence-child' ),
+			'menu_slug'  => 'cavo-form',
+			'capability' => 'manage_options',
+			'icon_url'   => 'dashicons-email-alt',
+			'position'   => 26,
+			'redirect'   => false,
+		)
+	);
+
 	foreach ( kadence_child_form_tabs() as $tab ) {
 		if ( 'edit-cavo_message' === $tab['page'] ) {
 			continue;
 		}
 
-		acf_add_options_page(
+		acf_add_options_sub_page(
 			array(
-				'page_title' => $tab['label'],
-				'menu_title' => $tab['label'],
-				'menu_slug'  => $tab['page'],
-				'capability' => 'manage_options',
-				'parent_slug' => 'edit.php?post_type=cavo_message',
-				'redirect'   => false,
+				'page_title'  => $tab['label'],
+				'menu_title'  => $tab['label'],
+				'menu_slug'   => $tab['page'],
+				'capability'  => 'manage_options',
+				'parent_slug' => 'cavo-form',
 			)
 		);
 	}
@@ -708,16 +717,21 @@ add_action( 'acf/init', 'kadence_child_form_pages' );
  */
 function kadence_child_form_sidebar() {
 	foreach ( kadence_child_form_tabs() as $tab ) {
-		if ( 'edit-cavo_message' === $tab['page'] ) {
-			continue;
-		}
-
-		remove_submenu_page( 'edit.php?post_type=cavo_message', $tab['page'] );
+		remove_submenu_page( 'cavo-form', 'edit-cavo_message' === $tab['page'] ? 'edit.php?post_type=cavo_message' : $tab['page'] );
 	}
 
-	remove_submenu_page( 'edit.php?post_type=cavo_message', 'edit.php?post_type=cavo_message' );
+	remove_submenu_page( 'cavo-form', 'cavo-form' );
 }
 add_action( 'admin_menu', 'kadence_child_form_sidebar', 999 );
+
+/**
+ * The menu's name opens the first of its screens.
+ */
+function kadence_child_form_landing() {
+	wp_safe_redirect( admin_url( 'edit.php?post_type=cavo_message' ) );
+	exit;
+}
+add_action( 'load-toplevel_page_cavo-form', 'kadence_child_form_landing' );
 
 /**
  * The tabs themselves, across the top of whichever screen is open.
@@ -1783,27 +1797,3 @@ function kadence_child_message_opened( $post ) {
 }
 add_action( 'edit_form_top', 'kadence_child_message_opened' );
 
-/**
- * The address these screens were reached at before they had a parent.
- *
- * `admin.php?page=…` is refused rather than redirected by WordPress, so anyone
- * holding the old address — a bookmark, a browser's history — meets a wall.
- * Send them to where the screen actually is.
- */
-function kadence_child_form_old_url() {
-	global $pagenow;
-
-	if ( 'admin.php' !== $pagenow || ! isset( $_GET['page'] ) ) {
-		return;
-	}
-
-	$page = sanitize_key( wp_unslash( $_GET['page'] ) );
-
-	foreach ( kadence_child_form_tabs() as $tab ) {
-		if ( $tab['page'] === $page ) {
-			wp_safe_redirect( $tab['url'] );
-			exit;
-		}
-	}
-}
-add_action( 'admin_init', 'kadence_child_form_old_url' );
