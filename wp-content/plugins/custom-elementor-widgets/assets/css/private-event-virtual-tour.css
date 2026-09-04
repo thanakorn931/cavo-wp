@@ -1,0 +1,96 @@
+/**
+ * Private events, virtual tour — one section of the design.
+ *
+ * What the client puts here is a film or a picture; the band holds it either
+ * way, with the play mark in the middle and the house wordmark beneath.
+ */
+
+.custom-private-tour {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	padding-top: 96px;
+	box-sizing: border-box;
+
+	background-image: linear-gradient( 180deg, #29180e 22.134%, #e8e4db 100% );
+}
+
+.custom-private-tour__stage {
+	position: relative;
+	width: 100%;
+	height: 720px;
+	padding: 0 37px;
+	box-sizing: border-box;
+	overflow: hidden;
+}
+
+.custom-private-tour__media {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+
+.custom-private-tour__media img,
+.custom-private-tour__media video {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
+}
+
+/* The play mark, in the middle of whatever is behind it. */
+.custom-private-tour__play {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 96px;
+	height: 96px;
+	padding: 18px 16px;
+	border: 0;
+	border-radius: 64px;
+	box-sizing: border-box;
+	cursor: pointer;
+	transform: translate( -50%, -50% );
+	transition: opacity 300ms ease-in-out;
+}
+
+.custom-private-tour__play:hover {
+	opacity: 0.85;
+}
+
+.custom-private-tour__play[hidden] {
+	display: none;
+}
+
+.custom-private-tour__play svg {
+	display: block;
+	width: 24px;
+	height: 24px;
+	fill: currentColor;
+}
+
+/* The wordmark the section ends on: the design's, not the client's. It runs
+   wider than the band, as the file draws it. */
+.custom-private-tour__wordmark {
+	display: block;
+	width: 1516px;
+	max-width: none;
+	aspect-ratio: 1516 / 315;
+	background-image: url( "../img/cavo-wordmark.webp" );
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: cover;
+}
+
+@media ( prefers-reduced-motion: reduce ) {
+	.custom-private-tour__play {
+		transition: none;
+	}
+}

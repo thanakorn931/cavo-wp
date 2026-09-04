@@ -1,0 +1,65 @@
+/**
+ * Private events, hero — one section of the design.
+ *
+ * A picture the band holds, the veil the file lays over it, and the heading and
+ * its button standing in the middle of it. The file centres the block, so the
+ * band is as tall as the block and the space either side of it come to.
+ */
+
+.custom-private-hero {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 48px;
+	width: 100%;
+	padding: 250px 48px;
+	box-sizing: border-box;
+	overflow: hidden;
+}
+
+.custom-private-hero__picture,
+.custom-private-hero__veil {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+}
+
+.custom-private-hero__picture img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
+}
+
+.custom-private-hero__heading {
+	position: relative;
+	margin: 0;
+	text-align: center;
+	text-transform: uppercase;
+}
+
+.custom-private-hero__button {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 16px 24px;
+	border: 0;
+	border-radius: 24px;
+	color: inherit;
+	text-decoration: none;
+	white-space: nowrap;
+	transition:
+		background-color 300ms ease-in-out,
+		color 300ms ease-in-out,
+		opacity 300ms ease-in-out;
+}
+
+@media ( prefers-reduced-motion: reduce ) {
+	.custom-private-hero__button {
+		transition: none;
+	}
+}

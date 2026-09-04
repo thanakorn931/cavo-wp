@@ -24,7 +24,9 @@
 	);
 }
 
-/* The shape the file lays behind the cards, at the strength it gives it. */
+/* The shape the file lays behind the cards, at the strength it gives it. The
+   same shape stands behind a section on the Private Events page, so it is named
+   for what it is rather than for where it was first used. */
 .custom-nightlife-event__mark {
 	position: absolute;
 	top: 113px;
@@ -32,7 +34,7 @@
 	width: 713px;
 	height: 678px;
 	opacity: 0.15;
-	background-image: url( "../img/nightlife-event-mark.webp" );
+	background-image: url( "../img/soft-shape.webp" );
 	background-repeat: no-repeat;
 	background-size: cover;
 	background-position: center;
