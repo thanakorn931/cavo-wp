@@ -348,3 +348,189 @@ function kadence_child_event_fields() {
 	);
 }
 add_action( 'acf/init', 'kadence_child_event_fields' );
+
+/**
+ * The edit screen is a form, not a dashboard.
+ *
+ * A plugin drops its panel wherever it registered, opened, and WordPress lets
+ * anyone drag the boxes into whatever order they like and remembers it. Neither
+ * is the screen the client should meet. Which template a page is set to has no
+ * bearing on any of this: the screen is shaped for the post type.
+ */
+
+/**
+ * The plugin's boxes, per column, in the order they are wanted.
+ *
+ * @return array
+ */
+function kadence_child_plugin_box_order() {
+	return array(
+		'normal' => array( 'rank_math_metabox' ),
+		'side'   => array( 'rank_math_metabox_content_ai', 'rank_math_metabox_link_suggestions' ),
+	);
+}
+
+/**
+ * Whether a box belongs to the plugin whose panels are about the page without
+ * being the page.
+ *
+ * Matched by the prefix rather than by a list of names, so a box the plugin
+ * adds in a later version is covered too, and so nothing happens at all where
+ * the plugin is absent.
+ *
+ * @param string $id The box's id.
+ * @return bool
+ */
+function kadence_child_is_plugin_box( $id ) {
+	return 0 === strpos( $id, 'rank_math' );
+}
+
+/**
+ * Move the plugin's boxes, each definition handed back in whole.
+ *
+ * Passing null for a title or a callback does not mean "leave what is
+ * registered": `do_meta_boxes()` skips a box with an empty title, so the box
+ * disappears instead of moving.
+ */
+function kadence_child_move_plugin_boxes() {
+	global $wp_meta_boxes;
+
+	$screen = get_current_screen();
+
+	if ( ! $screen || 'post' !== $screen->base || empty( $wp_meta_boxes[ $screen->id ] ) ) {
+		return;
+	}
+
+	$found = array();
+
+	foreach ( array_keys( $wp_meta_boxes[ $screen->id ] ) as $context ) {
+		foreach ( (array) $wp_meta_boxes[ $screen->id ][ $context ] as $boxes ) {
+			foreach ( (array) $boxes as $id => $box ) {
+				if ( $box && kadence_child_is_plugin_box( $id ) ) {
+					$found[ $id ] = $box;
+					remove_meta_box( $id, $screen, $context );
+				}
+			}
+		}
+	}
+
+	if ( empty( $found ) ) {
+		return;
+	}
+
+	foreach ( kadence_child_plugin_box_order() as $context => $order ) {
+		foreach ( $order as $id ) {
+			if ( isset( $found[ $id ] ) ) {
+				kadence_child_place_box( $id, $found[ $id ], $screen, $context );
+				unset( $found[ $id ] );
+			}
+		}
+	}
+
+	// A box the plugin adds later is not left where it fell.
+	foreach ( $found as $id => $box ) {
+		kadence_child_place_box( $id, $box, $screen, 'side' );
+	}
+
+	// Registering a box at the top priority puts it after whatever was there
+	// already, so the head of each column is set here rather than by the order
+	// the boxes happened to be registered in.
+	foreach ( kadence_child_plugin_box_order() as $context => $order ) {
+		if ( empty( $wp_meta_boxes[ $screen->id ][ $context ]['high'] ) ) {
+			continue;
+		}
+
+		$group = $wp_meta_boxes[ $screen->id ][ $context ]['high'];
+		$head  = array();
+
+		foreach ( $order as $id ) {
+			if ( isset( $group[ $id ] ) ) {
+				$head[ $id ] = $group[ $id ];
+				unset( $group[ $id ] );
+			}
+		}
+
+		$wp_meta_boxes[ $screen->id ][ $context ]['high'] = $head + $group;
+	}
+}
+add_action( 'add_meta_boxes', 'kadence_child_move_plugin_boxes', 999 );
+
+/**
+ * One box, put back with everything it was registered with.
+ *
+ * @param string     $id      The box's id.
+ * @param array      $box     The box as it was registered.
+ * @param \WP_Screen $screen  The screen it belongs to.
+ * @param string     $context The column it goes in.
+ */
+function kadence_child_place_box( $id, $box, $screen, $context ) {
+	if ( empty( $box['title'] ) || empty( $box['callback'] ) ) {
+		return;
+	}
+
+	add_meta_box(
+		$id,
+		$box['title'],
+		$box['callback'],
+		$screen,
+		$context,
+		'high',
+		isset( $box['args'] ) ? $box['args'] : null
+	);
+}
+
+/**
+ * The order is not the reader's to keep, and the plugin's panels load shut.
+ *
+ * @param \WP_Screen $screen The screen being shown.
+ */
+function kadence_child_edit_screen( $screen ) {
+	if ( ! $screen || 'post' !== $screen->base ) {
+		return;
+	}
+
+	// Discarding the order WordPress stored is what enforces the order.
+	// Hiding the buttons that set it is not.
+	add_filter( 'get_user_option_meta-box-order_' . $screen->id, '__return_empty_array' );
+
+	add_filter( 'get_user_option_closedpostboxes_' . $screen->id, 'kadence_child_closed_boxes' );
+
+	add_action( 'admin_head', 'kadence_child_edit_screen_css' );
+	add_action( 'admin_print_footer_scripts', 'kadence_child_edit_screen_script' );
+}
+add_action( 'current_screen', 'kadence_child_edit_screen' );
+
+/**
+ * Only the plugin's panels come back shut. The page's own boxes open every
+ * visit, whatever anyone left them as.
+ *
+ * @return array
+ */
+function kadence_child_closed_boxes() {
+	$closed = array();
+
+	foreach ( kadence_child_plugin_box_order() as $order ) {
+		$closed = array_merge( $closed, $order );
+	}
+
+	return $closed;
+}
+
+/**
+ * The move arrows go; the collapse toggle stays.
+ */
+function kadence_child_edit_screen_css() {
+	echo '<style>#poststuff .postbox .handle-order-higher, #poststuff .postbox .handle-order-lower { display: none; } #poststuff .postbox .hndle { cursor: default; }</style>';
+}
+
+/**
+ * And the drag with them.
+ */
+function kadence_child_edit_screen_script() {
+	echo '<script>jQuery(function($){$(".meta-box-sortables").each(function(){if($(this).data("ui-sortable")){$(this).sortable("disable");}});});</script>';
+}
+
+/**
+ * The plugin's primary-term radios, turned off through its own filter.
+ */
+add_filter( 'rank_math/admin/disable_primary_term', '__return_true' );
