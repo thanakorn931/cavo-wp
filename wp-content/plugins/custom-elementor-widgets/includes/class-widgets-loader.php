@@ -129,16 +129,24 @@ final class Widgets_Loader {
 	 * from here. The widgets folder is the register here too: a section named
 	 * `header` takes `assets/css/header.css` and `assets/js/header.js` if they
 	 * are there, under the handle `custom-header`.
+	 *
+	 * What two sections share is registered the same way, from the class they
+	 * share: `class-event-widget.php` takes `assets/css/event-widget.css`. It
+	 * reaches a page only where a widget declares it, so it is still a section's
+	 * asset rather than the plugin's.
 	 */
 	public function register_assets() {
-		$files = glob( CUSTOM_ELEMENTOR_WIDGETS_PATH . 'includes/widgets/*.php' );
+		$files = array_merge(
+			(array) glob( CUSTOM_ELEMENTOR_WIDGETS_PATH . 'includes/widgets/*.php' ),
+			(array) glob( CUSTOM_ELEMENTOR_WIDGETS_PATH . 'includes/class-*-widget.php' )
+		);
 
 		if ( empty( $files ) ) {
 			return;
 		}
 
 		foreach ( $files as $file ) {
-			$slug   = basename( $file, '.php' );
+			$slug   = preg_replace( '/^class-/', '', basename( $file, '.php' ) );
 			$handle = self::HANDLE_PREFIX . $slug;
 
 			$style = CUSTOM_ELEMENTOR_WIDGETS_PATH . 'assets/css/' . $slug . '.css';

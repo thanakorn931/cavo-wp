@@ -1,0 +1,103 @@
+/**
+ * Event, the list of what is coming — one section of the design.
+ *
+ * The newest item across the width, then the rest three to a row, then the
+ * button that brings more on screen. The strip of picture beneath closes the
+ * band; it is the design's own and the build carries it.
+ */
+
+.custom-event-list__band {
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	gap: 54px;
+	width: 100%;
+	padding: 90px 49px 90px 48px;
+	box-sizing: border-box;
+
+	background-image: radial-gradient(
+		1598px 1788px at 100% 100%,
+		#9d5434 0%,
+		#6c3b24 34.6%,
+		#532e1c 51.8%,
+		#3a2114 69.1%
+	);
+}
+
+/* The newest item, across the width, with its words standing on the picture. */
+.custom-event-list__lead {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	justify-content: flex-end;
+	width: 100%;
+	aspect-ratio: 1343 / 455;
+	padding: 48px;
+	border-radius: 16px;
+	overflow: hidden;
+	box-sizing: border-box;
+}
+
+.custom-event-list__lead-picture,
+.custom-event-list__lead-veil {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+}
+
+.custom-event-list__lead-picture img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
+}
+
+.custom-event-list__lead-veil {
+	background-image: linear-gradient(
+		to top,
+		rgba( 0, 0, 0, 0.7 ) 13.407%,
+		rgba( 102, 102, 102, 0 ) 66.813%
+	);
+}
+
+.custom-event-list__lead .custom-event-card__words {
+	position: relative;
+	width: 367px;
+}
+
+/* The rest, three to a row. */
+.custom-event-list__grid {
+	display: grid;
+	grid-template-columns: repeat( 3, minmax( 0, 1fr ) );
+	column-gap: 48px;
+	row-gap: 54px;
+	width: 100%;
+}
+
+.custom-event-list__actions {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+}
+
+/* The strip the band ends on — the design's own picture, not the client's. */
+.custom-event-list__strip {
+	position: relative;
+	display: block;
+	width: 100%;
+	aspect-ratio: 1440 / 198;
+	background-image: url( "../img/event-strip.webp" );
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: cover;
+}
+
+.custom-event-list__strip::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background-color: rgba( 58, 33, 20, 0.5 );
+}

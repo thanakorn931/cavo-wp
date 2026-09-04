@@ -214,3 +214,137 @@ function kadence_child_menu_locations() {
 	);
 }
 add_action( 'after_setup_theme', 'kadence_child_menu_locations', 20 );
+
+/**
+ * The Events post type.
+ *
+ * What the client puts on the page is a list they add to and remove from, so it
+ * is content of its own rather than fields on the page that shows it. The title,
+ * the words and the picture are WordPress's own; only what WordPress has no
+ * field for is added beside them.
+ */
+function kadence_child_event_post_type() {
+	register_post_type(
+		'event',
+		array(
+			'labels'        => array(
+				'name'               => esc_html__( 'Events', 'kadence-child' ),
+				'singular_name'      => esc_html__( 'Event', 'kadence-child' ),
+				'add_new_item'       => esc_html__( 'Add Event', 'kadence-child' ),
+				'edit_item'          => esc_html__( 'Edit Event', 'kadence-child' ),
+				'new_item'           => esc_html__( 'New Event', 'kadence-child' ),
+				'view_item'          => esc_html__( 'View Event', 'kadence-child' ),
+				'search_items'       => esc_html__( 'Search Events', 'kadence-child' ),
+				'not_found'          => esc_html__( 'No events yet', 'kadence-child' ),
+				'all_items'          => esc_html__( 'All Events', 'kadence-child' ),
+				'menu_name'          => esc_html__( 'Events', 'kadence-child' ),
+			),
+			'public'        => true,
+			'has_archive'   => false,
+			'menu_position' => 21,
+			'menu_icon'     => 'dashicons-calendar-alt',
+			'supports'      => array( 'title', 'editor', 'excerpt', 'thumbnail', 'revisions' ),
+			'show_in_rest'  => true,
+			'rewrite'       => array( 'slug' => 'event' ),
+		)
+	);
+
+	register_taxonomy(
+		'event_category',
+		'event',
+		array(
+			'labels'            => array(
+				'name'          => esc_html__( 'Event Categories', 'kadence-child' ),
+				'singular_name' => esc_html__( 'Event Category', 'kadence-child' ),
+				'menu_name'     => esc_html__( 'Categories', 'kadence-child' ),
+			),
+			'hierarchical'      => true,
+			'public'            => true,
+			'show_admin_column' => true,
+			'show_in_rest'      => true,
+			'rewrite'           => array( 'slug' => 'event-category' ),
+		)
+	);
+}
+add_action( 'init', 'kadence_child_event_post_type' );
+
+/**
+ * The two categories the design draws, put there once.
+ *
+ * A term the client has to create before the page works is a page that arrives
+ * broken. Renaming or adding to them afterwards is theirs; these two are only
+ * ever created where they are missing.
+ */
+function kadence_child_event_terms() {
+	if ( get_option( 'kadence_child_event_terms' ) ) {
+		return;
+	}
+
+	foreach ( array(
+		'current-events' => esc_html__( 'Current Events', 'kadence-child' ),
+		'past-events'    => esc_html__( 'Past Events', 'kadence-child' ),
+	) as $slug => $name ) {
+		if ( ! term_exists( $slug, 'event_category' ) ) {
+			wp_insert_term( $name, 'event_category', array( 'slug' => $slug ) );
+		}
+	}
+
+	update_option( 'kadence_child_event_terms', 1 );
+}
+add_action( 'init', 'kadence_child_event_terms', 20 );
+
+/**
+ * What an event carries that WordPress has no field for.
+ *
+ * The date, the hour and the kind of music. Registered in code so the fields
+ * travel with the theme rather than being imported into each environment, and
+ * only where the plugin that renders them is active.
+ */
+function kadence_child_event_fields() {
+	if ( ! function_exists( 'acf_add_local_field_group' ) ) {
+		return;
+	}
+
+	acf_add_local_field_group(
+		array(
+			'key'      => 'group_event_detail',
+			'title'    => esc_html__( 'Event', 'kadence-child' ),
+			'location' => array(
+				array(
+					array(
+						'param'    => 'post_type',
+						'operator' => '==',
+						'value'    => 'event',
+					),
+				),
+			),
+			'position' => 'normal',
+			'fields'   => array(
+				array(
+					'key'           => 'field_event_date',
+					'label'         => esc_html__( 'Date', 'kadence-child' ),
+					'name'          => 'event_date',
+					'type'          => 'date_picker',
+					'display_format' => 'd M Y',
+					'return_format' => 'd M Y',
+					'first_day'     => 1,
+				),
+				array(
+					'key'            => 'field_event_time',
+					'label'          => esc_html__( 'Time', 'kadence-child' ),
+					'name'           => 'event_time',
+					'type'           => 'time_picker',
+					'display_format' => 'h : i A',
+					'return_format'  => 'h : i A',
+				),
+				array(
+					'key'   => 'field_event_genre',
+					'label' => esc_html__( 'Genre', 'kadence-child' ),
+					'name'  => 'event_genre',
+					'type'  => 'text',
+				),
+			),
+		)
+	);
+}
+add_action( 'acf/init', 'kadence_child_event_fields' );

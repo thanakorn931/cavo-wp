@@ -1,0 +1,161 @@
+/**
+ * The card both event sections draw.
+ *
+ * A picture with the house mark on it, then the facts, the title and the words
+ * beneath. Loaded by whichever of the two sections is on the page.
+ */
+
+.custom-event-card {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 10px;
+	min-width: 0;
+}
+
+.custom-event-card[hidden] {
+	display: none;
+}
+
+.custom-event-card__picture {
+	position: relative;
+	display: block;
+	width: 100%;
+	aspect-ratio: 415 / 360;
+	border-radius: 16px;
+	overflow: hidden;
+}
+
+.custom-event-card__picture img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
+}
+
+/* The house mark, carried by the build rather than uploaded. */
+.custom-event-card__badge {
+	position: absolute;
+	top: 16px;
+	right: 16px;
+	width: 53px;
+	height: 50px;
+	background-image: url( "../img/event-badge.webp" );
+	background-repeat: no-repeat;
+	background-size: contain;
+	background-position: center;
+	pointer-events: none;
+}
+
+.custom-event-card__words {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 10px;
+	width: 100%;
+}
+
+.custom-event-card__meta {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 5px;
+	margin: 0;
+}
+
+.custom-event-card__fact {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	white-space: nowrap;
+}
+
+/* The rule between the facts belongs to the section, not to what was typed. */
+.custom-event-card__fact:not( :last-child )::after {
+	content: " |";
+}
+
+.custom-event-card__mark {
+	display: inline-flex;
+	flex: 0 0 auto;
+	width: 16px;
+	height: 16px;
+}
+
+.custom-event-card__mark svg {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+.custom-event-card__title,
+.custom-event-card__body {
+	margin: 0;
+	width: 100%;
+}
+
+.custom-event-card__title {
+	text-transform: uppercase;
+}
+
+/* The button that brings more of the list on screen. It keeps its shape while
+   it works: the words go out of sight rather than out of the layout. */
+.custom-event-more {
+	position: relative;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 12px 24px;
+	border: 0;
+	border-radius: 24px;
+	cursor: pointer;
+	transition: opacity 300ms ease-in-out;
+}
+
+.custom-event-more[hidden] {
+	display: none;
+}
+
+.custom-event-more:hover {
+	opacity: 0.8;
+}
+
+.custom-event-more.is-working {
+	cursor: progress;
+}
+
+.custom-event-more.is-working .custom-event-more__text {
+	visibility: hidden;
+}
+
+.custom-event-more__spinner {
+	display: none;
+	position: absolute;
+	width: 16px;
+	height: 16px;
+	border: 2px solid currentColor;
+	border-top-color: transparent;
+	border-radius: 50%;
+	animation: custom-event-spin 700ms linear infinite;
+}
+
+.custom-event-more.is-working .custom-event-more__spinner {
+	display: block;
+}
+
+@keyframes custom-event-spin {
+	to {
+		transform: rotate( 360deg );
+	}
+}
+
+@media ( prefers-reduced-motion: reduce ) {
+	.custom-event-more {
+		transition: none;
+	}
+
+	.custom-event-more__spinner {
+		animation-duration: 2s;
+	}
+}
