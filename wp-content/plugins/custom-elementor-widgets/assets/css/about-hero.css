@@ -1,0 +1,43 @@
+/**
+ * About, hero — one section of the design.
+ *
+ * The page's own words on cream, then a picture the width of the band beneath.
+ */
+
+.custom-about-hero__words {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 48px;
+	width: 100%;
+	padding: 96px 48px;
+	box-sizing: border-box;
+}
+
+.custom-about-hero__heading,
+.custom-about-hero__body {
+	margin: 0;
+	width: 100%;
+	text-align: center;
+	text-transform: uppercase;
+}
+
+.custom-about-hero__body {
+	max-width: 1170px;
+}
+
+.custom-about-hero__picture {
+	position: relative;
+	display: block;
+	width: 100%;
+	aspect-ratio: 1440 / 640;
+	overflow: hidden;
+}
+
+.custom-about-hero__picture img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
+}

@@ -1,0 +1,153 @@
+/**
+ * About, detail — one section of the design.
+ *
+ * What the place stands for across the top, then how to reach it beside the map.
+ */
+
+.custom-about-detail__intro {
+	display: flex;
+	align-items: flex-start;
+	gap: 64px;
+	width: 100%;
+	padding: 96px 48px;
+	box-sizing: border-box;
+}
+
+.custom-about-detail__vision {
+	flex: 0 0 auto;
+}
+
+.custom-about-detail__mission {
+	flex: 1 1 0;
+	min-width: 0;
+}
+
+.custom-about-detail__vision,
+.custom-about-detail__mission {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 16px;
+}
+
+.custom-about-detail__vision-body {
+	width: 508px;
+	max-width: 100%;
+}
+
+.custom-about-detail__mission-body {
+	width: 100%;
+}
+
+.custom-about-detail__intro h3,
+.custom-about-detail__intro p {
+	margin: 0;
+}
+
+.custom-about-detail__intro h3 {
+	text-transform: uppercase;
+}
+
+/* How to reach it, and the map beside it. */
+.custom-about-detail__split {
+	display: flex;
+	align-items: stretch;
+	width: 100%;
+}
+
+.custom-about-detail__column {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 64px;
+	flex: 0 0 50%;
+	min-width: 0;
+	padding: 96px 0 96px 48px;
+	box-sizing: border-box;
+}
+
+.custom-about-detail__block {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 16px;
+	width: 100%;
+}
+
+.custom-about-detail__block h3,
+.custom-about-detail__block p {
+	margin: 0;
+}
+
+.custom-about-detail__block h3 {
+	text-transform: uppercase;
+}
+
+.custom-about-detail__block-body {
+	width: 617px;
+	max-width: 100%;
+}
+
+/* When each part of the evening runs. */
+.custom-about-detail__hours {
+	display: flex;
+	align-items: flex-start;
+	gap: 64px;
+	width: 100%;
+}
+
+.custom-about-detail__hours-name {
+	width: 127px;
+	flex: 0 0 auto;
+}
+
+.custom-about-detail__hours-time {
+	white-space: nowrap;
+}
+
+/* How to get in touch. */
+.custom-about-detail__contacts {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-start;
+	gap: 24px;
+}
+
+.custom-about-detail__contact {
+	display: inline-flex;
+	align-items: center;
+	gap: 16px;
+	color: inherit;
+	text-decoration: none;
+	white-space: nowrap;
+}
+
+.custom-about-detail__contact-mark {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	flex: 0 0 auto;
+	padding: 8px;
+	border-radius: 36px;
+}
+
+.custom-about-detail__contact-mark svg {
+	display: block;
+	width: 16px;
+	height: 16px;
+}
+
+.custom-about-detail__map {
+	position: relative;
+	flex: 0 0 50%;
+	min-width: 0;
+	overflow: hidden;
+}
+
+.custom-about-detail__map img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
+}
