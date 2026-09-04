@@ -3,13 +3,16 @@
  *
  * Three panels dividing the row four to one to one. The wide one carries the
  * button; the two beside it are darkened and lead somewhere of their own.
+ *
+ * Nothing inside sets a height — the panels are pictures — so the band keeps
+ * the shape the file gives it as a ratio rather than as a figure.
  */
 
 .custom-dining-membership {
 	display: flex;
 	align-items: stretch;
 	width: 100%;
-	height: 600px;
+	aspect-ratio: 1440 / 600;
 	overflow: hidden;
 }
 
