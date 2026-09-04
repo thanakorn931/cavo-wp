@@ -590,6 +590,20 @@ function kadence_child_form_key( $slug ) {
 }
 
 /**
+ * Where the parent puts a screen registered under it.
+ *
+ * A page hung under the inbox is reached through the inbox, not through
+ * `admin.php`: the hook WordPress checks against is named for the parent, and
+ * the wrong address is refused rather than redirected.
+ *
+ * @param string $page The screen's slug.
+ * @return string
+ */
+function kadence_child_form_url( $page ) {
+	return admin_url( 'edit.php?post_type=cavo_message&page=' . $page );
+}
+
+/**
  * The tabs, and which screen each one is.
  *
  * @return array Slug to label and url.
@@ -603,20 +617,20 @@ function kadence_child_form_tabs() {
 		),
 		'editor' => array(
 			'label' => esc_html__( 'Form editor', 'kadence-child' ),
-			'url'   => admin_url( 'admin.php?page=cavo-form-editor' ),
+			'url'   => kadence_child_form_url( 'cavo-form-editor' ),
 			'page'  => 'cavo-form-editor',
 		),
 	);
 
 	$tabs['settings'] = array(
 		'label' => esc_html__( 'Settings', 'kadence-child' ),
-		'url'   => admin_url( 'admin.php?page=cavo-form-settings' ),
+		'url'   => kadence_child_form_url( 'cavo-form-settings' ),
 		'page'  => 'cavo-form-settings',
 	);
 
 	$tabs['recaptcha'] = array(
 		'label' => esc_html__( 'reCAPTCHA', 'kadence-child' ),
-		'url'   => admin_url( 'admin.php?page=cavo-form-recaptcha' ),
+		'url'   => kadence_child_form_url( 'cavo-form-recaptcha' ),
 		'page'  => 'cavo-form-recaptcha',
 	);
 
@@ -1768,3 +1782,28 @@ function kadence_child_message_opened( $post ) {
 	}
 }
 add_action( 'edit_form_top', 'kadence_child_message_opened' );
+
+/**
+ * The address these screens were reached at before they had a parent.
+ *
+ * `admin.php?page=…` is refused rather than redirected by WordPress, so anyone
+ * holding the old address — a bookmark, a browser's history — meets a wall.
+ * Send them to where the screen actually is.
+ */
+function kadence_child_form_old_url() {
+	global $pagenow;
+
+	if ( 'admin.php' !== $pagenow || ! isset( $_GET['page'] ) ) {
+		return;
+	}
+
+	$page = sanitize_key( wp_unslash( $_GET['page'] ) );
+
+	foreach ( kadence_child_form_tabs() as $tab ) {
+		if ( $tab['page'] === $page ) {
+			wp_safe_redirect( $tab['url'] );
+			exit;
+		}
+	}
+}
+add_action( 'admin_init', 'kadence_child_form_old_url' );
