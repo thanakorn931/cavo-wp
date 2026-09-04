@@ -76,9 +76,10 @@ abstract class Base_Widget extends \Elementor\Widget_Base {
 	 * One media slot's contents: what was uploaded, or the box saying nothing
 	 * has been.
 	 *
-	 * A slot the client has not filled is still a slot, and is seen as one. The
-	 * box itself belongs to the section around it; only what stands inside it
-	 * while it is empty is settled here, for every section at once.
+	 * A slot the client has not filled is still a slot, and is seen as one: the
+	 * box stands, and it stands white. The box itself belongs to the section
+	 * around it; only what fills it while it is empty is settled here, for
+	 * every section at once.
 	 *
 	 * @param string $url  What the client uploaded, if anything.
 	 * @param string $alt  What a reader who cannot see it is told.
@@ -98,10 +99,7 @@ abstract class Base_Widget extends \Elementor\Widget_Base {
 			return;
 		}
 
-		printf(
-			'<span class="custom-media-empty"><span>%s</span></span>',
-			esc_html__( 'no content', 'custom-elementor-widgets' )
-		);
+		echo '<span class="custom-media-empty" aria-hidden="true"></span>';
 	}
 
 	/**
