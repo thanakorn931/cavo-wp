@@ -157,3 +157,13 @@ select.custom-private-form__input:invalid {
 		transition: none;
 	}
 }
+
+/* The field the eye cannot see. Off the page rather than display:none, which a
+   filler reads as "skip this". */
+.custom-private-form__trap {
+	position: absolute;
+	left: -9999px;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+}

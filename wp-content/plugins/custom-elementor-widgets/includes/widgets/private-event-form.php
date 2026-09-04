@@ -373,6 +373,7 @@ class Private_Event_Form extends Base_Widget {
 
 		$fields = function_exists( 'kadence_child_form_definition' ) ? kadence_child_form_definition( $slug ) : array();
 		$body   = isset( $settings['body'] ) ? trim( (string) $settings['body'] ) : '';
+		$typed  = $this->typed();
 		?>
 		<div class="custom-private-form">
 			<div class="custom-private-form__picture"><?php $this->media( $picture ); ?></div>
@@ -391,13 +392,27 @@ class Private_Event_Form extends Base_Widget {
 				<form class="custom-private-form__form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 					<input type="hidden" name="action" value="cavo_form" />
 					<input type="hidden" name="cavo_form" value="<?php echo esc_attr( $slug ); ?>" />
+					<input type="hidden" name="cavo_opened" value="<?php echo esc_attr( time() ); ?>" />
 					<?php wp_nonce_field( 'cavo_form_' . $slug, 'cavo_nonce' ); ?>
+
+					<div class="custom-private-form__trap" aria-hidden="true">
+						<label>
+							<?php echo esc_html__( 'Leave this empty', 'custom-elementor-widgets' ); ?>
+							<input type="text" name="cavo_website" tabindex="-1" autocomplete="off" />
+						</label>
+					</div>
 
 					<div class="custom-private-form__fields">
 						<?php foreach ( $fields as $index => $field ) : ?>
-							<?php $this->render_field( $index, $field ); ?>
+							<?php $this->render_field( $index, $field, $typed ); ?>
 						<?php endforeach; ?>
 					</div>
+
+					<?php
+					if ( function_exists( 'kadence_child_form_captcha_field' ) ) {
+						kadence_child_form_captcha_field( $slug );
+					}
+					?>
 
 					<div class="custom-private-form__actions">
 						<button type="submit" class="custom-private-form__send"><?php
@@ -428,7 +443,7 @@ class Private_Event_Form extends Base_Widget {
 	 * @param int   $index Which field.
 	 * @param array $field The field.
 	 */
-	private function render_field( $index, $field ) {
+	private function render_field( $index, $field, $typed = array() ) {
 		$label       = isset( $field['label'] ) ? (string) $field['label'] : '';
 		$type        = isset( $field['type'] ) ? (string) $field['type'] : 'text';
 		$width       = isset( $field['width'] ) && '50' === (string) $field['width'] ? 'half' : 'full';
@@ -436,6 +451,7 @@ class Private_Event_Form extends Base_Widget {
 		$placeholder = isset( $field['placeholder'] ) ? (string) $field['placeholder'] : '';
 		$name        = 'field_' . (int) $index;
 		$id          = 'cavo-' . $this->get_id() . '-' . (int) $index;
+		$was         = isset( $typed[ $name ] ) ? (string) $typed[ $name ] : '';
 		?>
 		<div class="custom-private-form__field custom-private-form__field--<?php echo esc_attr( $width ); ?>">
 			<label class="custom-private-form__label" for="<?php echo esc_attr( $id ); ?>"><?php
@@ -451,7 +467,7 @@ class Private_Event_Form extends Base_Widget {
 					rows="1"
 					placeholder="<?php echo esc_attr( $placeholder ); ?>"
 					<?php echo $required ? 'required' : ''; ?>
-				></textarea>
+				><?php echo esc_textarea( $was ); ?></textarea>
 			<?php elseif ( 'select' === $type ) : ?>
 				<select
 					class="custom-private-form__input"
@@ -461,7 +477,7 @@ class Private_Event_Form extends Base_Widget {
 				>
 					<option value=""><?php echo esc_html( '' !== $placeholder ? $placeholder : __( 'Select one …', 'custom-elementor-widgets' ) ); ?></option>
 					<?php foreach ( $this->choices( $field ) as $choice ) : ?>
-						<option value="<?php echo esc_attr( $choice ); ?>"><?php echo esc_html( $choice ); ?></option>
+						<option value="<?php echo esc_attr( $choice ); ?>"<?php selected( $was, $choice ); ?>><?php echo esc_html( $choice ); ?></option>
 					<?php endforeach; ?>
 				</select>
 			<?php else : ?>
@@ -470,6 +486,7 @@ class Private_Event_Form extends Base_Widget {
 					id="<?php echo esc_attr( $id ); ?>"
 					name="<?php echo esc_attr( $name ); ?>"
 					type="<?php echo esc_attr( in_array( $type, array( 'email', 'tel', 'date' ), true ) ? $type : 'text' ); ?>"
+					value="<?php echo esc_attr( $was ); ?>"
 					placeholder="<?php echo esc_attr( $placeholder ); ?>"
 					<?php echo $required ? 'required' : ''; ?>
 				/>
@@ -491,17 +508,34 @@ class Private_Event_Form extends Base_Widget {
 	}
 
 	/**
+	 * What they typed, where it did not go through.
+	 *
+	 * @return array
+	 */
+	private function typed() {
+		if ( ! isset( $_GET['typed'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- reading back what was already sent.
+			return array();
+		}
+
+		$was = get_transient( 'cavo_typed_' . sanitize_key( wp_unslash( $_GET['typed'] ) ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- reading back what was already sent.
+
+		return is_array( $was ) ? $was : array();
+	}
+
+	/**
 	 * What the form says after it has been sent, in the client's own words.
 	 *
 	 * @param string $slug The form's slug.
 	 */
 	private function render_result( $slug ) {
-		if ( ! isset( $_GET['sent'] ) || ! function_exists( 'get_field' ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- reading a result, not acting on one.
+		if ( ! isset( $_GET['sent'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- reading a result, not acting on one.
 			return;
 		}
 
-		$good = 'yes' === sanitize_key( wp_unslash( $_GET['sent'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- reading a result, not acting on one.
-		$said = trim( (string) get_field( ( $good ? 'success_' : 'fail_' ) . $slug, 'option' ) );
+		$good   = 'yes' === sanitize_key( wp_unslash( $_GET['sent'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- reading a result, not acting on one.
+		$result = function_exists( 'kadence_child_form_settings' ) ? kadence_child_form_settings( $slug, 'result' ) : array();
+		$key    = $good ? 'success' : 'fail';
+		$said   = isset( $result[ $key ] ) ? trim( (string) $result[ $key ] ) : '';
 
 		if ( '' === $said ) {
 			return;
