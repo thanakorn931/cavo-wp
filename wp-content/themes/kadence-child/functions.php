@@ -592,15 +592,15 @@ function kadence_child_form_key( $slug ) {
 /**
  * Where the parent puts a screen registered under it.
  *
- * A page hung under the inbox is reached through the inbox, not through
- * `admin.php`: the hook WordPress checks against is named for the parent, and
- * the wrong address is refused rather than redirected.
+ * A screen hung under the inbox is reached through the inbox. WordPress names
+ * the hook it looks the screen up by after the parent the address gives it, so
+ * only an address naming that same parent finds it.
  *
  * @param string $page The screen's slug.
  * @return string
  */
 function kadence_child_form_url( $page ) {
-	return admin_url( 'admin.php?page=' . $page );
+	return admin_url( 'edit.php?post_type=cavo_message&page=' . $page );
 }
 
 /**
@@ -658,7 +658,9 @@ function kadence_child_message_post_type() {
 			'publicly_queryable'  => false,
 			'exclude_from_search' => true,
 			'show_ui'             => true,
-			'show_in_menu'        => 'cavo-form',
+			'show_in_menu'        => true,
+			'menu_icon'           => 'dashicons-email-alt',
+			'menu_position'       => 26,
 			'show_in_rest'        => false,
 			'has_archive'         => false,
 			'rewrite'             => false,
@@ -674,25 +676,13 @@ add_action( 'init', 'kadence_child_message_post_type' );
 /**
  * The screens the tabs lead to.
  *
- * They are registered as pages so they exist, then taken off the sidebar so the
- * menu carries its name and nothing under it.
+ * They hang under the inbox, which is the menu: the post type draws WP Form and
+ * these are its other screens.
  */
 function kadence_child_form_pages() {
-	if ( ! function_exists( 'acf_add_options_page' ) ) {
+	if ( ! function_exists( 'acf_add_options_sub_page' ) ) {
 		return;
 	}
-
-	acf_add_options_page(
-		array(
-			'page_title' => esc_html__( 'WP Form', 'kadence-child' ),
-			'menu_title' => esc_html__( 'WP Form', 'kadence-child' ),
-			'menu_slug'  => 'cavo-form',
-			'capability' => 'manage_options',
-			'icon_url'   => 'dashicons-email-alt',
-			'position'   => 26,
-			'redirect'   => false,
-		)
-	);
 
 	foreach ( kadence_child_form_tabs() as $tab ) {
 		if ( 'edit-cavo_message' === $tab['page'] ) {
@@ -701,11 +691,12 @@ function kadence_child_form_pages() {
 
 		acf_add_options_sub_page(
 			array(
-				'page_title'  => $tab['label'],
-				'menu_title'  => $tab['label'],
-				'menu_slug'   => $tab['page'],
-				'capability'  => 'manage_options',
-				'parent_slug' => 'cavo-form',
+				'page_title'    => $tab['label'],
+				'menu_title'    => $tab['label'],
+				'menu_slug'     => $tab['page'],
+				'capability'    => 'manage_options',
+				'parent_slug'   => 'edit.php?post_type=cavo_message',
+				'update_button' => esc_html__( 'Save', 'kadence-child' ),
 			)
 		);
 	}
@@ -714,24 +705,46 @@ add_action( 'acf/init', 'kadence_child_form_pages' );
 
 /**
  * The sidebar carries the menu's name and nothing under it.
+ *
+ * The list is trimmed as the sidebar is about to be drawn, not while the menu is
+ * being built: until the screen has been let in, WordPress is still reading that
+ * same list to work out which parent the screen hangs from.
  */
 function kadence_child_form_sidebar() {
 	foreach ( kadence_child_form_tabs() as $tab ) {
-		remove_submenu_page( 'cavo-form', 'edit-cavo_message' === $tab['page'] ? 'edit.php?post_type=cavo_message' : $tab['page'] );
+		remove_submenu_page(
+			'edit.php?post_type=cavo_message',
+			'edit-cavo_message' === $tab['page'] ? 'edit.php?post_type=cavo_message' : $tab['page']
+		);
 	}
 
-	remove_submenu_page( 'cavo-form', 'cavo-form' );
+	remove_submenu_page( 'edit.php?post_type=cavo_message', 'post-new.php?post_type=cavo_message' );
 }
-add_action( 'admin_menu', 'kadence_child_form_sidebar', 999 );
+add_action( 'admin_head', 'kadence_child_form_sidebar' );
 
 /**
- * The menu's name opens the first of its screens.
+ * The address these screens were reached at before they hung under the inbox.
+ *
+ * A bookmark or a browser's history still holds it, so send it on rather than
+ * leave it at a screen WordPress no longer knows by that name.
  */
-function kadence_child_form_landing() {
-	wp_safe_redirect( admin_url( 'edit.php?post_type=cavo_message' ) );
-	exit;
+function kadence_child_form_old_url() {
+	global $pagenow;
+
+	if ( 'admin.php' !== $pagenow || ! isset( $_GET['page'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- reading which screen was asked for.
+		return;
+	}
+
+	$page = sanitize_key( wp_unslash( $_GET['page'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- reading which screen was asked for.
+
+	foreach ( kadence_child_form_tabs() as $tab ) {
+		if ( $tab['page'] === $page ) {
+			wp_safe_redirect( $tab['url'] );
+			exit;
+		}
+	}
 }
-add_action( 'load-toplevel_page_cavo-form', 'kadence_child_form_landing' );
+add_action( 'admin_init', 'kadence_child_form_old_url' );
 
 /**
  * The tabs themselves, across the top of whichever screen is open.
