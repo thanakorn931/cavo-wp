@@ -1,0 +1,21 @@
+/**
+ * Contact, hero — one section of the design.
+ *
+ * The page's own name, and nothing else standing with it.
+ */
+
+.custom-contact-hero {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	padding: 96px 48px;
+	box-sizing: border-box;
+}
+
+.custom-contact-hero__heading {
+	margin: 0;
+	width: 100%;
+	text-align: center;
+	text-transform: uppercase;
+}
