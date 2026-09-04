@@ -3,7 +3,8 @@
  *
  * A picture the band holds, the veil the file lays over it, and the heading and
  * its button standing on top. Where the file places that block becomes padding
- * here rather than an offset.
+ * here rather than an offset, and the band's height follows from it: the file's
+ * 670 is 255 above the block and 167 below it, each rounded up to even.
  */
 
 .custom-dining-hero {
@@ -13,8 +14,7 @@
 	align-items: center;
 	gap: 48px;
 	width: 100%;
-	min-height: 670px;
-	padding: 256px 48px 0 48px;
+	padding: 256px 48px 168px 48px;
 	box-sizing: border-box;
 	overflow: hidden;
 }
