@@ -556,8 +556,8 @@ add_filter( 'rank_math/admin/disable_primary_term', '__return_true' );
  */
 function kadence_child_forms() {
 	return array(
-		'proposal' => esc_html__( 'Proposal', 'kadence-child' ),
-		'contact'  => esc_html__( 'Contact', 'kadence-child' ),
+		'private-event' => esc_html__( 'Private event', 'kadence-child' ),
+		'contact'       => esc_html__( 'Contact', 'kadence-child' ),
 	);
 }
 
@@ -572,22 +572,7 @@ function kadence_child_form_definition( $slug ) {
 		return array();
 	}
 
-	return (array) get_field( 'form_fields_' . kadence_child_form_key( $slug ), 'option' );
-}
-
-/**
- * The key a form's own settings are stored under.
- *
- * With one form there is nothing to tell apart, so the key is fixed; with more
- * than one it is the form's.
- *
- * @param string $slug The form's slug.
- * @return string
- */
-function kadence_child_form_key( $slug ) {
-	$forms = kadence_child_forms();
-
-	return count( $forms ) > 1 ? $slug : 'form';
+	return (array) get_field( 'form_fields_' . $slug, 'option' );
 }
 
 /**
@@ -801,26 +786,17 @@ function kadence_child_form_field_groups() {
 	}
 
 	$forms  = kadence_child_forms();
-	$many   = count( $forms ) > 1;
 	$editor = array();
 
 	foreach ( $forms as $slug => $name ) {
-		$key = $many ? $slug : 'form';
+		$editor[] = array(
+			'key'   => 'field_cavo_editor_tab_' . $slug,
+			/* translators: %s: the form's name. */
+			'label' => sprintf( esc_html__( '%s form', 'kadence-child' ), $name ),
+			'type'  => 'tab',
+		);
 
-		if ( $many ) {
-			$editor[] = array(
-				'key'   => 'field_cavo_editor_tab_' . $key,
-				/* translators: %s: the form's name. */
-				'label' => sprintf( esc_html__( '%s form', 'kadence-child' ), $name ),
-				'type'  => 'tab',
-			);
-		}
-
-		$editor[] = kadence_child_form_fields_repeater( $key );
-
-		if ( ! $many ) {
-			break;
-		}
+		$editor[] = kadence_child_form_fields_repeater( $slug );
 	}
 
 	acf_add_local_field_group(
@@ -832,7 +808,7 @@ function kadence_child_form_field_groups() {
 		)
 	);
 
-	acf_add_local_field_group( kadence_child_form_settings_group( $forms, $many ) );
+	acf_add_local_field_group( kadence_child_form_settings_group( $forms ) );
 
 	acf_add_local_field_group(
 		array(
@@ -863,7 +839,7 @@ add_action( 'acf/init', 'kadence_child_form_field_groups', 20 );
 /**
  * The fields one form asks for.
  *
- * @param string $key The key the form's own settings are stored under.
+ * @param string $key The form's slug: its fields are stored under it.
  * @return array
  */
 function kadence_child_form_fields_repeater( $key ) {
@@ -936,29 +912,20 @@ function kadence_child_form_fields_repeater( $key ) {
  * What happens when a form is sent: three sections, in this order and no other.
  *
  * @param array $forms Slug to name.
- * @param bool  $many  Whether the site has more than one form.
  * @return array
  */
-function kadence_child_form_settings_group( $forms, $many ) {
+function kadence_child_form_settings_group( $forms ) {
 	$fields = array();
 
 	foreach ( $forms as $slug => $name ) {
-		$key = $many ? $slug : 'form';
+		$fields[] = array(
+			'key'   => 'field_cavo_tab_' . $slug,
+			/* translators: %s: the form's name. */
+			'label' => sprintf( esc_html__( '%s form', 'kadence-child' ), $name ),
+			'type'  => 'tab',
+		);
 
-		if ( $many ) {
-			$fields[] = array(
-				'key'   => 'field_cavo_tab_' . $key,
-				/* translators: %s: the form's name. */
-				'label' => sprintf( esc_html__( '%s form', 'kadence-child' ), $name ),
-				'type'  => 'tab',
-			);
-		}
-
-		$fields = array_merge( $fields, kadence_child_form_settings_fields( $key ) );
-
-		if ( ! $many ) {
-			break;
-		}
+		$fields = array_merge( $fields, kadence_child_form_settings_fields( $slug ) );
 	}
 
 	return array(
@@ -976,7 +943,7 @@ function kadence_child_form_settings_group( $forms, $many ) {
  * Both emails live in Notifications, in two groups named after who receives
  * them, so every label under them reads as a phrase.
  *
- * @param string $key The key the form's settings are stored under.
+ * @param string $key The form's slug: its settings are stored under it.
  * @return array
  */
 function kadence_child_form_settings_fields( $key ) {
@@ -1115,7 +1082,7 @@ function kadence_child_form_settings( $slug, $group ) {
 		return array();
 	}
 
-	return (array) get_field( $group . '_' . kadence_child_form_key( $slug ), 'option' );
+	return (array) get_field( $group . '_' . $slug, 'option' );
 }
 
 /**

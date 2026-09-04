@@ -120,7 +120,7 @@ class Contact_Form extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Form', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::SELECT,
-				'default'     => (string) key( $forms ),
+				'default'     => 'contact',
 				'options'     => $forms,
 				'description' => esc_html__( 'What it asks is set in WP Form → Form editor.', 'custom-elementor-widgets' ),
 			)
