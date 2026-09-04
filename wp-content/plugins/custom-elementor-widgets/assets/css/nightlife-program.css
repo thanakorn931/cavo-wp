@@ -1,0 +1,193 @@
+/**
+ * Nightlife, weekly program — one section of the design.
+ *
+ * A ticket: the night's words on the left, its picture stamped on the right,
+ * and a row of holes punched down the seam between them. One ticket is on show
+ * at a time; the arrows turn to the next.
+ */
+
+.custom-nightlife-program {
+	display: flex;
+	flex-direction: column;
+	align-items: stretch;
+	gap: 38px;
+	width: 100%;
+	padding: 80px 48px 106px 48px;
+	box-sizing: border-box;
+
+	background-image: radial-gradient(
+		769px 390px at 50% 37%,
+		#64311a 0%,
+		#3a2114 93.3%
+	);
+}
+
+.custom-nightlife-program__heading {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin: 0;
+	padding: 10px;
+	text-align: center;
+	text-transform: uppercase;
+}
+
+/* The ticket itself. */
+.custom-nightlife-program__card {
+	position: relative;
+	width: 100%;
+	height: 411px;
+	border-radius: 16px;
+	overflow: hidden;
+}
+
+.custom-nightlife-program__slide {
+	position: absolute;
+	inset: 0;
+	opacity: 0;
+	visibility: hidden;
+	transition:
+		opacity 400ms ease-in-out,
+		visibility 400ms ease-in-out;
+}
+
+.custom-nightlife-program__slide.is-current {
+	opacity: 1;
+	visibility: visible;
+}
+
+.custom-nightlife-program__words {
+	position: absolute;
+	top: 57px;
+	left: 140px;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 10px;
+	width: 629px;
+	max-width: calc( 100% - 620px );
+}
+
+.custom-nightlife-program__genre,
+.custom-nightlife-program__title,
+.custom-nightlife-program__when,
+.custom-nightlife-program__body {
+	margin: 0;
+	width: 100%;
+}
+
+.custom-nightlife-program__genre,
+.custom-nightlife-program__title,
+.custom-nightlife-program__when {
+	text-transform: uppercase;
+}
+
+.custom-nightlife-program__actions {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	margin-top: 14px;
+}
+
+.custom-nightlife-program__button {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 146px;
+	height: 40px;
+	padding: 10px;
+	border: 0;
+	border-radius: 24px;
+	color: inherit;
+	text-decoration: none;
+	white-space: nowrap;
+	box-sizing: border-box;
+	transition: opacity 300ms ease-in-out;
+}
+
+.custom-nightlife-program__button:hover {
+	opacity: 0.8;
+}
+
+/* The stamp, and the holes punched down its seam. */
+.custom-nightlife-program__stamp {
+	position: absolute;
+	top: 48px;
+	right: 138px;
+	width: 332px;
+	height: 316px;
+	border-radius: 16px;
+	overflow: hidden;
+}
+
+.custom-nightlife-program__stamp img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
+}
+
+.custom-nightlife-program__perforation {
+	position: absolute;
+	top: 56px;
+	right: 465px;
+	width: 11px;
+	height: 309px;
+	background-image: radial-gradient(
+		5.5px 5px at 5.5px 5px,
+		#ebe4ca 100%,
+		rgba( 255, 255, 255, 0 ) 100%
+	);
+	background-size: 11px 13px;
+	background-repeat: repeat-y;
+	pointer-events: none;
+}
+
+/* The arrows that turn to the next night. */
+.custom-nightlife-program__arrow {
+	position: absolute;
+	top: 50%;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 56px;
+	height: 56px;
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
+	box-shadow: 0 4px 10px rgba( 0, 0, 0, 0.06 );
+	cursor: pointer;
+	transform: translateY( -50% );
+	transition: opacity 300ms ease-in-out;
+}
+
+.custom-nightlife-program__arrow:hover {
+	opacity: 0.85;
+}
+
+.custom-nightlife-program__arrow--prev {
+	left: 40px;
+}
+
+.custom-nightlife-program__arrow--next {
+	right: 40px;
+}
+
+.custom-nightlife-program__arrow svg {
+	display: block;
+	width: 56px;
+	height: 56px;
+}
+
+.custom-nightlife-program__arrow--next svg {
+	transform: scaleX( -1 );
+}
+
+@media ( prefers-reduced-motion: reduce ) {
+	.custom-nightlife-program__slide,
+	.custom-nightlife-program__arrow,
+	.custom-nightlife-program__button {
+		transition: none;
+	}
+}
