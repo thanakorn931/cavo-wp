@@ -7,6 +7,8 @@
 
 namespace Custom_Elementor_Widgets;
 
+use Elementor\Controls_Manager;
+
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
@@ -132,6 +134,188 @@ abstract class Base_Widget extends \Elementor\Widget_Base {
 	}
 
 	/**
+	 * Content → Source.
+	 *
+	 * Three controls, each one narrowing the last: the post type, one of its
+	 * taxonomies, and terms of that taxonomy. A taxonomy left alone means the
+	 * whole post type; terms left alone mean the whole taxonomy.
+	 */
+	protected function register_source_controls() {
+		$this->start_controls_section(
+			'section_source',
+			array(
+				'label' => esc_html__( 'Source', 'custom-elementor-widgets' ),
+				'tab'   => Controls_Manager::TAB_CONTENT,
+			)
+		);
+
+		$this->add_control(
+			'source',
+			array(
+				'label'   => esc_html__( 'Source', 'custom-elementor-widgets' ),
+				'type'    => Controls_Manager::SELECT,
+				'default' => 'post',
+				'options' => self::post_type_options(),
+			)
+		);
+
+		$this->add_control(
+			'taxonomy',
+			array(
+				'label'       => esc_html__( 'Taxonomy', 'custom-elementor-widgets' ),
+				'type'        => Controls_Manager::SELECT,
+				'default'     => '',
+				'options'     => array_merge(
+					array( '' => esc_html__( 'All', 'custom-elementor-widgets' ) ),
+					self::taxonomy_options()
+				),
+				'description' => esc_html__( 'Left on All, the whole source is shown. Choose one and an item with no term in it is not shown at all.', 'custom-elementor-widgets' ),
+			)
+		);
+
+		// One term control per taxonomy, shown only for the taxonomy chosen.
+		foreach ( self::taxonomy_options() as $name => $label ) {
+			$this->add_control(
+				'terms_' . $name,
+				array(
+					'label'       => esc_html__( 'Terms', 'custom-elementor-widgets' ),
+					'type'        => Controls_Manager::SELECT2,
+					'multiple'    => true,
+					'label_block' => true,
+					'options'     => self::term_options( $name ),
+					'condition'   => array( 'taxonomy' => $name ),
+					'description' => esc_html__( 'Left empty, every term is shown.', 'custom-elementor-widgets' ),
+				)
+			);
+		}
+
+		$this->add_control(
+			'order',
+			array(
+				'label'   => esc_html__( 'Order', 'custom-elementor-widgets' ),
+				'type'    => Controls_Manager::SELECT,
+				'default' => 'DESC',
+				'options' => array(
+					'DESC' => esc_html__( 'Newest first', 'custom-elementor-widgets' ),
+					'ASC'  => esc_html__( 'Oldest first', 'custom-elementor-widgets' ),
+				),
+			)
+		);
+
+		$this->end_controls_section();
+	}
+
+	/**
+	 * What the three controls come to, as a query.
+	 *
+	 * A taxonomy left alone is the whole source; terms left alone are the whole
+	 * taxonomy. Nothing here names a post type, so the same section serves
+	 * another list later.
+	 *
+	 * @param array $settings The widget's settings.
+	 * @param array $extra    What the section adds of its own.
+	 * @return array
+	 */
+	protected function source_query( $settings, $extra = array() ) {
+		$source   = isset( $settings['source'] ) ? (string) $settings['source'] : 'post';
+		$taxonomy = isset( $settings['taxonomy'] ) ? (string) $settings['taxonomy'] : '';
+		$order    = isset( $settings['order'] ) && 'ASC' === $settings['order'] ? 'ASC' : 'DESC';
+
+		$query = array(
+			'post_type'   => '' !== $source ? $source : 'post',
+			'post_status' => 'publish',
+			'orderby'     => 'date',
+			'order'       => $order,
+		);
+
+		if ( '' !== $taxonomy ) {
+			$terms = isset( $settings[ 'terms_' . $taxonomy ] ) ? (array) $settings[ 'terms_' . $taxonomy ] : array();
+			$terms = array_filter( $terms );
+
+			// Terms left alone are the whole taxonomy: whatever has a term in
+			// it, and nothing that has none.
+			$query['tax_query'] = array(
+				empty( $terms )
+					? array(
+						'taxonomy' => $taxonomy,
+						'operator' => 'EXISTS',
+					)
+					: array(
+						'taxonomy' => $taxonomy,
+						'field'    => 'slug',
+						'terms'    => $terms,
+					),
+			);
+		}
+
+		return array_merge( $query, $extra );
+	}
+
+	/**
+	 * The post types a client may draw from.
+	 *
+	 * @return array
+	 */
+	protected static function post_type_options() {
+		$options = array();
+
+		foreach ( get_post_types( array( 'public' => true ), 'objects' ) as $type ) {
+			if ( 'attachment' === $type->name ) {
+				continue;
+			}
+
+			$options[ $type->name ] = $type->labels->singular_name;
+		}
+
+		return $options;
+	}
+
+	/**
+	 * The taxonomies a client may narrow by.
+	 *
+	 * @return array
+	 */
+	protected static function taxonomy_options() {
+		$options = array();
+
+		foreach ( get_taxonomies( array( 'public' => true ), 'objects' ) as $taxonomy ) {
+			if ( ! $taxonomy->show_ui ) {
+				continue;
+			}
+
+			$options[ $taxonomy->name ] = $taxonomy->labels->singular_name;
+		}
+
+		return $options;
+	}
+
+	/**
+	 * The terms of one taxonomy.
+	 *
+	 * @param string $taxonomy The taxonomy's name.
+	 * @return array
+	 */
+	protected static function term_options( $taxonomy ) {
+		$options = array();
+		$terms   = get_terms(
+			array(
+				'taxonomy'   => $taxonomy,
+				'hide_empty' => false,
+			)
+		);
+
+		if ( is_wp_error( $terms ) ) {
+			return $options;
+		}
+
+		foreach ( $terms as $term ) {
+			$options[ $term->slug ] = $term->name;
+		}
+
+		return $options;
+	}
+
+	/**
 	 * One address control and the two toggles that travel with it.
 	 *
 	 * Every address in the build is one field and two switches, on a widget or
@@ -149,7 +333,7 @@ abstract class Base_Widget extends \Elementor\Widget_Base {
 			array_merge(
 				array(
 					'label' => $label,
-					'type'  => \Elementor\Controls_Manager::TEXT,
+					'type'  => Controls_Manager::TEXT,
 				),
 				$args
 			)
@@ -159,7 +343,7 @@ abstract class Base_Widget extends \Elementor\Widget_Base {
 			$key . '_blank',
 			array(
 				'label'   => esc_html__( 'Open in a new tab', 'custom-elementor-widgets' ),
-				'type'    => \Elementor\Controls_Manager::SWITCHER,
+				'type'    => Controls_Manager::SWITCHER,
 				'default' => '',
 			)
 		);
@@ -168,7 +352,7 @@ abstract class Base_Widget extends \Elementor\Widget_Base {
 			$key . '_nofollow',
 			array(
 				'label'   => esc_html__( 'nofollow', 'custom-elementor-widgets' ),
-				'type'    => \Elementor\Controls_Manager::SWITCHER,
+				'type'    => Controls_Manager::SWITCHER,
 				'default' => '',
 			)
 		);

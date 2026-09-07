@@ -2,8 +2,8 @@
 /**
  * Blog, recommend — one section of the design.
  *
- * What to read after this one: the newest posts the site has, minus the one
- * being read.
+ * What to read after this one: the newest of whatever the section is pointed
+ * at, minus the one being read.
  *
  * @package Custom_Elementor_Widgets
  */
@@ -100,6 +100,8 @@ class Blog_Recommend extends Blog_Widget {
 	 */
 	protected function register_controls() {
 		$design = $this->design_text();
+
+		$this->register_source_controls();
 
 		$this->start_controls_section(
 			'section_content',
@@ -308,7 +310,7 @@ class Blog_Recommend extends Blog_Widget {
 		$tag = in_array( $tag, array( 'h2', 'h3', 'span' ), true ) ? $tag : 'h2';
 
 		$more  = $this->text( $settings, 'more_text' );
-		$query = $this->query();
+		$query = $this->query( $settings );
 		?>
 		<div class="custom-blog-recommend">
 			<div class="custom-blog-recommend__head">
@@ -344,21 +346,21 @@ class Blog_Recommend extends Blog_Widget {
 	}
 
 	/**
-	 * The newest posts, minus the one being read.
+	 * The newest of the source, minus the one being read.
 	 *
+	 * @param array $settings The widget's settings.
 	 * @return \WP_Query
 	 */
-	private function query() {
+	private function query( $settings ) {
 		$here = get_the_ID();
 
 		return new \WP_Query(
-			array(
-				'post_type'      => 'post',
-				'post_status'    => 'publish',
-				'posts_per_page' => self::HOW_MANY,
-				'orderby'        => 'date',
-				'order'          => 'DESC',
-				'post__not_in'   => $here ? array( (int) $here ) : array(),
+			$this->source_query(
+				$settings,
+				array(
+					'posts_per_page' => self::HOW_MANY,
+					'post__not_in'   => $here ? array( (int) $here ) : array(),
+				)
 			)
 		);
 	}

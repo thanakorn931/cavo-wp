@@ -39,6 +39,13 @@ class Blog_List extends Blog_Widget {
 	const ARG = 'blog_page';
 
 	/**
+	 * How many pages the list came to, worked out once.
+	 *
+	 * @var int|null
+	 */
+	private $pages = null;
+
+	/**
 	 * The widget's name, and its asset handle's suffix.
 	 *
 	 * @return string
@@ -114,6 +121,8 @@ class Blog_List extends Blog_Widget {
 	protected function register_controls() {
 		$design = $this->design_text();
 
+		$this->register_source_controls();
+
 		$this->start_controls_section(
 			'section_content',
 			array(
@@ -141,20 +150,6 @@ class Blog_List extends Blog_Widget {
 					'h1'   => 'H1',
 					'h2'   => 'H2',
 					'span' => esc_html__( 'None', 'custom-elementor-widgets' ),
-				),
-			)
-		);
-
-		$this->add_control(
-			'order',
-			array(
-				'label'     => esc_html__( 'Order', 'custom-elementor-widgets' ),
-				'type'      => Controls_Manager::SELECT,
-				'default'   => 'DESC',
-				'separator' => 'before',
-				'options'   => array(
-					'DESC' => esc_html__( 'Newest first', 'custom-elementor-widgets' ),
-					'ASC'  => esc_html__( 'Oldest first', 'custom-elementor-widgets' ),
 				),
 			)
 		);
@@ -396,7 +391,7 @@ class Blog_List extends Blog_Widget {
 		$tag = isset( $settings['heading_tag'] ) ? $settings['heading_tag'] : 'h1';
 		$tag = in_array( $tag, array( 'h1', 'h2', 'span' ), true ) ? $tag : 'h1';
 
-		$total = $this->total();
+		$total = $this->total( $settings );
 		$here  = $this->here( $total );
 		$query = $this->query( $settings, $here );
 		?>
@@ -435,13 +430,29 @@ class Blog_List extends Blog_Widget {
 	/**
 	 * How many pages the list comes to.
 	 *
+	 * @param array $settings The widget's settings.
 	 * @return int
 	 */
-	private function total() {
-		$written = wp_count_posts( 'post' );
-		$written = isset( $written->publish ) ? (int) $written->publish : 0;
+	private function total( $settings ) {
+		if ( null !== $this->pages ) {
+			return $this->pages;
+		}
 
-		return max( 1, (int) ceil( $written / self::PER_PAGE ) );
+		$counted = new \WP_Query(
+			$this->source_query(
+				$settings,
+				array(
+					'posts_per_page'         => self::PER_PAGE,
+					'fields'                 => 'ids',
+					'update_post_meta_cache' => false,
+					'update_post_term_cache' => false,
+				)
+			)
+		);
+
+		$this->pages = max( 1, (int) $counted->max_num_pages );
+
+		return $this->pages;
 	}
 
 	/**
@@ -452,16 +463,13 @@ class Blog_List extends Blog_Widget {
 	 * @return \WP_Query
 	 */
 	private function query( $settings, $here ) {
-		$order = isset( $settings['order'] ) && 'ASC' === $settings['order'] ? 'ASC' : 'DESC';
-
 		return new \WP_Query(
-			array(
-				'post_type'      => 'post',
-				'post_status'    => 'publish',
-				'posts_per_page' => self::PER_PAGE,
-				'orderby'        => 'date',
-				'order'          => $order,
-				'paged'          => (int) $here,
+			$this->source_query(
+				$settings,
+				array(
+					'posts_per_page' => self::PER_PAGE,
+					'paged'          => (int) $here,
+				)
 			)
 		);
 	}
@@ -487,7 +495,7 @@ class Blog_List extends Blog_Widget {
 	 * @return string
 	 */
 	protected function card_url() {
-		$here = $this->here( $this->total() );
+		$here = $this->here( $this->total( $this->get_settings_for_display() ) );
 
 		if ( $here < 2 ) {
 			return (string) get_permalink();
