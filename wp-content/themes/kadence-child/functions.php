@@ -2082,7 +2082,6 @@ function kadence_child_subscription_defaults() {
 		'sending'    => 0,
 		'confirms'   => 0,
 		'post_types' => array( 'post' ),
-		'from_name'  => '',
 		'subject'    => '{title}',
 	);
 }
@@ -2361,7 +2360,6 @@ function kadence_child_subscribers_act() {
 				'sending'    => isset( $_POST['sending'] ) ? 1 : 0,
 				'confirms'   => isset( $_POST['confirms'] ) ? 1 : 0,
 				'post_types' => isset( $_POST['post_types'] ) ? array_map( 'sanitize_key', (array) wp_unslash( $_POST['post_types'] ) ) : array(),
-				'from_name'  => isset( $_POST['from_name'] ) ? sanitize_text_field( wp_unslash( $_POST['from_name'] ) ) : '',
 				'subject'    => isset( $_POST['subject'] ) ? sanitize_text_field( wp_unslash( $_POST['subject'] ) ) : '',
 			)
 		);
@@ -2442,7 +2440,7 @@ function kadence_child_subscribers_render() {
  */
 function kadence_child_subscribers_settings_screen() {
 	$settings = kadence_child_subscription_settings();
-	$types    = get_post_types( array( 'public' => true ), 'objects' );
+	$types    = kadence_child_news_post_types();
 	?>
 	<form method="post">
 		<?php wp_nonce_field( 'cavo_subscription_settings' ); ?>
@@ -2478,15 +2476,6 @@ function kadence_child_subscribers_settings_screen() {
 							<?php echo esc_html( $type->labels->name ); ?>
 						</label>
 					<?php endforeach; ?>
-				</td>
-			</tr>
-			<tr>
-				<th scope="row"><label for="cavo-from-name"><?php esc_html_e( 'From', 'kadence-child' ); ?></label></th>
-				<td>
-					<input type="text" id="cavo-from-name" name="from_name" class="regular-text"
-						value="<?php echo esc_attr( $settings['from_name'] ); ?>"
-						placeholder="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>" />
-					<p class="description"><?php esc_html_e( 'The name only. The address is the domain’s.', 'kadence-child' ); ?></p>
 				</td>
 			</tr>
 			<tr>
@@ -2882,12 +2871,13 @@ const KADENCE_CHILD_BATCH = 50;
  * @return string
  */
 function kadence_child_broadcast_from() {
-	$domain   = preg_replace( '/^www\./', '', (string) wp_parse_url( home_url(), PHP_URL_HOST ) );
-	$settings = kadence_child_subscription_settings();
-	$name     = trim( (string) $settings['from_name'] );
-	$name     = '' !== $name ? $name : wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES );
+	$domain = preg_replace( '/^www\./', '', (string) wp_parse_url( home_url(), PHP_URL_HOST ) );
 
-	return sprintf( 'From: %s <no-reply@%s>', $name, $domain );
+	return sprintf(
+		'From: %s <no-reply@%s>',
+		wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES ),
+		$domain
+	);
 }
 
 /**
@@ -3208,4 +3198,27 @@ function kadence_child_subscribers_broadcasts_screen() {
 		<?php esc_html_e( 'Accepted means a mail server took it, not that it arrived. “No mail server” means PHP’s own mail() carried it because nothing else did — that mail usually arrives nowhere.', 'kadence-child' ); ?>
 	</p>
 	<?php
+}
+
+/**
+ * What a reader could be told about.
+ *
+ * A page builder keeps its own posts — a template, a saved element — and an
+ * upload is a post as well. None of them is news, and a list that offers them
+ * invites somebody to mail everybody by saving a template.
+ *
+ * @return array
+ */
+function kadence_child_news_post_types() {
+	$kept = array();
+
+	foreach ( get_post_types( array( 'public' => true ), 'objects' ) as $type ) {
+		if ( 'attachment' === $type->name || 0 === strpos( $type->name, 'elementor' ) || 0 === strpos( $type->name, 'e-' ) ) {
+			continue;
+		}
+
+		$kept[ $type->name ] = $type;
+	}
+
+	return $kept;
 }
