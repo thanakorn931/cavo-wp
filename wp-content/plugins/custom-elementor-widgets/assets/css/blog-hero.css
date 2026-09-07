@@ -1,0 +1,105 @@
+/**
+ * Blog, hero — one section of the design.
+ *
+ * Every measurement here was read from the design file. Colour and type that
+ * the Style tab can carry are left to it.
+ */
+
+.custom-blog-hero {
+	width: 100%;
+}
+
+/* The way back, in a band of its own above the name. */
+.custom-blog-hero__back {
+	display: flex;
+	align-items: flex-start;
+	width: 100%;
+	padding: 20px 48px;
+	box-sizing: border-box;
+}
+
+.custom-blog-hero__back-link {
+	display: inline-flex;
+	align-items: center;
+	gap: 10px;
+	color: inherit;
+	text-decoration: none;
+	transition: opacity 300ms ease-in-out;
+}
+
+.custom-blog-hero__back-link:hover {
+	opacity: 0.7;
+}
+
+.custom-blog-hero__back-link svg {
+	display: block;
+	flex: 0 0 auto;
+}
+
+.custom-blog-hero__name {
+	display: flex;
+	align-items: flex-start;
+	justify-content: center;
+	width: 100%;
+	padding: 96px 48px;
+	box-sizing: border-box;
+}
+
+.custom-blog-hero__column {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 48px;
+	width: 100%;
+	max-width: 1344px;
+}
+
+.custom-blog-hero__heading {
+	margin: 0;
+	width: 100%;
+	text-align: center;
+	text-transform: uppercase;
+	overflow-wrap: anywhere;
+}
+
+/* What is known about the post, on one line with a rule between each part. */
+.custom-blog-hero__meta {
+	display: flex;
+	align-items: flex-start;
+	justify-content: center;
+	flex-wrap: wrap;
+	gap: 16px;
+}
+
+.custom-blog-hero__date {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+}
+
+.custom-blog-hero__date svg {
+	display: block;
+	flex: 0 0 auto;
+}
+
+/* The picture the post opens with, on the ground the design lays it on. */
+.custom-blog-hero__picture {
+	position: relative;
+	width: 100%;
+	height: 640px;
+	overflow: hidden;
+}
+
+.custom-blog-hero__picture img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
+}
+
+@media ( prefers-reduced-motion: reduce ) {
+	.custom-blog-hero__back-link {
+		transition: none;
+	}
+}

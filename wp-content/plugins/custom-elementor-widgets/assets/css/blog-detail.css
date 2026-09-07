@@ -1,0 +1,114 @@
+/**
+ * Blog, detail — one section of the design.
+ *
+ * The article down the left and the card that hands it on down the right.
+ */
+
+.custom-blog-detail {
+	display: flex;
+	align-items: flex-start;
+	gap: 48px;
+	width: 100%;
+	padding: 96px;
+	box-sizing: border-box;
+}
+
+.custom-blog-detail__article {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	flex: 0 0 880px;
+	max-width: 880px;
+	min-width: 0;
+}
+
+/* Every block carries its own space, so what is between two of them is what
+   the two of them came to rather than a gap set once for all of them. */
+.custom-blog-detail__block {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	width: 100%;
+	padding: 24px 0;
+	box-sizing: border-box;
+}
+
+.custom-blog-detail__said {
+	margin: 0;
+	width: 100%;
+	overflow-wrap: anywhere;
+}
+
+.custom-blog-detail__shown {
+	position: relative;
+	display: block;
+	width: 100%;
+	aspect-ratio: 880 / 320;
+	overflow: hidden;
+}
+
+.custom-blog-detail__shown img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
+}
+
+/* The card that hands the article on. */
+.custom-blog-detail__share {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 16px;
+	flex: 1 1 0;
+	min-width: 0;
+	padding: 24px;
+	border-radius: 24px;
+	box-sizing: border-box;
+}
+
+.custom-blog-detail__share-title {
+	display: flex;
+	align-items: center;
+	width: 100%;
+	padding: 10px 0;
+	box-sizing: border-box;
+}
+
+.custom-blog-detail__share-heading {
+	text-transform: uppercase;
+}
+
+.custom-blog-detail__marks {
+	display: flex;
+	align-items: flex-start;
+	justify-content: space-between;
+	width: 100%;
+}
+
+.custom-blog-detail__mark {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 8px;
+	border-radius: 36px;
+	overflow: hidden;
+	text-decoration: none;
+	transition: opacity 300ms ease-in-out;
+}
+
+.custom-blog-detail__mark:hover {
+	opacity: 0.7;
+}
+
+.custom-blog-detail__mark svg {
+	display: block;
+	flex: 0 0 auto;
+}
+
+@media ( prefers-reduced-motion: reduce ) {
+	.custom-blog-detail__mark {
+		transition: none;
+	}
+}
