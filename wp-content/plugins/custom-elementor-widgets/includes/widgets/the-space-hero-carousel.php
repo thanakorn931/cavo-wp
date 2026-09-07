@@ -92,7 +92,6 @@ class The_Space_Hero_Carousel extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Title', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
-				'placeholder' => esc_html__( 'Main Area', 'custom-elementor-widgets' ),
 			)
 		);
 

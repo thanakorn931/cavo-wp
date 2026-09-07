@@ -115,7 +115,6 @@ class Home_The_Space extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Tab', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
-				'placeholder' => esc_html__( 'Main Area', 'custom-elementor-widgets' ),
 			)
 		);
 
@@ -124,7 +123,6 @@ class Home_The_Space extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Title', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
-				'placeholder' => esc_html__( 'Main Area', 'custom-elementor-widgets' ),
 			)
 		);
 

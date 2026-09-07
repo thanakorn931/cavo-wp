@@ -150,7 +150,6 @@ class Nightlife_Program extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'First button text', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
-				'placeholder' => esc_html__( 'Buy a Ticket', 'custom-elementor-widgets' ),
 				'separator'   => 'before',
 			)
 		);
@@ -162,7 +161,6 @@ class Nightlife_Program extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Second button text', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
-				'placeholder' => esc_html__( 'Book a VIP Ticket', 'custom-elementor-widgets' ),
 				'separator'   => 'before',
 			)
 		);

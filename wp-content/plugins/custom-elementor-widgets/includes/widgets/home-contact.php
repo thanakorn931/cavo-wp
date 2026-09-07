@@ -226,7 +226,6 @@ class Home_Contact extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Name', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
-				'placeholder' => esc_html__( 'Dining Experience', 'custom-elementor-widgets' ),
 			)
 		);
 
@@ -235,7 +234,6 @@ class Home_Contact extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Time', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
-				'placeholder' => esc_html__( '17:00 - 21:30', 'custom-elementor-widgets' ),
 			)
 		);
 

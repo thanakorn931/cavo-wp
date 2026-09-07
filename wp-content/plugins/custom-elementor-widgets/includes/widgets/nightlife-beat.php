@@ -147,7 +147,6 @@ class Nightlife_Beat extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Social text', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
-				'placeholder' => esc_html__( 'Instagram', 'custom-elementor-widgets' ),
 				'separator'   => 'before',
 			)
 		);
