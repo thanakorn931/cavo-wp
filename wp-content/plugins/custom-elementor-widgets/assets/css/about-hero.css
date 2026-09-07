@@ -41,3 +41,8 @@
 	object-fit: cover;
 	object-position: center;
 }
+
+/* The heading is the section's own, not the theme's. */
+.custom-about-hero__heading {
+	padding: 0;
+}

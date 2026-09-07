@@ -97,6 +97,8 @@
 
 .custom-event-card__title {
 	text-transform: uppercase;
+	padding: 0;
+	color: inherit;
 }
 
 /* The button that brings more of the list on screen. It keeps its shape while

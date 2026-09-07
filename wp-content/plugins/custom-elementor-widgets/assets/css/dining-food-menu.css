@@ -33,6 +33,8 @@
 
 .custom-dining-menu__heading {
 	margin: 0;
+	padding: 0;
+	color: inherit;
 	text-transform: uppercase;
 }
 

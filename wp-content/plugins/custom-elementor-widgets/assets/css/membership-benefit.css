@@ -47,6 +47,7 @@
 .custom-membership-benefit__heading {
 	position: relative;
 	margin: 0;
+	padding: 0;
 	text-align: center;
 	text-transform: uppercase;
 }
@@ -122,6 +123,7 @@
 
 .custom-membership-benefit__title {
 	text-transform: uppercase;
+	padding: 0;
 }
 
 .custom-membership-benefit__thumb {

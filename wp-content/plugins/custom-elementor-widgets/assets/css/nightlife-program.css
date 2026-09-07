@@ -191,3 +191,9 @@
 		transition: none;
 	}
 }
+
+/* The heading is the section's own, not the theme's. */
+.custom-nightlife-program__title {
+	padding: 0;
+	color: inherit;
+}

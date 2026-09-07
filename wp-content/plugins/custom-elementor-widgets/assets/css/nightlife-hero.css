@@ -35,6 +35,8 @@
 .custom-nightlife-hero__heading {
 	position: relative;
 	margin: 0;
+	padding: 0;
+	color: inherit;
 	text-align: center;
 	text-transform: uppercase;
 }

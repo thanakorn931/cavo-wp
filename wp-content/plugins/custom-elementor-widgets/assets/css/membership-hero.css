@@ -251,3 +251,8 @@
 		transition: none;
 	}
 }
+
+/* The heading is the section's own, not the theme's. */
+.custom-membership-hero__heading {
+	padding: 0;
+}

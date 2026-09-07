@@ -32,6 +32,8 @@
 
 .custom-event-past__heading {
 	margin: 0;
+	padding: 0;
+	color: inherit;
 	max-width: 260px;
 	text-transform: uppercase;
 }

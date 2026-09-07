@@ -45,6 +45,7 @@
 
 .custom-private-form__heading {
 	text-transform: uppercase;
+	padding: 0;
 }
 
 /* The fields, two to a row where one is asked to take half of it. */
