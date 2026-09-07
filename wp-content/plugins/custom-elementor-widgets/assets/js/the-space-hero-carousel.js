@@ -1,8 +1,8 @@
 /**
  * The Space, hero carousel.
  *
- * One slide is current; the title and the tour link above belong to it, and
- * change with it. The track is moved so the current slide sits in the middle of
+ * One slide is current; the title and the two links above it, and the words in
+ * the band below it, belong to that slide and change with it. The track is moved so the current slide sits in the middle of
  * the band, which is what puts its neighbours half off either edge.
  */
 ( function () {
@@ -13,6 +13,7 @@
 		var slides = root.querySelectorAll( '.custom-space-hero__slide' );
 		var stage  = root.querySelector( '.custom-space-hero__stage' );
 		var title  = root.querySelector( '.custom-space-hero__title' );
+		var words  = root.querySelector( '.custom-space-hero__words' );
 		var tour   = root.querySelector( '.custom-space-hero__tour-link' );
 		var host   = root.querySelector( '.custom-space-hero__button' );
 
@@ -79,6 +80,10 @@
 
 			if ( title && slideTitle ) {
 				title.textContent = slideTitle;
+			}
+
+			if ( words ) {
+				words.textContent = slides[ current ].getAttribute( 'data-words' ) || '';
 			}
 
 			// Both addresses belong to the slide, so both travel with it.

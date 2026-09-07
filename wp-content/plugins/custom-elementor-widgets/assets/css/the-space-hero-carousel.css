@@ -10,12 +10,41 @@
 	position: relative;
 	display: flex;
 	flex-direction: column;
+	width: 100%;
+}
+
+.custom-space-hero__band {
+	display: flex;
+	flex-direction: column;
 	align-items: center;
 	gap: 24px;
 	width: 100%;
 	padding-bottom: 92px;
 	box-sizing: border-box;
 	overflow: hidden;
+}
+
+/* The words the file writes under the slides, in the band it gives them. They
+   belong to the slide, so they change with it. */
+.custom-space-hero__banner {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	padding: 96px 48px;
+	box-sizing: border-box;
+}
+
+.custom-space-hero__words {
+	margin: 0;
+	padding: 0;
+	width: 940px;
+	max-width: 100%;
+	color: inherit;
+	text-align: center;
+	text-transform: uppercase;
+	overflow-wrap: anywhere;
 }
 
 .custom-space-hero__title {

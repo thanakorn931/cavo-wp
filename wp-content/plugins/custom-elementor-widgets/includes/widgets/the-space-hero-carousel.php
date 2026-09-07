@@ -97,6 +97,15 @@ class The_Space_Hero_Carousel extends Base_Widget {
 		);
 
 		$repeater->add_control(
+			'slide_words',
+			array(
+				'label' => esc_html__( 'Text', 'custom-elementor-widgets' ),
+				'type'  => Controls_Manager::TEXTAREA,
+				'rows'  => 4,
+			)
+		);
+
+		$repeater->add_control(
 			'slide_picture',
 			array(
 				'label' => esc_html__( 'Picture', 'custom-elementor-widgets' ),
@@ -337,6 +346,45 @@ class The_Space_Hero_Carousel extends Base_Widget {
 		);
 
 		$this->add_control(
+			'banner_background',
+			array(
+				'label'     => esc_html__( 'Banner background', 'custom-elementor-widgets' ),
+				'type'      => Controls_Manager::COLOR,
+				'default'   => '#7D6B50',
+				'separator' => 'before',
+				'selectors' => array(
+					'{{WRAPPER}} .custom-space-hero__banner' => 'background-color: {{VALUE}};',
+				),
+			)
+		);
+
+		$this->add_control(
+			'words_color',
+			array(
+				'label'     => esc_html__( 'Banner text', 'custom-elementor-widgets' ),
+				'type'      => Controls_Manager::COLOR,
+				'default'   => '#FFFFFF',
+				'selectors' => array(
+					'{{WRAPPER}} .custom-space-hero__words' => 'color: {{VALUE}};',
+				),
+			)
+		);
+
+		$this->add_group_control(
+			Group_Control_Typography::get_type(),
+			array(
+				'name'           => 'words_typography',
+				'label'          => esc_html__( 'Banner text', 'custom-elementor-widgets' ),
+				'selector'       => '{{WRAPPER}} .custom-space-hero__words',
+				'fields_options' => array(
+					'typography'  => array( 'default' => 'yes' ),
+					'font_family' => array( 'default' => 'Roboto' ),
+					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 24 ) ),
+				),
+			)
+		);
+
+		$this->add_control(
 			'arrow_color',
 			array(
 				'label'     => esc_html__( 'Arrows', 'custom-elementor-widgets' ),
@@ -368,6 +416,7 @@ class The_Space_Hero_Carousel extends Base_Widget {
 		$tag   = in_array( $tag, array( 'h1', 'h2', 'span' ), true ) ? $tag : 'h1';
 		?>
 		<div class="custom-space-hero">
+			<div class="custom-space-hero__band">
 			<<?php echo esc_attr( $tag ); ?> class="custom-space-hero__title"><?php
 				echo esc_html( isset( $first['slide_title'] ) ? $first['slide_title'] : '' );
 			?></<?php echo esc_attr( $tag ); ?>>
@@ -380,6 +429,7 @@ class The_Space_Hero_Carousel extends Base_Widget {
 						<div
 							class="custom-space-hero__slide"
 							data-title="<?php echo esc_attr( isset( $slide['slide_title'] ) ? $slide['slide_title'] : '' ); ?>"
+							data-words="<?php echo esc_attr( isset( $slide['slide_words'] ) ? $slide['slide_words'] : '' ); ?>"
 							data-host="<?php echo esc_attr( isset( $slide['slide_host_link'] ) ? $slide['slide_host_link'] : '' ); ?>"
 							data-host-blank="<?php echo esc_attr( isset( $slide['slide_host_link_blank'] ) ? $slide['slide_host_link_blank'] : '' ); ?>"
 							data-host-nofollow="<?php echo esc_attr( isset( $slide['slide_host_link_nofollow'] ) ? $slide['slide_host_link_nofollow'] : '' ); ?>"
@@ -409,6 +459,13 @@ class The_Space_Hero_Carousel extends Base_Widget {
 				$this->editor_hint( __( 'This carousel is waiting for its slides, on the Content tab.', 'custom-elementor-widgets' ) );
 			}
 			?>
+			</div>
+
+			<div class="custom-space-hero__banner">
+				<p class="custom-space-hero__words"><?php
+					echo esc_html( isset( $first['slide_words'] ) ? $first['slide_words'] : '' );
+				?></p>
+			</div>
 		</div>
 		<?php
 	}
