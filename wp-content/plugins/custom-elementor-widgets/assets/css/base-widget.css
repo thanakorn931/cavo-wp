@@ -1,10 +1,8 @@
 /**
- * What every section shares: the state a media slot is in before anything has
- * been put in it.
+ * What every section shares.
  *
- * The box is drawn by the section around it; this is only what stands inside
- * one while it is empty, so nothing here reaches a page unless a section on it
- * has a slot of its own.
+ * Nothing here reaches a page unless a section on it declared this handle, so
+ * it is still a section's asset rather than the plugin's.
  */
 
 .custom-media-empty {
@@ -12,4 +10,29 @@
 	inset: 0;
 	background-color: #ffffff;
 	pointer-events: none;
+}
+
+/* A state is not the theme's to answer.
+ *
+ * A rule on a bare element under a pseudo-class — `a:hover`, `button:focus` —
+ * carries one step more weight than a class that spoke only for the resting
+ * state, and so answers for the ink the moment a reader reaches for anything.
+ * Answered once here instead, for every press the plugin draws.
+ *
+ * This weighs a class and a pseudo-class, the same as a section's own
+ * `.custom-thing:hover`. A section the design gives a state of its own says it
+ * heavily enough to outweigh this rather than tie with it — a tie is settled by
+ * which file loaded last, which is not something a design should rest on.
+ */
+[ class*="custom-" ]:hover,
+[ class*="custom-" ]:focus,
+[ class*="custom-" ]:active {
+	color: inherit;
+}
+
+/* The ring a reader arriving by keyboard needs, drawn in whatever ink the band
+   is already using. */
+[ class*="custom-" ]:focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: 2px;
 }
