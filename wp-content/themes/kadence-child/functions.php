@@ -883,11 +883,11 @@ function kadence_child_form_fields_repeater( $key ) {
 				'default_value' => 'text',
 				'choices'       => array(
 					'text'     => esc_html__( 'Text', 'kadence-child' ),
+					'textarea' => esc_html__( 'Text area', 'kadence-child' ),
 					'email'    => esc_html__( 'Email', 'kadence-child' ),
-					'tel'      => esc_html__( 'Phone', 'kadence-child' ),
-					'select'   => esc_html__( 'Choice', 'kadence-child' ),
+					'tel'      => esc_html__( 'Tel', 'kadence-child' ),
+					'select'   => esc_html__( 'Select', 'kadence-child' ),
 					'date'     => esc_html__( 'Date', 'kadence-child' ),
-					'textarea' => esc_html__( 'Message', 'kadence-child' ),
 				),
 			),
 			array(
@@ -914,7 +914,7 @@ function kadence_child_form_fields_repeater( $key ) {
 			),
 			array(
 				'key'               => 'field_cavo_choices_' . $key,
-				'label'             => esc_html__( 'Choices', 'kadence-child' ),
+				'label'             => esc_html__( 'Options', 'kadence-child' ),
 				'name'              => 'choices',
 				'type'              => 'textarea',
 				'rows'              => 5,
