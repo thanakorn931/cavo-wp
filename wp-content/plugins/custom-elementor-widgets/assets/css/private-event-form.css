@@ -159,16 +159,6 @@ select.custom-private-form__input:invalid {
 	}
 }
 
-/* The field the eye cannot see. Off the page rather than display:none, which a
-   filler reads as "skip this". */
-.custom-private-form__trap {
-	position: absolute;
-	left: -9999px;
-	width: 1px;
-	height: 1px;
-	overflow: hidden;
-}
-
 /* What the reader has to answer stands directly above the button. */
 .custom-private-form__captcha:not( :empty ) {
 	width: 100%;

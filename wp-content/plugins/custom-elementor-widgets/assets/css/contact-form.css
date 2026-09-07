@@ -169,16 +169,6 @@ input[ type="date" ].custom-contact-form__input {
 	text-align: center;
 }
 
-/* The field the eye cannot see. Off the page rather than display:none, which a
-   filler reads as "skip this". */
-.custom-contact-form__trap {
-	position: absolute;
-	left: -9999px;
-	width: 1px;
-	height: 1px;
-	overflow: hidden;
-}
-
 @media ( prefers-reduced-motion: reduce ) {
 	.custom-contact-form__send {
 		transition: none;

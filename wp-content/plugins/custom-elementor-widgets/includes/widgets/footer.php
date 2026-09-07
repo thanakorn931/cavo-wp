@@ -11,7 +11,6 @@
 namespace Custom_Elementor_Widgets\Widgets;
 
 use Custom_Elementor_Widgets\Base_Widget;
-use Custom_Elementor_Widgets\Form\Signup;
 use Elementor\Controls_Manager;
 use Elementor\Group_Control_Typography;
 use Elementor\Icons_Manager;
@@ -668,19 +667,19 @@ class Footer extends Base_Widget {
 			<?php
 		endif;
 
-		if ( '' === $button ) {
+		// The list, and what a press does to it, belong to the theme's WP Form.
+		// The widget draws the form and prints what it is told; it does not keep
+		// the address or decide what happens to it.
+		if ( '' === $button || ! function_exists( 'kadence_child_subscribe_fields' ) ) {
 			return;
 		}
-		?>
-		$result = Signup::result();
+
+		$result = kadence_child_subscribe_result();
 		$said   = isset( $result['state'] ) ? (string) $result['state'] : '';
 		?>
 		<div class="custom-footer__actions">
 		<form class="custom-footer__form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-			<?php
-			Signup::fields();
-			?>
-			<input type="hidden" name="form" value="newsletter" />
+			<?php kadence_child_subscribe_fields( 'newsletter' ); ?>
 			<label class="screen-reader-text" for="custom-footer-email-<?php echo esc_attr( $this->get_id() ); ?>">
 				<?php echo esc_html__( 'Email address', 'custom-elementor-widgets' ); ?>
 			</label>

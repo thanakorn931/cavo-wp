@@ -55,12 +55,6 @@ final class Bootstrap {
 	 * The compatibility gate, then the hand-over.
 	 */
 	public static function boot() {
-		// The forms and the subscriber list stand on WordPress alone, so they
-		// come up before the editor's gate and whether or not it opens.
-		require_once CUSTOM_ELEMENTOR_WIDGETS_PATH . 'includes/class-form-loader.php';
-
-		Form_Loader::instance();
-
 		if ( ! did_action( 'elementor/loaded' ) ) {
 			add_action( 'admin_notices', array( __CLASS__, 'notice_missing_elementor' ) );
 			return;

@@ -392,15 +392,15 @@ class Private_Event_Form extends Base_Widget {
 				<form class="custom-private-form__form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 					<input type="hidden" name="action" value="cavo_form" />
 					<input type="hidden" name="cavo_form" value="<?php echo esc_attr( $slug ); ?>" />
-					<input type="hidden" name="cavo_opened" value="<?php echo esc_attr( time() ); ?>" />
-					<?php wp_nonce_field( 'cavo_form_' . $slug, 'cavo_nonce' ); ?>
+					<?php
+					wp_nonce_field( 'cavo_form_' . $slug, 'cavo_nonce' );
 
-					<div class="custom-private-form__trap" aria-hidden="true">
-						<label>
-							<?php echo esc_html__( 'Leave this empty', 'custom-elementor-widgets' ); ?>
-							<input type="text" name="cavo_website" tabindex="-1" autocomplete="off" />
-						</label>
-					</div>
+					// The trap and the clock are the theme's, printed the same
+					// way for every form so none can be built without them.
+					if ( function_exists( 'kadence_child_form_trap' ) ) {
+						kadence_child_form_trap();
+					}
+					?>
 
 					<div class="custom-private-form__fields">
 						<?php foreach ( $fields as $index => $field ) : ?>

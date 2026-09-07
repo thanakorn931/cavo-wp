@@ -601,6 +601,11 @@ function kadence_child_form_tabs() {
 			'url'   => admin_url( 'edit.php?post_type=cavo_message' ),
 			'page'  => 'edit-cavo_message',
 		),
+		'subscribers' => array(
+			'label' => esc_html__( 'Subscribers', 'kadence-child' ),
+			'url'   => kadence_child_form_url( 'cavo-subscribers' ),
+			'page'  => 'cavo-subscribers',
+		),
 		'editor' => array(
 			'label' => esc_html__( 'Form editor', 'kadence-child' ),
 			'url'   => kadence_child_form_url( 'cavo-form-editor' ),
@@ -671,7 +676,9 @@ function kadence_child_form_pages() {
 	}
 
 	foreach ( kadence_child_form_tabs() as $tab ) {
-		if ( 'edit-cavo_message' === $tab['page'] ) {
+		// The inbox is the post type's own list, and the subscriber list is a
+		// list of rows rather than a page of fields. Neither is an options page.
+		if ( in_array( $tab['page'], array( 'edit-cavo_message', 'cavo-subscribers' ), true ) ) {
 			continue;
 		}
 
@@ -1813,3 +1820,1006 @@ function kadence_child_message_opened( $post ) {
 }
 add_action( 'edit_form_top', 'kadence_child_message_opened' );
 
+
+/**
+ * Where the addresses live.
+ *
+ * A message is read once and done with; an address carries a state that keeps
+ * changing, so it is stored where it can be found by the address itself, moved
+ * between states, and removed on the word of whoever owns it.
+ */
+function kadence_child_subscriber_post_type() {
+	register_post_type(
+		'cavo_subscriber',
+		array(
+			'labels'              => array(
+				'name'          => esc_html__( 'Subscribers', 'kadence-child' ),
+				'singular_name' => esc_html__( 'Subscriber', 'kadence-child' ),
+			),
+			'public'              => false,
+			'publicly_queryable'  => false,
+			'exclude_from_search' => true,
+			'show_ui'             => false,
+			'show_in_menu'        => false,
+			'show_in_rest'        => false,
+			'has_archive'         => false,
+			'rewrite'             => false,
+			'query_var'           => false,
+			'supports'            => array( 'title' ),
+			'map_meta_cap'        => true,
+		)
+	);
+}
+add_action( 'init', 'kadence_child_subscriber_post_type' );
+
+/**
+ * The three states an address can stand in.
+ *
+ * @return array
+ */
+function kadence_child_subscriber_states() {
+	return array(
+		'pending'      => esc_html__( 'Waiting to confirm', 'kadence-child' ),
+		'confirmed'    => esc_html__( 'Confirmed', 'kadence-child' ),
+		'unsubscribed' => esc_html__( 'Unsubscribed', 'kadence-child' ),
+	);
+}
+
+/**
+ * An address as it is compared: trimmed and lowered.
+ *
+ * @param string $email The address.
+ * @return string
+ */
+function kadence_child_subscriber_key( $email ) {
+	return strtolower( trim( (string) $email ) );
+}
+
+/**
+ * The row for one address, or 0.
+ *
+ * @param string $email The address.
+ * @return int
+ */
+function kadence_child_subscriber_find( $email ) {
+	$found = get_posts(
+		array(
+			'post_type'      => 'cavo_subscriber',
+			'post_status'    => 'any',
+			'posts_per_page' => 1,
+			'fields'         => 'ids',
+			'no_found_rows'  => true,
+			'meta_key'       => 'cavo_email', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- the list is looked up by address and nothing else.
+			'meta_value'     => kadence_child_subscriber_key( $email ), // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- as above.
+		)
+	);
+
+	return empty( $found ) ? 0 : (int) $found[0];
+}
+
+/**
+ * The row a token names, or 0.
+ *
+ * @param string $token The secret from a link.
+ * @return int
+ */
+function kadence_child_subscriber_by_token( $token ) {
+	$token = trim( (string) $token );
+
+	if ( '' === $token ) {
+		return 0;
+	}
+
+	$found = get_posts(
+		array(
+			'post_type'      => 'cavo_subscriber',
+			'post_status'    => 'any',
+			'posts_per_page' => 1,
+			'fields'         => 'ids',
+			'no_found_rows'  => true,
+			'meta_key'       => 'cavo_token', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- a link carries the token and nothing else.
+			'meta_value'     => $token, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- as above.
+		)
+	);
+
+	return empty( $found ) ? 0 : (int) $found[0];
+}
+
+/**
+ * Put an address on the list, or bring one back that had left.
+ *
+ * Somebody signing up again after unsubscribing is asking to be back on, so the
+ * row is moved rather than refused, and keeps the day it first asked.
+ *
+ * @param string $email  The address.
+ * @param string $source Which form it came through.
+ * @param string $status Where it should stand.
+ * @return int|WP_Error The row, or why not.
+ */
+function kadence_child_subscriber_add( $email, $source = '', $status = 'confirmed' ) {
+	$email = trim( (string) $email );
+
+	if ( ! is_email( $email ) ) {
+		return new WP_Error( 'cavo_bad_email', esc_html__( 'That address does not look right.', 'kadence-child' ) );
+	}
+
+	$states = kadence_child_subscriber_states();
+	$status = isset( $states[ $status ] ) ? $status : 'confirmed';
+	$id     = kadence_child_subscriber_find( $email );
+
+	if ( 0 !== $id ) {
+		if ( 'confirmed' !== get_post_meta( $id, 'cavo_status', true ) ) {
+			update_post_meta( $id, 'cavo_status', $status );
+		}
+
+		return $id;
+	}
+
+	$id = wp_insert_post(
+		array(
+			'post_type'   => 'cavo_subscriber',
+			'post_status' => 'publish',
+			'post_title'  => $email,
+		),
+		true
+	);
+
+	if ( is_wp_error( $id ) ) {
+		return $id;
+	}
+
+	update_post_meta( $id, 'cavo_email', kadence_child_subscriber_key( $email ) );
+	update_post_meta( $id, 'cavo_token', wp_generate_password( 32, false ) );
+	update_post_meta( $id, 'cavo_source', sanitize_key( $source ) );
+	update_post_meta( $id, 'cavo_status', $status );
+
+	return $id;
+}
+
+/**
+ * One row's state.
+ *
+ * @param int $id The row.
+ * @return string
+ */
+function kadence_child_subscriber_status( $id ) {
+	$status = (string) get_post_meta( $id, 'cavo_status', true );
+	$states = kadence_child_subscriber_states();
+
+	return isset( $states[ $status ] ) ? $status : 'pending';
+}
+
+/**
+ * Move one row to a state.
+ *
+ * @param int    $id     The row.
+ * @param string $status Where it should stand.
+ * @return bool
+ */
+function kadence_child_subscriber_set_status( $id, $status ) {
+	$states = kadence_child_subscriber_states();
+
+	if ( ! isset( $states[ $status ] ) || 'cavo_subscriber' !== get_post_type( $id ) ) {
+		return false;
+	}
+
+	update_post_meta( $id, 'cavo_status', $status );
+
+	return true;
+}
+
+/**
+ * How many addresses stand in one state.
+ *
+ * @param string $status Which state, or '' for the whole list.
+ * @return int
+ */
+function kadence_child_subscriber_count( $status = '' ) {
+	$query = array(
+		'post_type'      => 'cavo_subscriber',
+		'post_status'    => 'any',
+		'posts_per_page' => 1,
+		'fields'         => 'ids',
+	);
+
+	if ( '' !== $status ) {
+		$query['meta_key']   = 'cavo_status'; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- counted by state.
+		$query['meta_value'] = $status; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- as above.
+	}
+
+	$found = new WP_Query( $query );
+
+	return (int) $found->found_posts;
+}
+
+/**
+ * The two cheapest defences, printed once for every form that wants them.
+ *
+ * A field the eye cannot see and a hand will not fill, then the time between
+ * the page opening and the press. Written here rather than in each form: a
+ * trap a form can be built without is a trap that is sooner or later missing.
+ */
+function kadence_child_form_trap() {
+	printf(
+		'<input type="hidden" name="cavo_opened" value="%d" />',
+		absint( time() )
+	);
+
+	printf(
+		'<div class="cavo-trap" aria-hidden="true" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;">' .
+		'<label>%1$s<input type="text" name="cavo_website" value="" tabindex="-1" autocomplete="off" /></label></div>',
+		esc_html__( 'Leave this field empty', 'kadence-child' )
+	);
+}
+
+/**
+ * Whether a POST was made by something other than a reader.
+ *
+ * @param array $post The posted values.
+ * @return bool
+ */
+function kadence_child_form_trapped( $post ) {
+	if ( '' !== trim( (string) ( isset( $post['cavo_website'] ) ? $post['cavo_website'] : '' ) ) ) {
+		return true;
+	}
+
+	$opened = isset( $post['cavo_opened'] ) ? (int) $post['cavo_opened'] : 0;
+
+	return $opened > 0 && ( time() - $opened ) < 3;
+}
+
+/**
+ * What the list does, as opposed to who is on it.
+ *
+ * Recipients are never settled here — the recipients are the list. Sending
+ * starts off: a site mid-build must not answer its first publish by mailing
+ * everybody who signed up while it was being tested.
+ *
+ * @return array
+ */
+function kadence_child_subscription_defaults() {
+	return array(
+		'sending'    => 0,
+		'confirms'   => 0,
+		'post_types' => array( 'post' ),
+		'from_name'  => '',
+		'subject'    => '{title}',
+	);
+}
+
+/**
+ * The subscription's settings.
+ *
+ * @return array
+ */
+function kadence_child_subscription_settings() {
+	$stored = get_option( 'cavo_subscription', array() );
+
+	return array_merge( kadence_child_subscription_defaults(), is_array( $stored ) ? $stored : array() );
+}
+
+/**
+ * Write them back.
+ *
+ * @param array $settings What to keep.
+ */
+function kadence_child_subscription_save( $settings ) {
+	update_option( 'cavo_subscription', array_merge( kadence_child_subscription_defaults(), (array) $settings ) );
+}
+
+/**
+ * The hidden fields a sign-up form prints.
+ *
+ * @param string $slug Which form is asking.
+ */
+function kadence_child_subscribe_fields( $slug = 'newsletter' ) {
+	wp_nonce_field( 'cavo_subscribe', 'cavo_nonce' );
+
+	printf( '<input type="hidden" name="action" value="cavo_subscribe" />' );
+	printf( '<input type="hidden" name="cavo_form" value="%s" />', esc_attr( sanitize_key( $slug ) ) );
+
+	kadence_child_form_trap();
+}
+
+/**
+ * Store the answer, redirect past the POST, and stop.
+ *
+ * The address is handed back through the store rather than the address bar:
+ * what somebody typed is theirs, and a query string is written down by every
+ * proxy between here and them.
+ *
+ * @param string $back  Where the reader was.
+ * @param string $state What to tell them.
+ * @param string $email What to put back in the field.
+ */
+function kadence_child_subscribe_back( $back, $state, $email = '' ) {
+	$key = wp_generate_password( 12, false );
+
+	set_transient(
+		'cavo_signup_' . $key,
+		array(
+			'state' => $state,
+			'email' => $email,
+		),
+		5 * MINUTE_IN_SECONDS
+	);
+
+	wp_safe_redirect( add_query_arg( 'cavo_signup', $key, $back ) );
+	exit;
+}
+
+/**
+ * Take the sign-up, store the address, and send the reader back.
+ */
+function kadence_child_subscribe_submit() {
+	$back = wp_get_referer() ? wp_get_referer() : home_url( '/' );
+	$back = wp_validate_redirect( $back, home_url( '/' ) );
+
+	if ( ! isset( $_POST['cavo_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['cavo_nonce'] ) ), 'cavo_subscribe' ) ) {
+		kadence_child_subscribe_back( $back, 'expired' );
+	}
+
+	// A robot learns nothing from being told the same thing a reader is told.
+	if ( kadence_child_form_trapped( wp_unslash( $_POST ) ) ) { // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- read as presence and elapsed time only.
+		kadence_child_subscribe_back( $back, 'ok' );
+	}
+
+	$email = isset( $_POST['email'] ) ? sanitize_text_field( wp_unslash( $_POST['email'] ) ) : '';
+
+	if ( ! is_email( $email ) ) {
+		kadence_child_subscribe_back( $back, 'invalid', $email );
+	}
+
+	$slug     = isset( $_POST['cavo_form'] ) ? sanitize_key( wp_unslash( $_POST['cavo_form'] ) ) : 'newsletter';
+	$settings = kadence_child_subscription_settings();
+	$status   = empty( $settings['confirms'] ) ? 'confirmed' : 'pending';
+	$added    = kadence_child_subscriber_add( $email, $slug, $status );
+
+	if ( is_wp_error( $added ) ) {
+		kadence_child_subscribe_back( $back, 'invalid', $email );
+	}
+
+	kadence_child_subscribe_back( $back, 'pending' === $status ? 'confirm' : 'ok' );
+}
+add_action( 'admin_post_nopriv_cavo_subscribe', 'kadence_child_subscribe_submit' );
+add_action( 'admin_post_cavo_subscribe', 'kadence_child_subscribe_submit' );
+
+/**
+ * The stored answer for this request.
+ *
+ * @return array
+ */
+function kadence_child_subscribe_result() {
+	if ( ! isset( $_GET['cavo_signup'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- a key naming this reader's own stored answer.
+		return array();
+	}
+
+	$key    = sanitize_key( wp_unslash( $_GET['cavo_signup'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- as above.
+	$stored = get_transient( 'cavo_signup_' . $key );
+
+	return is_array( $stored ) ? $stored : array();
+}
+
+/**
+ * Follow a confirm or unsubscribe link.
+ *
+ * Whether the token was known or not, the same page comes back: a link that
+ * says which addresses exist is a way of asking.
+ */
+function kadence_child_subscribe_follow() {
+	$links = array(
+		'cavo_confirm' => 'confirmed',
+		'cavo_unsub'   => 'unsubscribed',
+	);
+
+	foreach ( $links as $arg => $status ) {
+		if ( ! isset( $_GET[ $arg ] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- the token in the link is the proof.
+			continue;
+		}
+
+		$token = sanitize_text_field( wp_unslash( $_GET[ $arg ] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- as above.
+		$id    = kadence_child_subscriber_by_token( $token );
+
+		if ( 0 !== $id ) {
+			kadence_child_subscriber_set_status( $id, $status );
+		}
+
+		kadence_child_subscribe_back( home_url( '/' ), 'confirmed' === $status ? 'welcome' : 'gone' );
+	}
+}
+add_action( 'init', 'kadence_child_subscribe_follow' );
+
+/**
+ * The Subscribers screen, hung under the inbox like the rest.
+ *
+ * It is a list of rows rather than a page of fields, so it is a screen of its
+ * own rather than one more options page.
+ */
+function kadence_child_subscribers_page() {
+	add_submenu_page(
+		'edit.php?post_type=cavo_message',
+		esc_html__( 'Subscribers', 'kadence-child' ),
+		esc_html__( 'Subscribers', 'kadence-child' ),
+		'manage_options',
+		'cavo-subscribers',
+		'kadence_child_subscribers_render'
+	);
+}
+add_action( 'admin_menu', 'kadence_child_subscribers_page' );
+
+/**
+ * The sub-tabs of the Subscribers screen.
+ *
+ * @return array
+ */
+function kadence_child_subscribers_views() {
+	return array(
+		'list'       => esc_html__( 'List', 'kadence-child' ),
+		'broadcasts' => esc_html__( 'Broadcasts', 'kadence-child' ),
+		'settings'   => esc_html__( 'Settings', 'kadence-child' ),
+	);
+}
+
+/**
+ * Which sub-tab is open.
+ *
+ * @return string
+ */
+function kadence_child_subscribers_view() {
+	$asked = isset( $_GET['view'] ) ? sanitize_key( wp_unslash( $_GET['view'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- which sub-tab to draw.
+	$views = kadence_child_subscribers_views();
+
+	return isset( $views[ $asked ] ) ? $asked : 'list';
+}
+
+/**
+ * Where a sub-tab lives.
+ *
+ * @param string $view Which one.
+ * @return string
+ */
+function kadence_child_subscribers_url( $view = '' ) {
+	$url = kadence_child_form_url( 'cavo-subscribers' );
+
+	return '' === $view ? $url : add_query_arg( 'view', $view, $url );
+}
+
+/**
+ * A row action changes something on a GET, so it redirects after itself.
+ *
+ * This runs before the screen is drawn: a redirect decided halfway down a page
+ * has nowhere to go.
+ */
+function kadence_child_subscribers_act() {
+	$page = isset( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- which screen was asked for.
+
+	if ( 'cavo-subscribers' !== $page || ! current_user_can( 'manage_options' ) ) {
+		return;
+	}
+
+	$what = isset( $_GET['cavo_do'] ) ? sanitize_key( wp_unslash( $_GET['cavo_do'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- the nonce is checked below.
+	$id   = isset( $_GET['cavo_who'] ) ? absint( wp_unslash( $_GET['cavo_who'] ) ) : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- the nonce is checked below.
+
+	if ( '' !== $what && 0 !== $id ) {
+		check_admin_referer( 'cavo_subscriber_' . $id );
+
+		if ( 'remove' === $what ) {
+			wp_delete_post( $id, true );
+		} elseif ( 'unsubscribe' === $what ) {
+			kadence_child_subscriber_set_status( $id, 'unsubscribed' );
+		}
+
+		wp_safe_redirect( add_query_arg( 'done', $what, kadence_child_subscribers_url( 'list' ) ) );
+		exit;
+	}
+
+	$bulk = isset( $_REQUEST['action'] ) ? sanitize_key( wp_unslash( $_REQUEST['action'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- the nonce is checked below.
+	$bulk = '-1' === $bulk || '' === $bulk ? ( isset( $_REQUEST['action2'] ) ? sanitize_key( wp_unslash( $_REQUEST['action2'] ) ) : '' ) : $bulk; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- as above.
+
+	if ( in_array( $bulk, array( 'remove', 'unsubscribe' ), true ) ) {
+		check_admin_referer( 'bulk-subscribers' );
+
+		$chosen = isset( $_REQUEST['cavo_who'] ) ? array_map( 'absint', (array) wp_unslash( $_REQUEST['cavo_who'] ) ) : array();
+
+		foreach ( $chosen as $one ) {
+			if ( 0 === $one ) {
+				continue;
+			}
+
+			if ( 'remove' === $bulk ) {
+				wp_delete_post( $one, true );
+			} else {
+				kadence_child_subscriber_set_status( $one, 'unsubscribed' );
+			}
+		}
+
+		wp_safe_redirect( add_query_arg( 'done', $bulk, kadence_child_subscribers_url( 'list' ) ) );
+		exit;
+	}
+
+	if ( isset( $_POST['cavo_add_subscriber'] ) ) {
+		check_admin_referer( 'cavo_add_subscriber' );
+
+		$email = isset( $_POST['email'] ) ? sanitize_text_field( wp_unslash( $_POST['email'] ) ) : '';
+		$added = kadence_child_subscriber_add( $email, '', 'confirmed' );
+
+		wp_safe_redirect( add_query_arg( 'done', is_wp_error( $added ) ? 'invalid' : 'added', kadence_child_subscribers_url( 'list' ) ) );
+		exit;
+	}
+
+	if ( isset( $_POST['cavo_subscription_settings'] ) ) {
+		check_admin_referer( 'cavo_subscription_settings' );
+
+		kadence_child_subscription_save(
+			array(
+				'sending'    => isset( $_POST['sending'] ) ? 1 : 0,
+				'confirms'   => isset( $_POST['confirms'] ) ? 1 : 0,
+				'post_types' => isset( $_POST['post_types'] ) ? array_map( 'sanitize_key', (array) wp_unslash( $_POST['post_types'] ) ) : array(),
+				'from_name'  => isset( $_POST['from_name'] ) ? sanitize_text_field( wp_unslash( $_POST['from_name'] ) ) : '',
+				'subject'    => isset( $_POST['subject'] ) ? sanitize_text_field( wp_unslash( $_POST['subject'] ) ) : '',
+			)
+		);
+
+		wp_safe_redirect( add_query_arg( 'done', 'saved', kadence_child_subscribers_url( 'settings' ) ) );
+		exit;
+	}
+}
+add_action( 'admin_init', 'kadence_child_subscribers_act' );
+
+/**
+ * Say what just happened.
+ */
+function kadence_child_subscribers_notice() {
+	$what = isset( $_GET['done'] ) ? sanitize_key( wp_unslash( $_GET['done'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- printing what just happened.
+
+	$words = array(
+		'remove'      => esc_html__( 'Removed from the list.', 'kadence-child' ),
+		'unsubscribe' => esc_html__( 'Marked unsubscribed.', 'kadence-child' ),
+		'added'       => esc_html__( 'Added to the list.', 'kadence-child' ),
+		'invalid'     => esc_html__( 'That address does not look right.', 'kadence-child' ),
+		'saved'       => esc_html__( 'Saved.', 'kadence-child' ),
+	);
+
+	if ( ! isset( $words[ $what ] ) ) {
+		return;
+	}
+
+	printf(
+		'<div class="notice notice-%s is-dismissible"><p>%s</p></div>',
+		'invalid' === $what ? 'error' : 'success',
+		esc_html( $words[ $what ] )
+	);
+}
+
+/**
+ * Draw the screen.
+ */
+function kadence_child_subscribers_render() {
+	if ( ! current_user_can( 'manage_options' ) ) {
+		wp_die( esc_html__( 'You cannot see this screen.', 'kadence-child' ) );
+	}
+
+	$here  = kadence_child_subscribers_view();
+	$views = kadence_child_subscribers_views();
+	$last  = array_key_last( $views );
+	?>
+	<div class="wrap">
+		<h1><?php esc_html_e( 'Subscribers', 'kadence-child' ); ?></h1>
+		<?php kadence_child_subscribers_notice(); ?>
+
+		<ul class="subsubsub">
+			<?php foreach ( $views as $slug => $label ) : ?>
+				<li>
+					<a href="<?php echo esc_url( kadence_child_subscribers_url( $slug ) ); ?>"<?php echo $slug === $here ? ' class="current"' : ''; ?>>
+						<?php echo esc_html( $label ); ?>
+					</a><?php echo $slug === $last ? '' : ' |'; ?>
+				</li>
+			<?php endforeach; ?>
+		</ul>
+		<div style="clear:both"></div>
+
+		<?php
+		if ( 'settings' === $here ) {
+			kadence_child_subscribers_settings_screen();
+		} elseif ( 'broadcasts' === $here ) {
+			echo '<p>' . esc_html__( 'Nothing has gone out yet. Sending on publish is not wired up.', 'kadence-child' ) . '</p>';
+		} else {
+			kadence_child_subscribers_list_screen();
+		}
+		?>
+	</div>
+	<?php
+}
+
+/**
+ * What the list does.
+ */
+function kadence_child_subscribers_settings_screen() {
+	$settings = kadence_child_subscription_settings();
+	$types    = get_post_types( array( 'public' => true ), 'objects' );
+	?>
+	<form method="post">
+		<?php wp_nonce_field( 'cavo_subscription_settings' ); ?>
+		<input type="hidden" name="cavo_subscription_settings" value="1" />
+
+		<table class="form-table" role="presentation">
+			<tr>
+				<th scope="row"><?php esc_html_e( 'Sending', 'kadence-child' ); ?></th>
+				<td>
+					<label>
+						<input type="checkbox" name="sending" value="1" <?php checked( ! empty( $settings['sending'] ) ); ?> />
+						<?php esc_html_e( 'Email the list when something is published', 'kadence-child' ); ?>
+					</label>
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><?php esc_html_e( 'Signing up', 'kadence-child' ); ?></th>
+				<td>
+					<label>
+						<input type="checkbox" name="confirms" value="1" <?php checked( ! empty( $settings['confirms'] ) ); ?> />
+						<?php esc_html_e( 'Ask the address to confirm itself before it counts', 'kadence-child' ); ?>
+					</label>
+					<p class="description"><?php esc_html_e( 'Off, anybody can put anybody else on the list.', 'kadence-child' ); ?></p>
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><?php esc_html_e( 'What counts as news', 'kadence-child' ); ?></th>
+				<td>
+					<?php foreach ( $types as $type ) : ?>
+						<label style="display:block">
+							<input type="checkbox" name="post_types[]" value="<?php echo esc_attr( $type->name ); ?>"
+								<?php checked( in_array( $type->name, (array) $settings['post_types'], true ) ); ?> />
+							<?php echo esc_html( $type->labels->name ); ?>
+						</label>
+					<?php endforeach; ?>
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="cavo-from-name"><?php esc_html_e( 'From', 'kadence-child' ); ?></label></th>
+				<td>
+					<input type="text" id="cavo-from-name" name="from_name" class="regular-text"
+						value="<?php echo esc_attr( $settings['from_name'] ); ?>"
+						placeholder="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>" />
+					<p class="description"><?php esc_html_e( 'The name only. The address is the domain’s.', 'kadence-child' ); ?></p>
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="cavo-subject"><?php esc_html_e( 'Subject', 'kadence-child' ); ?></label></th>
+				<td>
+					<input type="text" id="cavo-subject" name="subject" class="regular-text"
+						value="<?php echo esc_attr( $settings['subject'] ); ?>" />
+					<p class="description"><?php esc_html_e( '{title} stands for what was published.', 'kadence-child' ); ?></p>
+				</td>
+			</tr>
+		</table>
+
+		<?php submit_button(); ?>
+	</form>
+	<?php
+}
+
+/**
+ * Who is on the list.
+ */
+function kadence_child_subscribers_list_screen() {
+	$table = new Kadence_Child_Subscribers_Table();
+	$table->prepare_items();
+	?>
+	<form method="post" style="margin:1em 0;padding:1em;background:#fff;border:1px solid #c3c4c7">
+		<?php wp_nonce_field( 'cavo_add_subscriber' ); ?>
+		<input type="hidden" name="cavo_add_subscriber" value="1" />
+		<label for="cavo-add-email"><?php esc_html_e( 'Add an address', 'kadence-child' ); ?></label>
+		<input type="email" id="cavo-add-email" name="email" class="regular-text" required />
+		<?php submit_button( esc_html__( 'Add', 'kadence-child' ), 'secondary', 'submit', false ); ?>
+	</form>
+
+	<form method="get">
+		<input type="hidden" name="post_type" value="cavo_message" />
+		<input type="hidden" name="page" value="cavo-subscribers" />
+		<?php
+		$table->views();
+		$table->search_box( esc_html__( 'Search addresses', 'kadence-child' ), 'subscribers' );
+		?>
+	</form>
+
+	<form method="post">
+		<?php
+		wp_nonce_field( 'bulk-subscribers' );
+		$table->display();
+		?>
+	</form>
+	<?php
+}
+
+/**
+ * The list of addresses, as the screen draws it.
+ */
+function kadence_child_subscribers_table_class() {
+	if ( class_exists( 'Kadence_Child_Subscribers_Table' ) ) {
+		return;
+	}
+
+	if ( ! class_exists( 'WP_List_Table' ) ) {
+		require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';
+	}
+
+	/**
+	 * Who is on the list.
+	 */
+	class Kadence_Child_Subscribers_Table extends WP_List_Table {
+
+		/**
+		 * Name the thing being listed.
+		 */
+		public function __construct() {
+			parent::__construct(
+				array(
+					'singular' => 'subscriber',
+					'plural'   => 'subscribers',
+					'ajax'     => false,
+				)
+			);
+		}
+
+		/**
+		 * The columns.
+		 *
+		 * The column naming where an address came from appears once a second
+		 * form can put one there, and not before: until then every row would
+		 * say the same word.
+		 *
+		 * @return array
+		 */
+		public function get_columns() {
+			$columns = array(
+				'cb'     => '<input type="checkbox" />',
+				'email'  => esc_html__( 'Address', 'kadence-child' ),
+				'status' => esc_html__( 'Standing', 'kadence-child' ),
+			);
+
+			if ( count( kadence_child_subscriber_sources() ) > 1 ) {
+				$columns['source'] = esc_html__( 'Form', 'kadence-child' );
+			}
+
+			$columns['date'] = esc_html__( 'Signed up', 'kadence-child' );
+
+			return $columns;
+		}
+
+		/**
+		 * Which columns can be sorted on.
+		 *
+		 * @return array
+		 */
+		public function get_sortable_columns() {
+			return array(
+				'email' => array( 'title', false ),
+				'date'  => array( 'date', true ),
+			);
+		}
+
+		/**
+		 * What can be done to a selection.
+		 *
+		 * @return array
+		 */
+		public function get_bulk_actions() {
+			return array(
+				'unsubscribe' => esc_html__( 'Mark unsubscribed', 'kadence-child' ),
+				'remove'      => esc_html__( 'Remove from the list', 'kadence-child' ),
+			);
+		}
+
+		/**
+		 * Which standing is being looked at.
+		 *
+		 * @return string
+		 */
+		private function standing() {
+			$asked  = isset( $_GET['standing'] ) ? sanitize_key( wp_unslash( $_GET['standing'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- narrowing a list.
+			$states = kadence_child_subscriber_states();
+
+			return isset( $states[ $asked ] ) ? $asked : '';
+		}
+
+		/**
+		 * The counts across the top.
+		 *
+		 * @return array
+		 */
+		protected function get_views() {
+			$here = $this->standing();
+			$base = kadence_child_subscribers_url( 'list' );
+
+			$views = array(
+				'' => sprintf(
+					'<a href="%s"%s>%s <span class="count">(%s)</span></a>',
+					esc_url( $base ),
+					'' === $here ? ' class="current"' : '',
+					esc_html__( 'All', 'kadence-child' ),
+					esc_html( number_format_i18n( kadence_child_subscriber_count() ) )
+				),
+			);
+
+			foreach ( kadence_child_subscriber_states() as $slug => $label ) {
+				$views[ $slug ] = sprintf(
+					'<a href="%s"%s>%s <span class="count">(%s)</span></a>',
+					esc_url( add_query_arg( 'standing', $slug, $base ) ),
+					$slug === $here ? ' class="current"' : '',
+					esc_html( $label ),
+					esc_html( number_format_i18n( kadence_child_subscriber_count( $slug ) ) )
+				);
+			}
+
+			return $views;
+		}
+
+		/**
+		 * Fetch the page being looked at.
+		 */
+		public function prepare_items() {
+			$this->_column_headers = array( $this->get_columns(), array(), $this->get_sortable_columns() );
+
+			$orderby = isset( $_GET['orderby'] ) ? sanitize_key( wp_unslash( $_GET['orderby'] ) ) : 'date'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- ordering a list.
+			$order   = isset( $_GET['order'] ) && 'asc' === strtolower( sanitize_key( wp_unslash( $_GET['order'] ) ) ) ? 'ASC' : 'DESC'; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- ordering a list.
+			$search  = isset( $_GET['s'] ) ? sanitize_text_field( wp_unslash( $_GET['s'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- searching a list.
+
+			$query = array(
+				'post_type'      => 'cavo_subscriber',
+				'post_status'    => 'any',
+				'posts_per_page' => 50,
+				'paged'          => $this->get_pagenum(),
+				'orderby'        => in_array( $orderby, array( 'title', 'date' ), true ) ? $orderby : 'date',
+				'order'          => $order,
+			);
+
+			if ( '' !== $search ) {
+				$query['s'] = $search;
+			}
+
+			$standing = $this->standing();
+
+			if ( '' !== $standing ) {
+				$query['meta_key']   = 'cavo_status'; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- narrowed by standing.
+				$query['meta_value'] = $standing; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- as above.
+			}
+
+			$found = new WP_Query( $query );
+
+			$this->items = $found->posts;
+
+			$this->set_pagination_args(
+				array(
+					'total_items' => (int) $found->found_posts,
+					'per_page'    => 50,
+					'total_pages' => (int) $found->max_num_pages,
+				)
+			);
+		}
+
+		/**
+		 * The checkbox.
+		 *
+		 * @param WP_Post $item One row.
+		 * @return string
+		 */
+		public function column_cb( $item ) {
+			return sprintf( '<input type="checkbox" name="cavo_who[]" value="%d" />', (int) $item->ID );
+		}
+
+		/**
+		 * The address, and what can be done to it.
+		 *
+		 * @param WP_Post $item One row.
+		 * @return string
+		 */
+		public function column_email( $item ) {
+			$base    = kadence_child_subscribers_url( 'list' );
+			$actions = array();
+
+			if ( 'unsubscribed' !== kadence_child_subscriber_status( $item->ID ) ) {
+				$actions['unsubscribe'] = sprintf(
+					'<a href="%s">%s</a>',
+					esc_url(
+						wp_nonce_url(
+							add_query_arg(
+								array(
+									'cavo_do'  => 'unsubscribe',
+									'cavo_who' => (int) $item->ID,
+								),
+								$base
+							),
+							'cavo_subscriber_' . $item->ID
+						)
+					),
+					esc_html__( 'Mark unsubscribed', 'kadence-child' )
+				);
+			}
+
+			$actions['remove'] = sprintf(
+				'<a href="%s" class="submitdelete">%s</a>',
+				esc_url(
+					wp_nonce_url(
+						add_query_arg(
+							array(
+								'cavo_do'  => 'remove',
+								'cavo_who' => (int) $item->ID,
+							),
+							$base
+						),
+						'cavo_subscriber_' . $item->ID
+					)
+				),
+				esc_html__( 'Remove', 'kadence-child' )
+			);
+
+			return sprintf( '<strong>%s</strong>%s', esc_html( $item->post_title ), $this->row_actions( $actions ) );
+		}
+
+		/**
+		 * Where the address stands.
+		 *
+		 * @param WP_Post $item One row.
+		 * @return string
+		 */
+		public function column_status( $item ) {
+			$states = kadence_child_subscriber_states();
+			$status = kadence_child_subscriber_status( $item->ID );
+
+			return esc_html( isset( $states[ $status ] ) ? $states[ $status ] : $status );
+		}
+
+		/**
+		 * Which form it came through.
+		 *
+		 * @param WP_Post $item One row.
+		 * @return string
+		 */
+		public function column_source( $item ) {
+			$slug  = (string) get_post_meta( $item->ID, 'cavo_source', true );
+			$forms = kadence_child_forms();
+
+			if ( isset( $forms[ $slug ] ) ) {
+				return esc_html( $forms[ $slug ] );
+			}
+
+			return 'newsletter' === $slug ? esc_html__( 'Newsletter', 'kadence-child' ) : '—';
+		}
+
+		/**
+		 * When they asked.
+		 *
+		 * @param WP_Post $item One row.
+		 * @return string
+		 */
+		public function column_date( $item ) {
+			return esc_html( get_the_date( 'j F Y', $item ) );
+		}
+
+		/**
+		 * What an empty list says.
+		 */
+		public function no_items() {
+			esc_html_e( 'Nobody has signed up yet.', 'kadence-child' );
+		}
+	}
+}
+add_action( 'admin_init', 'kadence_child_subscribers_table_class', 5 );
+
+/**
+ * Which forms have actually put somebody on the list.
+ *
+ * @return array
+ */
+function kadence_child_subscriber_sources() {
+	global $wpdb;
+
+	$found = $wpdb->get_col( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- one distinct read, drawn once per screen.
+		$wpdb->prepare(
+			"SELECT DISTINCT meta_value FROM {$wpdb->postmeta} WHERE meta_key = %s AND meta_value <> ''",
+			'cavo_source'
+		)
+	);
+
+	return is_array( $found ) ? $found : array();
+}
