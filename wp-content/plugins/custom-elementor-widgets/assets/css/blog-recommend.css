@@ -11,7 +11,9 @@
 	align-items: flex-start;
 	gap: 48px;
 	width: 100%;
-	padding: 96px 48px;
+	/* The band runs the full width; what stands in it stops at the 1344 the
+	   file draws inside 1440, and centres there. */
+	padding: 96px calc( 48px + max( 0px, calc( ( 100% - 1440px ) / 2 ) ) );
 	box-sizing: border-box;
 }
 
