@@ -148,6 +148,9 @@
 }
 
 .custom-blog-list__handle {
+	/* The pill is filled with the section's own ink, so the anchor has to say
+	   it takes that ink — a link left unsaid takes the theme's. */
+	color: inherit;
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;

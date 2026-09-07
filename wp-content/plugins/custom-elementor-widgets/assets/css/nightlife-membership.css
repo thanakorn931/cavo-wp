@@ -68,6 +68,7 @@
 }
 
 .custom-nightlife-membership__panel {
+	color: inherit;
 	position: relative;
 	min-width: 0;
 	overflow: hidden;
