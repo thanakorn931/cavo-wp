@@ -129,14 +129,7 @@ class Blog_Hero extends Blog_Widget {
 			)
 		);
 
-		$this->add_link_controls(
-			$this,
-			'back_link',
-			esc_html__( 'The list this came from', 'custom-elementor-widgets' ),
-			array(
-				'description' => esc_html__( 'The blog page. Whichever page of it the reader came from is added on its own.', 'custom-elementor-widgets' ),
-			)
-		);
+		$this->add_link_controls( $this, 'back_link', esc_html__( 'Back link', 'custom-elementor-widgets' ) );
 
 		$this->add_control(
 			'heading_tag',
@@ -159,7 +152,6 @@ class Blog_Hero extends Blog_Widget {
 				'label'       => esc_html__( 'Minutes to read', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::NUMBER,
 				'min'         => 1,
-				'description' => esc_html__( 'Left empty, the line does not say one.', 'custom-elementor-widgets' ),
 			)
 		);
 
