@@ -34,8 +34,12 @@
 	box-sizing: border-box;
 	overflow: hidden;
 
+	/* The file draws the glow 1924 across a 1440 band. Written as a share of the
+	   band rather than a number of pixels, it meets the cream above it at the
+	   same point whatever the window is; written in pixels it stops short of a
+	   wider one, and the join shows. */
 	background-image: radial-gradient(
-		1924px 713px at 50% 0%,
+		133.611% 713px at 50% 0%,
 		#faf6ea 34.84%,
 		#c6bfb3 49.9%,
 		#aca398 57.43%,
