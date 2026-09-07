@@ -135,9 +135,12 @@
 	overflow: hidden;
 }
 
+/* Centred, so one slide stands in the middle of the band with nothing asked of
+   the script; where there are more, the script moves the run from here. */
 .custom-space-hero__track {
 	display: flex;
 	align-items: center;
+	justify-content: center;
 	gap: 56px;
 	height: 720px;
 	transition: transform 500ms ease-in-out;

@@ -2,29 +2,75 @@
  * The Space, hero carousel.
  *
  * One slide is current; the title and the two links above it, and the words in
- * the band below it, belong to that slide and change with it. The track is moved so the current slide sits in the middle of
- * the band, which is what puts its neighbours half off either edge.
+ * the band below it, belong to that slide and change with it. The track is
+ * moved so the current slide sits in the middle of the band, which is what puts
+ * its neighbours half off either edge.
+ *
+ * Where there is more than one, the whole run is copied either side of itself,
+ * so an edge always has a slide standing at it and the last leads back to the
+ * first. Two slides means each is the other's neighbour on both sides.
  */
 ( function () {
 	'use strict';
 
 	function setUp( root ) {
-		var track  = root.querySelector( '.custom-space-hero__track' );
-		var slides = root.querySelectorAll( '.custom-space-hero__slide' );
-		var stage  = root.querySelector( '.custom-space-hero__stage' );
-		var title  = root.querySelector( '.custom-space-hero__title' );
-		var words  = root.querySelector( '.custom-space-hero__words' );
-		var tour   = root.querySelector( '.custom-space-hero__tour-link' );
-		var host   = root.querySelector( '.custom-space-hero__button' );
-
-		if ( ! track || slides.length === 0 || ! stage ) {
+		if ( ! root || root.dataset.wired ) {
 			return;
 		}
 
-		var current = 0;
+		var track = root.querySelector( '.custom-space-hero__track' );
+		var stage = root.querySelector( '.custom-space-hero__stage' );
+		var title = root.querySelector( '.custom-space-hero__title' );
+		var words = root.querySelector( '.custom-space-hero__words' );
+		var tour  = root.querySelector( '.custom-space-hero__tour-link' );
+		var host  = root.querySelector( '.custom-space-hero__button' );
 
-		// One address and the two toggles that travel with it, the same three
-		// the widget prints for the slide it starts on.
+		var written = root.querySelectorAll( '.custom-space-hero__slide' );
+		var many    = written.length;
+
+		if ( ! track || ! stage || many === 0 ) {
+			return;
+		}
+
+		root.dataset.wired = '1';
+
+		// One slide has no neighbours and nowhere to go. The stylesheet centres
+		// it; all it wants from here is to be told it is the one being read.
+		if ( many === 1 ) {
+			written[ 0 ].classList.add( 'is-current' );
+
+			return;
+		}
+
+		var i;
+
+		// A copy of the run before it and another after it. A reader never
+		// reaches an edge with nothing beside it.
+		for ( i = many - 1; i >= 0; i-- ) {
+			track.insertBefore( copy( written[ i ] ), track.firstChild );
+		}
+
+		for ( i = 0; i < many; i++ ) {
+			track.appendChild( copy( written[ i ] ) );
+		}
+
+		var slides  = track.querySelectorAll( '.custom-space-hero__slide' );
+		var current = many;
+
+		function copy( slide ) {
+			var made = slide.cloneNode( true );
+
+			// A copy is scenery: it says nothing a reader is meant to hear.
+			made.setAttribute( 'aria-hidden', 'true' );
+			made.dataset.copy = '1';
+
+			return made;
+		}
+
+		/**
+		 * One address and the two toggles that travel with it, the same three
+		 * the widget prints for the slide it starts on.
+		 */
 		function follow( link, slide, name ) {
 			if ( ! link ) {
 				return;
@@ -60,53 +106,90 @@
 			}
 		}
 
-		function show( index ) {
-			current = ( index + slides.length ) % slides.length;
+		// What a slide is worth is read once, before anything is moving. Read
+		// again mid-move it would answer with the width it is passing through,
+		// and the run would settle half a slide's growth off centre.
+		var gap    = parseFloat( window.getComputedStyle( track ).columnGap ) || 0;
+		var wide   = slides[ current ].offsetWidth;
+		var narrow = slides[ current === 0 ? 1 : 0 ].offsetWidth;
+		var spread = wide + ( ( slides.length - 1 ) * ( narrow + gap ) );
 
-			for ( var i = 0; i < slides.length; i++ ) {
-				slides[ i ].classList.toggle( 'is-current', i === current );
-				slides[ i ].setAttribute( 'aria-hidden', i === current ? 'false' : 'true' );
+		function place( moving ) {
+			var room  = stage.offsetWidth;
+			var left  = ( ( room - spread ) / 2 ) + ( current * ( narrow + gap ) );
+			var shift = left + ( wide / 2 ) - ( room / 2 );
+
+			track.style.transition = moving ? '' : 'none';
+			track.style.transform  = 'translateX(' + ( -shift ) + 'px)';
+
+			if ( ! moving ) {
+				// Read something back so the browser settles the jump before the
+				// transition is handed back to it.
+				void track.offsetWidth;
+				track.style.transition = '';
 			}
+		}
 
-			// The widths change with the class, so the offset is read after.
-			window.requestAnimationFrame( function () {
-				var slide = slides[ current ];
-				var shift = slide.offsetLeft + ( slide.offsetWidth / 2 ) - ( stage.offsetWidth / 2 );
+		function tell() {
+			var slide = slides[ current ];
+			var said  = slide.getAttribute( 'data-title' );
 
-				track.style.transform = 'translateX(' + ( -shift ) + 'px)';
-			} );
-
-			var slideTitle = slides[ current ].getAttribute( 'data-title' );
-
-			if ( title && slideTitle ) {
-				title.textContent = slideTitle;
+			if ( title && said ) {
+				title.textContent = said;
 			}
 
 			if ( words ) {
-				words.textContent = slides[ current ].getAttribute( 'data-words' ) || '';
+				words.textContent = slide.getAttribute( 'data-words' ) || '';
 			}
 
-			// Both addresses belong to the slide, so both travel with it.
-			follow( tour, slides[ current ], 'link' );
-			follow( host, slides[ current ], 'host' );
+			follow( tour, slide, 'link' );
+			follow( host, slide, 'host' );
+		}
+
+		function mark() {
+			for ( var j = 0; j < slides.length; j++ ) {
+				slides[ j ].classList.toggle( 'is-current', j === current );
+			}
+		}
+
+		// A step that would leave the middle run is taken from the copy of where
+		// it already is instead, so the reader is always a step away from the
+		// edge and never reaches it. The swap is made before the move, not after
+		// it, because a move that is never drawn never reports itself finished.
+		function step( way ) {
+			var target = current + way;
+
+			if ( target < many || target >= many * 2 ) {
+				current += target < many ? many : -many;
+
+				mark();
+				place( false );
+
+				target = current + way;
+			}
+
+			current = target;
+
+			mark();
+			place( true );
+			tell();
 		}
 
 		root.addEventListener( 'click', function ( event ) {
-			var previous = event.target.closest( '.custom-space-hero__arrow--prev' );
-			var next     = event.target.closest( '.custom-space-hero__arrow--next' );
-
-			if ( previous ) {
-				show( current - 1 );
-			} else if ( next ) {
-				show( current + 1 );
+			if ( event.target.closest( '.custom-space-hero__arrow--prev' ) ) {
+				step( -1 );
+			} else if ( event.target.closest( '.custom-space-hero__arrow--next' ) ) {
+				step( 1 );
 			}
 		} );
 
 		window.addEventListener( 'resize', function () {
-			show( current );
+			place( false );
 		} );
 
-		show( 0 );
+		mark();
+		place( false );
+		tell();
 	}
 
 	function start() {
@@ -129,7 +212,7 @@
 			window.elementorFrontend.hooks.addAction(
 				'frontend/element_ready/the-space-hero-carousel.default',
 				function ( $scope ) {
-					setUp( $scope[ 0 ].querySelector( '.custom-space-hero' ) || $scope[ 0 ] );
+					setUp( $scope[ 0 ].querySelector( '.custom-space-hero' ) );
 				}
 			);
 		}
