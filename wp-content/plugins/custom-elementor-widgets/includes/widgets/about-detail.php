@@ -313,7 +313,7 @@ class About_Detail extends Base_Widget {
 				'selector'       => '{{WRAPPER}} .custom-about-detail__intro h3',
 				'fields_options' => array(
 					'typography'  => array( 'default' => 'yes' ),
-					'font_family' => array( 'default' => 'Fenul Compressed' ),
+					'font_family' => array( 'default' => 'Roboto' ),
 					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 24 ) ),
 					'font_weight' => array( 'default' => '400' ),
 				),
@@ -328,7 +328,7 @@ class About_Detail extends Base_Widget {
 				'selector'       => '{{WRAPPER}} .custom-about-detail__block h3',
 				'fields_options' => array(
 					'typography'  => array( 'default' => 'yes' ),
-					'font_family' => array( 'default' => 'Fenul Compressed' ),
+					'font_family' => array( 'default' => 'Roboto' ),
 					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 20 ) ),
 					'font_weight' => array( 'default' => '500' ),
 				),
