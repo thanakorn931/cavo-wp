@@ -107,8 +107,9 @@ class Home_Hero extends Base_Widget {
 		$this->add_control(
 			'picture',
 			array(
-				'label' => esc_html__( 'Picture', 'custom-elementor-widgets' ),
-				'type'  => Controls_Manager::MEDIA,
+				'label'       => esc_html__( 'Picture or video', 'custom-elementor-widgets' ),
+				'type'        => Controls_Manager::MEDIA,
+				'media_types' => array( 'image', 'video' ),
 			)
 		);
 

@@ -118,38 +118,13 @@ class Private_Event_Virtual_Tour extends Base_Widget {
 		<div class="custom-private-tour" id="<?php echo esc_attr( self::ANCHOR ); ?>">
 			<div class="custom-private-tour__stage">
 				<div class="custom-private-tour__media">
-					<?php if ( '' === $url ) : ?>
-						<?php $this->media( '' ); ?>
-					<?php elseif ( $this->is_film( $url ) ) : ?>
-						<video
-							src="<?php echo esc_url( $url ); ?>"
-							autoplay
-							loop
-							muted
-							playsinline
-							preload="auto"
-						></video>
-					<?php else : ?>
-						<img src="<?php echo esc_url( $url ); ?>" alt="" />
-					<?php endif; ?>
+					<?php $this->media( $url ); ?>
 				</div>
 			</div>
 
 			<span class="custom-private-tour__wordmark" aria-hidden="true"></span>
 		</div>
 		<?php
-	}
-
-	/**
-	 * Whether what the client chose is a film rather than a picture.
-	 *
-	 * @param string $url What the client chose.
-	 * @return bool
-	 */
-	private function is_film( $url ) {
-		$type = wp_check_filetype( $url );
-
-		return isset( $type['type'] ) && 0 === strpos( (string) $type['type'], 'video/' );
 	}
 
 }

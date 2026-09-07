@@ -60,9 +60,16 @@ abstract class Base_Widget extends \Elementor\Widget_Base {
 	 * @return array
 	 */
 	public function get_script_depends(): array {
+		$shared = Widgets_Loader::HANDLE_PREFIX . 'base-widget';
 		$handle = $this->asset_handle();
 
-		return wp_script_is( $handle, 'registered' ) ? array( $handle ) : array();
+		$depends = wp_script_is( $shared, 'registered' ) ? array( $shared ) : array();
+
+		if ( wp_script_is( $handle, 'registered' ) ) {
+			$depends[] = $handle;
+		}
+
+		return $depends;
 	}
 
 	/**
@@ -90,18 +97,43 @@ abstract class Base_Widget extends \Elementor\Widget_Base {
 	protected function media( $url, $alt = '', $lazy = false ) {
 		$url = trim( (string) $url );
 
-		if ( '' !== $url ) {
+		if ( '' === $url ) {
+			echo '<span class="custom-media-empty" aria-hidden="true"></span>';
+
+			return;
+		}
+
+		// A video standing where a picture would stands muted, loops, and
+		// starts without being asked. Whether it holds still for a reader who
+		// wants less movement is settled by the shared script, which finds it
+		// by the attribute printed here.
+		if ( $this->is_film( $url ) ) {
 			printf(
-				'<img src="%s" alt="%s"%s />',
-				esc_url( $url ),
-				esc_attr( $alt ),
-				$lazy ? ' loading="lazy"' : ''
+				'<video src="%s" autoplay loop muted playsinline preload="auto" data-custom-plays="1"></video>',
+				esc_url( $url )
 			);
 
 			return;
 		}
 
-		echo '<span class="custom-media-empty" aria-hidden="true"></span>';
+		printf(
+			'<img src="%s" alt="%s"%s />',
+			esc_url( $url ),
+			esc_attr( $alt ),
+			$lazy ? ' loading="lazy"' : ''
+		);
+	}
+
+	/**
+	 * Whether what the client chose is a video rather than a picture.
+	 *
+	 * @param string $url What the client chose.
+	 * @return bool
+	 */
+	protected function is_film( $url ) {
+		$type = wp_check_filetype( (string) $url );
+
+		return isset( $type['type'] ) && 0 === strpos( (string) $type['type'], 'video/' );
 	}
 
 	/**
