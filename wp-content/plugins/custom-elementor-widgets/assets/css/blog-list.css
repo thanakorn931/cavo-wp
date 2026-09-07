@@ -1,0 +1,266 @@
+/**
+ * Blog, the list — one section of the design.
+ *
+ * Every measurement here was read from the design file. Colour and type that
+ * the Style tab can carry are left to it.
+ */
+
+.custom-blog-list {
+	--custom-blog-ground: #faf6ea;
+	--custom-blog-foot: #bca48b;
+
+	width: 100%;
+}
+
+/* The page's name, in the band every page gives its name. */
+.custom-blog-list__name {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	padding: 96px 48px;
+	background-color: var( --custom-blog-ground );
+	box-sizing: border-box;
+}
+
+.custom-blog-list__heading {
+	margin: 0;
+	width: 100%;
+	text-align: center;
+	text-transform: uppercase;
+}
+
+/* The list itself, and what closes it. The ground turns under the foot of it. */
+.custom-blog-list__band {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 96px;
+	width: 100%;
+	padding: 0 48px 96px 48px;
+	background-image: linear-gradient(
+		179.61deg,
+		var( --custom-blog-ground ) 56.886%,
+		var( --custom-blog-foot ) 100.21%
+	);
+	box-sizing: border-box;
+}
+
+.custom-blog-list__cards {
+	display: grid;
+	grid-template-columns: repeat( 3, minmax( 0, 1fr ) );
+	column-gap: 24px;
+	row-gap: 96px;
+	width: 100%;
+	max-width: 1344px;
+}
+
+.custom-blog-list__card {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	min-width: 0;
+	border-radius: 24px;
+	overflow: hidden;
+	color: inherit;
+	text-decoration: none;
+	transition: opacity 300ms ease-in-out;
+}
+
+.custom-blog-list__card:hover {
+	opacity: 0.85;
+}
+
+/* The picture the design gives the card, whether or not there is one to show. */
+.custom-blog-list__picture {
+	position: relative;
+	display: block;
+	width: 100%;
+	aspect-ratio: 1 / 1;
+	overflow: hidden;
+}
+
+.custom-blog-list__picture img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
+}
+
+.custom-blog-list__body {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 16px;
+	width: 100%;
+	padding: 24px 16px;
+	box-sizing: border-box;
+}
+
+.custom-blog-list__date {
+	display: flex;
+	align-items: center;
+	gap: 5px;
+}
+
+.custom-blog-list__date svg {
+	display: block;
+	flex: 0 0 auto;
+}
+
+.custom-blog-list__text {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 8px;
+	width: 100%;
+}
+
+.custom-blog-list__title {
+	width: 100%;
+	text-transform: uppercase;
+	overflow-wrap: anywhere;
+}
+
+.custom-blog-list__excerpt {
+	width: 100%;
+	overflow-wrap: anywhere;
+}
+
+/* The pages. Square, so they are not read as the round buttons the design
+   gives to what a press sends somewhere. */
+.custom-blog-list__pages {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+.custom-blog-list__page {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 40px;
+	height: 40px;
+	padding: 0 8px;
+	border: 1px solid currentColor;
+	border-radius: 0;
+	background: none;
+	color: inherit;
+	font: inherit;
+	text-decoration: none;
+	box-sizing: border-box;
+	cursor: pointer;
+	transition:
+		background-color 300ms ease-in-out,
+		color 300ms ease-in-out,
+		opacity 300ms ease-in-out;
+}
+
+.custom-blog-list__page--break {
+	border-color: transparent;
+	cursor: default;
+}
+
+/* A step with nowhere to go keeps its place and refuses the press. */
+.custom-blog-list__page--shut {
+	opacity: 0.4;
+	cursor: default;
+}
+
+.custom-blog-list__page:not( .custom-blog-list__page--break ):not( .custom-blog-list__page--shut ):not( .custom-blog-list__page--here ):hover {
+	opacity: 0.7;
+}
+
+.custom-blog-list__go {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-left: 8px;
+}
+
+.custom-blog-list__field {
+	width: 72px;
+	height: 40px;
+	padding: 0 8px;
+	border: 1px solid currentColor;
+	border-radius: 0;
+	background: none;
+	color: inherit;
+	font: inherit;
+	box-sizing: border-box;
+	appearance: textfield;
+}
+
+.custom-blog-list__field:focus {
+	outline: none;
+}
+
+/* What closes the page off. */
+.custom-blog-list__close {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 48px;
+}
+
+.custom-blog-list__invite {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 12px;
+}
+
+.custom-blog-list__follow {
+	margin: 0;
+	width: 206px;
+	text-align: center;
+}
+
+.custom-blog-list__handle {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	padding: 8px 16px;
+	border-radius: 36px;
+	background-color: currentColor;
+	text-decoration: none;
+	white-space: nowrap;
+	transition: opacity 300ms ease-in-out;
+}
+
+/* The pill is the ink; what stands on it is the ground behind the section. */
+.custom-blog-list__handle svg,
+.custom-blog-list__handle span {
+	color: var( --custom-blog-ground );
+}
+
+.custom-blog-list__handle svg {
+	display: block;
+	flex: 0 0 auto;
+}
+
+.custom-blog-list__handle:hover,
+.custom-blog-list__press:hover {
+	opacity: 0.7;
+}
+
+.custom-blog-list__press {
+	color: inherit;
+	text-align: center;
+	text-decoration: underline;
+	text-underline-position: from-font;
+	transition: opacity 300ms ease-in-out;
+}
+
+@media ( prefers-reduced-motion: reduce ) {
+	.custom-blog-list__card,
+	.custom-blog-list__page,
+	.custom-blog-list__handle,
+	.custom-blog-list__press {
+		transition: none;
+	}
+}
