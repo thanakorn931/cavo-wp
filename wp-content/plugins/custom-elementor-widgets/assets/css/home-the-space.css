@@ -1,0 +1,301 @@
+/**
+ * Home, the space — one section of the design.
+ *
+ * A picture the band holds under a veil and a wash, the tabs that name the
+ * areas, and the area itself laid out beneath them.
+ */
+
+.custom-home-space {
+	--custom-home-space-near: rgba( 157, 84, 52, 0.7 );
+	--custom-home-space-mid: rgba( 100, 49, 26, 0.7 );
+	--custom-home-space-far: rgba( 76, 37, 19, 0.7 );
+
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 100%;
+	padding: 96px 0 103px;
+	box-sizing: border-box;
+	overflow: hidden;
+}
+
+.custom-home-space__picture,
+.custom-home-space__veil,
+.custom-home-space__wash {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+}
+
+.custom-home-space__picture img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
+}
+
+/* The wash the file lays over the picture, read from the file. */
+.custom-home-space__wash {
+	background-image: linear-gradient(
+		28.163deg,
+		var( --custom-home-space-near ) 17.466%,
+		var( --custom-home-space-mid ) 62.65%,
+		var( --custom-home-space-far ) 81.22%
+	);
+}
+
+.custom-home-space__heading {
+	position: relative;
+	margin: 0;
+	padding: 0;
+	text-align: center;
+	text-transform: uppercase;
+}
+
+/* The tabs stand on a rule the file draws the width of them and more. */
+.custom-home-space__tabs {
+	position: relative;
+	display: flex;
+	align-items: flex-end;
+	justify-content: center;
+	width: 888px;
+	max-width: 100%;
+	height: 51px;
+	margin-top: 36px;
+	border-bottom: 1px solid #f3eedc;
+	box-sizing: border-box;
+}
+
+.custom-home-space__tab {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 10px;
+	border: 0;
+	border-bottom: 1px solid transparent;
+	background: none;
+	color: inherit;
+	font: inherit;
+	white-space: nowrap;
+	cursor: pointer;
+	transition: color 300ms ease-in-out;
+}
+
+.custom-home-space__tab.is-here {
+	cursor: default;
+}
+
+/* Everything below the tabs is placed as the file places it, inside the width
+   the file draws it at. */
+.custom-home-space__stage {
+	position: relative;
+	width: 1440px;
+	max-width: 100%;
+	height: 562px;
+	margin-top: 36px;
+}
+
+.custom-home-space__area[hidden] {
+	display: none;
+}
+
+.custom-home-space__large {
+	position: absolute;
+	left: 0;
+	top: 0;
+	display: block;
+	width: 1000px;
+	max-width: 70%;
+	height: 562px;
+	border-top-right-radius: 24px;
+	border-bottom-right-radius: 24px;
+	overflow: hidden;
+}
+
+.custom-home-space__small {
+	position: absolute;
+	left: 1015px;
+	top: 302px;
+	display: block;
+	width: 418px;
+	height: 260px;
+	border-radius: 24px;
+	overflow: hidden;
+}
+
+.custom-home-space__large img,
+.custom-home-space__small img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
+}
+
+.custom-home-space__small-veil {
+	position: absolute;
+	inset: 0;
+	background-color: rgba( 0, 0, 0, 0.5 );
+	pointer-events: none;
+}
+
+.custom-home-space__panel {
+	position: absolute;
+	left: 1015px;
+	top: 0;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 24px;
+	width: 392px;
+}
+
+.custom-home-space__title,
+.custom-home-space__body {
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	overflow-wrap: anywhere;
+}
+
+.custom-home-space__title {
+	text-transform: uppercase;
+}
+
+.custom-home-space__actions {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+}
+
+.custom-home-space__space {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 126px;
+	padding: 12px 24px;
+	border-radius: 24px;
+	box-shadow: inset 0 0 0 1px currentColor;
+	color: inherit;
+	text-decoration: none;
+	white-space: nowrap;
+	box-sizing: border-box;
+	transition: opacity 300ms ease-in-out;
+}
+
+.custom-home-space__tour {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+}
+
+.custom-home-space__tour-link {
+	position: relative;
+	display: inline-flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	padding-top: 4px;
+	color: inherit;
+	text-decoration: none;
+	text-transform: uppercase;
+	white-space: nowrap;
+}
+
+.custom-home-space__tour-link::after {
+	content: "";
+	display: block;
+	width: 100%;
+	height: 1px;
+	margin-top: 4px;
+	background: currentColor;
+	transform: scaleX( 0 );
+	transform-origin: left center;
+	transition: transform 300ms ease-in-out;
+}
+
+.custom-home-space__tour-link:hover::after {
+	transform: scaleX( 1 );
+}
+
+.custom-home-space__tour-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	flex: 0 0 auto;
+	width: 24px;
+	height: 24px;
+}
+
+.custom-home-space__tour-icon svg,
+.custom-home-space__tour-icon img {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+/* The table is booked from the section, not from any one area. */
+.custom-home-space__reserve {
+	position: absolute;
+	left: 426px;
+	top: 458px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 12px 24px;
+	border-radius: 24px;
+	text-decoration: none;
+	white-space: nowrap;
+	transition: opacity 300ms ease-in-out;
+}
+
+.custom-home-space__space:hover,
+.custom-home-space__reserve:hover {
+	opacity: 0.85;
+}
+
+.custom-home-space__arrow {
+	position: absolute;
+	top: 253px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 56px;
+	height: 56px;
+	padding: 0;
+	border: 0;
+	background: none;
+	color: inherit;
+	cursor: pointer;
+	transition: opacity 300ms ease-in-out;
+}
+
+.custom-home-space__arrow--prev {
+	left: 47px;
+}
+
+.custom-home-space__arrow--next {
+	left: 895px;
+}
+
+.custom-home-space__arrow:hover {
+	opacity: 0.7;
+}
+
+.custom-home-space__arrow svg {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+@media ( prefers-reduced-motion: reduce ) {
+	.custom-home-space__tab,
+	.custom-home-space__tour-link::after,
+	.custom-home-space__space,
+	.custom-home-space__reserve,
+	.custom-home-space__arrow {
+		transition: none;
+	}
+}
