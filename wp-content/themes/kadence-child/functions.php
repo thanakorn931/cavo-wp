@@ -2179,6 +2179,12 @@ function kadence_child_subscribe_submit() {
 		kadence_child_subscribe_back( $back, 'invalid', $email );
 	}
 
+	// The row is the record and the email a courtesy on top of it, so this
+	// happens after the address is stored and never instead of storing it.
+	if ( 'pending' === $status && 'pending' === kadence_child_subscriber_status( $added ) ) {
+		kadence_child_subscribe_confirm_mail( $added );
+	}
+
 	kadence_child_subscribe_back( $back, 'pending' === $status ? 'confirm' : 'ok' );
 }
 add_action( 'admin_post_nopriv_cavo_subscribe', 'kadence_child_subscribe_submit' );
@@ -2422,7 +2428,7 @@ function kadence_child_subscribers_render() {
 		if ( 'settings' === $here ) {
 			kadence_child_subscribers_settings_screen();
 		} elseif ( 'broadcasts' === $here ) {
-			echo '<p>' . esc_html__( 'Nothing has gone out yet. Sending on publish is not wired up.', 'kadence-child' ) . '</p>';
+			kadence_child_subscribers_broadcasts_screen();
 		} else {
 			kadence_child_subscribers_list_screen();
 		}
@@ -2495,6 +2501,14 @@ function kadence_child_subscribers_settings_screen() {
 
 		<?php submit_button(); ?>
 	</form>
+
+	<?php if ( ! empty( $settings['sending'] ) ) : ?>
+		<p class="description" style="max-width:40em">
+			<?php
+			esc_html_e( 'A publish hands the list to WordPress’s scheduler and it is worked through 50 at a time. WordPress runs that scheduler when somebody visits the site, so on a quiet night the last batch waits for the first visitor. A real cron on the server calling wp-cron.php every few minutes settles it.', 'kadence-child' );
+			?>
+		</p>
+	<?php endif; ?>
 	<?php
 }
 
@@ -2822,4 +2836,376 @@ function kadence_child_subscriber_sources() {
 	);
 
 	return is_array( $found ) ? $found : array();
+}
+
+/**
+ * A record of one thing having gone out to the list.
+ *
+ * Sent means it was accepted, not that it was received. Nothing here can tell
+ * the second, and a column that implies otherwise is worse than none.
+ */
+function kadence_child_broadcast_post_type() {
+	register_post_type(
+		'cavo_broadcast',
+		array(
+			'labels'              => array(
+				'name'          => esc_html__( 'Broadcasts', 'kadence-child' ),
+				'singular_name' => esc_html__( 'Broadcast', 'kadence-child' ),
+			),
+			'public'              => false,
+			'publicly_queryable'  => false,
+			'exclude_from_search' => true,
+			'show_ui'             => false,
+			'show_in_menu'        => false,
+			'show_in_rest'        => false,
+			'has_archive'         => false,
+			'rewrite'             => false,
+			'query_var'           => false,
+			'supports'            => array( 'title' ),
+			'map_meta_cap'        => true,
+		)
+	);
+}
+add_action( 'init', 'kadence_child_broadcast_post_type' );
+
+/**
+ * How many go out on one turn of the queue.
+ *
+ * A publish must not wait on the list, and a request must not carry it: the
+ * work is handed to the scheduler and taken back a batch at a time.
+ */
+const KADENCE_CHILD_BATCH = 50;
+
+/**
+ * From is the domain.
+ *
+ * @return string
+ */
+function kadence_child_broadcast_from() {
+	$domain   = preg_replace( '/^www\./', '', (string) wp_parse_url( home_url(), PHP_URL_HOST ) );
+	$settings = kadence_child_subscription_settings();
+	$name     = trim( (string) $settings['from_name'] );
+	$name     = '' !== $name ? $name : wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES );
+
+	return sprintf( 'From: %s <no-reply@%s>', $name, $domain );
+}
+
+/**
+ * The link that takes an address off the list, or confirms it onto it.
+ *
+ * @param int    $id  The subscriber.
+ * @param string $arg Which link.
+ * @return string
+ */
+function kadence_child_subscriber_link( $id, $arg = 'cavo_unsub' ) {
+	$token = (string) get_post_meta( $id, 'cavo_token', true );
+
+	return add_query_arg( $arg, rawurlencode( $token ), home_url( '/' ) );
+}
+
+/**
+ * One mail's body.
+ *
+ * @param WP_Post $post  What was published.
+ * @param int     $who   The subscriber it is going to.
+ * @return string
+ */
+function kadence_child_broadcast_body( $post, $who ) {
+	$title   = get_the_title( $post );
+	$link    = get_permalink( $post );
+	$excerpt = has_excerpt( $post ) ? get_the_excerpt( $post ) : wp_trim_words( wp_strip_all_tags( (string) $post->post_content ), 55 );
+	$image   = get_the_post_thumbnail_url( $post, 'large' );
+	$unsub   = kadence_child_subscriber_link( $who, 'cavo_unsub' );
+
+	ob_start();
+	?>
+	<div style="margin:0;padding:24px;background:#faf6ea;font-family:Helvetica,Arial,sans-serif;color:#29180e">
+		<div style="max-width:560px;margin:0 auto;background:#ffffff;padding:24px">
+			<?php if ( $image ) : ?>
+				<img src="<?php echo esc_url( $image ); ?>" alt="" width="512" style="display:block;width:100%;height:auto;margin:0 0 20px" />
+			<?php endif; ?>
+
+			<h1 style="margin:0 0 12px;font-size:24px;line-height:1.25;font-weight:500"><?php echo esc_html( $title ); ?></h1>
+
+			<?php if ( '' !== trim( (string) $excerpt ) ) : ?>
+				<p style="margin:0 0 20px;font-size:16px;line-height:1.5"><?php echo esc_html( $excerpt ); ?></p>
+			<?php endif; ?>
+
+			<p style="margin:0 0 8px">
+				<a href="<?php echo esc_url( $link ); ?>" style="display:inline-block;padding:12px 20px;background:#29180e;color:#faf6ea;text-decoration:none;font-size:14px">
+					<?php echo esc_html__( 'Read it', 'kadence-child' ); ?>
+				</a>
+			</p>
+		</div>
+
+		<p style="max-width:560px;margin:16px auto 0;font-size:12px;line-height:1.5;color:#6b5a4c">
+			<?php echo esc_html__( 'You are receiving this because you asked to hear from us.', 'kadence-child' ); ?>
+			<a href="<?php echo esc_url( $unsub ); ?>" style="color:#6b5a4c"><?php echo esc_html__( 'Unsubscribe', 'kadence-child' ); ?></a>
+		</p>
+	</div>
+	<?php
+
+	return (string) ob_get_clean();
+}
+
+/**
+ * Publishing something is what makes it news.
+ *
+ * A post that has already gone out never goes out again, whatever is done to it
+ * afterwards: the guard is written on the post itself, before the first batch.
+ *
+ * @param string  $new  The status it moved to.
+ * @param string  $old  The status it came from.
+ * @param WP_Post $post What moved.
+ */
+function kadence_child_broadcast_on_publish( $new, $old, $post ) {
+	if ( 'publish' !== $new || 'publish' === $old ) {
+		return;
+	}
+
+	if ( wp_is_post_revision( $post ) || wp_is_post_autosave( $post ) ) {
+		return;
+	}
+
+	$settings = kadence_child_subscription_settings();
+
+	if ( empty( $settings['sending'] ) ) {
+		return;
+	}
+
+	if ( ! in_array( $post->post_type, (array) $settings['post_types'], true ) ) {
+		return;
+	}
+
+	if ( get_post_meta( $post->ID, 'cavo_broadcast', true ) ) {
+		return;
+	}
+
+	$broadcast = wp_insert_post(
+		array(
+			'post_type'   => 'cavo_broadcast',
+			'post_status' => 'publish',
+			'post_title'  => get_the_title( $post ),
+		),
+		true
+	);
+
+	if ( is_wp_error( $broadcast ) ) {
+		return;
+	}
+
+	update_post_meta( $post->ID, 'cavo_broadcast', $broadcast );
+	update_post_meta( $broadcast, 'cavo_post', (int) $post->ID );
+	update_post_meta( $broadcast, 'cavo_cursor', 0 );
+	update_post_meta( $broadcast, 'cavo_state', 'running' );
+
+	foreach ( array( 'sent', 'nosmtp', 'failed' ) as $count ) {
+		update_post_meta( $broadcast, 'cavo_' . $count, 0 );
+	}
+
+	update_post_meta( $broadcast, 'cavo_queued', kadence_child_subscriber_count( 'confirmed' ) );
+
+	wp_schedule_single_event( time() + 30, 'cavo_broadcast_run', array( (int) $broadcast ) );
+}
+add_action( 'transition_post_status', 'kadence_child_broadcast_on_publish', 10, 3 );
+
+/**
+ * One turn of the queue.
+ *
+ * @param int $broadcast Which broadcast.
+ */
+function kadence_child_broadcast_run( $broadcast ) {
+	$broadcast = (int) $broadcast;
+
+	if ( 'cavo_broadcast' !== get_post_type( $broadcast ) || 'running' !== get_post_meta( $broadcast, 'cavo_state', true ) ) {
+		return;
+	}
+
+	$post = get_post( (int) get_post_meta( $broadcast, 'cavo_post', true ) );
+
+	if ( ! $post || 'publish' !== $post->post_status ) {
+		update_post_meta( $broadcast, 'cavo_state', 'stopped' );
+
+		return;
+	}
+
+	$cursor = (int) get_post_meta( $broadcast, 'cavo_cursor', true );
+
+	global $wpdb;
+
+	// Walked by id rather than by page. A page is counted from the start of the
+	// list every time, so a row removed mid-run slides the next page up and
+	// whoever was on the join is never written to.
+	$people = $wpdb->get_col( // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- one indexed read per batch, and a cache would be stale by the next.
+		$wpdb->prepare(
+			"SELECT p.ID FROM {$wpdb->posts} p
+			 INNER JOIN {$wpdb->postmeta} m ON m.post_id = p.ID AND m.meta_key = 'cavo_status'
+			 WHERE p.post_type = 'cavo_subscriber' AND m.meta_value = 'confirmed' AND p.ID > %d
+			 ORDER BY p.ID ASC LIMIT %d",
+			$cursor,
+			KADENCE_CHILD_BATCH
+		)
+	);
+
+	if ( empty( $people ) ) {
+		update_post_meta( $broadcast, 'cavo_state', 'done' );
+
+		return;
+	}
+
+	$settings = kadence_child_subscription_settings();
+	$subject  = trim( (string) $settings['subject'] );
+	$subject  = '' !== $subject ? $subject : '{title}';
+	$subject  = str_replace( '{title}', get_the_title( $post ), $subject );
+	$from     = kadence_child_broadcast_from();
+
+	foreach ( $people as $who ) {
+		$who   = (int) $who;
+		$email = get_post_field( 'post_title', $who );
+
+		if ( ! is_email( $email ) ) {
+			update_post_meta( $broadcast, 'cavo_cursor', $who );
+			continue;
+		}
+
+		$unsub = kadence_child_subscriber_link( $who, 'cavo_unsub' );
+
+		$state = kadence_child_send(
+			$email,
+			$subject,
+			kadence_child_broadcast_body( $post, $who ),
+			array(
+				'Content-Type: text/html; charset=UTF-8',
+				$from,
+				'List-Unsubscribe: <' . esc_url_raw( $unsub ) . '>',
+				'List-Unsubscribe-Post: List-Unsubscribe=One-Click',
+			)
+		);
+
+		$key = in_array( $state, array( 'sent', 'nosmtp', 'failed' ), true ) ? $state : 'failed';
+
+		update_post_meta( $broadcast, 'cavo_' . $key, (int) get_post_meta( $broadcast, 'cavo_' . $key, true ) + 1 );
+		update_post_meta( $broadcast, 'cavo_cursor', $who );
+	}
+
+	wp_schedule_single_event( time() + 60, 'cavo_broadcast_run', array( $broadcast ) );
+}
+add_action( 'cavo_broadcast_run', 'kadence_child_broadcast_run' );
+
+/**
+ * The one mail an address gets before it counts.
+ *
+ * Sent only where confirming is asked for. Nothing else goes to an address
+ * that has not answered this.
+ *
+ * @param int $who The subscriber.
+ * @return string What state the mail left in.
+ */
+function kadence_child_subscribe_confirm_mail( $who ) {
+	$email = get_post_field( 'post_title', $who );
+
+	if ( ! is_email( $email ) ) {
+		return 'nothing';
+	}
+
+	$link = kadence_child_subscriber_link( $who, 'cavo_confirm' );
+	$name = wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES );
+
+	ob_start();
+	?>
+	<div style="margin:0;padding:24px;background:#faf6ea;font-family:Helvetica,Arial,sans-serif;color:#29180e">
+		<div style="max-width:560px;margin:0 auto;background:#ffffff;padding:24px">
+			<h1 style="margin:0 0 12px;font-size:20px;line-height:1.3;font-weight:500">
+				<?php echo esc_html__( 'One press and you are on the list', 'kadence-child' ); ?>
+			</h1>
+			<p style="margin:0 0 20px;font-size:16px;line-height:1.5">
+				<?php echo esc_html__( 'Somebody asked for this address to hear from us. If that was you, confirm it below. If it was not, do nothing and nothing will be sent.', 'kadence-child' ); ?>
+			</p>
+			<p style="margin:0">
+				<a href="<?php echo esc_url( $link ); ?>" style="display:inline-block;padding:12px 20px;background:#29180e;color:#faf6ea;text-decoration:none;font-size:14px">
+					<?php echo esc_html__( 'Confirm', 'kadence-child' ); ?>
+				</a>
+			</p>
+		</div>
+	</div>
+	<?php
+
+	return kadence_child_send(
+		$email,
+		/* translators: %s: the site's name. */
+		sprintf( esc_html__( 'Confirm your address — %s', 'kadence-child' ), $name ),
+		(string) ob_get_clean(),
+		array( 'Content-Type: text/html; charset=UTF-8', kadence_child_broadcast_from() )
+	);
+}
+
+/**
+ * What has gone out.
+ */
+function kadence_child_subscribers_broadcasts_screen() {
+	$rows = get_posts(
+		array(
+			'post_type'      => 'cavo_broadcast',
+			'post_status'    => 'any',
+			'posts_per_page' => 30,
+			'orderby'        => 'date',
+			'order'          => 'DESC',
+			'no_found_rows'  => true,
+		)
+	);
+
+	if ( empty( $rows ) ) {
+		echo '<p>' . esc_html__( 'Nothing has gone out yet.', 'kadence-child' ) . '</p>';
+
+		return;
+	}
+
+	$states = array(
+		'running' => esc_html__( 'Going out', 'kadence-child' ),
+		'done'    => esc_html__( 'Finished', 'kadence-child' ),
+		'stopped' => esc_html__( 'Stopped', 'kadence-child' ),
+	);
+	?>
+	<table class="wp-list-table widefat fixed striped">
+		<thead>
+			<tr>
+				<th><?php esc_html_e( 'What went out', 'kadence-child' ); ?></th>
+				<th><?php esc_html_e( 'When', 'kadence-child' ); ?></th>
+				<th><?php esc_html_e( 'Standing', 'kadence-child' ); ?></th>
+				<th><?php esc_html_e( 'On the list', 'kadence-child' ); ?></th>
+				<th><?php esc_html_e( 'Accepted', 'kadence-child' ); ?></th>
+				<th><?php esc_html_e( 'No mail server', 'kadence-child' ); ?></th>
+				<th><?php esc_html_e( 'Refused', 'kadence-child' ); ?></th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php
+			foreach ( $rows as $row ) :
+				$state  = (string) get_post_meta( $row->ID, 'cavo_state', true );
+				$target = (int) get_post_meta( $row->ID, 'cavo_post', true );
+				$nosmtp = (int) get_post_meta( $row->ID, 'cavo_nosmtp', true );
+				?>
+				<tr>
+					<td>
+						<?php if ( $target && get_post( $target ) ) : ?>
+							<a href="<?php echo esc_url( (string) get_permalink( $target ) ); ?>"><?php echo esc_html( $row->post_title ); ?></a>
+						<?php else : ?>
+							<?php echo esc_html( $row->post_title ); ?>
+						<?php endif; ?>
+					</td>
+					<td><?php echo esc_html( get_the_date( 'j F Y, H:i', $row ) ); ?></td>
+					<td><?php echo esc_html( isset( $states[ $state ] ) ? $states[ $state ] : $state ); ?></td>
+					<td><?php echo esc_html( number_format_i18n( (int) get_post_meta( $row->ID, 'cavo_queued', true ) ) ); ?></td>
+					<td><?php echo esc_html( number_format_i18n( (int) get_post_meta( $row->ID, 'cavo_sent', true ) ) ); ?></td>
+					<td><?php echo $nosmtp > 0 ? '<strong style="color:#b32d2e">' . esc_html( number_format_i18n( $nosmtp ) ) . '</strong>' : '0'; ?></td>
+					<td><?php echo esc_html( number_format_i18n( (int) get_post_meta( $row->ID, 'cavo_failed', true ) ) ); ?></td>
+				</tr>
+			<?php endforeach; ?>
+		</tbody>
+	</table>
+
+	<p class="description" style="margin-top:1em">
+		<?php esc_html_e( 'Accepted means a mail server took it, not that it arrived. “No mail server” means PHP’s own mail() carried it because nothing else did — that mail usually arrives nowhere.', 'kadence-child' ); ?>
+	</p>
+	<?php
 }
