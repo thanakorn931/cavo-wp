@@ -1,0 +1,131 @@
+/**
+ * Home, contact — one section of the design.
+ *
+ * The half the words take and the half the picture takes, each exactly half of
+ * the band. Every measurement here was read from the design file.
+ */
+
+.custom-home-contact {
+	display: flex;
+	align-items: stretch;
+	width: 100%;
+}
+
+.custom-home-contact__column {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	flex: 0 0 50%;
+	min-width: 0;
+	padding: 96px 48px;
+	box-sizing: border-box;
+}
+
+.custom-home-contact__heading {
+	margin: 0 0 64px;
+	padding: 0;
+	text-transform: uppercase;
+}
+
+.custom-home-contact__block {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 16px;
+	width: 100%;
+	padding-bottom: 64px;
+	box-sizing: border-box;
+}
+
+.custom-home-contact__block:last-child {
+	padding-bottom: 0;
+}
+
+.custom-home-contact__title,
+.custom-home-contact__body {
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	overflow-wrap: anywhere;
+}
+
+/* The hours are two columns the file sets, not a table. */
+.custom-home-contact__hour {
+	display: flex;
+	align-items: baseline;
+	gap: 16px;
+	margin: 0;
+	padding: 0;
+	width: 286px;
+	max-width: 100%;
+}
+
+.custom-home-contact__hour + .custom-home-contact__hour {
+	margin-top: -1px;
+}
+
+.custom-home-contact__hour-name {
+	flex: 0 0 175px;
+}
+
+.custom-home-contact__hour-time {
+	flex: 1 1 auto;
+}
+
+.custom-home-contact__ways {
+	display: flex;
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 24px;
+}
+
+.custom-home-contact__way {
+	display: inline-flex;
+	align-items: center;
+	gap: 16px;
+	color: inherit;
+	text-decoration: none;
+	white-space: nowrap;
+	transition: opacity 300ms ease-in-out;
+}
+
+.custom-home-contact__way:hover {
+	opacity: 0.7;
+}
+
+/* The mark beside each way: the design's, not the client's. */
+.custom-home-contact__mark {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	flex: 0 0 auto;
+	width: 32px;
+	height: 32px;
+	border-radius: 36px;
+}
+
+.custom-home-contact__mark svg {
+	display: block;
+}
+
+.custom-home-contact__map {
+	position: relative;
+	display: block;
+	flex: 0 0 50%;
+	min-width: 0;
+	overflow: hidden;
+}
+
+.custom-home-contact__map img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
+}
+
+@media ( prefers-reduced-motion: reduce ) {
+	.custom-home-contact__way {
+		transition: none;
+	}
+}
