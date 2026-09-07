@@ -1,15 +1,28 @@
 /**
- * Header (solid) — one section of the design.
+ * The header — one section of the design, drawn by two widgets.
  *
  * Every measurement here was read from the design file. Colour and type that
- * the Style tab can carry are left to it.
+ * the Style tab can carry are left to it, including the second set of colours
+ * the changing bar wears before the page has moved.
  */
 
 .custom-header {
+	position: relative;
 	width: 100%;
 }
 
+/* The bar is out of the flow: what it stands over reaches the top of the
+   window, and the bar stays where it is as the page moves under it. */
 .custom-header__bar {
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 999;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.custom-header__inner {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -29,11 +42,19 @@
 	height: 72px;
 }
 
+/* The height the bar took out of the flow, handed back — so the page under it
+   starts where the design starts it, and no section carries the allowance. */
+.custom-header__spacer {
+	display: block;
+	width: 100%;
+	height: 72px;
+}
+
 /* The logo keeps its box whether or not a picture has been uploaded. */
 .custom-header__logo {
 	position: relative;
 	flex: 0 0 auto;
-	width: 234px;
+	width: 233px;
 	height: 72px;
 	text-decoration: none;
 }
@@ -55,6 +76,16 @@
 	height: 100%;
 	object-fit: cover;
 	object-position: center;
+}
+
+/* Two marks stand in the same place, and the state says which is seen. */
+.custom-header__logo-box--scrolled,
+.custom-header.is-scrolled .custom-header__logo-box--top {
+	opacity: 0;
+}
+
+.custom-header.is-scrolled .custom-header__logo-box--scrolled {
+	opacity: 1;
 }
 
 .custom-header__menu ul {
@@ -103,8 +134,10 @@
 	white-space: nowrap;
 }
 
+/* The file draws the outline inside the button, so the two buttons stand the
+   same height as each other. A border would add its width to one of them. */
 .custom-header__button--outline {
-	border: 1px solid currentColor;
+	box-shadow: inset 0 0 0 1px currentColor;
 }
 
 .custom-header__icon-link {
@@ -143,13 +176,17 @@
 	transform: scaleX( 1 );
 }
 
+/* The bar turning into the design is the same change as a hover, and takes the
+   same time. */
+.custom-header__bar,
 .custom-header__button,
 .custom-header__icon-link,
 .custom-header__menu a,
-.custom-header__logo {
+.custom-header__logo,
+.custom-header__logo-box {
 	transition:
 		background-color 300ms ease-in-out,
-		border-color 300ms ease-in-out,
+		box-shadow 300ms ease-in-out,
 		color 300ms ease-in-out,
 		opacity 300ms ease-in-out;
 }
@@ -161,10 +198,12 @@
 
 @media ( prefers-reduced-motion: reduce ) {
 	.custom-header__menu a::after,
+	.custom-header__bar,
 	.custom-header__button,
 	.custom-header__icon-link,
 	.custom-header__menu a,
-	.custom-header__logo {
+	.custom-header__logo,
+	.custom-header__logo-box {
 		transition: none;
 	}
 }
@@ -172,7 +211,7 @@
 /* Tablet — 768px to 1024px. Not drawn; the row keeps its shape and the side
    padding comes in to the tier's own edge. */
 @media (max-width: 1024px) {
-	.custom-header__bar {
+	.custom-header__inner {
 		padding: 0 24px;
 	}
 
@@ -186,9 +225,10 @@
 }
 
 /* Mobile — up to 767px. Not drawn; the menu drops under the row so nothing
-   reaches past the viewport. */
+   reaches past the viewport. What the bar then comes to is measured rather
+   than guessed at, and the band is told it. */
 @media (max-width: 767px) {
-	.custom-header__bar {
+	.custom-header__inner {
 		padding: 0 16px;
 	}
 

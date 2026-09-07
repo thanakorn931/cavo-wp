@@ -2,11 +2,13 @@
 /**
  * What the two headers share.
  *
- * The design draws the bar twice — solid and transparent — and each is its own
- * widget, so a page picks one and cannot hold both. Everything but the name,
- * the title and the variant class is the same, and lives here rather than
- * twice. It sits outside the widgets folder, which is the register: only a
- * section of the design belongs in there.
+ * The design draws the bar once. Both widgets are that bar, and each is its own
+ * widget so a page picks one and cannot hold both: one stands as the design
+ * draws it from the first pixel, the other starts clear over whatever it is
+ * laid on and becomes the design as soon as the page moves. Everything but the
+ * name, the title, the variant class and that second state is the same, and
+ * lives here rather than twice. It sits outside the widgets folder, which is
+ * the register: only a section of the design belongs in there.
  *
  * @package Custom_Elementor_Widgets
  */
@@ -27,6 +29,29 @@ if ( ! defined( 'ABSPATH' ) ) {
 abstract class Header_Widget extends Base_Widget {
 
 	/**
+	 * The menu location the bar renders.
+	 *
+	 * Registered by the parent theme, so nothing here registers it again. The
+	 * location renders nothing until a menu is assigned to it.
+	 */
+	const MENU_LOCATION = 'primary';
+
+	/**
+	 * The bar the design draws: its ground, its own colour, and what reads
+	 * against that colour.
+	 */
+	const GROUND = '#FAF6EA';
+	const INK    = '#3A2114';
+	const PAPER  = '#FAF6EA';
+
+	/**
+	 * What the bar shows over a picture, before the page has moved.
+	 */
+	const CLEAR     = 'rgba(0, 0, 0, 0)';
+	const TOP_INK   = '#FFFFFF';
+	const TOP_PAPER = '#3A2114';
+
+	/**
 	 * The class that tells the two bars apart.
 	 *
 	 * @return string
@@ -34,34 +59,57 @@ abstract class Header_Widget extends Base_Widget {
 	abstract protected function variant_class();
 
 	/**
-	 * The background the design gives this bar.
+	 * Whether this bar starts clear and turns into the design on scroll.
 	 *
-	 * @return string
+	 * @return bool
 	 */
-	abstract protected function background_default();
+	protected function is_scroll() {
+		return false;
+	}
 
 	/**
-	 * The bar's own colour — its type, its outline, its icon, and the fill of
-	 * the button the design fills.
+	 * Whether the band gives back the height the bar takes out of the flow.
 	 *
-	 * @return string
+	 * @return bool
 	 */
-	abstract protected function ink();
+	protected function has_spacer() {
+		return false;
+	}
 
 	/**
-	 * What reads against the ink: the filled button's type.
+	 * The stylesheet the two bars share, declared beside the section's own.
 	 *
-	 * @return string
+	 * @return array
 	 */
-	abstract protected function paper();
+	public function get_style_depends(): array {
+		return array_merge( parent::get_style_depends(), $this->shared_handle( 'style' ) );
+	}
 
 	/**
-	 * The menu location the bar renders.
+	 * The script that tells the band what the bar came to, and the changing bar
+	 * when the page has moved.
 	 *
-	 * Registered by the parent theme, so nothing here registers it again. The
-	 * location renders nothing until a menu is assigned to it.
+	 * @return array
 	 */
-	const MENU_LOCATION = 'primary';
+	public function get_script_depends(): array {
+		return array_merge( parent::get_script_depends(), $this->shared_handle( 'script' ) );
+	}
+
+	/**
+	 * The handle the two bars share, where it is registered.
+	 *
+	 * @param string $kind Either style or script.
+	 * @return array
+	 */
+	private function shared_handle( $kind ) {
+		$handle = Widgets_Loader::HANDLE_PREFIX . 'header-widget';
+
+		if ( 'style' === $kind ) {
+			return wp_style_is( $handle, 'registered' ) ? array( $handle ) : array();
+		}
+
+		return wp_script_is( $handle, 'registered' ) ? array( $handle ) : array();
+	}
 
 	/**
 	 * The icon shown in the panel.
@@ -82,6 +130,26 @@ abstract class Header_Widget extends Base_Widget {
 	}
 
 	/**
+	 * The logo slots this bar asks for.
+	 *
+	 * The bar that changes shows a different mark in each of its two states, so
+	 * it asks for both. Either left empty takes the other; both left empty
+	 * leave the box the design gives the mark.
+	 *
+	 * @return array Control name to label.
+	 */
+	private function logo_slots() {
+		if ( ! $this->is_scroll() ) {
+			return array( 'logo' => esc_html__( 'Image', 'custom-elementor-widgets' ) );
+		}
+
+		return array(
+			'logo'          => esc_html__( 'Image, over the page', 'custom-elementor-widgets' ),
+			'logo_scrolled' => esc_html__( 'Image, once scrolled', 'custom-elementor-widgets' ),
+		);
+	}
+
+	/**
 	 * The Content tab and the Style tab.
 	 */
 	protected function register_controls() {
@@ -91,6 +159,10 @@ abstract class Header_Widget extends Base_Widget {
 		$this->register_bar_style_controls();
 		$this->register_menu_style_controls();
 		$this->register_button_style_controls();
+
+		if ( $this->is_scroll() ) {
+			$this->register_top_style_controls();
+		}
 	}
 
 	/**
@@ -105,13 +177,15 @@ abstract class Header_Widget extends Base_Widget {
 			)
 		);
 
-		$this->add_control(
-			'logo',
-			array(
-				'label' => esc_html__( 'Image', 'custom-elementor-widgets' ),
-				'type'  => Controls_Manager::MEDIA,
-			)
-		);
+		foreach ( $this->logo_slots() as $key => $label ) {
+			$this->add_control(
+				$key,
+				array(
+					'label' => $label,
+					'type'  => Controls_Manager::MEDIA,
+				)
+			);
+		}
 
 		$this->add_link_controls( $this, 'logo_link', esc_html__( 'Link', 'custom-elementor-widgets' ) );
 
@@ -157,8 +231,8 @@ abstract class Header_Widget extends Base_Widget {
 		$this->add_control(
 			'button_one_text',
 			array(
-				'label'   => esc_html__( 'First button text', 'custom-elementor-widgets' ),
-				'type'    => Controls_Manager::TEXT,
+				'label'       => esc_html__( 'First button text', 'custom-elementor-widgets' ),
+				'type'        => Controls_Manager::TEXT,
 				'placeholder' => esc_html__( 'Membership', 'custom-elementor-widgets' ),
 			)
 		);
@@ -168,10 +242,10 @@ abstract class Header_Widget extends Base_Widget {
 		$this->add_control(
 			'button_two_text',
 			array(
-				'label'     => esc_html__( 'Second button text', 'custom-elementor-widgets' ),
-				'type'      => Controls_Manager::TEXT,
-				'placeholder'   => esc_html__( 'Reserve', 'custom-elementor-widgets' ),
-				'separator' => 'before',
+				'label'       => esc_html__( 'Second button text', 'custom-elementor-widgets' ),
+				'type'        => Controls_Manager::TEXT,
+				'placeholder' => esc_html__( 'Reserve', 'custom-elementor-widgets' ),
+				'separator'   => 'before',
 			)
 		);
 
@@ -180,11 +254,11 @@ abstract class Header_Widget extends Base_Widget {
 		$this->add_control(
 			'icon_link_icon',
 			array(
-				'label'            => esc_html__( 'Icon', 'custom-elementor-widgets' ),
-				'type'             => Controls_Manager::ICONS,
-				'separator'        => 'before',
-				'skin'             => 'inline',
-				'label_block'      => false,
+				'label'                  => esc_html__( 'Icon', 'custom-elementor-widgets' ),
+				'type'                   => Controls_Manager::ICONS,
+				'separator'              => 'before',
+				'skin'                   => 'inline',
+				'label_block'            => false,
 				'exclude_inline_options' => array( 'svg' ),
 			)
 		);
@@ -211,21 +285,9 @@ abstract class Header_Widget extends Base_Widget {
 			array(
 				'label'     => esc_html__( 'Background', 'custom-elementor-widgets' ),
 				'type'      => Controls_Manager::COLOR,
-				'default'   => $this->background_default(),
+				'default'   => self::GROUND,
 				'selectors' => array(
-					'{{WRAPPER}} .custom-header' => 'background-color: {{VALUE}};',
-				),
-			)
-		);
-
-		$this->add_control(
-			'bar_border_color',
-			array(
-				'label'     => esc_html__( 'Bottom border', 'custom-elementor-widgets' ),
-				'type'      => Controls_Manager::COLOR,
-				'default'   => $this->ink(),
-				'selectors' => array(
-					'{{WRAPPER}} .custom-header__row' => 'border-bottom: 1px solid {{VALUE}};',
+					'{{WRAPPER}} .custom-header__bar' => 'background-color: {{VALUE}};',
 				),
 			)
 		);
@@ -263,7 +325,7 @@ abstract class Header_Widget extends Base_Widget {
 			array(
 				'label'     => esc_html__( 'Colour', 'custom-elementor-widgets' ),
 				'type'      => Controls_Manager::COLOR,
-				'default'   => $this->ink(),
+				'default'   => self::INK,
 				'selectors' => array(
 					'{{WRAPPER}} .custom-header__menu a' => 'color: {{VALUE}};',
 				),
@@ -275,7 +337,7 @@ abstract class Header_Widget extends Base_Widget {
 			array(
 				'label'     => esc_html__( 'Colour on hover', 'custom-elementor-widgets' ),
 				'type'      => Controls_Manager::COLOR,
-				'default'   => $this->ink(),
+				'default'   => self::INK,
 				'selectors' => array(
 					'{{WRAPPER}} .custom-header__menu a:hover'        => 'color: {{VALUE}};',
 					'{{WRAPPER}} .custom-header__menu a:hover::after' => 'background: {{VALUE}};',
@@ -314,11 +376,11 @@ abstract class Header_Widget extends Base_Widget {
 		$this->add_control(
 			'button_one_color',
 			array(
-				'label'     => esc_html__( 'First button text', 'custom-elementor-widgets' ),
+				'label'     => esc_html__( 'First button text and outline', 'custom-elementor-widgets' ),
 				'type'      => Controls_Manager::COLOR,
-				'default'   => $this->ink(),
+				'default'   => self::INK,
 				'selectors' => array(
-					'{{WRAPPER}} .custom-header__button--outline' => 'color: {{VALUE}}; border-color: {{VALUE}};',
+					'{{WRAPPER}} .custom-header__button--outline' => 'color: {{VALUE}};',
 				),
 			)
 		);
@@ -328,6 +390,7 @@ abstract class Header_Widget extends Base_Widget {
 			array(
 				'label'     => esc_html__( 'First button background', 'custom-elementor-widgets' ),
 				'type'      => Controls_Manager::COLOR,
+				'default'   => self::CLEAR,
 				'selectors' => array(
 					'{{WRAPPER}} .custom-header__button--outline' => 'background-color: {{VALUE}};',
 				),
@@ -339,7 +402,7 @@ abstract class Header_Widget extends Base_Widget {
 			array(
 				'label'     => esc_html__( 'Second button text', 'custom-elementor-widgets' ),
 				'type'      => Controls_Manager::COLOR,
-				'default'   => $this->paper(),
+				'default'   => self::PAPER,
 				'separator' => 'before',
 				'selectors' => array(
 					'{{WRAPPER}} .custom-header__button--solid' => 'color: {{VALUE}};',
@@ -352,7 +415,7 @@ abstract class Header_Widget extends Base_Widget {
 			array(
 				'label'     => esc_html__( 'Second button background', 'custom-elementor-widgets' ),
 				'type'      => Controls_Manager::COLOR,
-				'default'   => $this->ink(),
+				'default'   => self::INK,
 				'selectors' => array(
 					'{{WRAPPER}} .custom-header__button--solid' => 'background-color: {{VALUE}};',
 				),
@@ -364,11 +427,134 @@ abstract class Header_Widget extends Base_Widget {
 			array(
 				'label'     => esc_html__( 'Icon', 'custom-elementor-widgets' ),
 				'type'      => Controls_Manager::COLOR,
-				'default'   => $this->ink(),
+				'default'   => self::INK,
 				'separator' => 'before',
 				'selectors' => array(
-					'{{WRAPPER}} .custom-header__icon-link'      => 'color: {{VALUE}};',
-					'{{WRAPPER}} .custom-header__icon-link svg'  => 'fill: {{VALUE}};',
+					'{{WRAPPER}} .custom-header__icon-link'     => 'color: {{VALUE}};',
+					'{{WRAPPER}} .custom-header__icon-link svg' => 'fill: {{VALUE}};',
+				),
+			)
+		);
+
+		$this->end_controls_section();
+	}
+
+	/**
+	 * Style → Over the page.
+	 *
+	 * The bar that changes is two bars to look at, so it is two bars to colour.
+	 * These are the same controls again, held to the state before the page has
+	 * moved; the section above is what the bar becomes.
+	 */
+	private function register_top_style_controls() {
+		$at_top = '{{WRAPPER}} .custom-header:not( .is-scrolled ) ';
+
+		$this->start_controls_section(
+			'section_top_style',
+			array(
+				'label' => esc_html__( 'Over the page', 'custom-elementor-widgets' ),
+				'tab'   => Controls_Manager::TAB_STYLE,
+			)
+		);
+
+		$this->add_control(
+			'top_bar_background',
+			array(
+				'label'     => esc_html__( 'Background', 'custom-elementor-widgets' ),
+				'type'      => Controls_Manager::COLOR,
+				'default'   => self::CLEAR,
+				'selectors' => array(
+					$at_top . '.custom-header__bar' => 'background-color: {{VALUE}};',
+				),
+			)
+		);
+
+		$this->add_control(
+			'top_menu_color',
+			array(
+				'label'     => esc_html__( 'Menu', 'custom-elementor-widgets' ),
+				'type'      => Controls_Manager::COLOR,
+				'default'   => self::TOP_INK,
+				'separator' => 'before',
+				'selectors' => array(
+					$at_top . '.custom-header__menu a' => 'color: {{VALUE}};',
+				),
+			)
+		);
+
+		$this->add_control(
+			'top_menu_color_hover',
+			array(
+				'label'     => esc_html__( 'Menu on hover', 'custom-elementor-widgets' ),
+				'type'      => Controls_Manager::COLOR,
+				'default'   => self::TOP_INK,
+				'selectors' => array(
+					$at_top . '.custom-header__menu a:hover'        => 'color: {{VALUE}};',
+					$at_top . '.custom-header__menu a:hover::after' => 'background: {{VALUE}};',
+				),
+			)
+		);
+
+		$this->add_control(
+			'top_button_one_color',
+			array(
+				'label'     => esc_html__( 'First button text and outline', 'custom-elementor-widgets' ),
+				'type'      => Controls_Manager::COLOR,
+				'default'   => self::TOP_INK,
+				'separator' => 'before',
+				'selectors' => array(
+					$at_top . '.custom-header__button--outline' => 'color: {{VALUE}};',
+				),
+			)
+		);
+
+		$this->add_control(
+			'top_button_one_background',
+			array(
+				'label'     => esc_html__( 'First button background', 'custom-elementor-widgets' ),
+				'type'      => Controls_Manager::COLOR,
+				'default'   => self::CLEAR,
+				'selectors' => array(
+					$at_top . '.custom-header__button--outline' => 'background-color: {{VALUE}};',
+				),
+			)
+		);
+
+		$this->add_control(
+			'top_button_two_color',
+			array(
+				'label'     => esc_html__( 'Second button text', 'custom-elementor-widgets' ),
+				'type'      => Controls_Manager::COLOR,
+				'default'   => self::TOP_PAPER,
+				'separator' => 'before',
+				'selectors' => array(
+					$at_top . '.custom-header__button--solid' => 'color: {{VALUE}};',
+				),
+			)
+		);
+
+		$this->add_control(
+			'top_button_two_background',
+			array(
+				'label'     => esc_html__( 'Second button background', 'custom-elementor-widgets' ),
+				'type'      => Controls_Manager::COLOR,
+				'default'   => self::TOP_INK,
+				'selectors' => array(
+					$at_top . '.custom-header__button--solid' => 'background-color: {{VALUE}};',
+				),
+			)
+		);
+
+		$this->add_control(
+			'top_icon_color',
+			array(
+				'label'     => esc_html__( 'Icon', 'custom-elementor-widgets' ),
+				'type'      => Controls_Manager::COLOR,
+				'default'   => self::TOP_INK,
+				'separator' => 'before',
+				'selectors' => array(
+					$at_top . '.custom-header__icon-link'     => 'color: {{VALUE}};',
+					$at_top . '.custom-header__icon-link svg' => 'fill: {{VALUE}};',
 				),
 			)
 		);
@@ -412,23 +598,34 @@ abstract class Header_Widget extends Base_Widget {
 
 	/**
 	 * Print the section.
+	 *
+	 * The bar is out of the flow, so what it stands over reaches the top of the
+	 * window. The bar the design draws from the first pixel hands that height
+	 * back as a band of its own rather than asking every section under it to
+	 * carry the allowance.
 	 */
 	protected function render() {
 		$settings = $this->get_settings_for_display();
 		?>
 		<div class="custom-header <?php echo esc_attr( $this->variant_class() ); ?>">
 			<div class="custom-header__bar">
-				<div class="custom-header__row">
-					<?php $this->render_logo( $settings ); ?>
-					<?php $this->render_menu(); ?>
-					<?php $this->render_actions( $settings ); ?>
+				<div class="custom-header__inner">
+					<div class="custom-header__row">
+						<?php $this->render_logo( $settings ); ?>
+						<?php $this->render_menu(); ?>
+						<?php $this->render_actions( $settings ); ?>
+					</div>
+					<?php
+					if ( ! has_nav_menu( self::MENU_LOCATION ) ) {
+						$this->editor_hint( __( 'The bar is empty: build a menu in Appearance → Menus and assign it to the Primary location.', 'custom-elementor-widgets' ) );
+					}
+					?>
 				</div>
-				<?php
-				if ( ! has_nav_menu( self::MENU_LOCATION ) ) {
-					$this->editor_hint( __( 'The bar is empty: build a menu in Appearance → Menus and assign it to the Primary location.', 'custom-elementor-widgets' ) );
-				}
-				?>
 			</div>
+
+			<?php if ( $this->has_spacer() ) : ?>
+				<span class="custom-header__spacer" aria-hidden="true"></span>
+			<?php endif; ?>
 		</div>
 		<?php
 	}
@@ -439,16 +636,36 @@ abstract class Header_Widget extends Base_Widget {
 	 * @param array $settings The widget's settings.
 	 */
 	private function render_logo( $settings ) {
-		$image = isset( $settings['logo']['url'] ) ? $settings['logo']['url'] : '';
-		$link  = isset( $settings['logo_link'] ) ? $settings['logo_link'] : '';
-		$tag   = '' === trim( (string) $link ) ? 'span' : 'a';
+		$top      = isset( $settings['logo']['url'] ) ? trim( (string) $settings['logo']['url'] ) : '';
+		$scrolled = isset( $settings['logo_scrolled']['url'] ) ? trim( (string) $settings['logo_scrolled']['url'] ) : '';
+
+		// One mark given where two were asked for stands in both states.
+		if ( $this->is_scroll() ) {
+			$top      = '' !== $top ? $top : $scrolled;
+			$scrolled = '' !== $scrolled ? $scrolled : $top;
+		} else {
+			$scrolled = $top;
+		}
+
+		$link = isset( $settings['logo_link'] ) ? $settings['logo_link'] : '';
+		$tag  = '' === trim( (string) $link ) ? 'span' : 'a';
+		$name = get_bloginfo( 'name' );
 		?>
 		<<?php echo esc_attr( $tag ); ?> class="custom-header__logo"<?php
 			echo 'a' === $tag ? $this->link_from( $settings, 'logo_link' ) : ''; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in link_attributes().
 		?>>
-			<span class="custom-header__logo-box">
-				<?php $this->media( $image, get_bloginfo( 'name' ) ); ?>
-			</span>
+			<?php if ( $top === $scrolled ) : ?>
+				<span class="custom-header__logo-box">
+					<?php $this->media( $top, $name ); ?>
+				</span>
+			<?php else : ?>
+				<span class="custom-header__logo-box custom-header__logo-box--top">
+					<?php $this->media( $top, $name ); ?>
+				</span>
+				<span class="custom-header__logo-box custom-header__logo-box--scrolled" aria-hidden="true">
+					<?php $this->media( $scrolled, '' ); ?>
+				</span>
+			<?php endif; ?>
 		</<?php echo esc_attr( $tag ); ?>>
 		<?php
 	}
