@@ -102,6 +102,26 @@
 	opacity: 0.7;
 }
 
+/* A state is its own thing to say. A theme's rule on a bare element under a
+   pseudo-class outranks a class that only spoke for the resting state, so what
+   the press looks like while it is pressed is said here too. */
+.custom-blog-list__page:not( .custom-blog-list__page--here ):hover,
+.custom-blog-list__page:not( .custom-blog-list__page--here ):focus,
+.custom-blog-list__page:not( .custom-blog-list__page--here ):active,
+.custom-blog-list__field:hover,
+.custom-blog-list__field:focus,
+.custom-blog-list__field:active {
+	background: none;
+	color: inherit;
+	border-color: currentColor;
+}
+
+.custom-blog-list__page:focus-visible,
+.custom-blog-list__field:focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: 2px;
+}
+
 .custom-blog-list__go {
 	display: flex;
 	align-items: center;
@@ -122,7 +142,9 @@
 	appearance: textfield;
 }
 
-.custom-blog-list__field:focus {
+/* The default ring goes, and one drawn in the band's own ink stands in its
+   place: a press nobody can see they have reached is worse than an ugly one. */
+.custom-blog-list__field:focus:not( :focus-visible ) {
 	outline: none;
 }
 
@@ -172,6 +194,13 @@
 .custom-blog-list__handle svg {
 	display: block;
 	flex: 0 0 auto;
+}
+
+.custom-blog-list__handle:hover,
+.custom-blog-list__handle:focus,
+.custom-blog-list__press:hover,
+.custom-blog-list__press:focus {
+	color: inherit;
 }
 
 .custom-blog-list__handle:hover,
