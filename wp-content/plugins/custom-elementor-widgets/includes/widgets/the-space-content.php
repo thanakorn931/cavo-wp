@@ -2,7 +2,7 @@
 /**
  * The Space, content — one section of the design.
  *
- * The statement the page opens with, and the three pictures under it.
+ * The three pictures on the gradient the file gives them.
  *
  * @package Custom_Elementor_Widgets
  */
@@ -11,7 +11,6 @@ namespace Custom_Elementor_Widgets\Widgets;
 
 use Custom_Elementor_Widgets\Base_Widget;
 use Elementor\Controls_Manager;
-use Elementor\Group_Control_Typography;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -55,41 +54,14 @@ class The_Space_Content extends Base_Widget {
 	 * @return array
 	 */
 	public function get_keywords() {
-		return array( 'space', 'content', 'gallery', 'statement' );
+		return array( 'space', 'content', 'gallery', 'pictures' );
 	}
 
 	/**
 	 * The Content tab and the Style tab.
 	 */
 	protected function register_controls() {
-		$this->register_statement_controls();
 		$this->register_picture_controls();
-		$this->register_style_controls();
-	}
-
-	/**
-	 * Content → Statement.
-	 */
-	private function register_statement_controls() {
-		$this->start_controls_section(
-			'section_statement',
-			array(
-				'label' => esc_html__( 'Statement', 'custom-elementor-widgets' ),
-				'tab'   => Controls_Manager::TAB_CONTENT,
-			)
-		);
-
-		$this->add_control(
-			'statement',
-			array(
-				'label'       => esc_html__( 'Text', 'custom-elementor-widgets' ),
-				'type'        => Controls_Manager::TEXTAREA,
-				'rows'        => 5,
-				'placeholder' => esc_html__( 'The heart of CAVO, where refined dining evolves into vibrant nightlife. Designed around the central bar and DJ booth, it brings together music, conversation, and celebration in one dynamic setting.', 'custom-elementor-widgets' ),
-			)
-		);
-
-		$this->end_controls_section();
 	}
 
 	/**
@@ -122,73 +94,12 @@ class The_Space_Content extends Base_Widget {
 	}
 
 	/**
-	 * Style → Statement.
-	 */
-	private function register_style_controls() {
-		$this->start_controls_section(
-			'section_style',
-			array(
-				'label' => esc_html__( 'Statement', 'custom-elementor-widgets' ),
-				'tab'   => Controls_Manager::TAB_STYLE,
-			)
-		);
-
-		$this->add_control(
-			'statement_background',
-			array(
-				'label'     => esc_html__( 'Background', 'custom-elementor-widgets' ),
-				'type'      => Controls_Manager::COLOR,
-				'default'   => '#7D6B50',
-				'selectors' => array(
-					'{{WRAPPER}} .custom-space-content__statement' => 'background-color: {{VALUE}};',
-				),
-			)
-		);
-
-		$this->add_control(
-			'statement_color',
-			array(
-				'label'     => esc_html__( 'Text', 'custom-elementor-widgets' ),
-				'type'      => Controls_Manager::COLOR,
-				'default'   => '#FFFFFF',
-				'selectors' => array(
-					'{{WRAPPER}} .custom-space-content__statement' => 'color: {{VALUE}};',
-				),
-			)
-		);
-
-		$this->add_group_control(
-			Group_Control_Typography::get_type(),
-			array(
-				'name'           => 'statement_typography',
-				'selector'       => '{{WRAPPER}} .custom-space-content__statement p',
-				'fields_options' => array(
-					'typography'  => array( 'default' => 'yes' ),
-					'font_family' => array( 'default' => 'Roboto' ),
-					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 24 ) ),
-				),
-			)
-		);
-
-		$this->end_controls_section();
-	}
-
-	/**
 	 * Print the section.
 	 */
 	protected function render() {
-		$settings  = $this->get_settings_for_display();
-		$statement = isset( $settings['statement'] ) ? trim( (string) $settings['statement'] ) : '';
-
-		if ( '' === $statement ) {
-			$statement = esc_html__( 'The heart of CAVO, where refined dining evolves into vibrant nightlife. Designed around the central bar and DJ booth, it brings together music, conversation, and celebration in one dynamic setting.', 'custom-elementor-widgets' );
-		}
+		$settings = $this->get_settings_for_display();
 		?>
 		<div class="custom-space-content">
-			<div class="custom-space-content__statement">
-				<p><?php echo esc_html( $statement ); ?></p>
-			</div>
-
 			<div class="custom-space-content__gallery">
 				<div class="custom-space-content__grid">
 					<div class="custom-space-content__row">
