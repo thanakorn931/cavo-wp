@@ -1,0 +1,205 @@
+/**
+ * Home, events — one section of the design.
+ *
+ * The name and the two arrows down the left, and the cards running off the
+ * right edge of the band. Every measurement here was read from the design file.
+ */
+
+.custom-home-event {
+	--custom-home-event-near: #9d5434;
+	--custom-home-event-far: #29180e;
+
+	position: relative;
+	display: flex;
+	align-items: flex-start;
+	width: 100%;
+	padding: 96px 0 44px calc( 48px + max( 0px, calc( ( 100% - 1440px ) / 2 ) ) );
+	box-sizing: border-box;
+
+	/* The band's own gradient, read from the file. */
+	background-image: linear-gradient(
+		200.036deg,
+		var( --custom-home-event-near ) 44.557%,
+		var( --custom-home-event-far ) 92.607%
+	);
+}
+
+.custom-home-event__aside {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 36px;
+	flex: 0 0 287px;
+	min-width: 0;
+}
+
+.custom-home-event__heading {
+	margin: 0;
+	padding: 0;
+	color: inherit;
+	text-transform: uppercase;
+}
+
+.custom-home-event__arrows {
+	display: flex;
+	align-items: center;
+	gap: 24px;
+}
+
+.custom-home-event__arrow {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	flex: 0 0 auto;
+	width: 56px;
+	height: 56px;
+	padding: 0;
+	border: 0;
+	background: none;
+	color: inherit;
+	cursor: pointer;
+	transition: opacity 300ms ease-in-out;
+}
+
+.custom-home-event__arrow:hover {
+	opacity: 0.7;
+}
+
+.custom-home-event__arrow[disabled] {
+	opacity: 0.4;
+	cursor: default;
+}
+
+.custom-home-event__arrow svg {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+/* The cards run to the right edge of the viewport, and the band's own corner
+   is cut on the side they enter from. */
+.custom-home-event__rail {
+	flex: 1 1 auto;
+	min-width: 0;
+	border-top-left-radius: 48px;
+	border-bottom-left-radius: 48px;
+	overflow: hidden;
+}
+
+.custom-home-event__track {
+	display: flex;
+	align-items: flex-start;
+	gap: 24px;
+	padding: 18px 0 0 34px;
+	box-sizing: border-box;
+	transition: transform 500ms ease-in-out;
+	will-change: transform;
+}
+
+.custom-home-event__item {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 30px;
+	flex: 0 0 486px;
+	min-width: 0;
+}
+
+/* The card is a picture in an edge the file draws around it. */
+.custom-home-event__card {
+	position: relative;
+	display: block;
+	width: 486px;
+	height: 658px;
+	border-radius: 24px;
+	box-sizing: border-box;
+	overflow: hidden;
+	background-image: linear-gradient(
+		216.099deg,
+		rgba( 58, 33, 20, 0.7 ) 0.758%,
+		rgba( 188, 164, 139, 0.7 ) 50%,
+		rgba( 250, 246, 234, 0.7 ) 99.242%
+	);
+}
+
+.custom-home-event__picture {
+	position: absolute;
+	left: 16px;
+	top: 16px;
+	display: block;
+	width: 454px;
+	height: 626px;
+	border-radius: 16px;
+	overflow: hidden;
+}
+
+.custom-home-event__picture img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
+}
+
+/* The mark each card carries: the design's, not the client's. */
+.custom-home-event__mark {
+	position: absolute;
+	left: 369px;
+	top: 36px;
+	display: block;
+	width: 81px;
+	height: 77px;
+	background-image: url( "../img/event-badge.webp" );
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: contain;
+	pointer-events: none;
+}
+
+.custom-home-event__words {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 16px;
+	width: 432px;
+	max-width: 100%;
+}
+
+.custom-home-event__lines {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 8px;
+	width: 100%;
+}
+
+.custom-home-event__meta,
+.custom-home-event__title {
+	margin: 0;
+	padding: 0;
+	width: 100%;
+	overflow-wrap: anywhere;
+}
+
+.custom-home-event__more {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 16px 24px;
+	border-radius: 24px;
+	text-decoration: none;
+	white-space: nowrap;
+	transition: opacity 300ms ease-in-out;
+}
+
+.custom-home-event__more:hover {
+	opacity: 0.85;
+}
+
+@media ( prefers-reduced-motion: reduce ) {
+	.custom-home-event__track,
+	.custom-home-event__arrow,
+	.custom-home-event__more {
+		transition: none;
+	}
+}
