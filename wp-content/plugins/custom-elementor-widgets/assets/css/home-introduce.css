@@ -1,0 +1,116 @@
+/**
+ * Home, introduce — one section of the design.
+ *
+ * The words down the left on the band's own gradient, and the picture beside
+ * them cut to the shape the file draws around it.
+ */
+
+.custom-home-introduce {
+	--custom-home-ground-near: #e8e4db;
+	--custom-home-ground-mid: #c8bca9;
+	--custom-home-ground-far: #a89376;
+
+	position: relative;
+	display: flex;
+	align-items: flex-start;
+	gap: 23px;
+	width: 100%;
+	padding: 96px calc( 48px + max( 0px, calc( ( 100% - 1440px ) / 2 ) ) );
+	box-sizing: border-box;
+	overflow: hidden;
+
+	/* The band's own gradient, read from the file. */
+	background-image: radial-gradient(
+		1625px 2709px at 1944px 974px,
+		var( --custom-home-ground-near ) 11.538%,
+		var( --custom-home-ground-mid ) 55.769%,
+		var( --custom-home-ground-far ) 100%
+	);
+}
+
+.custom-home-introduce__column {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	flex: 0 0 660px;
+	max-width: 660px;
+	min-width: 0;
+	height: 672px;
+}
+
+/* The soft mark behind the words: the design's, not the client's. */
+.custom-home-introduce__mark {
+	position: absolute;
+	left: -20px;
+	top: 244px;
+	display: block;
+	width: 395px;
+	height: 376px;
+	opacity: 0.054;
+	background-image: url( "../img/soft-shape.webp" );
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+	pointer-events: none;
+}
+
+.custom-home-introduce__body {
+	position: relative;
+	width: 100%;
+	overflow-wrap: anywhere;
+}
+
+.custom-home-introduce__body p {
+	margin: 0;
+}
+
+.custom-home-introduce__button {
+	position: absolute;
+	left: 0;
+	top: 624px;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 16px 24px;
+	border-radius: 24px;
+	text-decoration: none;
+	white-space: nowrap;
+	transition: opacity 300ms ease-in-out;
+}
+
+.custom-home-introduce__button:hover {
+	opacity: 0.85;
+}
+
+/* The picture stands in the shape the file cuts it to, and reaches sixteen
+   above the band's own padding, as the file draws it. */
+.custom-home-introduce__picture {
+	position: relative;
+	display: block;
+	flex: 0 0 661px;
+	height: 660px;
+	margin-top: -16px;
+	-webkit-mask-image: url( "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 701 700'><path d='M287.505 60.8268C323.416 58.511 451.257 57.7391 587.356 23.3829C723.455 -10.9732 640.145 303.248 670.668 341.078C701.19 378.908 661.331 597.01 587.356 656.458C513.38 715.905 128.064 620.943 45.1109 619.014C-37.8418 617.084 109.749 387.401 128.064 361.151C146.378 334.902 65.9388 129.153 109.749 48.4742C153.56 -32.2045 251.594 63.1427 287.505 60.8268Z' fill='black'/></svg>" );
+	mask-image: url( "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 701 700'><path d='M287.505 60.8268C323.416 58.511 451.257 57.7391 587.356 23.3829C723.455 -10.9732 640.145 303.248 670.668 341.078C701.19 378.908 661.331 597.01 587.356 656.458C513.38 715.905 128.064 620.943 45.1109 619.014C-37.8418 617.084 109.749 387.401 128.064 361.151C146.378 334.902 65.9388 129.153 109.749 48.4742C153.56 -32.2045 251.594 63.1427 287.505 60.8268Z' fill='black'/></svg>" );
+	-webkit-mask-repeat: no-repeat;
+	mask-repeat: no-repeat;
+	-webkit-mask-size: contain;
+	mask-size: contain;
+	-webkit-mask-position: center;
+	mask-position: center;
+}
+
+.custom-home-introduce__picture img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
+}
+
+@media ( prefers-reduced-motion: reduce ) {
+	.custom-home-introduce__button {
+		transition: none;
+	}
+}
