@@ -1011,7 +1011,18 @@ function kadence_child_form_settings_group( $forms ) {
  * @param string $key The form's slug: its settings are stored under it.
  * @return array
  */
-function kadence_child_form_settings_fields( $key ) {
+
+/**
+ * Who hears about a message, for whichever form filed it.
+ *
+ * Both emails live here, in two groups named after who receives them. The team
+ * has a switch of its own: a form nobody is watching should be able to say so
+ * without its addresses being deleted to mean it.
+ *
+ * @param string $key The form's slug: its settings are stored under it.
+ * @return array
+ */
+function kadence_child_form_notification_fields( $key ) {
 	return array(
 		array(
 			'key'          => 'field_cavo_team_group_' . $key,
@@ -1019,6 +1030,14 @@ function kadence_child_form_settings_fields( $key ) {
 			'name'         => 'team_' . $key,
 			'type'         => 'group',
 			'sub_fields'   => array(
+				array(
+					'key'           => 'field_cavo_team_send_' . $key,
+					'label'         => esc_html__( 'Send notifications', 'kadence-child' ),
+					'name'          => 'send',
+					'type'          => 'true_false',
+					'ui'            => 1,
+					'default_value' => 1,
+				),
 				array(
 					'key'          => 'field_cavo_team_to_' . $key,
 					'label'        => esc_html__( 'Send notifications to', 'kadence-child' ),
@@ -1088,6 +1107,13 @@ function kadence_child_form_settings_fields( $key ) {
 				),
 			),
 		),
+	);
+}
+
+function kadence_child_form_settings_fields( $key ) {
+	return array_merge(
+		kadence_child_form_notification_fields( $key ),
+		array(
 		array(
 			'key'        => 'field_cavo_result_' . $key,
 			'label'      => esc_html__( 'Submit result', 'kadence-child' ),
@@ -1128,6 +1154,7 @@ function kadence_child_form_settings_fields( $key ) {
 				),
 			),
 		),
+		)
 	);
 }
 
@@ -1483,9 +1510,13 @@ function kadence_child_form_mail( $slug, $form, $sender, $name, $answers, $messa
 	$team = kadence_child_form_settings( $slug, 'team' );
 	$to   = array();
 
-	foreach ( (array) ( isset( $team['to'] ) ? $team['to'] : array() ) as $row ) {
-		if ( ! empty( $row['email'] ) && is_email( $row['email'] ) ) {
-			$to[] = $row['email'];
+	// A switch that is off is not an address list left empty: the addresses stay
+	// where they were written, and nothing goes to them until it is on again.
+	if ( ! empty( $team['send'] ) ) {
+		foreach ( (array) ( isset( $team['to'] ) ? $team['to'] : array() ) as $row ) {
+			if ( ! empty( $row['email'] ) && is_email( $row['email'] ) ) {
+				$to[] = $row['email'];
+			}
 		}
 	}
 
@@ -2228,11 +2259,13 @@ function kadence_child_subscribe_submit() {
 		kadence_child_subscribe_back( $back, 'invalid', $email );
 	}
 
-	// The row is the record and the email a courtesy on top of it, so this
-	// happens after the address is stored and never instead of storing it.
+	// The row is the record and the email a courtesy on top of it, so these
+	// happen after the address is stored and never instead of storing it.
 	if ( 'pending' === $status && 'pending' === kadence_child_subscriber_status( $added ) ) {
 		kadence_child_subscribe_confirm_mail( $added );
 	}
+
+	kadence_child_subscribe_notify( $slug, $email );
 
 	kadence_child_subscribe_back( $back, 'pending' === $status ? 'confirm' : 'ok' );
 }
@@ -3318,15 +3351,16 @@ function kadence_child_signup_field_group( $key ) {
 /**
  * A sign-up form's settings.
  *
- * No Notifications: nothing was asked, so there is nothing to forward and
- * nobody to forward it to. What is left is what the page says back, and the
- * captcha standing in front of the button.
+ * The same three sections every form carries. What differs is the middle one:
+ * a sign-up can end in a third way, waiting on an address to answer for itself.
  *
  * @param string $key The form's slug: its settings are stored under it.
  * @return array
  */
 function kadence_child_signup_settings_fields( $key ) {
-	return array(
+	return array_merge(
+		kadence_child_form_notification_fields( $key ),
+		array(
 		array(
 			'key'        => 'field_cavo_result_' . $key,
 			'label'      => esc_html__( 'Submit result', 'kadence-child' ),
@@ -3338,21 +3372,18 @@ function kadence_child_signup_settings_fields( $key ) {
 					'label'       => esc_html__( 'Success', 'kadence-child' ),
 					'name'        => 'success',
 					'type'        => 'text',
-					'placeholder' => esc_html__( 'Thank you — you are on the list.', 'kadence-child' ),
 				),
 				array(
 					'key'         => 'field_cavo_confirm_' . $key,
 					'label'       => esc_html__( 'Sent to confirm', 'kadence-child' ),
 					'name'        => 'confirm',
 					'type'        => 'text',
-					'placeholder' => esc_html__( 'Almost there: open the email we just sent and confirm.', 'kadence-child' ),
 				),
 				array(
 					'key'         => 'field_cavo_fail_' . $key,
 					'label'       => esc_html__( 'Fail', 'kadence-child' ),
 					'name'        => 'fail',
 					'type'        => 'text',
-					'placeholder' => esc_html__( 'That address does not look right.', 'kadence-child' ),
 				),
 			),
 		),
@@ -3376,6 +3407,7 @@ function kadence_child_signup_settings_fields( $key ) {
 				),
 			),
 		),
+		)
 	);
 }
 
@@ -3426,4 +3458,66 @@ function kadence_child_signup_answer( $slug, $state ) {
 	}
 
 	return isset( $design[ $state ] ) ? $design[ $state ] : '';
+}
+
+/**
+ * Who hears that somebody signed up.
+ *
+ * A sign-up says one thing, so that one thing is what both emails carry. The
+ * row was written first; these are the courtesy on top of it, and neither can
+ * lose the address by failing.
+ *
+ * @param string $slug  The form's slug.
+ * @param string $email What they typed.
+ */
+function kadence_child_subscribe_notify( $slug, $email ) {
+	$domain  = preg_replace( '/^www\./', '', (string) wp_parse_url( home_url(), PHP_URL_HOST ) );
+	$name    = wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES );
+	$forms   = kadence_child_forms();
+	$form    = isset( $forms[ $slug ] ) ? $forms[ $slug ] : $slug;
+	$headers = array( sprintf( 'From: %s <no-reply@%s>', $name, $domain ) );
+
+	// The address goes in a header only once it has been read as an address.
+	$reply = is_email( $email ) ? array_merge( $headers, array( 'Reply-To: ' . $email ) ) : $headers;
+
+	$team = kadence_child_form_settings( $slug, 'team' );
+	$to   = array();
+
+	if ( ! empty( $team['send'] ) ) {
+		foreach ( (array) ( isset( $team['to'] ) ? $team['to'] : array() ) as $row ) {
+			if ( ! empty( $row['email'] ) && is_email( $row['email'] ) ) {
+				$to[] = $row['email'];
+			}
+		}
+	}
+
+	if ( ! empty( $to ) ) {
+		$subject = isset( $team['subject'] ) ? trim( (string) $team['subject'] ) : '';
+		$subject = '' !== $subject ? $subject : sprintf( '%1$s — %2$s', $form, $email );
+		$body    = isset( $team['body'] ) ? trim( (string) $team['body'] ) : '';
+
+		kadence_child_send(
+			$to,
+			$subject,
+			( '' !== $body ? $body . "\r\n\r\n" : '' ) . $email,
+			$reply
+		);
+	}
+
+	$client = kadence_child_form_settings( $slug, 'client' );
+
+	if ( empty( $client['copy'] ) || ! is_email( $email ) ) {
+		return;
+	}
+
+	$subject = isset( $client['subject'] ) ? trim( (string) $client['subject'] ) : '';
+	$subject = '' !== $subject ? $subject : sprintf( '%1$s — %2$s', $form, $name );
+	$body    = isset( $client['body'] ) ? trim( (string) $client['body'] ) : '';
+
+	kadence_child_send(
+		$email,
+		$subject,
+		( '' !== $body ? $body . "\r\n\r\n" : '' ) . ( ! empty( $client['answers'] ) ? $email : '' ),
+		$headers
+	);
 }
