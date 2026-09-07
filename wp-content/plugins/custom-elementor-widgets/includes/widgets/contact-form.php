@@ -97,7 +97,7 @@ class Contact_Form extends Base_Widget {
 	 * @return array
 	 */
 	private function forms() {
-		return function_exists( 'kadence_child_forms' ) ? kadence_child_forms() : array();
+		return function_exists( 'kadence_child_enquiry_forms' ) ? kadence_child_enquiry_forms() : array();
 	}
 
 	/**

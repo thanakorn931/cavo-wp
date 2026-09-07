@@ -558,7 +558,42 @@ function kadence_child_forms() {
 	return array(
 		'private-event' => esc_html__( 'Private event', 'kadence-child' ),
 		'contact'       => esc_html__( 'Contact', 'kadence-child' ),
+		'newsletter'    => esc_html__( 'Newsletter', 'kadence-child' ),
 	);
+}
+
+/**
+ * Whether a form asks to be written to rather than written back to.
+ *
+ * A sign-up asks one thing and files no message, so it carries neither a field
+ * list nor anybody to notify. It is still one of the forms: it has a tab, its
+ * words are the client's, and the captcha in front of it is the domain's.
+ *
+ * @param string $slug The form's slug.
+ * @return bool
+ */
+function kadence_child_form_is_signup( $slug ) {
+	return 'newsletter' === $slug;
+}
+
+/**
+ * The forms that ask questions and file the answers.
+ *
+ * What a section can be pointed at: a widget that draws a list of questions has
+ * nothing to draw for a form that asks one.
+ *
+ * @return array
+ */
+function kadence_child_enquiry_forms() {
+	$kept = array();
+
+	foreach ( kadence_child_forms() as $slug => $name ) {
+		if ( ! kadence_child_form_is_signup( $slug ) ) {
+			$kept[ $slug ] = $name;
+		}
+	}
+
+	return $kept;
 }
 
 /**
@@ -803,7 +838,9 @@ function kadence_child_form_field_groups() {
 			'type'  => 'tab',
 		);
 
-		$editor[] = kadence_child_form_fields_repeater( $slug );
+		$editor[] = kadence_child_form_is_signup( $slug )
+			? kadence_child_signup_field_group( $slug )
+			: kadence_child_form_fields_repeater( $slug );
 	}
 
 	acf_add_local_field_group(
@@ -948,7 +985,12 @@ function kadence_child_form_settings_group( $forms ) {
 			'type'  => 'tab',
 		);
 
-		$fields = array_merge( $fields, kadence_child_form_settings_fields( $slug ) );
+		$fields = array_merge(
+			$fields,
+			kadence_child_form_is_signup( $slug )
+				? kadence_child_signup_settings_fields( $slug )
+				: kadence_child_form_settings_fields( $slug )
+		);
 	}
 
 	return array(
@@ -2163,13 +2205,21 @@ function kadence_child_subscribe_submit() {
 		kadence_child_subscribe_back( $back, 'ok' );
 	}
 
+	$slug = isset( $_POST['cavo_form'] ) ? sanitize_key( wp_unslash( $_POST['cavo_form'] ) ) : 'newsletter';
+
+	// Last of the three, and the only one the reader can see.
+	$token = isset( $_POST['g-recaptcha-response'] ) ? sanitize_text_field( wp_unslash( $_POST['g-recaptcha-response'] ) ) : '';
+
+	if ( ! kadence_child_form_captcha_passed( $slug, $token ) ) {
+		kadence_child_subscribe_back( $back, 'expired' );
+	}
+
 	$email = isset( $_POST['email'] ) ? sanitize_text_field( wp_unslash( $_POST['email'] ) ) : '';
 
 	if ( ! is_email( $email ) ) {
 		kadence_child_subscribe_back( $back, 'invalid', $email );
 	}
 
-	$slug     = isset( $_POST['cavo_form'] ) ? sanitize_key( wp_unslash( $_POST['cavo_form'] ) ) : 'newsletter';
 	$settings = kadence_child_subscription_settings();
 	$status   = empty( $settings['confirms'] ) ? 'confirmed' : 'pending';
 	$added    = kadence_child_subscriber_add( $email, $slug, $status );
@@ -3221,4 +3271,159 @@ function kadence_child_news_post_types() {
 	}
 
 	return $kept;
+}
+
+/**
+ * What a sign-up form asks, on the Form editor.
+ *
+ * The design settles that there is one box and that it takes an address, so
+ * neither is offered here. What is left is what the box says, which is the
+ * client's.
+ *
+ * @param string $key The form's slug: its fields are stored under it.
+ * @return array
+ */
+function kadence_child_signup_field_group( $key ) {
+	return array(
+		'key'        => 'field_cavo_signup_' . $key,
+		'label'      => esc_html__( 'Field', 'kadence-child' ),
+		'name'       => 'signup_' . $key,
+		'type'       => 'group',
+		'sub_fields' => array(
+			array(
+				'key'         => 'field_cavo_signup_label_' . $key,
+				'label'       => esc_html__( 'Label', 'kadence-child' ),
+				'name'        => 'label',
+				'type'        => 'text',
+				'placeholder' => esc_html__( 'Email address', 'kadence-child' ),
+			),
+			array(
+				'key'         => 'field_cavo_signup_placeholder_' . $key,
+				'label'       => esc_html__( 'Placeholder', 'kadence-child' ),
+				'name'        => 'placeholder',
+				'type'        => 'text',
+				'placeholder' => esc_html__( 'Enter your email', 'kadence-child' ),
+			),
+			array(
+				'key'         => 'field_cavo_signup_button_' . $key,
+				'label'       => esc_html__( 'Button', 'kadence-child' ),
+				'name'        => 'button',
+				'type'        => 'text',
+				'placeholder' => esc_html__( 'Submit', 'kadence-child' ),
+			),
+		),
+	);
+}
+
+/**
+ * A sign-up form's settings.
+ *
+ * No Notifications: nothing was asked, so there is nothing to forward and
+ * nobody to forward it to. What is left is what the page says back, and the
+ * captcha standing in front of the button.
+ *
+ * @param string $key The form's slug: its settings are stored under it.
+ * @return array
+ */
+function kadence_child_signup_settings_fields( $key ) {
+	return array(
+		array(
+			'key'        => 'field_cavo_result_' . $key,
+			'label'      => esc_html__( 'Submit result', 'kadence-child' ),
+			'name'       => 'result_' . $key,
+			'type'       => 'group',
+			'sub_fields' => array(
+				array(
+					'key'         => 'field_cavo_success_' . $key,
+					'label'       => esc_html__( 'Success', 'kadence-child' ),
+					'name'        => 'success',
+					'type'        => 'text',
+					'placeholder' => esc_html__( 'Thank you — you are on the list.', 'kadence-child' ),
+				),
+				array(
+					'key'         => 'field_cavo_confirm_' . $key,
+					'label'       => esc_html__( 'Sent to confirm', 'kadence-child' ),
+					'name'        => 'confirm',
+					'type'        => 'text',
+					'placeholder' => esc_html__( 'Almost there: open the email we just sent and confirm.', 'kadence-child' ),
+				),
+				array(
+					'key'         => 'field_cavo_fail_' . $key,
+					'label'       => esc_html__( 'Fail', 'kadence-child' ),
+					'name'        => 'fail',
+					'type'        => 'text',
+					'placeholder' => esc_html__( 'That address does not look right.', 'kadence-child' ),
+				),
+			),
+		),
+		array(
+			'key'        => 'field_cavo_captcha_' . $key,
+			'label'      => esc_html__( 'reCAPTCHA', 'kadence-child' ),
+			'name'       => 'captcha_' . $key,
+			'type'       => 'group',
+			'sub_fields' => array(
+				array(
+					'key'           => 'field_cavo_version_' . $key,
+					'label'         => esc_html__( 'Version', 'kadence-child' ),
+					'name'          => 'version',
+					'type'          => 'select',
+					'default_value' => 'off',
+					'choices'       => array(
+						'off' => esc_html__( 'Off', 'kadence-child' ),
+						'v2'  => esc_html__( 'v2', 'kadence-child' ),
+						'v3'  => esc_html__( 'v3', 'kadence-child' ),
+					),
+				),
+			),
+		),
+	);
+}
+
+/**
+ * What a sign-up form's box says, as the client left it.
+ *
+ * @param string $slug The form's slug.
+ * @param string $which Which word.
+ * @return string
+ */
+function kadence_child_signup_word( $slug, $which ) {
+	if ( ! function_exists( 'get_field' ) ) {
+		return '';
+	}
+
+	$said = (array) get_field( 'signup_' . $slug, 'option' );
+
+	return isset( $said[ $which ] ) ? trim( (string) $said[ $which ] ) : '';
+}
+
+/**
+ * What the page says back after a press.
+ *
+ * @param string $slug  The form's slug.
+ * @param string $state What happened.
+ * @return string
+ */
+function kadence_child_signup_answer( $slug, $state ) {
+	$said = kadence_child_form_settings( $slug, 'result' );
+
+	$written = array(
+		'ok'      => isset( $said['success'] ) ? trim( (string) $said['success'] ) : '',
+		'confirm' => isset( $said['confirm'] ) ? trim( (string) $said['confirm'] ) : '',
+		'invalid' => isset( $said['fail'] ) ? trim( (string) $said['fail'] ) : '',
+	);
+
+	$design = array(
+		'ok'      => esc_html__( 'Thank you — you are on the list.', 'kadence-child' ),
+		'confirm' => esc_html__( 'Almost there: open the email we just sent and confirm.', 'kadence-child' ),
+		'invalid' => esc_html__( 'That address does not look right.', 'kadence-child' ),
+		'expired' => esc_html__( 'That page had been open a while. Please try again.', 'kadence-child' ),
+		'welcome' => esc_html__( 'Confirmed — you are on the list.', 'kadence-child' ),
+		'gone'    => esc_html__( 'You have been taken off the list.', 'kadence-child' ),
+	);
+
+	if ( isset( $written[ $state ] ) && '' !== $written[ $state ] ) {
+		return $written[ $state ];
+	}
+
+	return isset( $design[ $state ] ) ? $design[ $state ] : '';
 }

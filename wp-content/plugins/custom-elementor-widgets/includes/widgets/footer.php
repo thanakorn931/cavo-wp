@@ -120,20 +120,11 @@ class Footer extends Base_Widget {
 		);
 
 		$this->add_control(
-			'signup_placeholder',
+			'signup_field_note',
 			array(
-				'label'   => esc_html__( 'Field placeholder', 'custom-elementor-widgets' ),
-				'type'    => Controls_Manager::TEXT,
-				'placeholder' => esc_html__( 'Enter your email', 'custom-elementor-widgets' ),
-			)
-		);
-
-		$this->add_control(
-			'signup_button',
-			array(
-				'label'   => esc_html__( 'Button text', 'custom-elementor-widgets' ),
-				'type'    => Controls_Manager::TEXT,
-				'placeholder' => esc_html__( 'Submit', 'custom-elementor-widgets' ),
+				'type'            => Controls_Manager::RAW_HTML,
+				'raw'             => esc_html__( 'What the box says and what the button reads are set in WP Form → Form editor → Newsletter form.', 'custom-elementor-widgets' ),
+				'content_classes' => 'elementor-descriptor',
 			)
 		);
 
@@ -573,8 +564,6 @@ class Footer extends Base_Widget {
 	private function design_text() {
 		return array(
 			'signup_heading'     => esc_html__( 'Signup to our newsletter', 'custom-elementor-widgets' ),
-			'signup_placeholder' => esc_html__( 'Enter your email', 'custom-elementor-widgets' ),
-			'signup_button'      => esc_html__( 'Submit', 'custom-elementor-widgets' ),
 			'contact_label'      => esc_html__( 'Contact Info', 'custom-elementor-widgets' ),
 			'location_label'     => esc_html__( 'Location', 'custom-elementor-widgets' ),
 			'contact_address'    => esc_html__( 'Town Hall Sukhumvit 49, Sukhumvit 49, Khlong Tan Nuea, Watthana, Bangkok 10110', 'custom-elementor-widgets' ),
@@ -655,7 +644,6 @@ class Footer extends Base_Widget {
 	 */
 	private function render_signup( $settings ) {
 		$heading = $this->text( $settings, 'signup_heading' );
-		$button  = $this->text( $settings, 'signup_button' );
 		$tag     = isset( $settings['signup_heading_tag'] ) ? $settings['signup_heading_tag'] : '';
 		$allowed = array( 'h2', 'h3', 'h4', 'span' );
 		$tag     = in_array( $tag, $allowed, true ) ? $tag : 'span';
@@ -667,21 +655,30 @@ class Footer extends Base_Widget {
 			<?php
 		endif;
 
-		// The list, and what a press does to it, belong to the theme's WP Form.
-		// The widget draws the form and prints what it is told; it does not keep
-		// the address or decide what happens to it.
-		if ( '' === $button || ! function_exists( 'kadence_child_subscribe_fields' ) ) {
+		// The list, what a press does to it, and what the box says all belong to
+		// the theme's WP Form. The widget draws the form and prints what it is
+		// told; it does not keep the address or settle a word of it.
+		if ( ! function_exists( 'kadence_child_subscribe_fields' ) ) {
 			return;
 		}
 
+		$label       = kadence_child_signup_word( 'newsletter', 'label' );
+		$placeholder = kadence_child_signup_word( 'newsletter', 'placeholder' );
+		$button      = kadence_child_signup_word( 'newsletter', 'button' );
+
+		$label       = '' !== $label ? $label : esc_html__( 'Email address', 'custom-elementor-widgets' );
+		$placeholder = '' !== $placeholder ? $placeholder : esc_html__( 'Enter your email', 'custom-elementor-widgets' );
+		$button      = '' !== $button ? $button : esc_html__( 'Submit', 'custom-elementor-widgets' );
+
 		$result = kadence_child_subscribe_result();
 		$said   = isset( $result['state'] ) ? (string) $result['state'] : '';
+		$answer = '' !== $said ? kadence_child_signup_answer( 'newsletter', $said ) : '';
 		?>
 		<div class="custom-footer__actions">
 		<form class="custom-footer__form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 			<?php kadence_child_subscribe_fields( 'newsletter' ); ?>
 			<label class="screen-reader-text" for="custom-footer-email-<?php echo esc_attr( $this->get_id() ); ?>">
-				<?php echo esc_html__( 'Email address', 'custom-elementor-widgets' ); ?>
+				<?php echo esc_html( $label ); ?>
 			</label>
 			<input
 				class="custom-footer__field"
@@ -690,37 +687,26 @@ class Footer extends Base_Widget {
 				name="email"
 				required
 				value="<?php echo esc_attr( isset( $result['email'] ) ? $result['email'] : '' ); ?>"
-				placeholder="<?php echo esc_attr( $this->text( $settings, 'signup_placeholder' ) ); ?>"
+				placeholder="<?php echo esc_attr( $placeholder ); ?>"
 			/>
+			<?php
+			// A box the reader has to answer stands directly above the button
+			// that sends the form. One that asks nothing shows nothing.
+			if ( function_exists( 'kadence_child_form_captcha_field' ) ) {
+				kadence_child_form_captcha_field( 'newsletter' );
+			}
+			?>
 			<button class="custom-footer__submit" type="submit"><?php echo esc_html( $button ); ?></button>
 		</form>
 
-		<?php if ( '' !== $this->answer( $said ) ) : ?>
-			<p class="custom-footer__result" role="status"><?php echo esc_html( $this->answer( $said ) ); ?></p>
+		<?php if ( '' !== $answer ) : ?>
+			<p class="custom-footer__result" role="status"><?php echo esc_html( $answer ); ?></p>
 		<?php endif; ?>
 		</div>
 		</div>
 		<?php
 	}
 
-	/**
-	 * What the page says back to somebody who has just pressed it.
-	 *
-	 * @param string $state What the handler stored.
-	 * @return string
-	 */
-	private function answer( $state ) {
-		$words = array(
-			'ok'      => esc_html__( 'Thank you — you are on the list.', 'custom-elementor-widgets' ),
-			'confirm' => esc_html__( 'Almost there: open the email we just sent and confirm.', 'custom-elementor-widgets' ),
-			'invalid' => esc_html__( 'That address does not look right.', 'custom-elementor-widgets' ),
-			'expired' => esc_html__( 'That page had been open a while. Please try again.', 'custom-elementor-widgets' ),
-			'welcome' => esc_html__( 'Confirmed — you are on the list.', 'custom-elementor-widgets' ),
-			'gone'    => esc_html__( 'You have been taken off the list.', 'custom-elementor-widgets' ),
-		);
-
-		return isset( $words[ $state ] ) ? $words[ $state ] : '';
-	}
 
 	/**
 	 * The contact lines.
