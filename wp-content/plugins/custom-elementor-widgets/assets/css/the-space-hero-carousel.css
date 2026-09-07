@@ -19,6 +19,7 @@
 	align-items: center;
 	gap: 24px;
 	width: 100%;
+	padding-top: 108px;
 	padding-bottom: 92px;
 	box-sizing: border-box;
 	overflow: hidden;
@@ -124,8 +125,11 @@
 }
 
 /* The band the slides run through. */
+/* The file leaves more between the actions and the slides than between the
+   name and the actions. */
 .custom-space-hero__stage {
 	position: relative;
+	margin-top: 20px;
 	width: 100%;
 	height: 720px;
 	overflow: hidden;
