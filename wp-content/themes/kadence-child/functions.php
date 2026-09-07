@@ -816,19 +816,35 @@ function kadence_child_form_field_groups() {
 			'title'    => esc_html__( 'reCAPTCHA', 'kadence-child' ),
 			'location' => array( array( array( 'param' => 'options_page', 'operator' => '==', 'value' => 'cavo-form-recaptcha' ) ) ),
 			'fields'   => array(
-				array( 'key' => 'field_cavo_v2_site', 'label' => esc_html__( 'v2 site key', 'kadence-child' ), 'name' => 'recaptcha_v2_site', 'type' => 'text' ),
-				array( 'key' => 'field_cavo_v2_secret', 'label' => esc_html__( 'v2 secret key', 'kadence-child' ), 'name' => 'recaptcha_v2_secret', 'type' => 'text' ),
-				array( 'key' => 'field_cavo_v3_site', 'label' => esc_html__( 'v3 site key', 'kadence-child' ), 'name' => 'recaptcha_v3_site', 'type' => 'text' ),
-				array( 'key' => 'field_cavo_v3_secret', 'label' => esc_html__( 'v3 secret key', 'kadence-child' ), 'name' => 'recaptcha_v3_secret', 'type' => 'text' ),
 				array(
-					'key'           => 'field_cavo_v3_threshold',
-					'label'         => esc_html__( 'Score threshold', 'kadence-child' ),
-					'name'          => 'recaptcha_v3_threshold',
-					'type'          => 'number',
-					'min'           => 0,
-					'max'           => 1,
-					'step'          => 0.1,
-					'default_value' => 0.5,
+					'key'        => 'field_cavo_v2',
+					'label'      => esc_html__( 'reCAPTCHA v2', 'kadence-child' ),
+					'name'       => 'recaptcha_v2',
+					'type'       => 'group',
+					'sub_fields' => array(
+						array( 'key' => 'field_cavo_v2_site', 'label' => esc_html__( 'Site key', 'kadence-child' ), 'name' => 'site', 'type' => 'text' ),
+						array( 'key' => 'field_cavo_v2_secret', 'label' => esc_html__( 'Secret key', 'kadence-child' ), 'name' => 'secret', 'type' => 'text' ),
+					),
+				),
+				array(
+					'key'        => 'field_cavo_v3',
+					'label'      => esc_html__( 'reCAPTCHA v3', 'kadence-child' ),
+					'name'       => 'recaptcha_v3',
+					'type'       => 'group',
+					'sub_fields' => array(
+						array( 'key' => 'field_cavo_v3_site', 'label' => esc_html__( 'Site key', 'kadence-child' ), 'name' => 'site', 'type' => 'text' ),
+						array( 'key' => 'field_cavo_v3_secret', 'label' => esc_html__( 'Secret key', 'kadence-child' ), 'name' => 'secret', 'type' => 'text' ),
+						array(
+							'key'           => 'field_cavo_v3_threshold',
+							'label'         => esc_html__( 'Score threshold', 'kadence-child' ),
+							'name'          => 'threshold',
+							'type'          => 'number',
+							'min'           => 0,
+							'max'           => 1,
+							'step'          => 0.1,
+							'default_value' => 0.5,
+						),
+					),
 				),
 			),
 		)
@@ -1105,10 +1121,28 @@ function kadence_child_form_captcha_version( $slug ) {
 		return 'off';
 	}
 
-	$site   = trim( (string) get_field( 'recaptcha_' . $version . '_site', 'option' ) );
-	$secret = trim( (string) get_field( 'recaptcha_' . $version . '_secret', 'option' ) );
+	$keys = kadence_child_captcha_keys( $version );
 
-	return ( '' !== $site && '' !== $secret ) ? $version : 'off';
+	return ( '' !== $keys['site'] && '' !== $keys['secret'] ) ? $version : 'off';
+}
+
+/**
+ * One version's pair of keys, and what v3 answers against.
+ *
+ * A version is a section of its own on the reCAPTCHA screen, so it is read as
+ * one thing rather than as loose keys sharing a prefix.
+ *
+ * @param string $version `v2` or `v3`.
+ * @return array Site, secret and threshold.
+ */
+function kadence_child_captcha_keys( $version ) {
+	$keys = function_exists( 'get_field' ) ? (array) get_field( 'recaptcha_' . $version, 'option' ) : array();
+
+	return array(
+		'site'      => isset( $keys['site'] ) ? trim( (string) $keys['site'] ) : '',
+		'secret'    => isset( $keys['secret'] ) ? trim( (string) $keys['secret'] ) : '',
+		'threshold' => isset( $keys['threshold'] ) ? (float) $keys['threshold'] : 0,
+	);
 }
 
 /**
@@ -1123,7 +1157,8 @@ function kadence_child_form_captcha_field( $slug ) {
 		return;
 	}
 
-	$site = trim( (string) get_field( 'recaptcha_' . $version . '_site', 'option' ) );
+	$keys = kadence_child_captcha_keys( $version );
+	$site = $keys['site'];
 
 	if ( 'v2' === $version ) {
 		wp_enqueue_script( 'cavo-recaptcha', 'https://www.google.com/recaptcha/api.js', array(), null, true ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion -- Google's own script carries no version.
@@ -1168,7 +1203,7 @@ function kadence_child_form_captcha_passed( $slug, $token ) {
 		array(
 			'timeout' => 10,
 			'body'    => array(
-				'secret'   => trim( (string) get_field( 'recaptcha_' . $version . '_secret', 'option' ) ),
+				'secret'   => kadence_child_captcha_keys( $version )['secret'],
 				'response' => $token,
 			),
 		)
@@ -1188,7 +1223,7 @@ function kadence_child_form_captcha_passed( $slug, $token ) {
 		return true;
 	}
 
-	$threshold = (float) get_field( 'recaptcha_v3_threshold', 'option' );
+	$threshold = kadence_child_captcha_keys( 'v3' )['threshold'];
 	$threshold = $threshold > 0 ? $threshold : 0.5;
 
 	return isset( $said['score'] ) && (float) $said['score'] >= $threshold;
