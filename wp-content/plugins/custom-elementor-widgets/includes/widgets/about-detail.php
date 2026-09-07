@@ -313,8 +313,9 @@ class About_Detail extends Base_Widget {
 				'selector'       => '{{WRAPPER}} .custom-about-detail__intro h3',
 				'fields_options' => array(
 					'typography'  => array( 'default' => 'yes' ),
-					'font_family' => array( 'default' => 'Roboto' ),
+					'font_family' => array( 'default' => 'Fenul Compressed' ),
 					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 24 ) ),
+					'font_weight' => array( 'default' => '400' ),
 				),
 			)
 		);
@@ -327,7 +328,7 @@ class About_Detail extends Base_Widget {
 				'selector'       => '{{WRAPPER}} .custom-about-detail__block h3',
 				'fields_options' => array(
 					'typography'  => array( 'default' => 'yes' ),
-					'font_family' => array( 'default' => 'Roboto' ),
+					'font_family' => array( 'default' => 'Fenul Compressed' ),
 					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 20 ) ),
 					'font_weight' => array( 'default' => '500' ),
 				),
@@ -344,6 +345,22 @@ class About_Detail extends Base_Widget {
 					'typography'  => array( 'default' => 'yes' ),
 					'font_family' => array( 'default' => 'Roboto' ),
 					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 16 ) ),
+					'font_weight' => array( 'default' => '400' ),
+				),
+			)
+		);
+
+		$this->add_group_control(
+			Group_Control_Typography::get_type(),
+			array(
+				'name'           => 'hours_typography',
+				'label'          => esc_html__( 'When each part runs', 'custom-elementor-widgets' ),
+				'selector'       => '{{WRAPPER}} .custom-about-detail__hours-time',
+				'fields_options' => array(
+					'typography'  => array( 'default' => 'yes' ),
+					'font_family' => array( 'default' => 'Roboto' ),
+					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 16 ) ),
+					'font_weight' => array( 'default' => '500' ),
 				),
 			)
 		);

@@ -45,6 +45,8 @@
 }
 
 .custom-about-detail__intro h3 {
+	color: inherit;
+	padding: 0;
 	text-transform: uppercase;
 }
 
@@ -80,6 +82,8 @@
 }
 
 .custom-about-detail__block h3 {
+	color: inherit;
+	padding: 0;
 	text-transform: uppercase;
 }
 
