@@ -330,9 +330,15 @@ class Blog_Hero extends Blog_Widget {
 	private function back_url( $settings ) {
 		$link = isset( $settings['back_link'] ) ? trim( (string) $settings['back_link'] ) : '';
 		$link = '' !== $link ? $link : $this->posts_page();
+
+		// A way back that leads nowhere is the page it was pressed on. Where
+		// neither the client nor WordPress has said which page holds the list,
+		// the front of the site is still somewhere to go.
+		$link = '' !== $link ? $link : home_url( '/' );
+
 		$came = isset( $_GET[ self::ARG ] ) ? (int) $_GET[ self::ARG ] : 0; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- reading which page was left.
 
-		if ( '' === $link || $came < 2 ) {
+		if ( $came < 2 ) {
 			return $link;
 		}
 
