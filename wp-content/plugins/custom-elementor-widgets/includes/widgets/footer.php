@@ -11,6 +11,7 @@
 namespace Custom_Elementor_Widgets\Widgets;
 
 use Custom_Elementor_Widgets\Base_Widget;
+use Custom_Elementor_Widgets\Form\Signup;
 use Elementor\Controls_Manager;
 use Elementor\Group_Control_Typography;
 use Elementor\Icons_Manager;
@@ -134,15 +135,6 @@ class Footer extends Base_Widget {
 				'label'   => esc_html__( 'Button text', 'custom-elementor-widgets' ),
 				'type'    => Controls_Manager::TEXT,
 				'placeholder' => esc_html__( 'Submit', 'custom-elementor-widgets' ),
-			)
-		);
-
-		$this->add_control(
-			'signup_note',
-			array(
-				'type'            => Controls_Manager::RAW_HTML,
-				'raw'             => esc_html__( 'The form is a mock: it holds the submit rather than sending anywhere, until where the address goes has been settled.', 'custom-elementor-widgets' ),
-				'content_classes' => 'elementor-descriptor',
 			)
 		);
 
@@ -680,8 +672,15 @@ class Footer extends Base_Widget {
 			return;
 		}
 		?>
+		$result = Signup::result();
+		$said   = isset( $result['state'] ) ? (string) $result['state'] : '';
+		?>
 		<div class="custom-footer__actions">
-		<form class="custom-footer__form" method="post">
+		<form class="custom-footer__form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+			<?php
+			Signup::fields();
+			?>
+			<input type="hidden" name="form" value="newsletter" />
 			<label class="screen-reader-text" for="custom-footer-email-<?php echo esc_attr( $this->get_id() ); ?>">
 				<?php echo esc_html__( 'Email address', 'custom-elementor-widgets' ); ?>
 			</label>
@@ -690,13 +689,38 @@ class Footer extends Base_Widget {
 				id="custom-footer-email-<?php echo esc_attr( $this->get_id() ); ?>"
 				type="email"
 				name="email"
+				required
+				value="<?php echo esc_attr( isset( $result['email'] ) ? $result['email'] : '' ); ?>"
 				placeholder="<?php echo esc_attr( $this->text( $settings, 'signup_placeholder' ) ); ?>"
 			/>
 			<button class="custom-footer__submit" type="submit"><?php echo esc_html( $button ); ?></button>
 		</form>
+
+		<?php if ( '' !== $this->answer( $said ) ) : ?>
+			<p class="custom-footer__result" role="status"><?php echo esc_html( $this->answer( $said ) ); ?></p>
+		<?php endif; ?>
 		</div>
 		</div>
 		<?php
+	}
+
+	/**
+	 * What the page says back to somebody who has just pressed it.
+	 *
+	 * @param string $state What the handler stored.
+	 * @return string
+	 */
+	private function answer( $state ) {
+		$words = array(
+			'ok'      => esc_html__( 'Thank you — you are on the list.', 'custom-elementor-widgets' ),
+			'confirm' => esc_html__( 'Almost there: open the email we just sent and confirm.', 'custom-elementor-widgets' ),
+			'invalid' => esc_html__( 'That address does not look right.', 'custom-elementor-widgets' ),
+			'expired' => esc_html__( 'That page had been open a while. Please try again.', 'custom-elementor-widgets' ),
+			'welcome' => esc_html__( 'Confirmed — you are on the list.', 'custom-elementor-widgets' ),
+			'gone'    => esc_html__( 'You have been taken off the list.', 'custom-elementor-widgets' ),
+		);
+
+		return isset( $words[ $state ] ) ? $words[ $state ] : '';
 	}
 
 	/**
