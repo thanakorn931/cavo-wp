@@ -388,32 +388,18 @@ class Home_Event extends Base_Widget {
 	}
 
 	/**
-	 * When an item is, as the design writes it: the hour, then the day.
+	 * When an item is, as the design writes it: the hour, then the day. Both
+	 * are when the post is published, which is the one place an event's time
+	 * is set.
 	 *
 	 * @param \WP_Post $item The post.
 	 * @return string
 	 */
 	private function meta( $item ) {
-		$hour = $this->field( $item, 'event_time' );
-		$day  = $this->field( $item, 'event_date' );
-		$day  = '' !== $day ? $day : (string) get_the_date( 'd M Y', $item );
+		$hour = (string) get_the_time( 'h : i A', $item );
+		$day  = (string) get_the_date( 'd M Y', $item );
 
 		return trim( '' !== $hour ? $hour . ' - ' . $day : $day );
-	}
-
-	/**
-	 * One field of an item, where the plugin that holds it is active.
-	 *
-	 * @param \WP_Post $item The post.
-	 * @param string   $name The field.
-	 * @return string
-	 */
-	private function field( $item, $name ) {
-		if ( function_exists( 'get_field' ) ) {
-			return trim( (string) get_field( $name, $item->ID ) );
-		}
-
-		return trim( (string) get_post_meta( $item->ID, $name, true ) );
 	}
 
 	/**

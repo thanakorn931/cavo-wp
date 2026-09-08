@@ -81,15 +81,16 @@ abstract class Event_Widget extends Base_Widget {
 	/**
 	 * One item's date, hour and kind, as the design draws them.
 	 *
-	 * Each fact is a mark and a word; the rule between them is the section's,
-	 * not part of what the client typed.
+	 * The date and the hour are when the post is published, which is the one
+	 * place an event's time is set. Each fact is a mark and a word; the rule
+	 * between them is the section's, not part of what the client typed.
 	 *
 	 * @param \WP_Post $post The item.
 	 */
 	protected function render_meta( $post ) {
 		$facts = array(
-			'calendar' => $this->field( $post, 'event_date' ),
-			'timer'    => $this->field( $post, 'event_time' ),
+			'calendar' => (string) get_the_date( 'd M Y', $post ),
+			'timer'    => (string) get_the_time( 'h : i A', $post ),
 			'note'     => $this->field( $post, 'event_genre' ),
 		);
 
