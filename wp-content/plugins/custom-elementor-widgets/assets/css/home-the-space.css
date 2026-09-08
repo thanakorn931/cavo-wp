@@ -57,6 +57,12 @@
 	box-sizing: border-box;
 }
 
+/* Named twice so the ground the file gives it outweighs the one the theme
+   gives every bare button. */
+.custom-home-space__tab.custom-home-space__tab {
+	background-color: transparent;
+}
+
 .custom-home-space__tab {
 	border-radius: 0;
 	display: inline-flex;
