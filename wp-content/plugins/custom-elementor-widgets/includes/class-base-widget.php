@@ -137,6 +137,52 @@ abstract class Base_Widget extends \Elementor\Widget_Base {
 	}
 
 	/**
+	 * The menus the site has, for a control to choose one from.
+	 *
+	 * A widget is placed on a page, not registered with the theme, so it is
+	 * pointed at a menu by name rather than at a location the theme would have
+	 * had to declare on its behalf.
+	 *
+	 * @return array
+	 */
+	protected function menu_options() {
+		$options = array( '' => esc_html__( 'None', 'custom-elementor-widgets' ) );
+
+		foreach ( wp_get_nav_menus() as $menu ) {
+			$options[ $menu->term_id ] = $menu->name;
+		}
+
+		return $options;
+	}
+
+	/**
+	 * One menu, printed flat.
+	 *
+	 * @param int|string $menu  Which menu the client chose.
+	 * @param string     $class The list's class.
+	 * @return bool Whether anything was printed.
+	 */
+	protected function menu( $menu, $class = '' ) {
+		$menu = (int) $menu;
+
+		if ( 0 === $menu || ! wp_get_nav_menu_object( $menu ) ) {
+			return false;
+		}
+
+		wp_nav_menu(
+			array(
+				'menu'        => $menu,
+				'container'   => false,
+				'menu_class'  => $class,
+				'depth'       => 1,
+				'fallback_cb' => false,
+			)
+		);
+
+		return true;
+	}
+
+	/**
 	 * Whether Elementor is showing this in its editor rather than on the site.
 	 *
 	 * A section with nothing in it yet prints nothing, which on the site is

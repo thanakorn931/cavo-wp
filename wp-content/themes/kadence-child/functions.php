@@ -200,22 +200,6 @@ function kadence_child_svg_admin_css() {
 add_action( 'admin_head', 'kadence_child_svg_admin_css' );
 
 /**
- * Register the menu location the parent does not.
- *
- * The footer draws two lists of links side by side. The parent registers one
- * footer location, so only the second is ours to add. A location renders
- * nothing until a template — here, the footer widget — calls for it.
- */
-function kadence_child_menu_locations() {
-	register_nav_menus(
-		array(
-			'footer_secondary' => esc_html__( 'Footer Secondary', 'kadence-child' ),
-		)
-	);
-}
-add_action( 'after_setup_theme', 'kadence_child_menu_locations', 20 );
-
-/**
  * The Events post type.
  *
  * What the client puts on the page is a list they add to and remove from, so it

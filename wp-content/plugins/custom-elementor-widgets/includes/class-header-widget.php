@@ -34,7 +34,6 @@ abstract class Header_Widget extends Base_Widget {
 	 * Registered by the parent theme, so nothing here registers it again. The
 	 * location renders nothing until a menu is assigned to it.
 	 */
-	const MENU_LOCATION = 'primary';
 
 	/**
 	 * The bar the design draws: its ground, its own colour, and what reads
@@ -205,11 +204,12 @@ abstract class Header_Widget extends Base_Widget {
 		);
 
 		$this->add_control(
-			'menu_note',
+			'menu',
 			array(
-				'type'            => Controls_Manager::RAW_HTML,
-				'raw'             => esc_html__( 'The bar is a menu. Build it in Appearance → Menus and assign it to the Primary location.', 'custom-elementor-widgets' ),
-				'content_classes' => 'elementor-descriptor',
+				'label'   => esc_html__( 'Menu', 'custom-elementor-widgets' ),
+				'type'    => Controls_Manager::SELECT,
+				'default' => '',
+				'options' => $this->menu_options(),
 			)
 		);
 
@@ -612,12 +612,12 @@ abstract class Header_Widget extends Base_Widget {
 				<div class="custom-header__inner">
 					<div class="custom-header__row">
 						<?php $this->render_logo( $settings ); ?>
-						<?php $this->render_menu(); ?>
+						<?php $this->render_menu( $settings ); ?>
 						<?php $this->render_actions( $settings ); ?>
 					</div>
 					<?php
-					if ( ! has_nav_menu( self::MENU_LOCATION ) ) {
-						$this->editor_hint( __( 'The bar is empty: build a menu in Appearance → Menus and assign it to the Primary location.', 'custom-elementor-widgets' ) );
+					if ( ! $this->menu_chosen( $settings ) ) {
+						$this->editor_hint( __( 'The bar is empty: build a menu in Appearance → Menus, then choose it on the Content tab.', 'custom-elementor-widgets' ) );
 					}
 					?>
 				</div>
@@ -671,26 +671,31 @@ abstract class Header_Widget extends Base_Widget {
 	}
 
 	/**
-	 * The bar — whatever menu is assigned to the theme's location.
+	 * The bar — whichever menu the client chose for it.
+	 *
+	 * @param array $settings The widget's settings.
 	 */
-	private function render_menu() {
-		if ( ! has_nav_menu( self::MENU_LOCATION ) ) {
+	private function render_menu( $settings ) {
+		if ( ! $this->menu_chosen( $settings ) ) {
 			return;
 		}
 		?>
 		<nav class="custom-header__menu">
-			<?php
-			wp_nav_menu(
-				array(
-					'theme_location' => self::MENU_LOCATION,
-					'container'      => false,
-					'depth'          => 1,
-					'fallback_cb'    => false,
-				)
-			);
-			?>
+			<?php $this->menu( $settings['menu'] ); ?>
 		</nav>
 		<?php
+	}
+
+	/**
+	 * Whether a menu was chosen and still exists.
+	 *
+	 * @param array $settings The widget's settings.
+	 * @return bool
+	 */
+	private function menu_chosen( $settings ) {
+		$menu = isset( $settings['menu'] ) ? (int) $settings['menu'] : 0;
+
+		return 0 !== $menu && (bool) wp_get_nav_menu_object( $menu );
 	}
 
 	/**

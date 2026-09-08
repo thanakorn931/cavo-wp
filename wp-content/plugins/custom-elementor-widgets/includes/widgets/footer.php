@@ -31,7 +31,6 @@ class Footer extends Base_Widget {
 	 * The first is the parent theme's; the second the child registers, because
 	 * the parent does not. Either renders nothing until a menu is assigned.
 	 */
-	const MENU_LOCATIONS = array( 'footer', 'footer_secondary' );
 
 	/**
 	 * The widget's name, and its asset handle's suffix.
@@ -197,11 +196,22 @@ class Footer extends Base_Widget {
 		);
 
 		$this->add_control(
-			'menus_note',
+			'menu_one',
 			array(
-				'type'            => Controls_Manager::RAW_HTML,
-				'raw'             => esc_html__( 'The two lists are menus. Build them in Appearance → Menus and assign them to the Footer and Footer Secondary locations.', 'custom-elementor-widgets' ),
-				'content_classes' => 'elementor-descriptor',
+				'label'   => esc_html__( 'First list', 'custom-elementor-widgets' ),
+				'type'    => Controls_Manager::SELECT,
+				'default' => '',
+				'options' => $this->menu_options(),
+			)
+		);
+
+		$this->add_control(
+			'menu_two',
+			array(
+				'label'   => esc_html__( 'Second list', 'custom-elementor-widgets' ),
+				'type'    => Controls_Manager::SELECT,
+				'default' => '',
+				'options' => $this->menu_options(),
 			)
 		);
 
@@ -607,7 +617,7 @@ class Footer extends Base_Widget {
 							$this->render_contact( $settings );
 							?>
 						</div>
-						<?php $this->render_menus(); ?>
+						<?php $this->render_menus( $settings ); ?>
 					</div>
 
 					<hr class="custom-footer__rule" />
@@ -630,11 +640,33 @@ class Footer extends Base_Widget {
 	 * Say what the footer is still waiting for, in the editor only.
 	 */
 	private function render_editor_hint() {
-		if ( ! empty( array_filter( self::MENU_LOCATIONS, 'has_nav_menu' ) ) ) {
+		$settings = $this->get_settings_for_display();
+
+		if ( ! empty( $this->chosen_menus( $settings ) ) ) {
 			return;
 		}
 
-		$this->editor_hint( __( 'This footer is waiting for a menu on the Footer or Footer Secondary location, from Appearance → Menus.', 'custom-elementor-widgets' ) );
+		$this->editor_hint( __( 'This footer is waiting for its lists: build them in Appearance → Menus, then choose them on the Content tab.', 'custom-elementor-widgets' ) );
+	}
+
+	/**
+	 * The menus the client chose that still exist, in the order they stand.
+	 *
+	 * @param array $settings The widget's settings.
+	 * @return array
+	 */
+	private function chosen_menus( $settings ) {
+		$kept = array();
+
+		foreach ( array( 'menu_one', 'menu_two' ) as $which ) {
+			$menu = isset( $settings[ $which ] ) ? (int) $settings[ $which ] : 0;
+
+			if ( 0 !== $menu && wp_get_nav_menu_object( $menu ) ) {
+				$kept[] = $menu;
+			}
+		}
+
+		return $kept;
 	}
 
 	/**
@@ -750,29 +782,20 @@ class Footer extends Base_Widget {
 	}
 
 	/**
-	 * The two lists — whatever menus are assigned to the theme's locations.
+	 * The two lists — whichever menus the client chose for them.
+	 *
+	 * @param array $settings The widget's settings.
 	 */
-	private function render_menus() {
-		$locations = array_filter( self::MENU_LOCATIONS, 'has_nav_menu' );
+	private function render_menus( $settings ) {
+		$menus = $this->chosen_menus( $settings );
 
-		if ( empty( $locations ) ) {
+		if ( empty( $menus ) ) {
 			return;
 		}
 		?>
 		<div class="custom-footer__menus">
-			<?php foreach ( $locations as $location ) : ?>
-				<nav class="custom-footer__menu">
-					<?php
-					wp_nav_menu(
-						array(
-							'theme_location' => $location,
-							'container'      => false,
-							'depth'          => 1,
-							'fallback_cb'    => false,
-						)
-					);
-					?>
-				</nav>
+			<?php foreach ( $menus as $menu ) : ?>
+				<nav class="custom-footer__menu"><?php $this->menu( $menu ); ?></nav>
 			<?php endforeach; ?>
 		</div>
 		<?php
