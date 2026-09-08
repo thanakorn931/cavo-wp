@@ -172,12 +172,22 @@ class Nightlife_Carousel extends Base_Widget {
 			?></<?php echo esc_attr( $tag ); ?>>
 
 			<div class="custom-nightlife-carousel__stage">
-				<div class="custom-nightlife-carousel__track">
-					<?php foreach ( $slides as $slide ) : ?>
-						<div class="custom-nightlife-carousel__slide"><?php
-							$this->media( isset( $slide['picture']['url'] ) ? $slide['picture']['url'] : '' );
-						?></div>
-					<?php endforeach; ?>
+				<div class="custom-nightlife-carousel__track" data-many="<?php echo esc_attr( count( $slides ) ); ?>">
+					<?php
+					// The run is written three times, so there is always a picture
+					// on both sides and the row never reaches an end.
+					$runs = count( $slides ) > 1 ? 3 : 1;
+
+					for ( $run = 0; $run < $runs; $run++ ) :
+						foreach ( $slides as $slide ) :
+							?>
+							<div class="custom-nightlife-carousel__slide"<?php echo 1 === $run || 1 === $runs ? '' : ' aria-hidden="true"'; ?>><?php
+								$this->media( isset( $slide['picture']['url'] ) ? $slide['picture']['url'] : '' );
+							?></div>
+							<?php
+						endforeach;
+					endfor;
+					?>
 				</div>
 			</div>
 
