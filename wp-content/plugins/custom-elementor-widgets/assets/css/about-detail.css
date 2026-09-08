@@ -52,13 +52,22 @@
 
 /* How to reach it, and the map beside it. The band runs the full width; what
    stands in it is held to 1440 and centred, so the halves are measured from
-   there and the words line up with every other section down the page. */
+   there and the words line up with every other section down the page.
+
+   The ground is a radial the file draws from the middle of the band outward:
+   an ellipse half the band each way, centred on it. The margins either side
+   carry it too, as they carry the ground of any band they sit in. */
 .custom-about-detail__split {
 	display: flex;
 	align-items: stretch;
 	width: 100%;
 	padding: 0 max( 0px, calc( ( 100% - 1440px ) / 2 ) );
 	box-sizing: border-box;
+	background-image: radial-gradient(
+		50% 50% at 50% 50%,
+		#ebe4ca 6.25%,
+		#faf6ea 100%
+	);
 }
 
 .custom-about-detail__column {

@@ -26,11 +26,13 @@
 	max-width: 1170px;
 }
 
+/* The picture runs the full width of the viewport; how tall it stands is the
+   file's own measure and does not grow with the screen. */
 .custom-about-hero__picture {
 	position: relative;
 	display: block;
 	width: 100%;
-	aspect-ratio: 1440 / 640;
+	height: 640px;
 	overflow: hidden;
 }
 
