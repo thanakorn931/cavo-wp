@@ -28,12 +28,17 @@
 	pointer-events: none;
 }
 
+/* The file keeps the top of this picture whole and cuts only its foot. Centring
+   it instead cuts the top and the foot alike and shows a different room.
+   The file also stands it about a seventh closer, which is left off: the
+   picture is already being stretched to reach the width of a screen, and
+   magnifying it again costs more than the framing is worth. */
 .custom-home-space__picture img {
 	display: block;
 	width: 100%;
 	height: 100%;
 	object-fit: cover;
-	object-position: center;
+	object-position: center top;
 }
 
 /* The wash the file lays over the picture, read from the file. */

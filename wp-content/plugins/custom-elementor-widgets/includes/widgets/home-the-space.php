@@ -201,9 +201,10 @@ class Home_The_Space extends Base_Widget {
 		$this->add_control(
 			'picture',
 			array(
-				'label'     => esc_html__( 'Background picture', 'custom-elementor-widgets' ),
-				'type'      => Controls_Manager::MEDIA,
-				'separator' => 'before',
+				'label'       => esc_html__( 'Background picture', 'custom-elementor-widgets' ),
+				'type'        => Controls_Manager::MEDIA,
+				'separator'   => 'before',
+				'description' => esc_html__( 'It fills the width of the screen, so it wants 2880px across or more. One the size of the design will be stretched on a wide screen.', 'custom-elementor-widgets' ),
 			)
 		);
 
