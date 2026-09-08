@@ -102,17 +102,21 @@
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
+	justify-content: space-between;
 	gap: 116px;
 	flex: 0 0 418px;
 	height: 562px;
 }
 
+/* The words take what is left over the picture, never the picture's own place. */
 .custom-membership-benefit__words {
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
 	gap: 24px;
 	width: 392px;
+	min-height: 0;
+	overflow: hidden;
 }
 
 .custom-membership-benefit__title,
@@ -126,8 +130,20 @@
 	padding: 0;
 }
 
+/* The file gives the text five lines. More than that is cut off with a mark
+   saying so, rather than moving the picture beneath it. */
+.custom-membership-benefit__body {
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	-webkit-line-clamp: 5;
+	line-clamp: 5;
+	overflow: hidden;
+}
+
+/* The picture stands where the file puts it: at the foot of the column, whole. */
 .custom-membership-benefit__thumb {
 	position: relative;
+	flex: 0 0 auto;
 	width: 418px;
 	height: 260px;
 	border-radius: 24px;
