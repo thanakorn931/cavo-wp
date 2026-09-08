@@ -36,3 +36,17 @@
 	outline: 2px solid currentColor;
 	outline-offset: 2px;
 }
+
+/* The line a text sits on is the design's, not the theme's.
+ *
+ * Every text in the file stands on a line the font sets for itself, and a theme
+ * that answers instead makes each box taller than the file draws it. The space
+ * between two of them is then the gap plus whatever leading was added, which is
+ * read as a padding that will not come right however often it is adjusted.
+ *
+ * Said once, at the same weight as a section's own rule and before it, so a
+ * section the design gives a measured line still has the last word.
+ */
+[ class*="custom-" ] {
+	line-height: normal;
+}
