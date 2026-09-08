@@ -140,6 +140,7 @@ class Private_Event_Form extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Heading', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
 				'placeholder' => $design['heading'],
 			)
 		);
@@ -161,9 +162,10 @@ class Private_Event_Form extends Base_Widget {
 		$this->add_control(
 			'body',
 			array(
-				'label' => esc_html__( 'Text', 'custom-elementor-widgets' ),
-				'type'  => Controls_Manager::TEXTAREA,
-				'rows'  => 5,
+				'label'   => esc_html__( 'Text', 'custom-elementor-widgets' ),
+				'type'    => Controls_Manager::TEXTAREA,
+				'dynamic' => array( 'active' => true ),
+				'rows'    => 5,
 			)
 		);
 
@@ -172,6 +174,7 @@ class Private_Event_Form extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Button text', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
 				'placeholder' => $design['send_text'],
 				'separator'   => 'before',
 			)
@@ -182,6 +185,7 @@ class Private_Event_Form extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Deck link text', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
 				'placeholder' => $design['deck_text'],
 			)
 		);

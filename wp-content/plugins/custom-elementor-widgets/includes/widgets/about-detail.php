@@ -115,6 +115,7 @@ class About_Detail extends Base_Widget {
 						? esc_html__( 'First heading', 'custom-elementor-widgets' )
 						: esc_html__( 'Second heading', 'custom-elementor-widgets' ),
 					'type'        => Controls_Manager::TEXT,
+					'dynamic'     => array( 'active' => true ),
 					'placeholder' => $design[ $which . '_title' ],
 					'separator'   => 'before',
 				)
@@ -123,9 +124,10 @@ class About_Detail extends Base_Widget {
 			$this->add_control(
 				$which . '_body',
 				array(
-					'label' => esc_html__( 'Text', 'custom-elementor-widgets' ),
-					'type'  => Controls_Manager::TEXTAREA,
-					'rows'  => 5,
+					'label'   => esc_html__( 'Text', 'custom-elementor-widgets' ),
+					'type'    => Controls_Manager::TEXTAREA,
+					'dynamic' => array( 'active' => true ),
+					'rows'    => 5,
 				)
 			);
 		}
@@ -161,6 +163,7 @@ class About_Detail extends Base_Widget {
 					/* translators: %s: which block. */
 					'label'       => sprintf( esc_html__( '%s heading', 'custom-elementor-widgets' ), $label ),
 					'type'        => Controls_Manager::TEXT,
+					'dynamic'     => array( 'active' => true ),
 					'placeholder' => $design[ $which . '_title' ],
 					'separator'   => 'before',
 				)
@@ -169,9 +172,10 @@ class About_Detail extends Base_Widget {
 			$this->add_control(
 				$which . '_body',
 				array(
-					'label' => esc_html__( 'Text', 'custom-elementor-widgets' ),
-					'type'  => Controls_Manager::TEXTAREA,
-					'rows'  => 5,
+					'label'   => esc_html__( 'Text', 'custom-elementor-widgets' ),
+					'type'    => Controls_Manager::TEXTAREA,
+					'dynamic' => array( 'active' => true ),
+					'rows'    => 5,
 				)
 			);
 		}
@@ -181,6 +185,7 @@ class About_Detail extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Hours heading', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
 				'placeholder' => $design['hours_title'],
 				'separator'   => 'before',
 			)
@@ -191,16 +196,18 @@ class About_Detail extends Base_Widget {
 		$repeater->add_control(
 			'name',
 			array(
-				'label' => esc_html__( 'What', 'custom-elementor-widgets' ),
-				'type'  => Controls_Manager::TEXT,
+				'label'   => esc_html__( 'What', 'custom-elementor-widgets' ),
+				'type'    => Controls_Manager::TEXT,
+				'dynamic' => array( 'active' => true ),
 			)
 		);
 
 		$repeater->add_control(
 			'time',
 			array(
-				'label' => esc_html__( 'When', 'custom-elementor-widgets' ),
-				'type'  => Controls_Manager::TEXT,
+				'label'   => esc_html__( 'When', 'custom-elementor-widgets' ),
+				'type'    => Controls_Manager::TEXT,
+				'dynamic' => array( 'active' => true ),
 			)
 		);
 
@@ -219,6 +226,7 @@ class About_Detail extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Contact heading', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
 				'placeholder' => $design['contact_title'],
 				'separator'   => 'before',
 			)
@@ -232,8 +240,9 @@ class About_Detail extends Base_Widget {
 			$this->add_control(
 				$which . '_text',
 				array(
-					'label' => $label,
-					'type'  => Controls_Manager::TEXT,
+					'label'   => $label,
+					'type'    => Controls_Manager::TEXT,
+					'dynamic' => array( 'active' => true ),
 				)
 			);
 
@@ -250,6 +259,7 @@ class About_Detail extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Map', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXTAREA,
+				'dynamic'     => array( 'active' => true ),
 				'rows'        => 5,
 				'separator'   => 'before',
 				'description' => esc_html__( 'The embed code from Google Maps’ Share dialog, the link from inside it, or just the address.', 'custom-elementor-widgets' ),

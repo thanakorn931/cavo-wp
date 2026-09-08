@@ -74,6 +74,7 @@ class Nightlife_Program extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Heading', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
 				'placeholder' => esc_html__( 'Weekly program', 'custom-elementor-widgets' ),
 			)
 		);
@@ -107,33 +108,37 @@ class Nightlife_Program extends Base_Widget {
 		$repeater->add_control(
 			'genre',
 			array(
-				'label' => esc_html__( 'Genre', 'custom-elementor-widgets' ),
-				'type'  => Controls_Manager::TEXT,
+				'label'   => esc_html__( 'Genre', 'custom-elementor-widgets' ),
+				'type'    => Controls_Manager::TEXT,
+				'dynamic' => array( 'active' => true ),
 			)
 		);
 
 		$repeater->add_control(
 			'title',
 			array(
-				'label' => esc_html__( 'Title', 'custom-elementor-widgets' ),
-				'type'  => Controls_Manager::TEXT,
+				'label'   => esc_html__( 'Title', 'custom-elementor-widgets' ),
+				'type'    => Controls_Manager::TEXT,
+				'dynamic' => array( 'active' => true ),
 			)
 		);
 
 		$repeater->add_control(
 			'when',
 			array(
-				'label' => esc_html__( 'When', 'custom-elementor-widgets' ),
-				'type'  => Controls_Manager::TEXT,
+				'label'   => esc_html__( 'When', 'custom-elementor-widgets' ),
+				'type'    => Controls_Manager::TEXT,
+				'dynamic' => array( 'active' => true ),
 			)
 		);
 
 		$repeater->add_control(
 			'body',
 			array(
-				'label' => esc_html__( 'Text', 'custom-elementor-widgets' ),
-				'type'  => Controls_Manager::TEXTAREA,
-				'rows'  => 5,
+				'label'   => esc_html__( 'Text', 'custom-elementor-widgets' ),
+				'type'    => Controls_Manager::TEXTAREA,
+				'dynamic' => array( 'active' => true ),
+				'rows'    => 5,
 			)
 		);
 
@@ -148,9 +153,10 @@ class Nightlife_Program extends Base_Widget {
 		$repeater->add_control(
 			'ticket_text',
 			array(
-				'label'       => esc_html__( 'First button text', 'custom-elementor-widgets' ),
-				'type'        => Controls_Manager::TEXT,
-				'separator'   => 'before',
+				'label'     => esc_html__( 'First button text', 'custom-elementor-widgets' ),
+				'type'      => Controls_Manager::TEXT,
+				'dynamic'   => array( 'active' => true ),
+				'separator' => 'before',
 			)
 		);
 
@@ -159,9 +165,10 @@ class Nightlife_Program extends Base_Widget {
 		$repeater->add_control(
 			'vip_text',
 			array(
-				'label'       => esc_html__( 'Second button text', 'custom-elementor-widgets' ),
-				'type'        => Controls_Manager::TEXT,
-				'separator'   => 'before',
+				'label'     => esc_html__( 'Second button text', 'custom-elementor-widgets' ),
+				'type'      => Controls_Manager::TEXT,
+				'dynamic'   => array( 'active' => true ),
+				'separator' => 'before',
 			)
 		);
 

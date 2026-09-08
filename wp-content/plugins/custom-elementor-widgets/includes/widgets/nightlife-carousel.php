@@ -74,6 +74,7 @@ class Nightlife_Carousel extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Heading', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
 				'placeholder' => esc_html__( 'Nightlife atmosphere', 'custom-elementor-widgets' ),
 			)
 		);

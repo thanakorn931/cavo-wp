@@ -109,6 +109,7 @@ class Membership_Hero extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Heading', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
 				'placeholder' => $design['heading'],
 			)
 		);
@@ -132,6 +133,7 @@ class Membership_Hero extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Text', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXTAREA,
+				'dynamic'     => array( 'active' => true ),
 				'rows'        => 5,
 				'placeholder' => $design['body'],
 			)
@@ -142,6 +144,7 @@ class Membership_Hero extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Plans heading', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
 				'placeholder' => $design['title'],
 				'separator'   => 'before',
 			)
@@ -152,6 +155,7 @@ class Membership_Hero extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Button text', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
 				'placeholder' => $design['join_text'],
 			)
 		);
@@ -181,8 +185,9 @@ class Membership_Hero extends Base_Widget {
 		$repeater->add_control(
 			'name',
 			array(
-				'label' => esc_html__( 'Name', 'custom-elementor-widgets' ),
-				'type'  => Controls_Manager::TEXT,
+				'label'   => esc_html__( 'Name', 'custom-elementor-widgets' ),
+				'type'    => Controls_Manager::TEXT,
+				'dynamic' => array( 'active' => true ),
 			)
 		);
 
@@ -243,6 +248,7 @@ class Membership_Hero extends Base_Widget {
 						$index + 1
 					),
 					'type'      => Controls_Manager::TEXT,
+					'dynamic'   => array( 'active' => true ),
 					'separator' => 'before',
 				)
 			);

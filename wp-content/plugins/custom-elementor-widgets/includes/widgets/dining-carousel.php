@@ -88,6 +88,7 @@ class Dining_Carousel extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Title', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
 				'placeholder' => esc_html__( 'Bartender in action', 'custom-elementor-widgets' ),
 			)
 		);

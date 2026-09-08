@@ -136,6 +136,7 @@ class Blog_List extends Blog_Widget {
 			array(
 				'label'       => esc_html__( 'Heading', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
 				'placeholder' => $design['heading'],
 			)
 		);
@@ -169,6 +170,7 @@ class Blog_List extends Blog_Widget {
 			array(
 				'label'       => esc_html__( 'Invitation', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
 				'placeholder' => $design['follow_text'],
 			)
 		);
@@ -178,6 +180,7 @@ class Blog_List extends Blog_Widget {
 			array(
 				'label'       => esc_html__( 'Handle', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
 				'placeholder' => $design['handle_text'],
 			)
 		);
@@ -189,6 +192,7 @@ class Blog_List extends Blog_Widget {
 			array(
 				'label'       => esc_html__( 'Enquiries', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
 				'placeholder' => $design['press_text'],
 				'separator'   => 'before',
 			)

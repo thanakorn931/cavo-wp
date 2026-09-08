@@ -84,6 +84,7 @@ class Dining_Membership extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Button text', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
 				'placeholder' => esc_html__( 'Become a membership', 'custom-elementor-widgets' ),
 			)
 		);

@@ -233,6 +233,7 @@ abstract class Header_Widget extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'First button text', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
 				'placeholder' => esc_html__( 'Membership', 'custom-elementor-widgets' ),
 			)
 		);
@@ -244,6 +245,7 @@ abstract class Header_Widget extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Second button text', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
 				'placeholder' => esc_html__( 'Reserve', 'custom-elementor-widgets' ),
 				'separator'   => 'before',
 			)

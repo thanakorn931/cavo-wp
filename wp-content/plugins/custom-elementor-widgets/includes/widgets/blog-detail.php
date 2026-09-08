@@ -147,6 +147,7 @@ class Blog_Detail extends Blog_Widget {
 			array(
 				'label'     => esc_html__( 'Text', 'custom-elementor-widgets' ),
 				'type'      => Controls_Manager::TEXTAREA,
+				'dynamic'   => array( 'active' => true ),
 				'rows'      => 5,
 				'condition' => array( 'kind' => 'text' ),
 			)
@@ -186,6 +187,7 @@ class Blog_Detail extends Blog_Widget {
 			array(
 				'label'       => esc_html__( 'Heading', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
 				'placeholder' => $design['share_text'],
 			)
 		);

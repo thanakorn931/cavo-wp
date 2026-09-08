@@ -118,6 +118,7 @@ class Home_Hero extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Heading', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXTAREA,
+				'dynamic'     => array( 'active' => true ),
 				'rows'        => 5,
 				'placeholder' => $design['heading'],
 			)
@@ -142,6 +143,7 @@ class Home_Hero extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Button text', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
 				'placeholder' => $design['button_text'],
 				'separator'   => 'before',
 			)

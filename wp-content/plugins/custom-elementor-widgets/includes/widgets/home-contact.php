@@ -116,6 +116,7 @@ class Home_Contact extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Heading', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
 				'placeholder' => $design['heading'],
 			)
 		);
@@ -139,6 +140,7 @@ class Home_Contact extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Location heading', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
 				'placeholder' => $design['location_title'],
 				'separator'   => 'before',
 			)
@@ -147,9 +149,10 @@ class Home_Contact extends Base_Widget {
 		$this->add_control(
 			'location_body',
 			array(
-				'label' => esc_html__( 'Location', 'custom-elementor-widgets' ),
-				'type'  => Controls_Manager::TEXTAREA,
-				'rows'  => 5,
+				'label'   => esc_html__( 'Location', 'custom-elementor-widgets' ),
+				'type'    => Controls_Manager::TEXTAREA,
+				'dynamic' => array( 'active' => true ),
+				'rows'    => 5,
 			)
 		);
 
@@ -158,6 +161,7 @@ class Home_Contact extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Getting here heading', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
 				'placeholder' => $design['getting_title'],
 				'separator'   => 'before',
 			)
@@ -166,9 +170,10 @@ class Home_Contact extends Base_Widget {
 		$this->add_control(
 			'getting_body',
 			array(
-				'label' => esc_html__( 'Getting here', 'custom-elementor-widgets' ),
-				'type'  => Controls_Manager::TEXTAREA,
-				'rows'  => 5,
+				'label'   => esc_html__( 'Getting here', 'custom-elementor-widgets' ),
+				'type'    => Controls_Manager::TEXTAREA,
+				'dynamic' => array( 'active' => true ),
+				'rows'    => 5,
 			)
 		);
 
@@ -177,6 +182,7 @@ class Home_Contact extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Station heading', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
 				'placeholder' => $design['station_title'],
 				'separator'   => 'before',
 			)
@@ -185,9 +191,10 @@ class Home_Contact extends Base_Widget {
 		$this->add_control(
 			'station_body',
 			array(
-				'label' => esc_html__( 'Station', 'custom-elementor-widgets' ),
-				'type'  => Controls_Manager::TEXTAREA,
-				'rows'  => 5,
+				'label'   => esc_html__( 'Station', 'custom-elementor-widgets' ),
+				'type'    => Controls_Manager::TEXTAREA,
+				'dynamic' => array( 'active' => true ),
+				'rows'    => 5,
 			)
 		);
 
@@ -196,6 +203,7 @@ class Home_Contact extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Map', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXTAREA,
+				'dynamic'     => array( 'active' => true ),
 				'rows'        => 5,
 				'separator'   => 'before',
 				'description' => esc_html__( 'The embed code from Google Maps’ Share dialog, the link from inside it, or just the address.', 'custom-elementor-widgets' ),
@@ -229,6 +237,7 @@ class Home_Contact extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Hours heading', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
 				'placeholder' => $design['hours_title'],
 			)
 		);
@@ -238,16 +247,18 @@ class Home_Contact extends Base_Widget {
 		$hours->add_control(
 			'name',
 			array(
-				'label'       => esc_html__( 'Name', 'custom-elementor-widgets' ),
-				'type'        => Controls_Manager::TEXT,
+				'label'   => esc_html__( 'Name', 'custom-elementor-widgets' ),
+				'type'    => Controls_Manager::TEXT,
+				'dynamic' => array( 'active' => true ),
 			)
 		);
 
 		$hours->add_control(
 			'time',
 			array(
-				'label'       => esc_html__( 'Time', 'custom-elementor-widgets' ),
-				'type'        => Controls_Manager::TEXT,
+				'label'   => esc_html__( 'Time', 'custom-elementor-widgets' ),
+				'type'    => Controls_Manager::TEXT,
+				'dynamic' => array( 'active' => true ),
 			)
 		);
 
@@ -276,6 +287,7 @@ class Home_Contact extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Contact heading', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
 				'placeholder' => $design['contact_title'],
 			)
 		);
@@ -286,6 +298,7 @@ class Home_Contact extends Base_Widget {
 				array(
 					'label'     => $label,
 					'type'      => Controls_Manager::TEXT,
+					'dynamic'   => array( 'active' => true ),
 					'separator' => 'before',
 				)
 			);

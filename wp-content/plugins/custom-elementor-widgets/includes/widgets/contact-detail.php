@@ -137,6 +137,7 @@ class Contact_Detail extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Location heading', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
 				'placeholder' => $design['location_title'],
 			)
 		);
@@ -144,17 +145,19 @@ class Contact_Detail extends Base_Widget {
 		$this->add_control(
 			'location_body',
 			array(
-				'label' => esc_html__( 'Address', 'custom-elementor-widgets' ),
-				'type'  => Controls_Manager::TEXTAREA,
-				'rows'  => 5,
+				'label'   => esc_html__( 'Address', 'custom-elementor-widgets' ),
+				'type'    => Controls_Manager::TEXTAREA,
+				'dynamic' => array( 'active' => true ),
+				'rows'    => 5,
 			)
 		);
 
 		$this->add_control(
 			'location_note',
 			array(
-				'label' => esc_html__( 'Beneath the address', 'custom-elementor-widgets' ),
-				'type'  => Controls_Manager::TEXT,
+				'label'   => esc_html__( 'Beneath the address', 'custom-elementor-widgets' ),
+				'type'    => Controls_Manager::TEXT,
+				'dynamic' => array( 'active' => true ),
 			)
 		);
 
@@ -168,6 +171,7 @@ class Contact_Detail extends Base_Widget {
 					/* translators: %s: which block. */
 					'label'       => sprintf( esc_html__( '%s heading', 'custom-elementor-widgets' ), $label ),
 					'type'        => Controls_Manager::TEXT,
+					'dynamic'     => array( 'active' => true ),
 					'placeholder' => $design[ $which . '_title' ],
 					'separator'   => 'before',
 				)
@@ -176,9 +180,10 @@ class Contact_Detail extends Base_Widget {
 			$this->add_control(
 				$which . '_body',
 				array(
-					'label' => esc_html__( 'Text', 'custom-elementor-widgets' ),
-					'type'  => Controls_Manager::TEXTAREA,
-					'rows'  => 5,
+					'label'   => esc_html__( 'Text', 'custom-elementor-widgets' ),
+					'type'    => Controls_Manager::TEXTAREA,
+					'dynamic' => array( 'active' => true ),
+					'rows'    => 5,
 				)
 			);
 		}
@@ -188,6 +193,7 @@ class Contact_Detail extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Map', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXTAREA,
+				'dynamic'     => array( 'active' => true ),
 				'rows'        => 5,
 				'separator'   => 'before',
 				'description' => esc_html__( 'The embed code from Google Maps’ Share dialog, the link from inside it, or just the address.', 'custom-elementor-widgets' ),
@@ -231,6 +237,7 @@ class Contact_Detail extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Heading', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
 				'placeholder' => $design['contact_title'],
 			)
 		);
@@ -241,6 +248,7 @@ class Contact_Detail extends Base_Widget {
 				array(
 					'label'     => $label,
 					'type'      => Controls_Manager::TEXT,
+					'dynamic'   => array( 'active' => true ),
 					'separator' => 'before',
 				)
 			);
@@ -258,6 +266,7 @@ class Contact_Detail extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Button text', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
 				'placeholder' => $design['button_text'],
 				'separator'   => 'before',
 			)
@@ -270,6 +279,7 @@ class Contact_Detail extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Social heading', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
 				'placeholder' => $design['social_title'],
 				'separator'   => 'before',
 			)
@@ -281,6 +291,7 @@ class Contact_Detail extends Base_Widget {
 				array(
 					'label'     => $label,
 					'type'      => Controls_Manager::TEXT,
+					'dynamic'   => array( 'active' => true ),
 					'separator' => 'before',
 				)
 			);

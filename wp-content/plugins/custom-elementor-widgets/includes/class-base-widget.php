@@ -489,8 +489,9 @@ abstract class Base_Widget extends \Elementor\Widget_Base {
 			$key,
 			array_merge(
 				array(
-					'label' => $label,
-					'type'  => Controls_Manager::TEXT,
+					'label'   => $label,
+					'type'    => Controls_Manager::TEXT,
+					'dynamic' => array( 'active' => true ),
 				),
 				$args
 			)

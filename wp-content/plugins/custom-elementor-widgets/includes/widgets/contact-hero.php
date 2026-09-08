@@ -73,6 +73,7 @@ class Contact_Hero extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Heading', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
 				'placeholder' => esc_html__( 'Contact us', 'custom-elementor-widgets' ),
 			)
 		);

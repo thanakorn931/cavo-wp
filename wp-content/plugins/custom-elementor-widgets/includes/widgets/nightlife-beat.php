@@ -80,6 +80,7 @@ class Nightlife_Beat extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Heading', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
 				'placeholder' => esc_html__( 'Hall of Beats', 'custom-elementor-widgets' ),
 			)
 		);
@@ -121,33 +122,37 @@ class Nightlife_Beat extends Base_Widget {
 		$repeater->add_control(
 			'name',
 			array(
-				'label' => esc_html__( 'Name', 'custom-elementor-widgets' ),
-				'type'  => Controls_Manager::TEXT,
+				'label'   => esc_html__( 'Name', 'custom-elementor-widgets' ),
+				'type'    => Controls_Manager::TEXT,
+				'dynamic' => array( 'active' => true ),
 			)
 		);
 
 		$repeater->add_control(
 			'note',
 			array(
-				'label' => esc_html__( 'Note', 'custom-elementor-widgets' ),
-				'type'  => Controls_Manager::TEXT,
+				'label'   => esc_html__( 'Note', 'custom-elementor-widgets' ),
+				'type'    => Controls_Manager::TEXT,
+				'dynamic' => array( 'active' => true ),
 			)
 		);
 
 		$repeater->add_control(
 			'genre',
 			array(
-				'label' => esc_html__( 'Genre', 'custom-elementor-widgets' ),
-				'type'  => Controls_Manager::TEXT,
+				'label'   => esc_html__( 'Genre', 'custom-elementor-widgets' ),
+				'type'    => Controls_Manager::TEXT,
+				'dynamic' => array( 'active' => true ),
 			)
 		);
 
 		$repeater->add_control(
 			'social_text',
 			array(
-				'label'       => esc_html__( 'Social text', 'custom-elementor-widgets' ),
-				'type'        => Controls_Manager::TEXT,
-				'separator'   => 'before',
+				'label'     => esc_html__( 'Social text', 'custom-elementor-widgets' ),
+				'type'      => Controls_Manager::TEXT,
+				'dynamic'   => array( 'active' => true ),
+				'separator' => 'before',
 			)
 		);
 

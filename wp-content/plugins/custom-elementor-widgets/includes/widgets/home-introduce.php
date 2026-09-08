@@ -109,8 +109,9 @@ class Home_Introduce extends Base_Widget {
 		$this->add_control(
 			'body',
 			array(
-				'label' => esc_html__( 'Text', 'custom-elementor-widgets' ),
-				'type'  => Controls_Manager::WYSIWYG,
+				'label'   => esc_html__( 'Text', 'custom-elementor-widgets' ),
+				'type'    => Controls_Manager::WYSIWYG,
+				'dynamic' => array( 'active' => true ),
 			)
 		);
 
@@ -119,6 +120,7 @@ class Home_Introduce extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Button text', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
 				'placeholder' => $design['button_text'],
 				'separator'   => 'before',
 			)

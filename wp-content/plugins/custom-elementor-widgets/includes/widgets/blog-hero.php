@@ -125,6 +125,7 @@ class Blog_Hero extends Blog_Widget {
 			array(
 				'label'       => esc_html__( 'Back', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
 				'placeholder' => $design['back_text'],
 			)
 		);

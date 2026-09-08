@@ -97,8 +97,9 @@ class Footer extends Base_Widget {
 		$this->add_control(
 			'signup_heading',
 			array(
-				'label'   => esc_html__( 'Heading', 'custom-elementor-widgets' ),
-				'type'    => Controls_Manager::TEXT,
+				'label'       => esc_html__( 'Heading', 'custom-elementor-widgets' ),
+				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
 				'placeholder' => esc_html__( 'Signup to our newsletter', 'custom-elementor-widgets' ),
 			)
 		);
@@ -145,8 +146,9 @@ class Footer extends Base_Widget {
 		$this->add_control(
 			'contact_label',
 			array(
-				'label'   => esc_html__( 'Label', 'custom-elementor-widgets' ),
-				'type'    => Controls_Manager::TEXT,
+				'label'       => esc_html__( 'Label', 'custom-elementor-widgets' ),
+				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
 				'placeholder' => esc_html__( 'Contact Info', 'custom-elementor-widgets' ),
 			)
 		);
@@ -156,6 +158,7 @@ class Footer extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Second label', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
 				'placeholder' => esc_html__( 'Location', 'custom-elementor-widgets' ),
 			)
 		);
@@ -163,9 +166,10 @@ class Footer extends Base_Widget {
 		$this->add_control(
 			'contact_address',
 			array(
-				'label'   => esc_html__( 'Address', 'custom-elementor-widgets' ),
-				'type'    => Controls_Manager::TEXTAREA,
-				'rows'    => 5,
+				'label'       => esc_html__( 'Address', 'custom-elementor-widgets' ),
+				'type'        => Controls_Manager::TEXTAREA,
+				'dynamic'     => array( 'active' => true ),
+				'rows'        => 5,
 				'placeholder' => esc_html__( 'Town Hall Sukhumvit 49, Sukhumvit 49, Khlong Tan Nuea, Watthana, Bangkok 10110', 'custom-elementor-widgets' ),
 			)
 		);
@@ -173,9 +177,10 @@ class Footer extends Base_Widget {
 		$this->add_control(
 			'contact_details',
 			array(
-				'label'   => esc_html__( 'Telephone and email', 'custom-elementor-widgets' ),
-				'type'    => Controls_Manager::TEXTAREA,
-				'rows'    => 5,
+				'label'       => esc_html__( 'Telephone and email', 'custom-elementor-widgets' ),
+				'type'        => Controls_Manager::TEXTAREA,
+				'dynamic'     => array( 'active' => true ),
+				'rows'        => 5,
 				'placeholder' => "0xx-xxx-xxxx\nexample@gmail.com",
 			)
 		);
@@ -228,8 +233,9 @@ class Footer extends Base_Widget {
 		$repeater->add_control(
 			'social_name',
 			array(
-				'label' => esc_html__( 'Name', 'custom-elementor-widgets' ),
-				'type'  => Controls_Manager::TEXT,
+				'label'   => esc_html__( 'Name', 'custom-elementor-widgets' ),
+				'type'    => Controls_Manager::TEXT,
+				'dynamic' => array( 'active' => true ),
 			)
 		);
 
@@ -273,8 +279,9 @@ class Footer extends Base_Widget {
 		$this->add_control(
 			'copyright',
 			array(
-				'label'   => esc_html__( 'Copyright', 'custom-elementor-widgets' ),
-				'type'    => Controls_Manager::TEXT,
+				'label'       => esc_html__( 'Copyright', 'custom-elementor-widgets' ),
+				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
 				'placeholder' => esc_html__( '© 2026 CAVO design by Yes Web Design.', 'custom-elementor-widgets' ),
 			)
 		);

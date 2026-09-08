@@ -165,6 +165,7 @@ class Dining_Detail extends Base_Widget {
 						$index + 1
 					),
 					'type'      => Controls_Manager::TEXT,
+					'dynamic'   => array( 'active' => true ),
 					'separator' => 'before',
 				)
 			);
@@ -172,13 +173,14 @@ class Dining_Detail extends Base_Widget {
 			$this->add_control(
 				'body_' . $which,
 				array(
-					'label' => sprintf(
+					'label'   => sprintf(
 						/* translators: %d: which of the two blocks. */
 						esc_html__( 'Text %d', 'custom-elementor-widgets' ),
 						$index + 1
 					),
-					'type'  => Controls_Manager::TEXTAREA,
-					'rows'  => 5,
+					'type'    => Controls_Manager::TEXTAREA,
+					'dynamic' => array( 'active' => true ),
+					'rows'    => 5,
 				)
 			);
 		}
@@ -205,6 +207,7 @@ class Dining_Detail extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Label', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
 				'placeholder' => $design['hours_label'],
 			)
 		);
@@ -214,6 +217,7 @@ class Dining_Detail extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Hours', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
 				'placeholder' => $design['hours_value'],
 			)
 		);

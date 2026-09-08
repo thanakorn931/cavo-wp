@@ -53,6 +53,7 @@ final class Widgets_Loader {
 	private function __construct() {
 		add_action( 'elementor/elements/categories_registered', array( $this, 'register_category' ) );
 		add_action( 'elementor/widgets/register', array( $this, 'register_widgets' ) );
+		add_action( 'elementor/dynamic_tags/register', array( $this, 'register_tags' ) );
 
 		add_action( 'wp_enqueue_scripts', array( $this, 'register_assets' ) );
 		add_action( 'elementor/editor/after_enqueue_styles', array( $this, 'register_assets' ) );
@@ -72,6 +73,28 @@ final class Widgets_Loader {
 				'title' => esc_html__( 'Custom', 'custom-elementor-widgets' ),
 			)
 		);
+	}
+
+	/**
+	 * What a control may be pointed at instead of typed into.
+	 *
+	 * Elementor ships the engine and none of the tags; the tags are its paid
+	 * plugin's. One of the project's own is what keeps a control able to read a
+	 * field without the project owing anything to a licence.
+	 *
+	 * @param \Elementor\Core\DynamicTags\Manager $tags_manager Elementor's tag manager.
+	 */
+	public function register_tags( $tags_manager ) {
+		require_once CUSTOM_ELEMENTOR_WIDGETS_PATH . 'includes/class-field-tag.php';
+
+		$tags_manager->register_group(
+			self::CATEGORY,
+			array(
+				'title' => esc_html__( 'Custom', 'custom-elementor-widgets' ),
+			)
+		);
+
+		$tags_manager->register( new Field_Tag() );
 	}
 
 	/**

@@ -90,17 +90,19 @@ class The_Space_Hero_Carousel extends Base_Widget {
 		$repeater->add_control(
 			'slide_title',
 			array(
-				'label'       => esc_html__( 'Title', 'custom-elementor-widgets' ),
-				'type'        => Controls_Manager::TEXT,
+				'label'   => esc_html__( 'Title', 'custom-elementor-widgets' ),
+				'type'    => Controls_Manager::TEXT,
+				'dynamic' => array( 'active' => true ),
 			)
 		);
 
 		$repeater->add_control(
 			'slide_words',
 			array(
-				'label' => esc_html__( 'Text', 'custom-elementor-widgets' ),
-				'type'  => Controls_Manager::TEXTAREA,
-				'rows'  => 5,
+				'label'   => esc_html__( 'Text', 'custom-elementor-widgets' ),
+				'type'    => Controls_Manager::TEXTAREA,
+				'dynamic' => array( 'active' => true ),
+				'rows'    => 5,
 			)
 		);
 
@@ -160,6 +162,7 @@ class The_Space_Hero_Carousel extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Button text', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
 				'placeholder' => esc_html__( 'Host The Area', 'custom-elementor-widgets' ),
 			)
 		);
@@ -178,6 +181,7 @@ class The_Space_Hero_Carousel extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Tour link text', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
 				'placeholder' => esc_html__( 'Virtual tour', 'custom-elementor-widgets' ),
 				'separator'   => 'before',
 			)

@@ -73,6 +73,7 @@ class Dining_Hero extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Heading', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXTAREA,
+				'dynamic'     => array( 'active' => true ),
 				'rows'        => 5,
 				'placeholder' => esc_html__( "A Better Experience\nfor Every Diner", 'custom-elementor-widgets' ),
 			)
@@ -106,6 +107,7 @@ class Dining_Hero extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Button text', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
 				'placeholder' => esc_html__( 'Reserve a Table', 'custom-elementor-widgets' ),
 				'separator'   => 'before',
 			)

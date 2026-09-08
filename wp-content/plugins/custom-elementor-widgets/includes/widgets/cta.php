@@ -86,6 +86,7 @@ class Cta extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Heading', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
 				'placeholder' => esc_html__( 'Your party, our vibe. Unforgettable', 'custom-elementor-widgets' ),
 			)
 		);
@@ -119,6 +120,7 @@ class Cta extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Button text', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
 				'placeholder' => esc_html__( 'Reserve a Table', 'custom-elementor-widgets' ),
 				'separator'   => 'before',
 			)

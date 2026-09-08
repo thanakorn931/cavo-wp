@@ -109,6 +109,7 @@ class Event_Past_Events extends Event_Widget {
 			array(
 				'label'       => esc_html__( 'Heading', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
 				'placeholder' => $design['heading'],
 			)
 		);
@@ -132,6 +133,7 @@ class Event_Past_Events extends Event_Widget {
 			array(
 				'label'       => esc_html__( 'Link text', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
 				'placeholder' => $design['action_text'],
 				'separator'   => 'before',
 			)
@@ -144,6 +146,7 @@ class Event_Past_Events extends Event_Widget {
 			array(
 				'label'       => esc_html__( 'Button text', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
 				'placeholder' => $design['button_text'],
 				'separator'   => 'before',
 			)

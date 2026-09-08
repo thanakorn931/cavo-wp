@@ -113,25 +113,28 @@ class Home_The_Space extends Base_Widget {
 		$area->add_control(
 			'name',
 			array(
-				'label'       => esc_html__( 'Tab', 'custom-elementor-widgets' ),
-				'type'        => Controls_Manager::TEXT,
+				'label'   => esc_html__( 'Tab', 'custom-elementor-widgets' ),
+				'type'    => Controls_Manager::TEXT,
+				'dynamic' => array( 'active' => true ),
 			)
 		);
 
 		$area->add_control(
 			'title',
 			array(
-				'label'       => esc_html__( 'Title', 'custom-elementor-widgets' ),
-				'type'        => Controls_Manager::TEXT,
+				'label'   => esc_html__( 'Title', 'custom-elementor-widgets' ),
+				'type'    => Controls_Manager::TEXT,
+				'dynamic' => array( 'active' => true ),
 			)
 		);
 
 		$area->add_control(
 			'body',
 			array(
-				'label' => esc_html__( 'Text', 'custom-elementor-widgets' ),
-				'type'  => Controls_Manager::TEXTAREA,
-				'rows'  => 5,
+				'label'   => esc_html__( 'Text', 'custom-elementor-widgets' ),
+				'type'    => Controls_Manager::TEXTAREA,
+				'dynamic' => array( 'active' => true ),
+				'rows'    => 5,
 			)
 		);
 
@@ -180,6 +183,7 @@ class Home_The_Space extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Heading', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
 				'placeholder' => $design['heading'],
 			)
 		);
@@ -213,6 +217,7 @@ class Home_The_Space extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Reserve button text', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
 				'placeholder' => $design['reserve_text'],
 				'separator'   => 'before',
 			)
@@ -225,6 +230,7 @@ class Home_The_Space extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'View space text', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
 				'placeholder' => $design['space_text'],
 				'separator'   => 'before',
 			)
@@ -235,6 +241,7 @@ class Home_The_Space extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Virtual tour text', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
 				'placeholder' => $design['tour_text'],
 			)
 		);
