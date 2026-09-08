@@ -566,7 +566,7 @@ class Membership_Hero extends Base_Widget {
 						echo esc_html( isset( $plan['name'] ) ? $plan['name'] : '' );
 					?></p>
 
-					<span class="custom-membership-hero__badge" aria-hidden="true" style="background-color: <?php echo esc_attr( $ink ); ?>;"></span>
+					<span class="custom-membership-hero__badge" aria-hidden="true"></span>
 				</div>
 
 				<span class="custom-membership-hero__rule" aria-hidden="true"></span>

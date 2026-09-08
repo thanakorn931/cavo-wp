@@ -211,10 +211,13 @@
 }
 
 /* The house mark, carried by the build rather than uploaded. */
+/* The mark the build carries. The file draws it black on every plan, whatever
+   ink the plan sets for its words, so it is not the card's colour. */
 .custom-membership-hero__badge {
 	flex: 0 0 auto;
 	width: 53px;
 	height: 50px;
+	background-color: #000;
 	-webkit-mask-image: url( "../img/event-badge.webp" );
 	mask-image: url( "../img/event-badge.webp" );
 	-webkit-mask-size: contain;
