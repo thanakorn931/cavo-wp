@@ -93,14 +93,6 @@
 	outline-offset: 2px;
 }
 
-/* The one being read stands on a darker ground with the file's gold beneath it.
-   Nothing is thrown around it: a glow at this blur reads as a box. */
-.custom-home-space__tab.is-here,
-.custom-home-space__tab.is-here:hover,
-.custom-home-space__tab.is-here:focus {
-	background-color: var( --custom-home-space-tab-ground, rgba( 0, 0, 0, 0.25 ) );
-}
-
 .custom-home-space__tab.is-here {
 	cursor: default;
 }
