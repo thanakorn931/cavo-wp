@@ -65,6 +65,18 @@ abstract class Event_Widget extends Base_Widget {
 	 * two is the client's to decide, so nothing here names a field.
 	 */
 	protected function register_more_source_controls() {
+		$this->add_field_control(
+			'date_field',
+			esc_html__( 'Date', 'custom-elementor-widgets' ),
+			array( 'default' => 'event_date' )
+		);
+
+		$this->add_field_control(
+			'time_field',
+			esc_html__( 'Time', 'custom-elementor-widgets' ),
+			array( 'default' => 'event_time_from' )
+		);
+
 		$this->add_control(
 			'genre',
 			array(
@@ -100,18 +112,20 @@ abstract class Event_Widget extends Base_Widget {
 	/**
 	 * One item's date, hour and kind, as the design draws them.
 	 *
-	 * The date and the hour are when the post is published, which is the one
-	 * place an event's time is set. Each fact is a mark and a word; the rule
-	 * between them is the section's, not part of what the client typed.
+	 * The day and the hour are the event's own fields, not when the post was
+	 * published; the design draws the hour it begins. Each fact is a mark and a
+	 * word; the rule between them is the section's, not part of what the client
+	 * typed.
 	 *
 	 * @param \WP_Post $post The item.
 	 */
 	protected function render_meta( $post ) {
-		$item = $this->item_settings( $post );
+		$item     = $this->item_settings( $post );
+		$settings = $this->get_settings_for_display();
 
 		$facts = array(
-			'calendar' => (string) get_the_date( 'd M Y', $post ),
-			'timer'    => (string) get_the_time( 'h : i A', $post ),
+			'calendar' => $this->post_field( $post, isset( $settings['date_field'] ) ? $settings['date_field'] : '' ),
+			'timer'    => $this->post_field( $post, isset( $settings['time_field'] ) ? $settings['time_field'] : '' ),
 			'note'     => isset( $item['genre'] ) ? $item['genre'] : '',
 		);
 

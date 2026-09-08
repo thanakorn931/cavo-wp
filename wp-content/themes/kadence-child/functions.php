@@ -292,12 +292,12 @@ add_action( 'init', 'kadence_child_event_terms', 20 );
 /**
  * What an event carries that WordPress has no field for.
  *
- * The kind of music. When an event is is the date the post itself is published
- * at, which WordPress already asks for and already shows on the edit screen; a
- * second pair of fields beside it is one more place for the two to disagree.
- * Registered in code so the field travels with the theme rather than being
- * imported into each environment, and only where the plugin that renders it is
- * active.
+ * When it is, from when until when, and the kind of music. When a post is
+ * published is when it appeared on the site, which is not when the night is;
+ * an event set for next week would have to be held back until then to say so.
+ * Registered in code so the fields travel with the theme rather than being
+ * imported into each environment, and only where the plugin that renders them
+ * is active.
  */
 function kadence_child_event_fields() {
 	if ( ! function_exists( 'acf_add_local_field_group' ) ) {
@@ -319,6 +319,31 @@ function kadence_child_event_fields() {
 			),
 			'position' => 'normal',
 			'fields'   => array(
+				array(
+					'key'            => 'field_event_date',
+					'label'          => esc_html__( 'Date', 'kadence-child' ),
+					'name'           => 'event_date',
+					'type'           => 'date_picker',
+					'display_format' => 'd M Y',
+					'return_format'  => 'd M Y',
+					'first_day'      => 1,
+				),
+				array(
+					'key'            => 'field_event_time_from',
+					'label'          => esc_html__( 'Time from', 'kadence-child' ),
+					'name'           => 'event_time_from',
+					'type'           => 'time_picker',
+					'display_format' => 'h : i A',
+					'return_format'  => 'h : i A',
+				),
+				array(
+					'key'            => 'field_event_time_to',
+					'label'          => esc_html__( 'Time to', 'kadence-child' ),
+					'name'           => 'event_time_to',
+					'type'           => 'time_picker',
+					'display_format' => 'h : i A',
+					'return_format'  => 'h : i A',
+				),
 				array(
 					'key'   => 'field_event_genre',
 					'label' => esc_html__( 'Genre', 'kadence-child' ),

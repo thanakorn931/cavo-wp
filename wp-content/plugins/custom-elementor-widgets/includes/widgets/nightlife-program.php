@@ -97,38 +97,19 @@ class Nightlife_Program extends Base_Widget {
 		$this->register_source_controls();
 
 		$this->start_controls_section(
-			'section_night',
+			'section_program',
 			array(
-				'label' => esc_html__( 'Night', 'custom-elementor-widgets' ),
+				'label' => esc_html__( 'Program', 'custom-elementor-widgets' ),
 				'tab'   => Controls_Manager::TAB_CONTENT,
-			)
-		);
-
-		$this->add_control(
-			'genre',
-			array(
-				'label'   => esc_html__( 'Genre', 'custom-elementor-widgets' ),
-				'type'    => Controls_Manager::TEXT,
-				'dynamic' => array( 'active' => true ),
-			)
-		);
-
-		$this->add_control(
-			'when',
-			array(
-				'label'   => esc_html__( 'When', 'custom-elementor-widgets' ),
-				'type'    => Controls_Manager::TEXT,
-				'dynamic' => array( 'active' => true ),
 			)
 		);
 
 		$this->add_control(
 			'ticket_text',
 			array(
-				'label'     => esc_html__( 'First button text', 'custom-elementor-widgets' ),
-				'type'      => Controls_Manager::TEXT,
-				'dynamic'   => array( 'active' => true ),
-				'separator' => 'before',
+				'label'   => esc_html__( 'First button text', 'custom-elementor-widgets' ),
+				'type'    => Controls_Manager::TEXT,
+				'dynamic' => array( 'active' => true ),
 			)
 		);
 
@@ -329,37 +310,104 @@ class Nightlife_Program extends Base_Widget {
 	}
 
 	/**
+	 * Which fields say when a night is, and what it plays.
+	 *
+	 * Asked here because the first of them is what the section counts the week
+	 * by: a value can be shown, but only a name can be searched for.
+	 */
+	protected function register_more_source_controls() {
+		$this->add_field_control(
+			'date_field',
+			esc_html__( 'Date', 'custom-elementor-widgets' ),
+			array( 'default' => 'event_date' )
+		);
+
+		$this->add_field_control(
+			'time_from_field',
+			esc_html__( 'Time from', 'custom-elementor-widgets' ),
+			array( 'default' => 'event_time_from' )
+		);
+
+		$this->add_field_control(
+			'time_to_field',
+			esc_html__( 'Time to', 'custom-elementor-widgets' ),
+			array( 'default' => 'event_time_to' )
+		);
+
+		$this->add_control(
+			'genre',
+			array(
+				'label'   => esc_html__( 'Genre', 'custom-elementor-widgets' ),
+				'type'    => Controls_Manager::TEXT,
+				'dynamic' => array( 'active' => true ),
+			)
+		);
+	}
+
+	/**
 	 * The nights the section shows.
 	 *
-	 * A weekly program is the week ahead: whatever the source holds between now
-	 * and seven days from now. A night the client has dated ahead is scheduled
-	 * rather than published, so scheduled is asked for too, or the week ahead
-	 * would be the one thing the section could never show.
+	 * A weekly program is the week ahead, counted on the night's own date rather
+	 * than on when the post appeared: a night set for Friday is written today
+	 * and is still Friday's. A date is stored as a number, which is what can be
+	 * compared, so the field is asked for by name and read unformatted here.
 	 *
 	 * @param array $settings The widget's settings.
 	 * @return array
 	 */
 	private function nights( $settings ) {
-		$now = current_time( 'timestamp' ); // phpcs:ignore WordPress.DateTime.CurrentTimeTimestamp.Requested -- compared against post_date, which is local.
+		$field = isset( $settings['date_field'] ) ? trim( (string) $settings['date_field'] ) : '';
+
+		if ( '' === $field ) {
+			return array();
+		}
+
+		$now = current_time( 'timestamp' ); // phpcs:ignore WordPress.DateTime.CurrentTimeTimestamp.Requested -- the client's day, not UTC's.
 
 		return get_posts(
 			$this->source_query(
 				$settings,
 				array(
 					'posts_per_page'      => 100,
-					'post_status'         => array( 'publish', 'future' ),
 					'ignore_sticky_posts' => true,
 					'no_found_rows'       => true,
-					'date_query'          => array(
+					'meta_key'            => $field, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- the list is what the section is.
+					'orderby'             => 'meta_value_num',
+					'order'               => isset( $settings['order'] ) && 'DESC' === $settings['order'] ? 'DESC' : 'ASC',
+					'meta_query'          => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- likewise.
 						array(
-							'after'     => gmdate( 'Y-m-d H:i:s', $now ),
-							'before'    => gmdate( 'Y-m-d H:i:s', $now + ( 7 * DAY_IN_SECONDS ) ),
-							'inclusive' => true,
+							'key'     => $field,
+							'value'   => array( gmdate( 'Ymd', $now ), gmdate( 'Ymd', $now + ( 7 * DAY_IN_SECONDS ) ) ),
+							'compare' => 'BETWEEN',
+							'type'    => 'NUMERIC',
 						),
 					),
 				)
 			)
 		);
+	}
+
+	/**
+	 * When a night is, as the design writes it: the day, then the hours.
+	 *
+	 * @param \WP_Post $post     The night.
+	 * @param array    $settings The widget's settings.
+	 * @return string
+	 */
+	private function when( $post, $settings ) {
+		$stamp = $this->post_field_raw( $post, isset( $settings['date_field'] ) ? $settings['date_field'] : '' );
+		$day   = '' !== $stamp ? date_i18n( 'D', (int) strtotime( $stamp ) ) : '';
+
+		$from = $this->post_field( $post, isset( $settings['time_from_field'] ) ? $settings['time_from_field'] : '' );
+		$to   = $this->post_field( $post, isset( $settings['time_to_field'] ) ? $settings['time_to_field'] : '' );
+
+		$hours = trim( '' !== $to ? $from . ' - ' . $to : $from );
+
+		if ( '' === $day ) {
+			return $hours;
+		}
+
+		return '' !== $hours ? strtoupper( $day ) . ' | ' . $hours : strtoupper( $day );
 	}
 
 	/**
@@ -394,7 +442,7 @@ class Nightlife_Program extends Base_Widget {
 							?></h3>
 
 							<p class="custom-nightlife-program__when"><?php
-								echo esc_html( isset( $night['when'] ) ? $night['when'] : '' );
+								echo esc_html( $this->when( $post, $settings ) );
 							?></p>
 
 							<p class="custom-nightlife-program__body"><?php
@@ -437,7 +485,7 @@ class Nightlife_Program extends Base_Widget {
 
 			<?php
 			if ( empty( $nights ) ) {
-				$this->editor_hint( __( 'Nothing in the source falls in the week ahead.', 'custom-elementor-widgets' ) );
+				$this->editor_hint( __( 'Nothing in the source is dated in the week ahead.', 'custom-elementor-widgets' ) );
 			}
 			?>
 		</div>

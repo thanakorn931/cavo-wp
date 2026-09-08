@@ -390,18 +390,36 @@ class Home_Event extends Base_Widget {
 	}
 
 	/**
-	 * When an item is, as the design writes it: the hour, then the day. Both
-	 * are when the post is published, which is the one place an event's time
-	 * is set.
+	 * When an item is, as the design writes it: the hour, then the day. Both are
+	 * the event's own fields, not when the post was published.
 	 *
 	 * @param \WP_Post $item The post.
 	 * @return string
 	 */
 	private function meta( $item ) {
-		$hour = (string) get_the_time( 'h : i A', $item );
-		$day  = (string) get_the_date( 'd M Y', $item );
+		$settings = $this->get_settings_for_display();
+
+		$hour = $this->post_field( $item, isset( $settings['time_field'] ) ? $settings['time_field'] : '' );
+		$day  = $this->post_field( $item, isset( $settings['date_field'] ) ? $settings['date_field'] : '' );
 
 		return trim( '' !== $hour ? $hour . ' - ' . $day : $day );
+	}
+
+	/**
+	 * Which fields say when an item is.
+	 */
+	protected function register_more_source_controls() {
+		$this->add_field_control(
+			'date_field',
+			esc_html__( 'Date', 'custom-elementor-widgets' ),
+			array( 'default' => 'event_date' )
+		);
+
+		$this->add_field_control(
+			'time_field',
+			esc_html__( 'Time', 'custom-elementor-widgets' ),
+			array( 'default' => 'event_time_from' )
+		);
 	}
 
 	/**

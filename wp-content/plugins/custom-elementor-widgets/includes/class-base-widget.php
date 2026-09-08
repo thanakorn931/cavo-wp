@@ -409,6 +409,70 @@ abstract class Base_Widget extends \Elementor\Widget_Base {
 	protected function register_more_source_controls() {}
 
 	/**
+	 * One field of one item, as the client wrote it.
+	 *
+	 * @param \WP_Post $post The item.
+	 * @param string   $name The field.
+	 * @return string
+	 */
+	protected function post_field( $post, $name ) {
+		$name = trim( (string) $name );
+
+		if ( '' === $name || ! $post ) {
+			return '';
+		}
+
+		$value = function_exists( 'get_field' ) ? get_field( $name, $post->ID ) : get_post_meta( $post->ID, $name, true );
+
+		return is_scalar( $value ) ? trim( (string) $value ) : '';
+	}
+
+	/**
+	 * What a field holds before it is dressed for reading.
+	 *
+	 * A date is stored as a number and shown as words; the number is what can be
+	 * compared and counted, so it is asked for by name rather than through the
+	 * plugin that formats it.
+	 *
+	 * @param \WP_Post $post The item.
+	 * @param string   $name The field.
+	 * @return string
+	 */
+	protected function post_field_raw( $post, $name ) {
+		$name = trim( (string) $name );
+
+		if ( '' === $name || ! $post ) {
+			return '';
+		}
+
+		return trim( (string) get_post_meta( $post->ID, $name, true ) );
+	}
+
+	/**
+	 * A control naming one of the client's fields.
+	 *
+	 * Which field a section reads is chosen, never named in the code, so the
+	 * same section serves a list of something else later.
+	 *
+	 * @param string $key   The control.
+	 * @param string $label What the client reads.
+	 * @param array  $args  Anything else the control carries.
+	 */
+	protected function add_field_control( $key, $label, $args = array() ) {
+		$this->add_control(
+			$key,
+			array_merge(
+				array(
+					'label'   => $label,
+					'type'    => Controls_Manager::SELECT,
+					'options' => self::field_options(),
+				),
+				$args
+			)
+		);
+	}
+
+	/**
 	 * Every field the client has, named as they named it.
 	 *
 	 * Read from the field plugin where it is active. Without it there is no list
