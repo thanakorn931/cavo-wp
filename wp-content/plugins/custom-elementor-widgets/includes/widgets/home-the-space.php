@@ -345,18 +345,18 @@ class Home_The_Space extends Base_Widget {
 		);
 
 		$this->add_control(
-			'tab_glow',
+			'tab_ground',
 			array(
-				'label'     => esc_html__( 'Tab glow', 'custom-elementor-widgets' ),
+				'label'     => esc_html__( 'Tab being read, behind', 'custom-elementor-widgets' ),
 				'type'      => Controls_Manager::COLOR,
-				'default'   => 'rgba(185, 173, 121, 0.5)',
+				'default'   => 'rgba(0, 0, 0, 0.25)',
 				'selectors' => array(
-					'{{WRAPPER}} .custom-home-space__tab.is-here' => 'box-shadow: 0 4px 10px 0 {{VALUE}};',
+					'{{WRAPPER}} .custom-home-space' => '--custom-home-space-tab-ground: {{VALUE}};',
 				),
 			)
 		);
 
-		$this->add_group_control(
+				$this->add_group_control(
 			Group_Control_Typography::get_type(),
 			array(
 				'name'           => 'tab_typography',

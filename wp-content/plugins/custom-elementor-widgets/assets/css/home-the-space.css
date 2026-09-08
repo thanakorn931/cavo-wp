@@ -70,7 +70,35 @@
 	font: inherit;
 	white-space: nowrap;
 	cursor: pointer;
-	transition: color 300ms ease-in-out;
+	transition:
+		color 300ms ease-in-out,
+		background-color 300ms ease-in-out;
+}
+
+/* A state is its own thing to say. A theme's rule on a bare button under a
+   pseudo-class outranks a class alone, so what a tab looks like while it is
+   reached, held or pressed is said here rather than left to the theme. */
+.custom-home-space__tab:hover,
+.custom-home-space__tab:focus,
+.custom-home-space__tab:focus-visible,
+.custom-home-space__tab:active {
+	border-color: transparent;
+	border-bottom-color: inherit;
+	background: none;
+	box-shadow: none;
+}
+
+.custom-home-space__tab:focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: 2px;
+}
+
+/* The one being read stands on a darker ground with the file's gold beneath it.
+   Nothing is thrown around it: a glow at this blur reads as a box. */
+.custom-home-space__tab.is-here,
+.custom-home-space__tab.is-here:hover,
+.custom-home-space__tab.is-here:focus {
+	background-color: var( --custom-home-space-tab-ground, rgba( 0, 0, 0, 0.25 ) );
 }
 
 .custom-home-space__tab.is-here {
