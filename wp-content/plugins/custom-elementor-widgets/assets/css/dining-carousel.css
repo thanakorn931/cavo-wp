@@ -142,6 +142,12 @@
 	background-size: cover;
 }
 
+/* One mark serves both: the one that goes back is the one that goes on, turned
+   about. */
+.custom-dining-carousel__arrow--next svg {
+	transform: scaleX( -1 );
+}
+
 @media ( prefers-reduced-motion: reduce ) {
 	.custom-dining-carousel__track,
 	.custom-dining-carousel__slide,

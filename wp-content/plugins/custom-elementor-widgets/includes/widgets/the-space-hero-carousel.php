@@ -357,7 +357,7 @@ class The_Space_Hero_Carousel extends Base_Widget {
 		);
 
 		$this->add_control(
-			'arrow_background',
+			'arrow_disc',
 			array(
 				'label'     => esc_html__( 'Arrows', 'custom-elementor-widgets' ),
 				'type'      => Controls_Manager::COLOR,
@@ -372,7 +372,7 @@ class The_Space_Hero_Carousel extends Base_Widget {
 		);
 
 		$this->add_control(
-			'arrow_color',
+			'arrow_mark',
 			array(
 				'label'     => esc_html__( 'Arrow mark', 'custom-elementor-widgets' ),
 				'type'      => Controls_Manager::COLOR,

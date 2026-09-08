@@ -234,6 +234,12 @@
 	fill: #3d3426;
 }
 
+/* One mark serves both: the one that goes back is the one that goes on, turned
+   about. */
+.custom-space-hero__arrow--next svg {
+	transform: scaleX( -1 );
+}
+
 @media ( prefers-reduced-motion: reduce ) {
 	.custom-space-hero__track,
 	.custom-space-hero__slide,

@@ -168,7 +168,7 @@ class Dining_Carousel extends Base_Widget {
 		);
 
 		$this->add_control(
-			'arrow_color',
+			'arrow_disc',
 			array(
 				'label'     => esc_html__( 'Arrows', 'custom-elementor-widgets' ),
 				'type'      => Controls_Manager::COLOR,
@@ -183,7 +183,7 @@ class Dining_Carousel extends Base_Widget {
 		);
 
 		$this->add_control(
-			'arrow_color',
+			'arrow_mark',
 			array(
 				'label'     => esc_html__( 'Arrow mark', 'custom-elementor-widgets' ),
 				'type'      => Controls_Manager::COLOR,
