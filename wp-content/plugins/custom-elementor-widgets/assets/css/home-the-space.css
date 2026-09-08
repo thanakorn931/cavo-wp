@@ -28,17 +28,17 @@
 	pointer-events: none;
 }
 
-/* The file keeps the top of this picture whole and cuts only its foot. Centring
-   it instead cuts the top and the foot alike and shows a different room.
-   The file also stands it about a seventh closer, which is left off: the
-   picture is already being stretched to reach the width of a screen, and
-   magnifying it again costs more than the framing is worth. */
+/* The picture fills the band and is cut from the middle outward.
+   A band this wide is a different shape from the picture, so something is
+   always lost; taken from the centre it is lost evenly, top and foot alike,
+   and the most of the picture survives at whatever width the screen turns out
+   to be. Nothing magnifies it beyond what filling the band already asks. */
 .custom-home-space__picture img {
 	display: block;
 	width: 100%;
 	height: 100%;
 	object-fit: cover;
-	object-position: center top;
+	object-position: center center;
 }
 
 /* The wash the file lays over the picture, read from the file. */
