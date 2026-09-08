@@ -60,6 +60,7 @@ final class Field_Tag extends Tag {
 		return array(
 			Module::TEXT_CATEGORY,
 			Module::POST_META_CATEGORY,
+			Module::DATETIME_CATEGORY,
 		);
 	}
 
@@ -118,10 +119,44 @@ final class Field_Tag extends Tag {
 			return $value ? '1' : '';
 		}
 
-		if ( is_scalar( $value ) ) {
-			return trim( (string) $value );
+		if ( ! is_scalar( $value ) ) {
+			return '';
 		}
 
-		return '';
+		$value = trim( (string) $value );
+
+		return '' === $value ? '' : self::as_moment( $key, $id, $value );
+	}
+
+	/**
+	 * A day answered as a moment rather than as the words it is shown in.
+	 *
+	 * A field the client reads as a date is also a field a section counts by,
+	 * and words in whatever order the client chose them cannot be compared. Only
+	 * a field that holds a day is turned; everything else is left as it is.
+	 *
+	 * @param string $key   The field.
+	 * @param int    $id    The post it is on.
+	 * @param string $value What the field says.
+	 * @return string
+	 */
+	private static function as_moment( $key, $id, $value ) {
+		if ( ! function_exists( 'get_field_object' ) ) {
+			return $value;
+		}
+
+		$field = get_field_object( $key, $id );
+
+		if ( ! is_array( $field ) || ! isset( $field['type'] ) ) {
+			return $value;
+		}
+
+		if ( ! in_array( $field['type'], array( 'date_picker', 'date_time_picker' ), true ) ) {
+			return $value;
+		}
+
+		$when = strtotime( $value );
+
+		return $when ? gmdate( 'Y-m-d H:i:s', $when ) : $value;
 	}
 }
