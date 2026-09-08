@@ -172,9 +172,23 @@ class Dining_Carousel extends Base_Widget {
 			array(
 				'label'     => esc_html__( 'Arrows', 'custom-elementor-widgets' ),
 				'type'      => Controls_Manager::COLOR,
-				'default'   => '#FAF6EA',
+				'default'   => '#EBE4CA',
 				'selectors' => array(
-					'{{WRAPPER}} .custom-dining-carousel__arrow'     => 'color: {{VALUE}};',
+					'{{WRAPPER}} .custom-dining-carousel__arrow'        => 'background-color: {{VALUE}};',
+					'{{WRAPPER}} .custom-dining-carousel__arrow:hover'  => 'background-color: {{VALUE}};',
+					'{{WRAPPER}} .custom-dining-carousel__arrow:focus'  => 'background-color: {{VALUE}};',
+					'{{WRAPPER}} .custom-dining-carousel__arrow:active' => 'background-color: {{VALUE}};',
+				),
+			)
+		);
+
+		$this->add_control(
+			'arrow_color',
+			array(
+				'label'     => esc_html__( 'Arrow mark', 'custom-elementor-widgets' ),
+				'type'      => Controls_Manager::COLOR,
+				'default'   => '#3D3426',
+				'selectors' => array(
 					'{{WRAPPER}} .custom-dining-carousel__arrow svg' => 'fill: {{VALUE}};',
 				),
 			)
