@@ -161,8 +161,19 @@
 		// track had reached — which is the jerk. The press is let go instead.
 		var moving = false;
 
+		// The run is brought back to the middle only once the move has finished.
+		// Doing it on the way in put a jump and a slide in the same breath, and
+		// the two together are what the eye reads as a stumble. The copies are
+		// identical, so the reader never sees the return.
 		function settle() {
 			moving = false;
+
+			if ( current < many || current >= many * 2 ) {
+				current += current < many ? many : -many;
+
+				mark();
+				place( false );
+			}
 		}
 
 		track.addEventListener( 'transitionend', function ( event ) {
@@ -176,18 +187,7 @@
 				return;
 			}
 
-			var target = current + way;
-
-			if ( target < many || target >= many * 2 ) {
-				current += target < many ? many : -many;
-
-				mark();
-				place( false );
-
-				target = current + way;
-			}
-
-			current = target;
+			current += way;
 
 			mark();
 			place( true );
