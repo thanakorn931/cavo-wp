@@ -342,7 +342,7 @@
 }
 
 /* What the page says back to somebody who has just signed up. */
-.custom-footer__result {
+.custom-footer__result.custom-footer__result {
 	margin: 12px 0 0;
 	padding: 0;
 	color: inherit;

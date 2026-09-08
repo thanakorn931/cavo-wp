@@ -50,3 +50,18 @@
 [ class*="custom-" ] {
 	line-height: normal;
 }
+
+/* The space around a text is the design's, not the theme's.
+ *
+ * A theme reaches these elements through its own wrapper — a class and an
+ * element together — which outweighs a class alone, so a section's `margin: 0`
+ * loses and the theme's spacing is added to the gap the design asked for.
+ * Answered here at a weight above that, for every text the plugin prints.
+ *
+ * A section the design gives a margin of its own says it the same way, with the
+ * class named twice, or it will lose to this.
+ */
+[ class*="custom-" ][ class*="custom-" ] {
+	margin-top: 0;
+	margin-bottom: 0;
+}
