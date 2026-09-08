@@ -65,6 +65,10 @@
 	padding: 10px;
 	border: 0;
 	border-bottom: 1px solid transparent;
+	/* The row's own line is drawn on the edge of its box, so a tab aligned to
+	   the foot of that box stops one pixel short of it. Pulled down by that
+	   pixel, the two lines are one line. */
+	margin-bottom: -1px;
 	background: none;
 	color: inherit;
 	font: inherit;
