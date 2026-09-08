@@ -133,7 +133,7 @@ class Nightlife_Program extends Base_Widget {
 			array(
 				'label' => esc_html__( 'Text', 'custom-elementor-widgets' ),
 				'type'  => Controls_Manager::TEXTAREA,
-				'rows'  => 4,
+				'rows'  => 5,
 			)
 		);
 

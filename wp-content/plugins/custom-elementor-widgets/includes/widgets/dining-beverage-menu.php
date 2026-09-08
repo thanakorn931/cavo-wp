@@ -132,7 +132,7 @@ class Dining_Beverage_Menu extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Text', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXTAREA,
-				'rows'        => 8,
+				'rows'        => 5,
 				'placeholder' => $design['body'],
 			)
 		);

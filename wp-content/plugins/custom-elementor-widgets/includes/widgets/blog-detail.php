@@ -147,7 +147,7 @@ class Blog_Detail extends Blog_Widget {
 			array(
 				'label'     => esc_html__( 'Text', 'custom-elementor-widgets' ),
 				'type'      => Controls_Manager::TEXTAREA,
-				'rows'      => 6,
+				'rows'      => 5,
 				'condition' => array( 'kind' => 'text' ),
 			)
 		);

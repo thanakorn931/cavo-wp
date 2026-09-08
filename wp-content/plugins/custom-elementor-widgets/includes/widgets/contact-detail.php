@@ -29,7 +29,7 @@ class Contact_Detail extends Base_Widget {
 		return array(
 			'phone' => esc_html__( 'Telephone', 'custom-elementor-widgets' ),
 			'email' => esc_html__( 'Email', 'custom-elementor-widgets' ),
-			'chat'  => esc_html__( 'Chat', 'custom-elementor-widgets' ),
+			'chat'  => esc_html__( 'WhatsApp', 'custom-elementor-widgets' ),
 		);
 	}
 
@@ -146,7 +146,7 @@ class Contact_Detail extends Base_Widget {
 			array(
 				'label' => esc_html__( 'Address', 'custom-elementor-widgets' ),
 				'type'  => Controls_Manager::TEXTAREA,
-				'rows'  => 3,
+				'rows'  => 5,
 			)
 		);
 
@@ -178,7 +178,7 @@ class Contact_Detail extends Base_Widget {
 				array(
 					'label' => esc_html__( 'Text', 'custom-elementor-widgets' ),
 					'type'  => Controls_Manager::TEXTAREA,
-					'rows'  => 3,
+					'rows'  => 5,
 				)
 			);
 		}

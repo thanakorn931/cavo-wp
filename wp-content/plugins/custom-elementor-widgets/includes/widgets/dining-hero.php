@@ -73,7 +73,7 @@ class Dining_Hero extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Heading', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXTAREA,
-				'rows'        => 3,
+				'rows'        => 5,
 				'placeholder' => esc_html__( "A Better Experience\nfor Every Diner", 'custom-elementor-widgets' ),
 			)
 		);

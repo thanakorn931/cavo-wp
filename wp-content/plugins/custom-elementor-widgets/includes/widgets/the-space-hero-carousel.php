@@ -100,7 +100,7 @@ class The_Space_Hero_Carousel extends Base_Widget {
 			array(
 				'label' => esc_html__( 'Text', 'custom-elementor-widgets' ),
 				'type'  => Controls_Manager::TEXTAREA,
-				'rows'  => 4,
+				'rows'  => 5,
 			)
 		);
 

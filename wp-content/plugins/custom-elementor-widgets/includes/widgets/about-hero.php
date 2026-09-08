@@ -129,7 +129,7 @@ class About_Hero extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Text', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXTAREA,
-				'rows'        => 7,
+				'rows'        => 5,
 				'placeholder' => $design['body'],
 			)
 		);

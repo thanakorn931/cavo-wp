@@ -9,15 +9,19 @@
 	display: flex;
 	align-items: stretch;
 	width: 100%;
+	padding: 0 max( 0px, calc( ( 100% - 1440px ) / 2 ) );
+	box-sizing: border-box;
 }
 
+/* The file puts the words at x=48 in a half 720 wide and runs them to its edge,
+   so the gutter is on the left alone. */
 .custom-home-contact__column {
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
 	flex: 0 0 50%;
 	min-width: 0;
-	padding: 96px 48px;
+	padding: 96px 0 96px 48px;
 	box-sizing: border-box;
 }
 

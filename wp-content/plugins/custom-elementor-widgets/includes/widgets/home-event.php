@@ -117,7 +117,7 @@ class Home_Event extends Base_Widget {
 			array(
 				'label'       => esc_html__( 'Heading', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXTAREA,
-				'rows'        => 2,
+				'rows'        => 5,
 				'placeholder' => $design['heading'],
 			)
 		);

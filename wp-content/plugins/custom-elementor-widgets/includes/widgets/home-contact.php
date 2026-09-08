@@ -149,7 +149,7 @@ class Home_Contact extends Base_Widget {
 			array(
 				'label' => esc_html__( 'Location', 'custom-elementor-widgets' ),
 				'type'  => Controls_Manager::TEXTAREA,
-				'rows'  => 3,
+				'rows'  => 5,
 			)
 		);
 
@@ -168,7 +168,7 @@ class Home_Contact extends Base_Widget {
 			array(
 				'label' => esc_html__( 'Getting here', 'custom-elementor-widgets' ),
 				'type'  => Controls_Manager::TEXTAREA,
-				'rows'  => 4,
+				'rows'  => 5,
 			)
 		);
 
@@ -187,7 +187,7 @@ class Home_Contact extends Base_Widget {
 			array(
 				'label' => esc_html__( 'Station', 'custom-elementor-widgets' ),
 				'type'  => Controls_Manager::TEXTAREA,
-				'rows'  => 2,
+				'rows'  => 5,
 			)
 		);
 
@@ -293,7 +293,7 @@ class Home_Contact extends Base_Widget {
 		return array(
 			'phone' => esc_html__( 'Phone', 'custom-elementor-widgets' ),
 			'email' => esc_html__( 'Email', 'custom-elementor-widgets' ),
-			'chat'  => esc_html__( 'Chat', 'custom-elementor-widgets' ),
+			'chat'  => esc_html__( 'WhatsApp', 'custom-elementor-widgets' ),
 		);
 	}
 
