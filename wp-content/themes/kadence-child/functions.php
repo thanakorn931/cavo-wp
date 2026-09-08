@@ -320,13 +320,17 @@ function kadence_child_event_fields() {
 			'position' => 'normal',
 			'fields'   => array(
 				array(
-					'key'            => 'field_event_date',
-					'label'          => esc_html__( 'Date', 'kadence-child' ),
-					'name'           => 'event_date',
-					'type'           => 'date_picker',
-					'display_format' => 'd M Y',
-					'return_format'  => 'd M Y',
-					'first_day'      => 1,
+					'key'                     => 'field_event_date',
+					'label'                   => esc_html__( 'Date', 'kadence-child' ),
+					'name'                    => 'event_date',
+					'type'                    => 'date_picker',
+					'display_format'          => 'd M Y',
+					'return_format'           => 'd M Y',
+					'first_day'               => 1,
+					// An empty date opens on today, filled into the box and no
+					// further: it is saved when the post is, like anything else
+					// typed into the screen.
+					'default_to_current_date' => 1,
 				),
 				array(
 					'key'            => 'field_event_time_from',
