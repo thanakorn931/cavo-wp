@@ -234,12 +234,24 @@ class Dining_Carousel extends Base_Widget {
 			?></<?php echo esc_attr( $tag ); ?>>
 
 			<div class="custom-dining-carousel__stage">
-				<div class="custom-dining-carousel__track">
-					<?php foreach ( $slides as $slide ) : ?>
-						<div class="custom-dining-carousel__slide">
-							<?php $this->media( isset( $slide['slide_picture']['url'] ) ? $slide['slide_picture']['url'] : '' ); ?>
-						</div>
-					<?php endforeach; ?>
+				<div class="custom-dining-carousel__track" data-many="<?php echo esc_attr( count( $slides ) ); ?>">
+					<?php
+					// The run is written three times where there is more than one
+					// slide, so the reader always has a picture either side and
+					// never reaches an end. The copies carry no meaning of their
+					// own and are hidden from anyone being read to.
+					$runs = count( $slides ) > 1 ? 3 : 1;
+
+					for ( $run = 0; $run < $runs; $run++ ) :
+						foreach ( $slides as $slide ) :
+							?>
+							<div class="custom-dining-carousel__slide"<?php echo 1 === $run || 1 === $runs ? '' : ' aria-hidden="true"'; ?>>
+								<?php $this->media( isset( $slide['slide_picture']['url'] ) ? $slide['slide_picture']['url'] : '' ); ?>
+							</div>
+							<?php
+						endforeach;
+					endfor;
+					?>
 				</div>
 
 				<?php

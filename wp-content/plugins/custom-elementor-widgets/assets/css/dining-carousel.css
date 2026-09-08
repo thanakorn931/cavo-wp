@@ -146,3 +146,10 @@
 		transition: none;
 	}
 }
+
+/* While the run is being returned to the middle, nothing travels: the jump is
+   silent, and anything easing after the move has ended reads as a stumble. */
+.custom-dining-carousel.is-settling .custom-dining-carousel__track,
+.custom-dining-carousel.is-settling .custom-dining-carousel__slide {
+	transition: none;
+}
