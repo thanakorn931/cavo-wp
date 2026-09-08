@@ -22,6 +22,22 @@
 
 		var current = 0;
 
+		// A press landing while the last one is still travelling replaces the move
+		// in flight, and the easing begins again from wherever the track has
+		// reached. The press is let go instead.
+		var moving = false;
+
+		function settle() {
+			window.clearTimeout( settle.timer );
+			moving = false;
+		}
+
+		track.addEventListener( 'transitionend', function ( event ) {
+			if ( event.target === track && event.propertyName === 'transform' ) {
+				settle();
+			}
+		} );
+
 		function show( index ) {
 			current = ( index + slides.length ) % slides.length;
 
@@ -42,14 +58,25 @@
 			var previous = event.target.closest( '.custom-dining-carousel__arrow--prev' );
 			var next     = event.target.closest( '.custom-dining-carousel__arrow--next' );
 
-			if ( previous ) {
-				show( current - 1 );
-			} else if ( next ) {
-				show( current + 1 );
+			if ( ! previous && ! next ) {
+				return;
 			}
+
+			if ( moving ) {
+				return;
+			}
+
+			moving = true;
+
+			// A move that is never drawn never reports itself finished.
+			window.clearTimeout( settle.timer );
+			settle.timer = window.setTimeout( settle, 800 );
+
+			show( previous ? current - 1 : current + 1 );
 		} );
 
 		window.addEventListener( 'resize', function () {
+			settle();
 			show( current );
 		} );
 
