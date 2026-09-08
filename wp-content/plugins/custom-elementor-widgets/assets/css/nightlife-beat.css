@@ -20,7 +20,10 @@
 		linear-gradient( 0deg, #3a2114 10.033%, #64311a 99.702% );
 }
 
-.custom-nightlife-beat__heading {
+/* The theme sets a margin on every bare heading it finds in the content, which
+   is one class and one element to this section's one class, so the class is
+   said twice to outweigh it rather than merely tie. */
+.custom-nightlife-beat__heading.custom-nightlife-beat__heading {
 	/* The band runs the full width; what stands in it is held to 1440 and
 	   centred, so the inset is the design's 48 plus whatever the margin is. */
 	margin: 0 0 0 calc( 48px + max( 0px, calc( ( 100% - 1440px ) / 2 ) ) );

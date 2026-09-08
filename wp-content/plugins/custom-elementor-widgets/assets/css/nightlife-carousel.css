@@ -36,14 +36,22 @@
 	-ms-overflow-style: none;
 	cursor: grab;
 	overscroll-behavior-x: contain;
+
+	/* Where the row comes to rest is the design's: one picture in the middle of
+	   the band with its neighbours either side of it, never a position it
+	   happened to stop at. */
+	scroll-snap-type: x mandatory;
 }
 
 .custom-nightlife-carousel__stage::-webkit-scrollbar {
 	display: none;
 }
 
+/* A hold moves the row a frame at a time, and each frame would be pulled back
+   to the nearest picture. It comes to rest when the hold ends, not during it. */
 .custom-nightlife-carousel__stage.is-holding {
 	cursor: grabbing;
+	scroll-snap-type: none;
 }
 
 .custom-nightlife-carousel__track {
@@ -61,6 +69,7 @@
 .custom-nightlife-carousel__slide {
 	position: relative;
 	flex: 0 0 auto;
+	scroll-snap-align: center;
 	width: 840px;
 	height: 560px;
 	border-radius: 24px;
