@@ -53,7 +53,10 @@
 	gap: 24px;
 }
 
-.custom-contact-detail__item {
+.custom-contact-detail__item,
+.custom-contact-detail__item:hover,
+.custom-contact-detail__item:focus,
+.custom-contact-detail__item:active {
 	display: inline-flex;
 	align-items: center;
 	gap: 16px;

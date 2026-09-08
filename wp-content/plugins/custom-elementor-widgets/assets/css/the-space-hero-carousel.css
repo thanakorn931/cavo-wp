@@ -66,7 +66,10 @@
 	gap: 24px;
 }
 
-.custom-space-hero__button {
+.custom-space-hero__button,
+.custom-space-hero__button:hover,
+.custom-space-hero__button:focus,
+.custom-space-hero__button:active {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;

@@ -38,7 +38,10 @@
 	text-transform: uppercase;
 }
 
-.custom-event-past__action {
+.custom-event-past__action,
+.custom-event-past__action:hover,
+.custom-event-past__action:focus,
+.custom-event-past__action:active {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;

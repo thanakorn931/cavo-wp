@@ -122,7 +122,10 @@
 }
 
 /* The card is a picture in an edge the file draws around it. */
-.custom-home-event__card {
+.custom-home-event__card,
+.custom-home-event__card:hover,
+.custom-home-event__card:focus,
+.custom-home-event__card:active {
 	position: relative;
 	display: block;
 	width: 486px;

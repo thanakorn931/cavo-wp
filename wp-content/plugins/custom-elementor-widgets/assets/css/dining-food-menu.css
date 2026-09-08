@@ -43,7 +43,10 @@
 	white-space: pre-wrap;
 }
 
-.custom-dining-menu__button {
+.custom-dining-menu__button,
+.custom-dining-menu__button:hover,
+.custom-dining-menu__button:focus,
+.custom-dining-menu__button:active {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;

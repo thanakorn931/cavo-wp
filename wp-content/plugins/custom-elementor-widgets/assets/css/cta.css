@@ -47,7 +47,10 @@
 	text-transform: uppercase;
 }
 
-.custom-cta__button {
+.custom-cta__button,
+.custom-cta__button:hover,
+.custom-cta__button:focus,
+.custom-cta__button:active {
 	position: relative;
 	display: inline-flex;
 	align-items: center;

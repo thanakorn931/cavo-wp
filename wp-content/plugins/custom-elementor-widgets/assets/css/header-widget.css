@@ -123,7 +123,10 @@
 	flex: 0 0 auto;
 }
 
-.custom-header__button {
+.custom-header__button,
+.custom-header__button:hover,
+.custom-header__button:focus,
+.custom-header__button:active {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
@@ -137,7 +140,10 @@
 
 /* The file draws the outline inside the button, so the two buttons stand the
    same height as each other. A border would add its width to one of them. */
-.custom-header__button--outline {
+.custom-header__button--outline,
+.custom-header__button--outline:hover,
+.custom-header__button--outline:focus,
+.custom-header__button--outline:active {
 	border: 1px solid currentColor;
 }
 

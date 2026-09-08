@@ -142,7 +142,10 @@ select.custom-private-form__input:invalid {
 	opacity: 0.85;
 }
 
-.custom-private-form__deck {
+.custom-private-form__deck,
+.custom-private-form__deck:hover,
+.custom-private-form__deck:focus,
+.custom-private-form__deck:active {
 	color: inherit;
 	text-decoration: underline;
 	white-space: nowrap;

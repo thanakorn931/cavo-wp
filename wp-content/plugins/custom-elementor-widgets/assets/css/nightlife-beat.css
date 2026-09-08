@@ -124,7 +124,10 @@
 	gap: 8px;
 }
 
-.custom-nightlife-beat__chip {
+.custom-nightlife-beat__chip,
+.custom-nightlife-beat__chip:hover,
+.custom-nightlife-beat__chip:focus,
+.custom-nightlife-beat__chip:active {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;

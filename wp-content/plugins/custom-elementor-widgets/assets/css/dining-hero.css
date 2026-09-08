@@ -42,7 +42,10 @@
 	text-transform: uppercase;
 }
 
-.custom-dining-hero__button {
+.custom-dining-hero__button,
+.custom-dining-hero__button:hover,
+.custom-dining-hero__button:focus,
+.custom-dining-hero__button:active {
 	position: relative;
 	display: inline-flex;
 	align-items: center;

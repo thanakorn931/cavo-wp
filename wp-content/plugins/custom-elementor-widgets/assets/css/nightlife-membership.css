@@ -67,7 +67,10 @@
 	overflow: hidden;
 }
 
-.custom-nightlife-membership__panel {
+.custom-nightlife-membership__panel,
+.custom-nightlife-membership__panel:hover,
+.custom-nightlife-membership__panel:focus,
+.custom-nightlife-membership__panel:active {
 	color: inherit;
 	position: relative;
 	min-width: 0;
@@ -84,7 +87,10 @@
 	box-sizing: border-box;
 }
 
-.custom-nightlife-membership__panel--side {
+.custom-nightlife-membership__panel--side,
+.custom-nightlife-membership__panel--side:hover,
+.custom-nightlife-membership__panel--side:focus,
+.custom-nightlife-membership__panel--side:active {
 	display: block;
 	flex: 1 1 0;
 	text-decoration: none;
@@ -110,7 +116,10 @@
 	pointer-events: none;
 }
 
-.custom-nightlife-membership__button {
+.custom-nightlife-membership__button,
+.custom-nightlife-membership__button:hover,
+.custom-nightlife-membership__button:focus,
+.custom-nightlife-membership__button:active {
 	position: relative;
 	display: inline-flex;
 	align-items: center;

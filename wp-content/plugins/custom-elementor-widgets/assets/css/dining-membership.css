@@ -16,7 +16,10 @@
 	overflow: hidden;
 }
 
-.custom-dining-membership__panel {
+.custom-dining-membership__panel,
+.custom-dining-membership__panel:hover,
+.custom-dining-membership__panel:focus,
+.custom-dining-membership__panel:active {
 	color: inherit;
 	position: relative;
 	min-width: 0;
@@ -59,7 +62,10 @@
 	pointer-events: none;
 }
 
-.custom-dining-membership__button {
+.custom-dining-membership__button,
+.custom-dining-membership__button:hover,
+.custom-dining-membership__button:focus,
+.custom-dining-membership__button:active {
 	position: relative;
 	display: inline-flex;
 	align-items: center;

@@ -73,7 +73,10 @@
 	white-space: pre-wrap;
 }
 
-.custom-dining-beverage__button {
+.custom-dining-beverage__button,
+.custom-dining-beverage__button:hover,
+.custom-dining-beverage__button:focus,
+.custom-dining-beverage__button:active {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;

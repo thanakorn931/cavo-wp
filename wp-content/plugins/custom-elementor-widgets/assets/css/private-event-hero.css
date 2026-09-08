@@ -42,7 +42,10 @@
 	text-transform: uppercase;
 }
 
-.custom-private-hero__button {
+.custom-private-hero__button,
+.custom-private-hero__button:hover,
+.custom-private-hero__button:focus,
+.custom-private-hero__button:active {
 	position: relative;
 	display: inline-flex;
 	align-items: center;
