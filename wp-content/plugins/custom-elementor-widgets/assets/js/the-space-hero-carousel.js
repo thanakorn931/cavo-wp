@@ -156,7 +156,26 @@
 		// it already is instead, so the reader is always a step away from the
 		// edge and never reaches it. The swap is made before the move, not after
 		// it, because a move that is never drawn never reports itself finished.
+		// A press landing while the last one is still travelling would replace the
+		// move in flight, and the easing would start again from wherever the
+		// track had reached — which is the jerk. The press is let go instead.
+		var moving = false;
+
+		function settle() {
+			moving = false;
+		}
+
+		track.addEventListener( 'transitionend', function ( event ) {
+			if ( event.target === track && event.propertyName === 'transform' ) {
+				settle();
+			}
+		} );
+
 		function step( way ) {
+			if ( moving ) {
+				return;
+			}
+
 			var target = current + way;
 
 			if ( target < many || target >= many * 2 ) {
@@ -173,6 +192,13 @@
 			mark();
 			place( true );
 			tell();
+
+			moving = true;
+
+			// A move that is never drawn never reports itself finished, so the
+			// press is handed back after the longest a move can take.
+			window.clearTimeout( settle.timer );
+			settle.timer = window.setTimeout( settle, 800 );
 		}
 
 		root.addEventListener( 'click', function ( event ) {
@@ -184,6 +210,7 @@
 		} );
 
 		window.addEventListener( 'resize', function () {
+			settle();
 			place( false );
 		} );
 
