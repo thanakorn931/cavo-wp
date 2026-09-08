@@ -72,65 +72,29 @@
 	overflow: hidden;
 }
 
-.custom-dining-menu__slides {
+/* The picture stands where the file puts it inside the box: down a little from
+   the top, and short of its foot. */
+.custom-dining-menu__gallery img {
 	position: absolute;
 	top: 28px;
 	right: 0;
 	left: 0;
 	height: 492px;
-}
-
-.custom-dining-menu__slide {
-	position: absolute;
-	inset: 0;
-	border-radius: 24px;
-	overflow: hidden;
-	opacity: 0;
-	transition: opacity 500ms ease-in-out;
-}
-
-.custom-dining-menu__slide.is-current {
-	opacity: 1;
-}
-
-.custom-dining-menu__slide img {
-	display: block;
 	width: 100%;
-	height: 100%;
+	display: block;
+	border-radius: 24px;
 	object-fit: cover;
 	object-position: center;
 }
 
-.custom-dining-menu__dots {
-	position: absolute;
-	top: 486px;
-	right: 0;
-	left: 0;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	gap: 10px;
-}
-
-.custom-dining-menu__dot {
-	width: 14px;
-	height: 14px;
-	padding: 0;
-	border: 0;
-	border-radius: 14px;
-	background: currentColor;
-	opacity: 0.4;
-	cursor: pointer;
-	transition: opacity 300ms ease-in-out;
-}
-
-.custom-dining-menu__dot.is-current {
-	opacity: 1;
+.custom-dining-menu__gallery .custom-media-empty {
+	top: 28px;
+	height: 492px;
+	inset: 28px 0 auto;
+	border-radius: 24px;
 }
 
 @media ( prefers-reduced-motion: reduce ) {
-	.custom-dining-menu__slide,
-	.custom-dining-menu__dot,
 	.custom-dining-menu__button {
 		transition: none;
 	}

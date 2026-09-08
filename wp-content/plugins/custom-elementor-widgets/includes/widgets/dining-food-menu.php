@@ -12,7 +12,6 @@ namespace Custom_Elementor_Widgets\Widgets;
 use Custom_Elementor_Widgets\Base_Widget;
 use Elementor\Controls_Manager;
 use Elementor\Group_Control_Typography;
-use Elementor\Repeater;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -163,27 +162,16 @@ class Dining_Food_Menu extends Base_Widget {
 		$this->start_controls_section(
 			'section_pictures',
 			array(
-				'label' => esc_html__( 'Pictures', 'custom-elementor-widgets' ),
+				'label' => esc_html__( 'Picture', 'custom-elementor-widgets' ),
 				'tab'   => Controls_Manager::TAB_CONTENT,
 			)
 		);
 
-		$repeater = new Repeater();
-
-		$repeater->add_control(
+		$this->add_control(
 			'picture',
 			array(
 				'label' => esc_html__( 'Picture', 'custom-elementor-widgets' ),
 				'type'  => Controls_Manager::MEDIA,
-			)
-		);
-
-		$this->add_control(
-			'pictures',
-			array(
-				'label'  => esc_html__( 'Pictures', 'custom-elementor-widgets' ),
-				'type'   => Controls_Manager::REPEATER,
-				'fields' => $repeater->get_controls(),
 			)
 		);
 
@@ -291,7 +279,7 @@ class Dining_Food_Menu extends Base_Widget {
 	 */
 	protected function render() {
 		$settings = $this->get_settings_for_display();
-		$pictures = isset( $settings['pictures'] ) ? (array) $settings['pictures'] : array();
+		$picture = isset( $settings['picture']['url'] ) ? $settings['picture']['url'] : '';
 		$file     = isset( $settings['menu_file']['url'] ) ? $settings['menu_file']['url'] : '';
 		$tag      = isset( $settings['heading_tag'] ) ? $settings['heading_tag'] : 'h2';
 		$tag      = in_array( $tag, array( 'h2', 'h3', 'span' ), true ) ? $tag : 'h2';
@@ -315,26 +303,7 @@ class Dining_Food_Menu extends Base_Widget {
 			</div>
 
 			<div class="custom-dining-menu__gallery">
-				<div class="custom-dining-menu__slides">
-					<?php foreach ( $pictures as $index => $picture ) : ?>
-						<div class="custom-dining-menu__slide<?php echo 0 === $index ? ' is-current' : ''; ?>">
-							<?php $this->media( isset( $picture['picture']['url'] ) ? $picture['picture']['url'] : '' ); ?>
-						</div>
-					<?php endforeach; ?>
-				</div>
-
-				<?php if ( count( $pictures ) > 1 ) : ?>
-					<div class="custom-dining-menu__dots">
-						<?php foreach ( $pictures as $index => $picture ) : ?>
-							<button
-								type="button"
-								class="custom-dining-menu__dot<?php echo 0 === $index ? ' is-current' : ''; ?>"
-								data-index="<?php echo esc_attr( $index ); ?>"
-								aria-label="<?php echo esc_attr( sprintf( /* translators: %d: which picture. */ __( 'Picture %d', 'custom-elementor-widgets' ), $index + 1 ) ); ?>"
-							></button>
-						<?php endforeach; ?>
-					</div>
-				<?php endif; ?>
+				<?php $this->media( $picture ); ?>
 			</div>
 		</div>
 		<?php
