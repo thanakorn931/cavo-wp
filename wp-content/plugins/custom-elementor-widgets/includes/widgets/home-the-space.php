@@ -281,6 +281,42 @@ class Home_The_Space extends Base_Widget {
 		$this->add_control(
 			'wash_near',
 			array(
+				'label'     => esc_html__( 'Wash, nearest', 'custom-elementor-widgets' ),
+				'type'      => Controls_Manager::COLOR,
+				'default'   => 'rgba(157, 84, 52, 0.7)',
+				'selectors' => array(
+					'{{WRAPPER}} .custom-home-space' => '--custom-home-space-near: {{VALUE}};',
+				),
+			)
+		);
+
+		$this->add_control(
+			'wash_mid',
+			array(
+				'label'     => esc_html__( 'Wash, middle', 'custom-elementor-widgets' ),
+				'type'      => Controls_Manager::COLOR,
+				'default'   => 'rgba(100, 49, 26, 0.7)',
+				'selectors' => array(
+					'{{WRAPPER}} .custom-home-space' => '--custom-home-space-mid: {{VALUE}};',
+				),
+			)
+		);
+
+		$this->add_control(
+			'wash_far',
+			array(
+				'label'     => esc_html__( 'Wash, deepest', 'custom-elementor-widgets' ),
+				'type'      => Controls_Manager::COLOR,
+				'default'   => 'rgba(76, 37, 19, 0.7)',
+				'selectors' => array(
+					'{{WRAPPER}} .custom-home-space' => '--custom-home-space-far: {{VALUE}};',
+				),
+			)
+		);
+
+		$this->add_control(
+			'wash_near',
+			array(
 				'label'     => esc_html__( 'Wash, lighter', 'custom-elementor-widgets' ),
 				'type'      => Controls_Manager::COLOR,
 				'default'   => 'rgba(157, 84, 52, 0.7)',
@@ -386,7 +422,19 @@ class Home_The_Space extends Base_Widget {
 				'type'      => Controls_Manager::COLOR,
 				'default'   => '#B9AD79',
 				'selectors' => array(
-					'{{WRAPPER}} .custom-home-space__tab.is-here' => 'border-bottom-color: {{VALUE}}; box-shadow: 0 4px 10px 0 {{VALUE}};',
+					'{{WRAPPER}} .custom-home-space__tab.is-here' => 'border-bottom-color: {{VALUE}};',
+				),
+			)
+		);
+
+		$this->add_control(
+			'tab_glow',
+			array(
+				'label'     => esc_html__( 'Tab glow', 'custom-elementor-widgets' ),
+				'type'      => Controls_Manager::COLOR,
+				'default'   => 'rgba(185, 173, 121, 0.5)',
+				'selectors' => array(
+					'{{WRAPPER}} .custom-home-space__tab.is-here' => 'box-shadow: 0 4px 10px 0 {{VALUE}};',
 				),
 			)
 		);

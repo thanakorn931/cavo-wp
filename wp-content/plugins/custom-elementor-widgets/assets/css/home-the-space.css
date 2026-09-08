@@ -40,9 +40,9 @@
 .custom-home-space__wash {
 	background-image: linear-gradient(
 		28.163deg,
-		var( --custom-home-space-near ) 17.466%,
-		var( --custom-home-space-mid ) 62.65%,
-		var( --custom-home-space-far ) 81.22%
+		var( --custom-home-space-near, rgba( 157, 84, 52, 0.7 ) ) 17.466%,
+		var( --custom-home-space-mid, rgba( 100, 49, 26, 0.7 ) ) 62.65%,
+		var( --custom-home-space-far, rgba( 76, 37, 19, 0.7 ) ) 81.22%
 	);
 }
 
@@ -69,6 +69,7 @@
 }
 
 .custom-home-space__tab {
+	border-radius: 0;
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
