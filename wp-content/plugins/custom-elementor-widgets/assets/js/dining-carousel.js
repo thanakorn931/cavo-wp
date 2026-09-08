@@ -32,7 +32,6 @@
 		var gap    = 0;
 		var narrow = 0;
 		var wide   = 0;
-		var spread = 0;
 
 		// What a slide is worth is read with travel switched off. Asked while a
 		// width is easing, the page answers with the width being passed through,
@@ -42,7 +41,6 @@
 				gap    = parseFloat( window.getComputedStyle( track ).columnGap ) || 0;
 				wide   = slides[ current ].offsetWidth;
 				narrow = slides.length > 1 ? slides[ current === 0 ? 1 : 0 ].offsetWidth : wide;
-				spread = wide + ( ( slides.length - 1 ) * ( narrow + gap ) );
 			} );
 		}
 
@@ -73,9 +71,12 @@
 			}
 		}
 
+		// The run begins at the left edge of the band and every slide before the
+		// current one is a narrow one, so where the current one stands is only a
+		// count. It is moved by the difference between its middle and the band's.
 		function place() {
 			var room  = stage.offsetWidth;
-			var left  = ( ( room - spread ) / 2 ) + ( current * ( narrow + gap ) );
+			var left  = current * ( narrow + gap );
 			var shift = left + ( wide / 2 ) - ( room / 2 );
 
 			track.style.transform = 'translateX(' + ( -shift ) + 'px)';
