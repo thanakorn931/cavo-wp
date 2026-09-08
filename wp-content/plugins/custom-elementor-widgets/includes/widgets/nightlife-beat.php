@@ -99,6 +99,15 @@ class Nightlife_Beat extends Base_Widget {
 			)
 		);
 
+		$this->add_control(
+			'strip',
+			array(
+				'label'     => esc_html__( 'Closing picture', 'custom-elementor-widgets' ),
+				'type'      => Controls_Manager::MEDIA,
+				'separator' => 'before',
+			)
+		);
+
 		$this->end_controls_section();
 
 		$this->start_controls_section(
@@ -322,7 +331,10 @@ class Nightlife_Beat extends Base_Widget {
 				?>
 			</div>
 
-			<span class="custom-nightlife-beat__strip" aria-hidden="true"></span>
+			<?php $strip = isset( $settings['strip']['url'] ) ? trim( (string) $settings['strip']['url'] ) : ''; ?>
+			<?php if ( '' !== $strip ) : ?>
+				<span class="custom-nightlife-beat__strip"><?php $this->media( $strip ); ?></span>
+			<?php endif; ?>
 		</div>
 		<?php
 	}

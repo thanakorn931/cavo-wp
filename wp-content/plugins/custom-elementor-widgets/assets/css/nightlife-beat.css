@@ -2,8 +2,8 @@
  * Nightlife, hall of beats — one section of the design.
  *
  * A row of cards that runs off the edge of the band, moved one card at a time.
- * Each card is a picture in a metal edge with the house mark on it. The strip
- * of picture beneath closes the band; it is the design's own.
+ * Each card is a picture in a metal edge with the house mark on it, and a
+ * picture the client chooses closes the band beneath them.
  */
 
 .custom-nightlife-beat__band {
@@ -12,7 +12,7 @@
 	align-items: stretch;
 	gap: 40px;
 	width: 100%;
-	padding: 90px 0 48px 0;
+	padding: 90px 0 47px 0;
 	box-sizing: border-box;
 
 	background-image:
@@ -21,7 +21,9 @@
 }
 
 .custom-nightlife-beat__heading {
-	margin: 0 0 0 48px;
+	/* The band runs the full width; what stands in it is held to 1440 and
+	   centred, so the inset is the design's 48 plus whatever the margin is. */
+	margin: 0 0 0 calc( 48px + max( 0px, calc( ( 100% - 1440px ) / 2 ) ) );
 	padding: 0;
 	color: inherit;
 	text-transform: uppercase;
@@ -40,7 +42,7 @@
 	display: flex;
 	align-items: flex-start;
 	gap: 18px;
-	padding-left: 48px;
+	padding-left: calc( 48px + max( 0px, calc( ( 100% - 1440px ) / 2 ) ) );
 	transition: transform 500ms ease-in-out;
 	will-change: transform;
 }
@@ -171,7 +173,7 @@
 	gap: 24px;
 	width: 100%;
 	margin-top: -30px;
-	padding-right: 48px;
+	padding-right: calc( 48px + max( 0px, calc( ( 100% - 1440px ) / 2 ) ) );
 	box-sizing: border-box;
 }
 
@@ -221,15 +223,23 @@
 	transform: scaleX( -1 );
 }
 
-/* The strip the band ends on — the design's own picture, not the client's. */
+/* The strip the band ends on: full width, and 260 tall where the band is at the
+   width the file draws it. Past that it holds its height rather than growing. */
 .custom-nightlife-beat__strip {
 	display: block;
 	width: 100%;
 	aspect-ratio: 1440 / 260;
-	background-image: url( "../img/nightlife-beat-strip.webp" );
-	background-repeat: no-repeat;
-	background-position: center;
-	background-size: cover;
+	max-height: 260px;
+	overflow: hidden;
+}
+
+.custom-nightlife-beat__strip img,
+.custom-nightlife-beat__strip video {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
 }
 
 @media ( prefers-reduced-motion: reduce ) {
