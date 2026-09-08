@@ -165,7 +165,19 @@
 		// Doing it on the way in put a jump and a slide in the same breath, and
 		// the two together are what the eye reads as a stumble. The copies are
 		// identical, so the reader never sees the return.
+		// The run is brought back to the middle once the move has finished. Doing
+		// it on the way in put a jump and a slide in the same breath, and the two
+		// together are what the eye reads as a stumble. The copies are identical,
+		// so the reader never sees the return.
+		//
+		// It happens once per move, whichever of the two ways of learning the
+		// move is over arrives first.
 		function settle() {
+			if ( ! moving ) {
+				return;
+			}
+
+			window.clearTimeout( settle.timer );
 			moving = false;
 
 			if ( current < many || current >= many * 2 ) {
@@ -210,7 +222,6 @@
 		} );
 
 		window.addEventListener( 'resize', function () {
-			settle();
 			place( false );
 		} );
 
