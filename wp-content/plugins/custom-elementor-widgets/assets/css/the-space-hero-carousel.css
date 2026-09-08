@@ -246,3 +246,12 @@
 	color: inherit;
 	text-decoration: none;
 }
+
+/* While the run is being returned to the middle, nothing is allowed to travel.
+   The transform is jumped, but the slides carry a transition of their own, and
+   a width easing into place over half a second after the move has finished is
+   read as a second stumble. */
+.custom-space-hero.is-settling .custom-space-hero__track,
+.custom-space-hero.is-settling .custom-space-hero__slide {
+	transition: none;
+}

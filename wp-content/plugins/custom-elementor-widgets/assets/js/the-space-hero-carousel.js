@@ -183,8 +183,16 @@
 			if ( current < many || current >= many * 2 ) {
 				current += current < many ? many : -many;
 
+				// Nothing travels while the run is put back: the slides ease
+				// their own width, and that easing after the move has ended is
+				// the second stumble.
+				root.classList.add( 'is-settling' );
+
 				mark();
 				place( false );
+
+				void root.offsetWidth;
+				root.classList.remove( 'is-settling' );
 			}
 		}
 
