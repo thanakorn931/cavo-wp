@@ -267,55 +267,7 @@ class Home_The_Space extends Base_Widget {
 			)
 		);
 
-		$this->add_control(
-			'veil_color',
-			array(
-				'label'     => esc_html__( 'Veil', 'custom-elementor-widgets' ),
-				'type'      => Controls_Manager::COLOR,
-				'default'   => 'rgba(0, 0, 0, 0.5)',
-				'selectors' => array(
-					'{{WRAPPER}} .custom-home-space__veil' => 'background-color: {{VALUE}};',
-				),
-			)
-		);
-
-		$this->add_control(
-			'wash_near',
-			array(
-				'label'     => esc_html__( 'Wash, nearest', 'custom-elementor-widgets' ),
-				'type'      => Controls_Manager::COLOR,
-				'default'   => 'rgba(157, 84, 52, 0.7)',
-				'selectors' => array(
-					'{{WRAPPER}} .custom-home-space' => '--custom-home-space-near: {{VALUE}};',
-				),
-			)
-		);
-
-		$this->add_control(
-			'wash_mid',
-			array(
-				'label'     => esc_html__( 'Wash, middle', 'custom-elementor-widgets' ),
-				'type'      => Controls_Manager::COLOR,
-				'default'   => 'rgba(100, 49, 26, 0.7)',
-				'selectors' => array(
-					'{{WRAPPER}} .custom-home-space' => '--custom-home-space-mid: {{VALUE}};',
-				),
-			)
-		);
-
-		$this->add_control(
-			'wash_far',
-			array(
-				'label'     => esc_html__( 'Wash, deepest', 'custom-elementor-widgets' ),
-				'type'      => Controls_Manager::COLOR,
-				'default'   => 'rgba(76, 37, 19, 0.7)',
-				'selectors' => array(
-					'{{WRAPPER}} .custom-home-space' => '--custom-home-space-far: {{VALUE}};',
-				),
-			)
-		);
-
-		$this->add_control(
+										$this->add_control(
 			'wash_near',
 			array(
 				'label'     => esc_html__( 'Wash, lighter', 'custom-elementor-widgets' ),
@@ -591,8 +543,6 @@ class Home_The_Space extends Base_Widget {
 		?>
 		<div class="custom-home-space">
 			<span class="custom-home-space__picture" aria-hidden="true"><?php $this->media( $picture ); ?></span>
-			<span class="custom-home-space__veil" aria-hidden="true"></span>
-			<span class="custom-home-space__wash e-no-lazyload" aria-hidden="true"></span>
 
 			<<?php echo esc_attr( $tag ); ?> class="custom-home-space__heading"><?php
 				echo esc_html( $this->text( $settings, 'heading' ) );

@@ -20,9 +20,7 @@
 	overflow: hidden;
 }
 
-.custom-home-space__picture,
-.custom-home-space__veil,
-.custom-home-space__wash {
+.custom-home-space__picture {
 	position: absolute;
 	inset: 0;
 	pointer-events: none;
@@ -39,20 +37,6 @@
 	height: 100%;
 	object-fit: cover;
 	object-position: center center;
-}
-
-/* The wash the file lays over the picture, read from the file. */
-.custom-home-space__wash {
-	/* The builder defers a background far enough down the page by writing
-	   `none !important` over it, and a wash the design draws is not a picture
-	   it can defer. The element says so with the builder's own opt-out class,
-	   which its rule excludes, rather than by fighting the weight. */
-	background-image: linear-gradient(
-		28.163deg,
-		var( --custom-home-space-near, rgba( 157, 84, 52, 0.7 ) ) 17.466%,
-		var( --custom-home-space-mid, rgba( 100, 49, 26, 0.7 ) ) 62.65%,
-		var( --custom-home-space-far, rgba( 76, 37, 19, 0.7 ) ) 81.22%
-	);
 }
 
 .custom-home-space__heading {
