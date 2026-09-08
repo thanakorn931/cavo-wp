@@ -38,12 +38,15 @@
 
 /* The wash the file lays over the picture, read from the file. */
 .custom-home-space__wash {
+	/* The builder's lazy-loading writes `background-image: none !important` over
+	   any band far enough down the page, and a wash the design draws is not a
+	   picture it can defer. Answered at the only weight that outranks it. */
 	background-image: linear-gradient(
 		28.163deg,
 		var( --custom-home-space-near, rgba( 157, 84, 52, 0.7 ) ) 17.466%,
 		var( --custom-home-space-mid, rgba( 100, 49, 26, 0.7 ) ) 62.65%,
 		var( --custom-home-space-far, rgba( 76, 37, 19, 0.7 ) ) 81.22%
-	);
+	) !important;
 }
 
 .custom-home-space__heading {
