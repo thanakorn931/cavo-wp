@@ -359,7 +359,50 @@ abstract class Base_Widget extends \Elementor\Widget_Base {
 			)
 		);
 
+		$this->register_more_source_controls();
+
 		$this->end_controls_section();
+	}
+
+	/**
+	 * What a section wants to ask about its source beyond where it comes from.
+	 *
+	 * Asked here so it stands with the rest of the questions about the list
+	 * rather than in a section of its own.
+	 */
+	protected function register_more_source_controls() {}
+
+	/**
+	 * Every field the client has, named as they named it.
+	 *
+	 * Read from the field plugin where it is active. Without it there is no list
+	 * to offer, and a box to type a key into would be a box to mistype one into.
+	 *
+	 * @return array
+	 */
+	public static function field_options() {
+		$options = array( '' => esc_html__( 'None', 'custom-elementor-widgets' ) );
+
+		if ( ! function_exists( 'acf_get_field_groups' ) || ! function_exists( 'acf_get_fields' ) ) {
+			return $options;
+		}
+
+		foreach ( (array) acf_get_field_groups() as $group ) {
+			foreach ( (array) acf_get_fields( $group ) as $field ) {
+				if ( empty( $field['name'] ) ) {
+					continue;
+				}
+
+				$options[ $field['name'] ] = sprintf(
+					/* translators: 1: the field's label, 2: the group it belongs to. */
+					esc_html__( '%1$s — %2$s', 'custom-elementor-widgets' ),
+					isset( $field['label'] ) ? $field['label'] : $field['name'],
+					isset( $group['title'] ) ? $group['title'] : ''
+				);
+			}
+		}
+
+		return $options;
 	}
 
 	/**

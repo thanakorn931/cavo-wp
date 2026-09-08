@@ -11,6 +11,7 @@
 
 namespace Custom_Elementor_Widgets;
 
+use Elementor\Controls_Manager;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -57,6 +58,25 @@ abstract class Event_Widget extends Base_Widget {
 	}
 
 	/**
+	 * Which field carries the third fact the card states.
+	 *
+	 * The design draws a kind of music beside the day and the hour. Which field
+	 * holds it is the client's, the same way the post type is, so nothing here
+	 * names one and a list of something else is served by the same card.
+	 */
+	protected function register_more_source_controls() {
+		$this->add_control(
+			'genre_field',
+			array(
+				'label'   => esc_html__( 'Genre', 'custom-elementor-widgets' ),
+				'type'    => Controls_Manager::SELECT,
+				'default' => 'event_genre',
+				'options' => self::field_options(),
+			)
+		);
+	}
+
+	/**
 	 * The items the section shows.
 	 *
 	 * Everything the source holds is fetched; how much of it is on screen at
@@ -91,7 +111,7 @@ abstract class Event_Widget extends Base_Widget {
 		$facts = array(
 			'calendar' => (string) get_the_date( 'd M Y', $post ),
 			'timer'    => (string) get_the_time( 'h : i A', $post ),
-			'note'     => $this->field( $post, 'event_genre' ),
+			'note'     => $this->field( $post, (string) $this->get_settings_for_display( 'genre_field' ) ),
 		);
 
 		$facts = array_filter( $facts );
@@ -119,6 +139,10 @@ abstract class Event_Widget extends Base_Widget {
 	 * @return string
 	 */
 	protected function field( $post, $name ) {
+		if ( '' === $name ) {
+			return '';
+		}
+
 		if ( function_exists( 'get_field' ) ) {
 			return trim( (string) get_field( $name, $post->ID ) );
 		}

@@ -85,6 +85,7 @@ final class Widgets_Loader {
 	 * @param \Elementor\Core\DynamicTags\Manager $tags_manager Elementor's tag manager.
 	 */
 	public function register_tags( $tags_manager ) {
+		require_once CUSTOM_ELEMENTOR_WIDGETS_PATH . 'includes/class-base-widget.php';
 		require_once CUSTOM_ELEMENTOR_WIDGETS_PATH . 'includes/class-field-tag.php';
 
 		$tags_manager->register_group(

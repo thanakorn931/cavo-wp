@@ -72,7 +72,7 @@ final class Field_Tag extends Tag {
 			array(
 				'label'   => esc_html__( 'Field', 'custom-elementor-widgets' ),
 				'type'    => Controls_Manager::SELECT,
-				'options' => self::field_options(),
+				'options' => Base_Widget::field_options(),
 			)
 		);
 	}
@@ -123,38 +123,5 @@ final class Field_Tag extends Tag {
 		}
 
 		return '';
-	}
-
-	/**
-	 * Every field the client has, named as they named it.
-	 *
-	 * Read from the field plugin where it is active. Without it there is no list
-	 * to offer, and a box to type a key into would be a box to mistype one into.
-	 *
-	 * @return array
-	 */
-	private static function field_options() {
-		$options = array( '' => esc_html__( 'None', 'custom-elementor-widgets' ) );
-
-		if ( ! function_exists( 'acf_get_field_groups' ) || ! function_exists( 'acf_get_fields' ) ) {
-			return $options;
-		}
-
-		foreach ( (array) acf_get_field_groups() as $group ) {
-			foreach ( (array) acf_get_fields( $group ) as $field ) {
-				if ( empty( $field['name'] ) ) {
-					continue;
-				}
-
-				$options[ $field['name'] ] = sprintf(
-					/* translators: 1: the field's label, 2: the group it belongs to. */
-					esc_html__( '%1$s — %2$s', 'custom-elementor-widgets' ),
-					isset( $field['label'] ) ? $field['label'] : $field['name'],
-					isset( $group['title'] ) ? $group['title'] : ''
-				);
-			}
-		}
-
-		return $options;
 	}
 }
