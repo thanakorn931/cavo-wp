@@ -227,7 +227,7 @@ function kadence_child_event_post_type() {
 			'has_archive'   => false,
 			'menu_position' => 21,
 			'menu_icon'     => 'dashicons-calendar-alt',
-			'supports'      => array( 'title', 'editor', 'excerpt', 'thumbnail', 'revisions' ),
+			'supports'      => array( 'title', 'editor', 'thumbnail', 'revisions' ),
 			'show_in_rest'  => true,
 			'rewrite'       => array( 'slug' => 'event' ),
 		)
@@ -251,6 +251,18 @@ function kadence_child_event_post_type() {
 	);
 }
 add_action( 'init', 'kadence_child_event_post_type' );
+
+/**
+ * A post is written once, not summarised beside itself.
+ *
+ * The words the client types are the description, and a card that shows less of
+ * them shows the beginning of them. A second box asking for the same thing in
+ * fewer words is a second thing to keep in step with the first.
+ */
+function kadence_child_one_description() {
+	remove_post_type_support( 'post', 'excerpt' );
+}
+add_action( 'init', 'kadence_child_one_description', 20 );
 
 /**
  * The two categories the design draws, put there once.
@@ -2956,7 +2968,7 @@ function kadence_child_subscriber_link( $id, $arg = 'cavo_unsub' ) {
 function kadence_child_broadcast_body( $post, $who ) {
 	$title   = get_the_title( $post );
 	$link    = get_permalink( $post );
-	$excerpt = has_excerpt( $post ) ? get_the_excerpt( $post ) : wp_trim_words( wp_strip_all_tags( (string) $post->post_content ), 55 );
+	$excerpt = get_the_excerpt( $post );
 	$image   = get_the_post_thumbnail_url( $post, 'large' );
 	$unsub   = kadence_child_subscriber_link( $who, 'cavo_unsub' );
 
