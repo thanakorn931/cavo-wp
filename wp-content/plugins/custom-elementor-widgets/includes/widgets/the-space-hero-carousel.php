@@ -68,7 +68,6 @@ class The_Space_Hero_Carousel extends Base_Widget {
 	protected function register_controls() {
 		$this->register_slide_controls();
 		$this->register_action_controls();
-		$this->register_arrow_controls();
 		$this->register_title_style_controls();
 		$this->register_action_style_controls();
 	}
@@ -196,36 +195,6 @@ class The_Space_Hero_Carousel extends Base_Widget {
 				'label_block' => false,
 			)
 		);
-
-		$this->end_controls_section();
-	}
-
-	/**
-	 * Content → Arrows.
-	 */
-	private function register_arrow_controls() {
-		$this->start_controls_section(
-			'section_arrows',
-			array(
-				'label' => esc_html__( 'Arrows', 'custom-elementor-widgets' ),
-				'tab'   => Controls_Manager::TAB_CONTENT,
-			)
-		);
-
-		foreach ( array(
-			'arrow_previous' => esc_html__( 'Previous', 'custom-elementor-widgets' ),
-			'arrow_next'     => esc_html__( 'Next', 'custom-elementor-widgets' ),
-		) as $name => $label ) {
-			$this->add_control(
-				$name,
-				array(
-					'label'       => $label,
-					'type'        => Controls_Manager::ICONS,
-					'skin'        => 'inline',
-					'label_block' => false,
-				)
-			);
-		}
 
 		$this->end_controls_section();
 	}
@@ -451,8 +420,8 @@ class The_Space_Hero_Carousel extends Base_Widget {
 				<?php
 				// An arrow means nothing until there is somewhere else to go.
 				if ( count( $slides ) > 1 ) {
-					$this->render_arrow( $settings, 'arrow_previous', 'prev', __( 'Previous', 'custom-elementor-widgets' ) );
-					$this->render_arrow( $settings, 'arrow_next', 'next', __( 'Next', 'custom-elementor-widgets' ) );
+					$this->render_arrow( 'prev', __( 'Previous', 'custom-elementor-widgets' ) );
+					$this->render_arrow( 'next', __( 'Next', 'custom-elementor-widgets' ) );
 				}
 				?>
 			</div>
@@ -509,24 +478,16 @@ class The_Space_Hero_Carousel extends Base_Widget {
 	/**
 	 * One of the two arrows.
 	 *
-	 * @param array  $settings The widget's settings.
-	 * @param string $key      The control's name.
 	 * @param string $side     Which arrow this is.
 	 * @param string $label    What a reader who cannot see it is told.
 	 */
-	private function render_arrow( $settings, $key, $side, $label ) {
+	private function render_arrow( $side, $label ) {
 		?>
 		<button
 			type="button"
-			class="custom-space-hero__arrow custom-space-hero__arrow--<?php echo esc_attr( $side ); ?>"
+			class="custom-the-space-hero-carousel__arrow custom-the-space-hero-carousel__arrow--<?php echo esc_attr( $side ); ?>"
 			aria-label="<?php echo esc_attr( $label ); ?>"
-		>
-			<?php
-			if ( ! empty( $settings[ $key ]['value'] ) ) {
-				Icons_Manager::render_icon( $settings[ $key ], array( 'aria-hidden' => 'true' ) );
-			}
-			?>
-		</button>
+		><svg viewBox="10 6 56 56" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true"><path d="M50.0008 34.0006C50.0008 34.2658 49.8954 34.5201 49.7079 34.7077C49.5204 34.8952 49.266 35.0006 49.0008 35.0006H29.4145L36.7083 42.2931C36.8012 42.386 36.8749 42.4963 36.9252 42.6177C36.9755 42.7391 37.0013 42.8692 37.0013 43.0006C37.0013 43.132 36.9755 43.2621 36.9252 43.3835C36.8749 43.5048 36.8012 43.6151 36.7083 43.7081C36.6154 43.801 36.5051 43.8747 36.3837 43.9249C36.2623 43.9752 36.1322 44.0011 36.0008 44.0011C35.8694 44.0011 35.7393 43.9752 35.6179 43.9249C35.4965 43.8747 35.3862 43.801 35.2933 43.7081L26.2933 34.7081C26.2003 34.6152 26.1266 34.5049 26.0762 34.3835C26.0259 34.2621 26 34.132 26 34.0006C26 33.8691 26.0259 33.739 26.0762 33.6176C26.1266 33.4962 26.2003 33.3859 26.2933 33.2931L35.2933 24.2931C35.4809 24.1054 35.7354 24 36.0008 24C36.2662 24 36.5206 24.1054 36.7083 24.2931C36.8959 24.4807 37.0013 24.7352 37.0013 25.0006C37.0013 25.2659 36.8959 25.5204 36.7083 25.7081L29.4145 33.0006H49.0008C49.266 33.0006 49.5204 33.1059 49.7079 33.2934C49.8954 33.481 50.0008 33.7353 50.0008 34.0006Z" fill="#121212"/></svg></button>
 		<?php
 	}
 }
