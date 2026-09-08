@@ -5,12 +5,19 @@
  * the band. Every measurement here was read from the design file.
  */
 
+/* The ground is a radial the file draws from the middle of the band outward:
+   an ellipse exactly half the band each way, centred on it. */
 .custom-home-contact {
 	display: flex;
 	align-items: stretch;
 	width: 100%;
 	padding: 0 max( 0px, calc( ( 100% - 1440px ) / 2 ) );
 	box-sizing: border-box;
+	background-image: radial-gradient(
+		50% 50% at 50% 50%,
+		var( --custom-home-contact-centre, #ebe4ca ) 6.25%,
+		var( --custom-home-contact-edge, #c9bca6 ) 100%
+	);
 }
 
 /* The file puts the words at x=48 in a half 720 wide and runs them to its edge,
@@ -21,12 +28,13 @@
 	align-items: flex-start;
 	flex: 0 0 50%;
 	min-width: 0;
+	gap: 64px;
 	padding: 96px 0 96px 48px;
 	box-sizing: border-box;
 }
 
 .custom-home-contact__heading {
-	margin: 0 0 64px;
+	margin: 0;
 	padding: 0;
 	text-transform: uppercase;
 }
@@ -37,12 +45,7 @@
 	align-items: flex-start;
 	gap: 16px;
 	width: 100%;
-	padding-bottom: 64px;
 	box-sizing: border-box;
-}
-
-.custom-home-contact__block:last-child {
-	padding-bottom: 0;
 }
 
 .custom-home-contact__title,
@@ -53,27 +56,30 @@
 	overflow-wrap: anywhere;
 }
 
+.custom-home-contact__title {
+	text-transform: uppercase;
+}
+
 /* The hours are two columns the file sets, not a table. */
 .custom-home-contact__hour {
 	display: flex;
-	align-items: baseline;
-	gap: 16px;
+	align-items: flex-start;
+	gap: 64px;
 	margin: 0;
 	padding: 0;
-	width: 286px;
 	max-width: 100%;
 }
 
-.custom-home-contact__hour + .custom-home-contact__hour {
-	margin-top: -1px;
-}
-
 .custom-home-contact__hour-name {
-	flex: 0 0 175px;
+	width: 127px;
+	flex: 0 0 auto;
 }
 
+/* The time is the file's medium, where the name beside it is its regular. */
 .custom-home-contact__hour-time {
-	flex: 1 1 auto;
+	flex: 0 0 auto;
+	font-weight: 500;
+	white-space: nowrap;
 }
 
 .custom-home-contact__ways {

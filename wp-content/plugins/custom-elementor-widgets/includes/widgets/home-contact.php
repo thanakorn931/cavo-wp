@@ -326,21 +326,34 @@ class Home_Contact extends Base_Widget {
 		$this->add_control(
 			'background',
 			array(
-				'label'     => esc_html__( 'Background', 'custom-elementor-widgets' ),
+				'label'     => esc_html__( 'Background, centre', 'custom-elementor-widgets' ),
 				'type'      => Controls_Manager::COLOR,
-				'default'   => '#FAF6EA',
+				'default'   => '#EBE4CA',
 				'selectors' => array(
-					'{{WRAPPER}} .custom-home-contact' => 'background-color: {{VALUE}};',
+					'{{WRAPPER}} .custom-home-contact' => '--custom-home-contact-centre: {{VALUE}};',
 				),
 			)
 		);
 
 		$this->add_control(
+			'background_edge',
+			array(
+				'label'     => esc_html__( 'Background, edge', 'custom-elementor-widgets' ),
+				'type'      => Controls_Manager::COLOR,
+				'default'   => '#C9BCA6',
+				'selectors' => array(
+					'{{WRAPPER}} .custom-home-contact' => '--custom-home-contact-edge: {{VALUE}};',
+				),
+			)
+		);
+
+		
+		$this->add_control(
 			'heading_color',
 			array(
 				'label'     => esc_html__( 'Heading', 'custom-elementor-widgets' ),
 				'type'      => Controls_Manager::COLOR,
-				'default'   => '#121212',
+				'default'   => '#3A2114',
 				'separator' => 'before',
 				'selectors' => array(
 					'{{WRAPPER}} .custom-home-contact__heading' => 'color: {{VALUE}};',
