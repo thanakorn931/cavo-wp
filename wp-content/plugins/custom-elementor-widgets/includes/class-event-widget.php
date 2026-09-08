@@ -58,20 +58,19 @@ abstract class Event_Widget extends Base_Widget {
 	}
 
 	/**
-	 * Which field carries the third fact the card states.
+	 * The third fact the card states beside the day and the hour.
 	 *
-	 * The design draws a kind of music beside the day and the hour. Which field
-	 * holds it is the client's, the same way the post type is, so nothing here
-	 * names one and a list of something else is served by the same card.
+	 * Typed, it is the section's and every card states the same thing. Pointed
+	 * at a field, it is the item's and each card states its own. Which of the
+	 * two is the client's to decide, so nothing here names a field.
 	 */
 	protected function register_more_source_controls() {
 		$this->add_control(
-			'genre_field',
+			'genre',
 			array(
 				'label'   => esc_html__( 'Genre', 'custom-elementor-widgets' ),
-				'type'    => Controls_Manager::SELECT,
-				'default' => 'event_genre',
-				'options' => self::field_options(),
+				'type'    => Controls_Manager::TEXT,
+				'dynamic' => array( 'active' => true ),
 			)
 		);
 	}
@@ -111,7 +110,7 @@ abstract class Event_Widget extends Base_Widget {
 		$facts = array(
 			'calendar' => (string) get_the_date( 'd M Y', $post ),
 			'timer'    => (string) get_the_time( 'h : i A', $post ),
-			'note'     => $this->field( $post, (string) $this->get_settings_for_display( 'genre_field' ) ),
+			'note'     => $this->as_item( 'genre', $post ),
 		);
 
 		$facts = array_filter( $facts );
@@ -132,22 +131,34 @@ abstract class Event_Widget extends Base_Widget {
 	}
 
 	/**
-	 * One field of an item, where the plugin that holds it is active.
+	 * One setting read as the item being drawn rather than as the page.
 	 *
+	 * A control pointed at a field answers about whatever post is standing when
+	 * it is asked, and Elementor asks once and keeps the answer. Asked again per
+	 * item, with that item standing, a typed value comes back the same for every
+	 * card and a field comes back as each card's own.
+	 *
+	 * @param string   $key  The setting.
 	 * @param \WP_Post $post The item.
-	 * @param string   $name The field's name.
 	 * @return string
 	 */
-	protected function field( $post, $name ) {
-		if ( '' === $name ) {
-			return '';
+	protected function as_item( $key, $post ) {
+		$keep = isset( $GLOBALS['post'] ) ? $GLOBALS['post'] : null;
+
+		$GLOBALS['post'] = $post; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- put back below.
+		setup_postdata( $post );
+
+		$settings = $this->parse_dynamic_settings( $this->get_settings() );
+
+		$GLOBALS['post'] = $keep; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- what it was.
+
+		if ( $keep ) {
+			setup_postdata( $keep );
+		} else {
+			wp_reset_postdata();
 		}
 
-		if ( function_exists( 'get_field' ) ) {
-			return trim( (string) get_field( $name, $post->ID ) );
-		}
-
-		return trim( (string) get_post_meta( $post->ID, $name, true ) );
+		return isset( $settings[ $key ] ) ? trim( (string) $settings[ $key ] ) : '';
 	}
 
 	/**
