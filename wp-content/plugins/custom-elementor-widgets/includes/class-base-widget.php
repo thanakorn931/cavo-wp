@@ -303,12 +303,26 @@ abstract class Base_Widget extends \Elementor\Widget_Base {
 	 * @return array
 	 */
 	protected function item_settings( $post ) {
+		global $wp_query;
+
 		$keep = isset( $GLOBALS['post'] ) ? $GLOBALS['post'] : null;
+
+		// What is standing has two answers: the post being printed, and the post
+		// the page was asked for. A tag may read either, so both are the item
+		// while it is read, and both are put back after.
+		$was_object = isset( $wp_query->queried_object ) ? $wp_query->queried_object : null;
+		$was_id     = isset( $wp_query->queried_object_id ) ? $wp_query->queried_object_id : null;
 
 		$GLOBALS['post'] = $post; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- put back below.
 		setup_postdata( $post );
 
+		$wp_query->queried_object    = $post;
+		$wp_query->queried_object_id = $post->ID;
+
 		$settings = $this->parse_dynamic_settings( $this->get_settings() );
+
+		$wp_query->queried_object    = $was_object;
+		$wp_query->queried_object_id = $was_id;
 
 		$GLOBALS['post'] = $keep; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- what it was.
 
