@@ -105,6 +105,22 @@
 		opacity 300ms ease-in-out;
 }
 
+/* The theme paints a bare button on every state it has; a class alone does not
+   outrank that, so each state says its own ground here. */
+.custom-membership-hero__arrow:hover,
+.custom-membership-hero__arrow:focus,
+.custom-membership-hero__arrow:focus-visible,
+.custom-membership-hero__arrow:active {
+	background: none;
+	border-color: currentColor;
+	box-shadow: none;
+}
+
+.custom-membership-hero__arrow:focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: 2px;
+}
+
 .custom-membership-hero__arrow[disabled] {
 	cursor: default;
 }
