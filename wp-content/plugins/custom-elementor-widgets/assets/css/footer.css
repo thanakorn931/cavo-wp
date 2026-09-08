@@ -165,18 +165,21 @@
 	margin: 0;
 }
 
-/* Right — the two lists of links. */
+/* Right — the links. */
 .custom-footer__menus {
 	display: flex;
 	align-items: flex-start;
-	gap: 96px;
 }
 
+/* Two columns of one list, filled across before they are filled down: the
+   order the client typed is read left to right, the way it is read on a page. */
 .custom-footer__menu ul {
-	display: flex;
-	flex-direction: column;
-	align-items: flex-start;
-	gap: 24px;
+	display: grid;
+	grid-template-columns: repeat( 2, max-content );
+	justify-content: start;
+	align-items: start;
+	column-gap: 96px;
+	row-gap: 24px;
 	margin: 0;
 	padding: 0;
 	list-style: none;

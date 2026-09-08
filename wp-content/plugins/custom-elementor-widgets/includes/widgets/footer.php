@@ -196,19 +196,9 @@ class Footer extends Base_Widget {
 		);
 
 		$this->add_control(
-			'menu_one',
+			'menu',
 			array(
-				'label'   => esc_html__( 'First list', 'custom-elementor-widgets' ),
-				'type'    => Controls_Manager::SELECT,
-				'default' => '',
-				'options' => $this->menu_options(),
-			)
-		);
-
-		$this->add_control(
-			'menu_two',
-			array(
-				'label'   => esc_html__( 'Second list', 'custom-elementor-widgets' ),
+				'label'   => esc_html__( 'Menu', 'custom-elementor-widgets' ),
 				'type'    => Controls_Manager::SELECT,
 				'default' => '',
 				'options' => $this->menu_options(),
@@ -642,31 +632,23 @@ class Footer extends Base_Widget {
 	private function render_editor_hint() {
 		$settings = $this->get_settings_for_display();
 
-		if ( ! empty( $this->chosen_menus( $settings ) ) ) {
+		if ( 0 !== $this->chosen_menu( $settings ) ) {
 			return;
 		}
 
-		$this->editor_hint( __( 'This footer is waiting for its lists: build them in Appearance → Menus, then choose them on the Content tab.', 'custom-elementor-widgets' ) );
+		$this->editor_hint( __( 'This footer is waiting for its links: build a menu in Appearance → Menus, then choose it on the Content tab.', 'custom-elementor-widgets' ) );
 	}
 
 	/**
-	 * The menus the client chose that still exist, in the order they stand.
+	 * The menu the client chose, if it still exists.
 	 *
 	 * @param array $settings The widget's settings.
-	 * @return array
+	 * @return int
 	 */
-	private function chosen_menus( $settings ) {
-		$kept = array();
+	private function chosen_menu( $settings ) {
+		$menu = isset( $settings['menu'] ) ? (int) $settings['menu'] : 0;
 
-		foreach ( array( 'menu_one', 'menu_two' ) as $which ) {
-			$menu = isset( $settings[ $which ] ) ? (int) $settings[ $which ] : 0;
-
-			if ( 0 !== $menu && wp_get_nav_menu_object( $menu ) ) {
-				$kept[] = $menu;
-			}
-		}
-
-		return $kept;
+		return ( 0 !== $menu && wp_get_nav_menu_object( $menu ) ) ? $menu : 0;
 	}
 
 	/**
@@ -782,21 +764,22 @@ class Footer extends Base_Widget {
 	}
 
 	/**
-	 * The two lists — whichever menus the client chose for them.
+	 * The links — one menu, laid out across before it is laid out down.
+	 *
+	 * The design draws two columns, and they are two columns of one list: the
+	 * client keeps one order and the row it breaks on is the design's.
 	 *
 	 * @param array $settings The widget's settings.
 	 */
 	private function render_menus( $settings ) {
-		$menus = $this->chosen_menus( $settings );
+		$menu = $this->chosen_menu( $settings );
 
-		if ( empty( $menus ) ) {
+		if ( 0 === $menu ) {
 			return;
 		}
 		?>
 		<div class="custom-footer__menus">
-			<?php foreach ( $menus as $menu ) : ?>
-				<nav class="custom-footer__menu"><?php $this->menu( $menu ); ?></nav>
-			<?php endforeach; ?>
+			<nav class="custom-footer__menu"><?php $this->menu( $menu ); ?></nav>
 		</div>
 		<?php
 	}
