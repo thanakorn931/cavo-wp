@@ -34,6 +34,12 @@
 .custom-dining-carousel__stage {
 	position: relative;
 	width: 100%;
+	/* The run is cut to the width the file draws the band at. Left to the width
+	   of the screen the cut falls outside the run and every slide shows at once
+	   instead of the one being read with its neighbours at the edges. */
+	max-width: 1440px;
+	margin-left: auto;
+	margin-right: auto;
 	height: 720px;
 	overflow: hidden;
 }
