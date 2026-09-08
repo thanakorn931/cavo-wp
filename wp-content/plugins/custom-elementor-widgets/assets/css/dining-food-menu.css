@@ -28,7 +28,7 @@
 	gap: 12px;
 	flex: 0 0 auto;
 	width: 578px;
-	min-height: 608px;
+	min-height: 580px;
 }
 
 .custom-dining-menu__heading {
@@ -63,24 +63,25 @@
 		opacity 300ms ease-in-out;
 }
 
-/* The pictures, and the dots that say which one is showing. */
+/* The pictures, and the dots that say which one is showing.
+
+   The picture starts below the statement beside it, not level with it: the
+   file sets it down the page, and the drop belongs to the picture rather than
+   to anything it is set against. */
 .custom-dining-menu__gallery {
 	position: relative;
 	flex: 0 0 auto;
 	width: 640px;
 	height: 548px;
+	margin-top: 60px;
 	overflow: hidden;
 }
 
-/* The picture stands where the file puts it inside the box: down a little from
-   the top, and short of its foot. */
 .custom-dining-menu__gallery img {
 	position: absolute;
-	top: 28px;
-	right: 0;
-	left: 0;
-	height: 492px;
+	inset: 0;
 	width: 100%;
+	height: 100%;
 	display: block;
 	border-radius: 24px;
 	object-fit: cover;
@@ -88,9 +89,8 @@
 }
 
 .custom-dining-menu__gallery .custom-media-empty {
-	top: 28px;
-	height: 492px;
-	inset: 28px 0 auto;
+	position: absolute;
+	inset: 0;
 	border-radius: 24px;
 }
 
