@@ -310,18 +310,21 @@ class Nightlife_Program extends Base_Widget {
 	}
 
 	/**
-	 * Which field says when a night is, and what else the card states.
+	 * The facts a night's card states.
 	 *
-	 * The date is asked for by name because the section counts the week by it,
-	 * and a value can be shown but only a name can be searched for. The rest
-	 * are shown and never searched, so they are typed or pointed at a field
-	 * like any other fact on a card.
+	 * Typed, a fact is the section's and every card states the same thing.
+	 * Pointed at a field, it is the night's own. The date is a date rather than
+	 * words, so what is typed into it is picked from a calendar.
 	 */
 	protected function register_more_source_controls() {
-		$this->add_field_control(
-			'date_field',
-			esc_html__( 'Date', 'custom-elementor-widgets' ),
-			array( 'default' => 'event_date' )
+		$this->add_control(
+			'date',
+			array(
+				'label'          => esc_html__( 'Date', 'custom-elementor-widgets' ),
+				'type'           => Controls_Manager::DATE_TIME,
+				'dynamic'        => array( 'active' => true ),
+				'picker_options' => array( 'enableTime' => false ),
+			)
 		);
 
 		foreach ( array(
@@ -345,55 +348,85 @@ class Nightlife_Program extends Base_Widget {
 	 *
 	 * A weekly program is the week ahead, counted on the night's own date rather
 	 * than on when the post appeared: a night set for Friday is written today
-	 * and is still Friday's. A date is stored as a number, which is what can be
-	 * compared, so the field is asked for by name and read unformatted here.
+	 * and is still Friday's. Which night each is only becomes readable once the
+	 * section is standing on it, so the source is asked for its list and the
+	 * week is taken out of that list rather than out of the query.
 	 *
 	 * @param array $settings The widget's settings.
 	 * @return array
 	 */
 	private function nights( $settings ) {
-		$field = isset( $settings['date_field'] ) ? trim( (string) $settings['date_field'] ) : '';
-
-		if ( '' === $field ) {
-			return array();
-		}
-
-		$now = current_time( 'timestamp' ); // phpcs:ignore WordPress.DateTime.CurrentTimeTimestamp.Requested -- the client's day, not UTC's.
-
-		return get_posts(
+		$posts = get_posts(
 			$this->source_query(
 				$settings,
 				array(
 					'posts_per_page'      => 100,
 					'ignore_sticky_posts' => true,
 					'no_found_rows'       => true,
-					'meta_key'            => $field, // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- the list is what the section is.
-					'orderby'             => 'meta_value_num',
-					'order'               => isset( $settings['order'] ) && 'DESC' === $settings['order'] ? 'DESC' : 'ASC',
-					'meta_query'          => array( // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- likewise.
-						array(
-							'key'     => $field,
-							'value'   => array( gmdate( 'Ymd', $now ), gmdate( 'Ymd', $now + ( 7 * DAY_IN_SECONDS ) ) ),
-							'compare' => 'BETWEEN',
-							'type'    => 'NUMERIC',
-						),
-					),
 				)
 			)
 		);
+
+		$now  = current_time( 'timestamp' ); // phpcs:ignore WordPress.DateTime.CurrentTimeTimestamp.Requested -- the client's day, not UTC's.
+		$from = (int) strtotime( 'today', $now );
+		$to   = $from + ( 8 * DAY_IN_SECONDS );
+
+		$week = array();
+
+		foreach ( $posts as $post ) {
+			$when = $this->night_starts( $post );
+
+			if ( 0 === $when || $when < $from || $when >= $to ) {
+				continue;
+			}
+
+			$week[] = array(
+				'when' => $when,
+				'post' => $post,
+			);
+		}
+
+		usort(
+			$week,
+			function ( $a, $b ) {
+				return $a['when'] - $b['when'];
+			}
+		);
+
+		if ( isset( $settings['order'] ) && 'DESC' === $settings['order'] ) {
+			$week = array_reverse( $week );
+		}
+
+		return wp_list_pluck( $week, 'post' );
+	}
+
+	/**
+	 * The day a night falls on, as a moment rather than as words.
+	 *
+	 * @param \WP_Post $post The night.
+	 * @return int
+	 */
+	private function night_starts( $post ) {
+		$night = $this->item_settings( $post );
+		$date  = isset( $night['date'] ) ? trim( (string) $night['date'] ) : '';
+
+		if ( '' === $date ) {
+			return 0;
+		}
+
+		return (int) strtotime( $date );
 	}
 
 	/**
 	 * When a night is, as the design writes it: the day, then the hours.
 	 *
-	 * @param \WP_Post $post     The night.
-	 * @param array    $settings The widget's settings.
-	 * @param array    $night    The settings read as this night.
+	 * @param \WP_Post $post  The night.
+	 * @param array    $night The settings read as this night.
 	 * @return string
 	 */
-	private function when( $post, $settings, $night ) {
-		$stamp = $this->post_field_raw( $post, isset( $settings['date_field'] ) ? $settings['date_field'] : '' );
-		$day   = '' !== $stamp ? date_i18n( 'D', (int) strtotime( $stamp ) ) : '';
+	private function when( $post, $night ) {
+		$starts = $this->night_starts( $post );
+		$day    = $starts ? date_i18n( 'D', $starts ) : '';
 
 		$from = isset( $night['time_from'] ) ? $night['time_from'] : '';
 		$to   = isset( $night['time_to'] ) ? $night['time_to'] : '';
@@ -439,7 +472,7 @@ class Nightlife_Program extends Base_Widget {
 							?></h3>
 
 							<p class="custom-nightlife-program__when"><?php
-								echo esc_html( $this->when( $post, $settings, $night ) );
+								echo esc_html( $this->when( $post, $night ) );
 							?></p>
 
 							<p class="custom-nightlife-program__body"><?php

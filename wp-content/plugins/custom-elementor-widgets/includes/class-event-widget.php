@@ -65,8 +65,17 @@ abstract class Event_Widget extends Base_Widget {
 	 * of the two is the client's to decide, so nothing here names a field.
 	 */
 	protected function register_more_source_controls() {
+		$this->add_control(
+			'date',
+			array(
+				'label'          => esc_html__( 'Date', 'custom-elementor-widgets' ),
+				'type'           => Controls_Manager::DATE_TIME,
+				'dynamic'        => array( 'active' => true ),
+				'picker_options' => array( 'enableTime' => false ),
+			)
+		);
+
 		foreach ( array(
-			'date'  => esc_html__( 'Date', 'custom-elementor-widgets' ),
 			'time'  => esc_html__( 'Time', 'custom-elementor-widgets' ),
 			'genre' => esc_html__( 'Genre', 'custom-elementor-widgets' ),
 		) as $key => $label ) {

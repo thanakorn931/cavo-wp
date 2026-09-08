@@ -412,8 +412,17 @@ class Home_Event extends Base_Widget {
 	 * Pointed at a field, it is the item's and each card states its own.
 	 */
 	protected function register_more_source_controls() {
+		$this->add_control(
+			'date',
+			array(
+				'label'          => esc_html__( 'Date', 'custom-elementor-widgets' ),
+				'type'           => Controls_Manager::DATE_TIME,
+				'dynamic'        => array( 'active' => true ),
+				'picker_options' => array( 'enableTime' => false ),
+			)
+		);
+
 		foreach ( array(
-			'date' => esc_html__( 'Date', 'custom-elementor-widgets' ),
 			'time' => esc_html__( 'Time', 'custom-elementor-widgets' ),
 		) as $key => $label ) {
 			$this->add_control(
