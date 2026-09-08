@@ -591,7 +591,7 @@ class Home_The_Space extends Base_Widget {
 		<div class="custom-home-space">
 			<span class="custom-home-space__picture" aria-hidden="true"><?php $this->media( $picture ); ?></span>
 			<span class="custom-home-space__veil" aria-hidden="true"></span>
-			<span class="custom-home-space__wash" aria-hidden="true"></span>
+			<span class="custom-home-space__wash e-no-lazyload" aria-hidden="true"></span>
 
 			<<?php echo esc_attr( $tag ); ?> class="custom-home-space__heading"><?php
 				echo esc_html( $this->text( $settings, 'heading' ) );
