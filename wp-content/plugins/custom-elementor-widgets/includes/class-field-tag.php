@@ -155,8 +155,14 @@ final class Field_Tag extends Tag {
 			return $value;
 		}
 
-		$when = strtotime( $value );
+		// Read and written in the one frame, so the day that comes back is the
+		// day that was written down.
+		try {
+			$day = new \DateTimeImmutable( $value, new \DateTimeZone( 'UTC' ) );
+		} catch ( \Exception $e ) {
+			return $value;
+		}
 
-		return $when ? gmdate( 'Y-m-d H:i:s', $when ) : $value;
+		return $day->format( 'Y-m-d H:i:s' );
 	}
 }

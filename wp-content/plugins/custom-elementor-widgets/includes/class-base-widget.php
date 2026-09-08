@@ -341,6 +341,34 @@ abstract class Base_Widget extends \Elementor\Widget_Base {
 	}
 
 	/**
+	 * A day as the design writes it.
+	 *
+	 * What a field answers is a moment, so that a section can count by it. What
+	 * a card states is a day. Anything that is not a moment is left as it was
+	 * typed, since then it is words the client chose.
+	 *
+	 * @param string $value The setting.
+	 * @return string
+	 */
+	protected function as_day( $value ) {
+		$value = trim( (string) $value );
+
+		if ( '' === $value ) {
+			return '';
+		}
+
+		// Read and written in the one frame. Read in the server's and written in
+		// another, a day at midnight lands on the day before.
+		try {
+			$day = new \DateTimeImmutable( $value, new \DateTimeZone( 'UTC' ) );
+		} catch ( \Exception $e ) {
+			return $value;
+		}
+
+		return $day->format( 'd M Y' );
+	}
+
+	/**
 	 * Content → Source.
 	 *
 	 * Three controls, each one narrowing the last: the post type, one of its

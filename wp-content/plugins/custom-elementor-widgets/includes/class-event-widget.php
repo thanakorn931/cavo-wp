@@ -126,7 +126,7 @@ abstract class Event_Widget extends Base_Widget {
 		$item = $this->item_settings( $post );
 
 		$facts = array(
-			'calendar' => isset( $item['date'] ) ? $item['date'] : '',
+			'calendar' => $this->as_day( isset( $item['date'] ) ? $item['date'] : '' ),
 			'timer'    => isset( $item['time'] ) ? $item['time'] : '',
 			'note'     => isset( $item['genre'] ) ? $item['genre'] : '',
 		);

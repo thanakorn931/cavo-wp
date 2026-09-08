@@ -400,7 +400,7 @@ class Home_Event extends Base_Widget {
 		$fact = $this->item_settings( $item );
 
 		$hour = isset( $fact['time'] ) ? $fact['time'] : '';
-		$day  = isset( $fact['date'] ) ? $fact['date'] : '';
+		$day  = $this->as_day( isset( $fact['date'] ) ? $fact['date'] : '' );
 
 		return trim( '' !== $hour ? $hour . ' - ' . $day : $day );
 	}
