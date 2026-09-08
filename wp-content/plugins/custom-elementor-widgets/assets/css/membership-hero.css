@@ -32,7 +32,10 @@
    held to 1440, where it ends is not. */
 .custom-membership-hero__plans {
 	width: 100%;
-	padding: 90px 0 91px calc( 48px + max( 0px, calc( ( 100% - 1440px ) / 2 ) ) );
+	padding-top: 90px;
+	padding-bottom: 91px;
+	padding-left: calc( 48px + max( 0px, calc( ( 100% - 1440px ) / 2 ) ) );
+	padding-right: max( 0px, calc( ( 100% - 1440px ) / 2 ) );
 	box-sizing: border-box;
 	overflow: hidden;
 
@@ -158,6 +161,15 @@
 }
 
 /* The plans themselves. */
+/* The row is cut here rather than at the edge of the screen: what runs past the
+   band is out of the section, and the words and arrows beside it are not
+   something the row may be drawn over. */
+.custom-membership-hero__stage {
+	flex: 1 1 0;
+	min-width: 0;
+	overflow: hidden;
+}
+
 .custom-membership-hero__track {
 	display: flex;
 	align-items: flex-start;

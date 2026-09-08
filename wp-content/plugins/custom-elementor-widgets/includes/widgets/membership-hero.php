@@ -518,10 +518,12 @@ class Membership_Hero extends Base_Widget {
 					</div>
 
 					<?php if ( ! empty( $plans ) ) : ?>
-						<div class="custom-membership-hero__track">
-							<?php foreach ( $plans as $plan ) : ?>
-								<?php $this->render_plan( $plan ); ?>
-							<?php endforeach; ?>
+						<div class="custom-membership-hero__stage">
+							<div class="custom-membership-hero__track">
+								<?php foreach ( $plans as $plan ) : ?>
+									<?php $this->render_plan( $plan ); ?>
+								<?php endforeach; ?>
+							</div>
 						</div>
 					<?php endif; ?>
 				</div>

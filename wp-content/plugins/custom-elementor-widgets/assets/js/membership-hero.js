@@ -26,10 +26,11 @@
 		var current = 0;
 
 		function last() {
-			var band  = root.querySelector( '.custom-membership-hero__plans' );
-			var room  = band ? band.clientWidth - track.getBoundingClientRect().left + band.getBoundingClientRect().left : 0;
-			var width = cards[ 0 ].offsetWidth + 27;
-			var seen  = Math.max( 1, Math.floor( room / width ) );
+			var stage = root.querySelector( '.custom-membership-hero__stage' );
+			var room  = stage ? stage.clientWidth : 0;
+			var gap   = parseFloat( window.getComputedStyle( track ).columnGap ) || 0;
+			var width = cards[ 0 ].offsetWidth + gap;
+			var seen  = width > 0 ? Math.max( 1, Math.floor( room / width ) ) : 1;
 
 			return Math.max( 0, cards.length - seen );
 		}
