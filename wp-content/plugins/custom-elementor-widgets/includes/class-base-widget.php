@@ -291,6 +291,42 @@ abstract class Base_Widget extends \Elementor\Widget_Base {
 	}
 
 	/**
+	 * The section's settings, read as one item of its list rather than as the
+	 * page the list is on.
+	 *
+	 * A control pointed at a field answers about the post that is standing, and
+	 * Elementor asks once and keeps the answer. Asked again with an item
+	 * standing, a typed value comes back the same for every item and a field
+	 * comes back as that item's own.
+	 *
+	 * @param \WP_Post $post The item.
+	 * @return array
+	 */
+	protected function item_settings( $post ) {
+		$keep = isset( $GLOBALS['post'] ) ? $GLOBALS['post'] : null;
+
+		$GLOBALS['post'] = $post; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- put back below.
+		setup_postdata( $post );
+
+		$settings = $this->parse_dynamic_settings( $this->get_settings() );
+
+		$GLOBALS['post'] = $keep; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- what it was.
+
+		if ( $keep ) {
+			setup_postdata( $keep );
+		} else {
+			wp_reset_postdata();
+		}
+
+		return array_map(
+			function ( $value ) {
+				return is_scalar( $value ) ? trim( (string) $value ) : $value;
+			},
+			$settings
+		);
+	}
+
+	/**
 	 * Content → Source.
 	 *
 	 * Three controls, each one narrowing the last: the post type, one of its

@@ -10,7 +10,6 @@ namespace Custom_Elementor_Widgets\Widgets;
 use Custom_Elementor_Widgets\Base_Widget;
 use Elementor\Controls_Manager;
 use Elementor\Group_Control_Typography;
-use Elementor\Repeater;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -95,17 +94,17 @@ class Nightlife_Program extends Base_Widget {
 
 		$this->end_controls_section();
 
+		$this->register_source_controls();
+
 		$this->start_controls_section(
-			'section_nights',
+			'section_night',
 			array(
-				'label' => esc_html__( 'Nights', 'custom-elementor-widgets' ),
+				'label' => esc_html__( 'Night', 'custom-elementor-widgets' ),
 				'tab'   => Controls_Manager::TAB_CONTENT,
 			)
 		);
 
-		$repeater = new Repeater();
-
-		$repeater->add_control(
+		$this->add_control(
 			'genre',
 			array(
 				'label'   => esc_html__( 'Genre', 'custom-elementor-widgets' ),
@@ -114,16 +113,7 @@ class Nightlife_Program extends Base_Widget {
 			)
 		);
 
-		$repeater->add_control(
-			'title',
-			array(
-				'label'   => esc_html__( 'Title', 'custom-elementor-widgets' ),
-				'type'    => Controls_Manager::TEXT,
-				'dynamic' => array( 'active' => true ),
-			)
-		);
-
-		$repeater->add_control(
+		$this->add_control(
 			'when',
 			array(
 				'label'   => esc_html__( 'When', 'custom-elementor-widgets' ),
@@ -132,25 +122,7 @@ class Nightlife_Program extends Base_Widget {
 			)
 		);
 
-		$repeater->add_control(
-			'body',
-			array(
-				'label'   => esc_html__( 'Text', 'custom-elementor-widgets' ),
-				'type'    => Controls_Manager::TEXTAREA,
-				'dynamic' => array( 'active' => true ),
-				'rows'    => 5,
-			)
-		);
-
-		$repeater->add_control(
-			'picture',
-			array(
-				'label' => esc_html__( 'Stamp picture', 'custom-elementor-widgets' ),
-				'type'  => Controls_Manager::MEDIA,
-			)
-		);
-
-		$repeater->add_control(
+		$this->add_control(
 			'ticket_text',
 			array(
 				'label'     => esc_html__( 'First button text', 'custom-elementor-widgets' ),
@@ -160,9 +132,9 @@ class Nightlife_Program extends Base_Widget {
 			)
 		);
 
-		$this->add_link_controls( $repeater, 'ticket_link', esc_html__( 'First button link', 'custom-elementor-widgets' ) );
+		$this->add_link_controls( $this, 'ticket_link', esc_html__( 'First button link', 'custom-elementor-widgets' ) );
 
-		$repeater->add_control(
+		$this->add_control(
 			'vip_text',
 			array(
 				'label'     => esc_html__( 'Second button text', 'custom-elementor-widgets' ),
@@ -172,17 +144,7 @@ class Nightlife_Program extends Base_Widget {
 			)
 		);
 
-		$this->add_link_controls( $repeater, 'vip_link', esc_html__( 'Second button link', 'custom-elementor-widgets' ) );
-
-		$this->add_control(
-			'nights',
-			array(
-				'label'       => esc_html__( 'Nights', 'custom-elementor-widgets' ),
-				'type'        => Controls_Manager::REPEATER,
-				'fields'      => $repeater->get_controls(),
-				'title_field' => '{{{ title }}}',
-			)
-		);
+		$this->add_link_controls( $this, 'vip_link', esc_html__( 'Second button link', 'custom-elementor-widgets' ) );
 
 		$this->end_controls_section();
 
@@ -367,12 +329,46 @@ class Nightlife_Program extends Base_Widget {
 	}
 
 	/**
+	 * The nights the section shows.
+	 *
+	 * A weekly program is the week ahead: whatever the source holds between now
+	 * and seven days from now. A night the client has dated ahead is scheduled
+	 * rather than published, so scheduled is asked for too, or the week ahead
+	 * would be the one thing the section could never show.
+	 *
+	 * @param array $settings The widget's settings.
+	 * @return array
+	 */
+	private function nights( $settings ) {
+		$now = current_time( 'timestamp' ); // phpcs:ignore WordPress.DateTime.CurrentTimeTimestamp.Requested -- compared against post_date, which is local.
+
+		return get_posts(
+			$this->source_query(
+				$settings,
+				array(
+					'posts_per_page'      => 100,
+					'post_status'         => array( 'publish', 'future' ),
+					'ignore_sticky_posts' => true,
+					'no_found_rows'       => true,
+					'date_query'          => array(
+						array(
+							'after'     => gmdate( 'Y-m-d H:i:s', $now ),
+							'before'    => gmdate( 'Y-m-d H:i:s', $now + ( 7 * DAY_IN_SECONDS ) ),
+							'inclusive' => true,
+						),
+					),
+				)
+			)
+		);
+	}
+
+	/**
 	 * Print the section.
 	 */
 	protected function render() {
 		$settings = $this->get_settings_for_display();
 
-		$nights  = isset( $settings['nights'] ) ? (array) $settings['nights'] : array();
+		$nights  = $this->nights( $settings );
 		$heading = isset( $settings['heading'] ) ? trim( (string) $settings['heading'] ) : '';
 		$heading = '' !== $heading ? $heading : esc_html__( 'Weekly program', 'custom-elementor-widgets' );
 
@@ -385,7 +381,8 @@ class Nightlife_Program extends Base_Widget {
 			?></<?php echo esc_attr( $tag ); ?>>
 
 			<div class="custom-nightlife-program__card">
-				<?php foreach ( $nights as $index => $night ) : ?>
+				<?php foreach ( $nights as $index => $post ) : ?>
+					<?php $night = $this->item_settings( $post ); ?>
 					<div class="custom-nightlife-program__slide<?php echo 0 === $index ? ' is-current' : ''; ?>">
 						<div class="custom-nightlife-program__words">
 							<p class="custom-nightlife-program__genre"><?php
@@ -393,7 +390,7 @@ class Nightlife_Program extends Base_Widget {
 							?></p>
 
 							<h3 class="custom-nightlife-program__title"><?php
-								echo esc_html( isset( $night['title'] ) ? $night['title'] : '' );
+								echo esc_html( get_the_title( $post ) );
 							?></h3>
 
 							<p class="custom-nightlife-program__when"><?php
@@ -401,7 +398,7 @@ class Nightlife_Program extends Base_Widget {
 							?></p>
 
 							<p class="custom-nightlife-program__body"><?php
-								echo esc_html( isset( $night['body'] ) ? $night['body'] : '' );
+								echo esc_html( get_the_excerpt( $post ) );
 							?></p>
 
 							<div class="custom-nightlife-program__actions">
@@ -422,7 +419,7 @@ class Nightlife_Program extends Base_Widget {
 						</div>
 
 						<div class="custom-nightlife-program__stamp"><?php
-							$this->media( isset( $night['picture']['url'] ) ? $night['picture']['url'] : '' );
+							$this->media( (string) get_the_post_thumbnail_url( $post, 'large' ), get_the_title( $post ) );
 						?></div>
 
 						<span class="custom-nightlife-program__perforation" aria-hidden="true"></span>
@@ -440,7 +437,7 @@ class Nightlife_Program extends Base_Widget {
 
 			<?php
 			if ( empty( $nights ) ) {
-				$this->editor_hint( __( 'This section is waiting for its nights, on the Content tab.', 'custom-elementor-widgets' ) );
+				$this->editor_hint( __( 'Nothing in the source falls in the week ahead.', 'custom-elementor-widgets' ) );
 			}
 			?>
 		</div>

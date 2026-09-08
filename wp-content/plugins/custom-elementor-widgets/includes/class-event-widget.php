@@ -107,10 +107,12 @@ abstract class Event_Widget extends Base_Widget {
 	 * @param \WP_Post $post The item.
 	 */
 	protected function render_meta( $post ) {
+		$item = $this->item_settings( $post );
+
 		$facts = array(
 			'calendar' => (string) get_the_date( 'd M Y', $post ),
 			'timer'    => (string) get_the_time( 'h : i A', $post ),
-			'note'     => $this->as_item( 'genre', $post ),
+			'note'     => isset( $item['genre'] ) ? $item['genre'] : '',
 		);
 
 		$facts = array_filter( $facts );
@@ -128,37 +130,6 @@ abstract class Event_Widget extends Base_Widget {
 			<?php endforeach; ?>
 		</p>
 		<?php
-	}
-
-	/**
-	 * One setting read as the item being drawn rather than as the page.
-	 *
-	 * A control pointed at a field answers about whatever post is standing when
-	 * it is asked, and Elementor asks once and keeps the answer. Asked again per
-	 * item, with that item standing, a typed value comes back the same for every
-	 * card and a field comes back as each card's own.
-	 *
-	 * @param string   $key  The setting.
-	 * @param \WP_Post $post The item.
-	 * @return string
-	 */
-	protected function as_item( $key, $post ) {
-		$keep = isset( $GLOBALS['post'] ) ? $GLOBALS['post'] : null;
-
-		$GLOBALS['post'] = $post; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- put back below.
-		setup_postdata( $post );
-
-		$settings = $this->parse_dynamic_settings( $this->get_settings() );
-
-		$GLOBALS['post'] = $keep; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- what it was.
-
-		if ( $keep ) {
-			setup_postdata( $keep );
-		} else {
-			wp_reset_postdata();
-		}
-
-		return isset( $settings[ $key ] ) ? trim( (string) $settings[ $key ] ) : '';
 	}
 
 	/**
