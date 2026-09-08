@@ -5,16 +5,21 @@
  * the Form editor's; this only draws it.
  */
 
+/* The band runs the full width and carries its own ground into the margins;
+   what stands in it is held to 1440 and centred. */
 .custom-private-form {
 	display: flex;
 	align-items: stretch;
 	width: 100%;
+	padding: 0 max( 0px, calc( ( 100% - 1440px ) / 2 ) );
+	box-sizing: border-box;
 	background-color: #3a2114;
 }
 
+/* The file gives the picture half the band, drawn there as 720 of 1440. */
 .custom-private-form__picture {
 	position: relative;
-	flex: 0 0 720px;
+	flex: 0 0 50%;
 	overflow: hidden;
 }
 
@@ -60,6 +65,7 @@
 }
 
 .custom-private-form__field {
+	position: relative;
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
@@ -76,42 +82,75 @@
 	margin: 0;
 }
 
-.custom-private-form__input {
+/* The theme paints every bare box it finds — a ground, a border and an ink — and
+   names it by element and attribute, which outweighs one class. The class is
+   said twice so the field is the rule the file draws: a line under it, and
+   nothing else. */
+.custom-private-form__input.custom-private-form__input {
 	width: 100%;
 	padding: 12px;
 	border: 0;
 	border-bottom: 1px solid currentColor;
 	border-radius: 0;
-	background: none;
+	background-color: transparent;
+	background-image: none;
 	color: inherit;
 	box-sizing: border-box;
 	appearance: none;
 }
 
-.custom-private-form__input:focus {
+.custom-private-form__input.custom-private-form__input:focus {
 	outline: none;
 	border-bottom-color: currentColor;
 }
 
-.custom-private-form__input::placeholder {
+.custom-private-form__input.custom-private-form__input::placeholder {
 	color: #b0b0b0;
 	opacity: 1;
 }
 
-textarea.custom-private-form__input {
+textarea.custom-private-form__input.custom-private-form__input {
 	resize: vertical;
 }
 
-/* What is chosen rather than typed carries the mark the file draws beside it. */
-select.custom-private-form__input,
-input[type="date"].custom-private-form__input {
-	background-image: url( "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='%23FFFFFF'%3E%3Cpath d='M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6z'/%3E%3C/svg%3E" );
-	background-repeat: no-repeat;
-	background-position: right 12px center;
+/* What is chosen rather than typed carries the mark the file draws beside it.
+
+   Drawn as a ground it would not survive: Elementor holds back every ground
+   inside a container it has not yet called loaded, and says so with a weight
+   nothing outranks. A container with no picture of its own is never called
+   loaded, so the mark is cut out of ink instead, which that rule does not
+   reach. */
+select.custom-private-form__input.custom-private-form__input,
+input[type="date"].custom-private-form__input.custom-private-form__input {
 	padding-right: 44px;
 }
 
-select.custom-private-form__input:invalid {
+.custom-private-form__field:has( select )::after,
+.custom-private-form__field:has( input[type="date"] )::after {
+	content: "";
+	position: absolute;
+	right: 12px;
+	bottom: 22px;
+	width: 24px;
+	height: 24px;
+	transform: translateY( 50% );
+	background-color: currentColor;
+	-webkit-mask-image: url( "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6z'/%3E%3C/svg%3E" );
+	mask-image: url( "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6z'/%3E%3C/svg%3E" );
+	-webkit-mask-repeat: no-repeat;
+	mask-repeat: no-repeat;
+	-webkit-mask-position: center;
+	mask-position: center;
+	pointer-events: none;
+}
+
+/* The date box draws a mark of its own; the file draws one, so the browser's
+   goes. */
+input[type="date"].custom-private-form__input.custom-private-form__input::-webkit-calendar-picker-indicator {
+	opacity: 0;
+}
+
+select.custom-private-form__input.custom-private-form__input:invalid {
 	color: #d8d0c2;
 }
 
