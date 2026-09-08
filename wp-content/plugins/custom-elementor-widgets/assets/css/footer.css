@@ -226,21 +226,25 @@
 	gap: 16px;
 }
 
+/* The file draws a 40 disc with a 20 mark in the middle of it. */
 .custom-footer__social-link {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
 	flex: 0 0 auto;
-	padding: 10px;
-	border-radius: 45px;
+	width: 40px;
+	height: 40px;
+	padding: 0;
+	border-radius: 50%;
+	background-color: #3a2114;
 	text-decoration: none;
 }
 
-.custom-footer__social-link svg,
-.custom-footer__social-link img {
+.custom-footer__social-link svg {
 	display: block;
 	width: 20px;
 	height: 20px;
+	fill: #c9bca6;
 }
 
 /* Motion — the same 300ms, ease in and out, the file gives every hover. */
