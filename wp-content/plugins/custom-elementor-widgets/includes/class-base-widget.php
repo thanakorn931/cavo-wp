@@ -137,6 +137,85 @@ abstract class Base_Widget extends \Elementor\Widget_Base {
 	}
 
 	/**
+	 * A map is a map, not a picture of one.
+	 *
+	 * Three things get pasted into a map box and all three are reasonable, so
+	 * all three are taken: the whole frame copied out of the Share dialog, the
+	 * bare address bar from inside it, or the place itself written out.
+	 *
+	 * Whatever arrives, only a Google host survives. What comes back is written
+	 * straight into a frame's source, and an unchecked one is somebody else's
+	 * page standing inside ours — the box is filled by people who are trusted,
+	 * which is not the same as people who never paste the wrong thing.
+	 *
+	 * @param string $raw  What was pasted.
+	 * @param int    $zoom How close the place stands, when an address was given.
+	 * @return string Empty where it cannot be trusted, so the caller falls back.
+	 */
+	protected function map_src( $raw, $zoom = 15 ) {
+		$raw = trim( (string) $raw );
+
+		if ( '' === $raw ) {
+			return '';
+		}
+
+		if ( false !== stripos( $raw, '<iframe' ) && preg_match( '/\ssrc\s*=\s*["\']([^"\']+)["\']/i', $raw, $found ) ) {
+			$raw = html_entity_decode( $found[1], ENT_QUOTES, 'UTF-8' );
+		}
+
+		// A place written out rather than a link: build the frame Google serves
+		// without a key.
+		if ( ! preg_match( '#^https?://#i', $raw ) ) {
+			return add_query_arg(
+				array(
+					'q'      => rawurlencode( $raw ),
+					'z'      => (int) $zoom,
+					'output' => 'embed',
+				),
+				'https://maps.google.com/maps'
+			);
+		}
+
+		$host = strtolower( (string) wp_parse_url( $raw, PHP_URL_HOST ) );
+
+		// Matched on the whole label, so `google.com.somewhere-else.net` fails.
+		if ( ! preg_match( '/(^|\.)google(\.[a-z]{2,3}){1,2}$/', $host ) ) {
+			return '';
+		}
+
+		// A maps link that is not already a frame shows a consent page inside
+		// one instead of the place. This is what turns it into a frame.
+		if ( false === strpos( $raw, 'output=embed' ) && false === strpos( $raw, '/maps/embed' ) ) {
+			$raw = add_query_arg( 'output', 'embed', $raw );
+		}
+
+		return esc_url_raw( set_url_scheme( $raw, 'https' ) );
+	}
+
+	/**
+	 * One map slot's contents: the place, or the box saying none was given.
+	 *
+	 * @param string $raw   What was pasted.
+	 * @param string $title What a reader who cannot see it is told.
+	 * @param int    $zoom  How close the place stands.
+	 */
+	protected function map( $raw, $title = '', $zoom = 15 ) {
+		$src = $this->map_src( $raw, $zoom );
+
+		if ( '' === $src ) {
+			echo '<span class="custom-media-empty" aria-hidden="true"></span>';
+
+			return;
+		}
+
+		printf(
+			'<iframe src="%s" title="%s" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>',
+			esc_url( $src ),
+			esc_attr( '' !== $title ? $title : __( 'Map', 'custom-elementor-widgets' ) )
+		);
+	}
+
+	/**
 	 * The menus the site has, for a control to choose one from.
 	 *
 	 * A widget is placed on a page, not registered with the theme, so it is

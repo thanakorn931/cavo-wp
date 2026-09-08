@@ -248,9 +248,23 @@ class About_Detail extends Base_Widget {
 		$this->add_control(
 			'map',
 			array(
-				'label'     => esc_html__( 'Map', 'custom-elementor-widgets' ),
-				'type'      => Controls_Manager::MEDIA,
-				'separator' => 'before',
+				'label'       => esc_html__( 'Map', 'custom-elementor-widgets' ),
+				'type'        => Controls_Manager::TEXTAREA,
+				'rows'        => 5,
+				'separator'   => 'before',
+				'description' => esc_html__( 'The embed code from Google Maps’ Share dialog, the link from inside it, or just the address.', 'custom-elementor-widgets' ),
+			)
+		);
+
+		$this->add_control(
+			'map_zoom',
+			array(
+				'label'   => esc_html__( 'Map zoom', 'custom-elementor-widgets' ),
+				'type'    => Controls_Manager::NUMBER,
+				'min'     => 1,
+				'max'     => 21,
+				'default' => 15,
+				'condition' => array( 'map!' => '' ),
 			)
 		);
 
@@ -400,7 +414,7 @@ class About_Detail extends Base_Widget {
 		$settings = $this->get_settings_for_display();
 
 		$hours = isset( $settings['hours'] ) ? (array) $settings['hours'] : array();
-		$map   = isset( $settings['map']['url'] ) ? $settings['map']['url'] : '';
+		$map   = isset( $settings['map'] ) ? (string) $settings['map'] : '';
 		?>
 		<div class="custom-about-detail">
 			<div class="custom-about-detail__intro">
@@ -468,7 +482,7 @@ class About_Detail extends Base_Widget {
 					</div>
 				</div>
 
-				<div class="custom-about-detail__map"><?php $this->media( $map ); ?></div>
+				<div class="custom-about-detail__map"><?php $this->map( $map, esc_attr__( 'Where CAVO is', 'custom-elementor-widgets' ), (int) ( isset( $settings['map_zoom'] ) ? $settings['map_zoom'] : 15 ) ); ?></div>
 			</div>
 		</div>
 		<?php

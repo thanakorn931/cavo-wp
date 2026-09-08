@@ -12,7 +12,7 @@
 	align-items: stretch;
 	gap: 38px;
 	width: 100%;
-	padding: 80px 48px 106px 48px;
+	padding: 80px calc( 48px + max( 0px, calc( ( 100% - 1440px ) / 2 ) ) ) 106px calc( 48px + max( 0px, calc( ( 100% - 1440px ) / 2 ) ) );
 	box-sizing: border-box;
 
 	background-image: radial-gradient(

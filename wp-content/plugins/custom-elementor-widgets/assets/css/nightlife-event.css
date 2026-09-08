@@ -12,7 +12,7 @@
 	align-items: stretch;
 	gap: 49px;
 	width: 100%;
-	padding: 90px 48px 78px 48px;
+	padding: 90px calc( 48px + max( 0px, calc( ( 100% - 1440px ) / 2 ) ) ) 78px calc( 48px + max( 0px, calc( ( 100% - 1440px ) / 2 ) ) );
 	box-sizing: border-box;
 	overflow: hidden;
 

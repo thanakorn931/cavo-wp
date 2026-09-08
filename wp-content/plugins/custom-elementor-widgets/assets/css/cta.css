@@ -12,7 +12,7 @@
 	align-items: center;
 	gap: 16px;
 	width: 100%;
-	padding: 130px 254px 134px 254px;
+	padding: 130px calc( 254px + max( 0px, calc( ( 100% - 1440px ) / 2 ) ) ) 134px calc( 254px + max( 0px, calc( ( 100% - 1440px ) / 2 ) ) );
 	box-sizing: border-box;
 	overflow: hidden;
 }

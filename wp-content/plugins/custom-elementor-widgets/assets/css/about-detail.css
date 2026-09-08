@@ -148,8 +148,10 @@
 	overflow: hidden;
 }
 
-.custom-about-detail__map img {
+.custom-about-detail__map img,
+.custom-about-detail__map iframe {
 	display: block;
+	border: 0;
 	width: 100%;
 	height: 100%;
 	object-fit: cover;

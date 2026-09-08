@@ -14,7 +14,7 @@
 	justify-content: center;
 	gap: 48px;
 	width: 100%;
-	padding: 250px 48px;
+	padding: 250px calc( 48px + max( 0px, calc( ( 100% - 1440px ) / 2 ) ) );
 	box-sizing: border-box;
 	overflow: hidden;
 }

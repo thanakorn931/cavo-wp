@@ -11,7 +11,7 @@
 	justify-content: center;
 	gap: 126px;
 	width: 100%;
-	padding: 90px 48px 132px 48px;
+	padding: 90px calc( 48px + max( 0px, calc( ( 100% - 1440px ) / 2 ) ) ) 132px calc( 48px + max( 0px, calc( ( 100% - 1440px ) / 2 ) ) );
 	box-sizing: border-box;
 
 	background-image: radial-gradient(

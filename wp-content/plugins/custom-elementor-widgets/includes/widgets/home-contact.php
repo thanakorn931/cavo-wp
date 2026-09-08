@@ -194,9 +194,23 @@ class Home_Contact extends Base_Widget {
 		$this->add_control(
 			'map',
 			array(
-				'label'     => esc_html__( 'Picture', 'custom-elementor-widgets' ),
-				'type'      => Controls_Manager::MEDIA,
-				'separator' => 'before',
+				'label'       => esc_html__( 'Map', 'custom-elementor-widgets' ),
+				'type'        => Controls_Manager::TEXTAREA,
+				'rows'        => 5,
+				'separator'   => 'before',
+				'description' => esc_html__( 'The embed code from Google Maps’ Share dialog, the link from inside it, or just the address.', 'custom-elementor-widgets' ),
+			)
+		);
+
+		$this->add_control(
+			'map_zoom',
+			array(
+				'label'   => esc_html__( 'Map zoom', 'custom-elementor-widgets' ),
+				'type'    => Controls_Manager::NUMBER,
+				'min'     => 1,
+				'max'     => 21,
+				'default' => 15,
+				'condition' => array( 'map!' => '' ),
 			)
 		);
 
@@ -425,7 +439,7 @@ class Home_Contact extends Base_Widget {
 	protected function render() {
 		$settings = $this->get_settings_for_display();
 
-		$map   = isset( $settings['map']['url'] ) ? $settings['map']['url'] : '';
+		$map   = isset( $settings['map'] ) ? (string) $settings['map'] : '';
 		$hours = isset( $settings['hours'] ) ? (array) $settings['hours'] : array();
 
 		$tag = isset( $settings['heading_tag'] ) ? $settings['heading_tag'] : 'h2';
@@ -473,7 +487,7 @@ class Home_Contact extends Base_Widget {
 				</div>
 			</div>
 
-			<span class="custom-home-contact__map"><?php $this->media( $map ); ?></span>
+			<span class="custom-home-contact__map"><?php $this->map( $map, esc_attr__( 'Where CAVO is', 'custom-elementor-widgets' ), (int) ( isset( $settings['map_zoom'] ) ? $settings['map_zoom'] : 15 ) ); ?></span>
 		</div>
 		<?php
 	}
