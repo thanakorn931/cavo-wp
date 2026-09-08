@@ -353,8 +353,8 @@ abstract class Base_Widget extends \Elementor\Widget_Base {
 				'type'    => Controls_Manager::SELECT,
 				'default' => 'DESC',
 				'options' => array(
-					'DESC' => esc_html__( 'Newest first', 'custom-elementor-widgets' ),
-					'ASC'  => esc_html__( 'Oldest first', 'custom-elementor-widgets' ),
+					'DESC' => esc_html__( 'Descending', 'custom-elementor-widgets' ),
+					'ASC'  => esc_html__( 'Ascending', 'custom-elementor-widgets' ),
 				),
 			)
 		);
