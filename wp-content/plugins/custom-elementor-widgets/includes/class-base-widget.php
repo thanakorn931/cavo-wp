@@ -409,25 +409,6 @@ abstract class Base_Widget extends \Elementor\Widget_Base {
 	protected function register_more_source_controls() {}
 
 	/**
-	 * One field of one item, as the client wrote it.
-	 *
-	 * @param \WP_Post $post The item.
-	 * @param string   $name The field.
-	 * @return string
-	 */
-	protected function post_field( $post, $name ) {
-		$name = trim( (string) $name );
-
-		if ( '' === $name || ! $post ) {
-			return '';
-		}
-
-		$value = function_exists( 'get_field' ) ? get_field( $name, $post->ID ) : get_post_meta( $post->ID, $name, true );
-
-		return is_scalar( $value ) ? trim( (string) $value ) : '';
-	}
-
-	/**
 	 * What a field holds before it is dressed for reading.
 	 *
 	 * A date is stored as a number and shown as words; the number is what can be

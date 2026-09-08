@@ -310,10 +310,12 @@ class Nightlife_Program extends Base_Widget {
 	}
 
 	/**
-	 * Which fields say when a night is, and what it plays.
+	 * Which field says when a night is, and what else the card states.
 	 *
-	 * Asked here because the first of them is what the section counts the week
-	 * by: a value can be shown, but only a name can be searched for.
+	 * The date is asked for by name because the section counts the week by it,
+	 * and a value can be shown but only a name can be searched for. The rest
+	 * are shown and never searched, so they are typed or pointed at a field
+	 * like any other fact on a card.
 	 */
 	protected function register_more_source_controls() {
 		$this->add_field_control(
@@ -322,26 +324,20 @@ class Nightlife_Program extends Base_Widget {
 			array( 'default' => 'event_date' )
 		);
 
-		$this->add_field_control(
-			'time_from_field',
-			esc_html__( 'Time from', 'custom-elementor-widgets' ),
-			array( 'default' => 'event_time_from' )
-		);
-
-		$this->add_field_control(
-			'time_to_field',
-			esc_html__( 'Time to', 'custom-elementor-widgets' ),
-			array( 'default' => 'event_time_to' )
-		);
-
-		$this->add_control(
-			'genre',
-			array(
-				'label'   => esc_html__( 'Genre', 'custom-elementor-widgets' ),
-				'type'    => Controls_Manager::TEXT,
-				'dynamic' => array( 'active' => true ),
-			)
-		);
+		foreach ( array(
+			'time_from' => esc_html__( 'Time from', 'custom-elementor-widgets' ),
+			'time_to'   => esc_html__( 'Time to', 'custom-elementor-widgets' ),
+			'genre'     => esc_html__( 'Genre', 'custom-elementor-widgets' ),
+		) as $key => $label ) {
+			$this->add_control(
+				$key,
+				array(
+					'label'   => $label,
+					'type'    => Controls_Manager::TEXT,
+					'dynamic' => array( 'active' => true ),
+				)
+			);
+		}
 	}
 
 	/**
@@ -392,14 +388,15 @@ class Nightlife_Program extends Base_Widget {
 	 *
 	 * @param \WP_Post $post     The night.
 	 * @param array    $settings The widget's settings.
+	 * @param array    $night    The settings read as this night.
 	 * @return string
 	 */
-	private function when( $post, $settings ) {
+	private function when( $post, $settings, $night ) {
 		$stamp = $this->post_field_raw( $post, isset( $settings['date_field'] ) ? $settings['date_field'] : '' );
 		$day   = '' !== $stamp ? date_i18n( 'D', (int) strtotime( $stamp ) ) : '';
 
-		$from = $this->post_field( $post, isset( $settings['time_from_field'] ) ? $settings['time_from_field'] : '' );
-		$to   = $this->post_field( $post, isset( $settings['time_to_field'] ) ? $settings['time_to_field'] : '' );
+		$from = isset( $night['time_from'] ) ? $night['time_from'] : '';
+		$to   = isset( $night['time_to'] ) ? $night['time_to'] : '';
 
 		$hours = trim( '' !== $to ? $from . ' - ' . $to : $from );
 
@@ -442,7 +439,7 @@ class Nightlife_Program extends Base_Widget {
 							?></h3>
 
 							<p class="custom-nightlife-program__when"><?php
-								echo esc_html( $this->when( $post, $settings ) );
+								echo esc_html( $this->when( $post, $settings, $night ) );
 							?></p>
 
 							<p class="custom-nightlife-program__body"><?php

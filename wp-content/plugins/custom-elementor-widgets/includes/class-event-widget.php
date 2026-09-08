@@ -58,33 +58,27 @@ abstract class Event_Widget extends Base_Widget {
 	}
 
 	/**
-	 * The third fact the card states beside the day and the hour.
+	 * The three facts the card states.
 	 *
-	 * Typed, it is the section's and every card states the same thing. Pointed
-	 * at a field, it is the item's and each card states its own. Which of the
-	 * two is the client's to decide, so nothing here names a field.
+	 * Typed, a fact is the section's and every card states the same thing.
+	 * Pointed at a field, it is the item's and each card states its own. Which
+	 * of the two is the client's to decide, so nothing here names a field.
 	 */
 	protected function register_more_source_controls() {
-		$this->add_field_control(
-			'date_field',
-			esc_html__( 'Date', 'custom-elementor-widgets' ),
-			array( 'default' => 'event_date' )
-		);
-
-		$this->add_field_control(
-			'time_field',
-			esc_html__( 'Time', 'custom-elementor-widgets' ),
-			array( 'default' => 'event_time_from' )
-		);
-
-		$this->add_control(
-			'genre',
-			array(
-				'label'   => esc_html__( 'Genre', 'custom-elementor-widgets' ),
-				'type'    => Controls_Manager::TEXT,
-				'dynamic' => array( 'active' => true ),
-			)
-		);
+		foreach ( array(
+			'date'  => esc_html__( 'Date', 'custom-elementor-widgets' ),
+			'time'  => esc_html__( 'Time', 'custom-elementor-widgets' ),
+			'genre' => esc_html__( 'Genre', 'custom-elementor-widgets' ),
+		) as $key => $label ) {
+			$this->add_control(
+				$key,
+				array(
+					'label'   => $label,
+					'type'    => Controls_Manager::TEXT,
+					'dynamic' => array( 'active' => true ),
+				)
+			);
+		}
 	}
 
 	/**
@@ -120,12 +114,11 @@ abstract class Event_Widget extends Base_Widget {
 	 * @param \WP_Post $post The item.
 	 */
 	protected function render_meta( $post ) {
-		$item     = $this->item_settings( $post );
-		$settings = $this->get_settings_for_display();
+		$item = $this->item_settings( $post );
 
 		$facts = array(
-			'calendar' => $this->post_field( $post, isset( $settings['date_field'] ) ? $settings['date_field'] : '' ),
-			'timer'    => $this->post_field( $post, isset( $settings['time_field'] ) ? $settings['time_field'] : '' ),
+			'calendar' => isset( $item['date'] ) ? $item['date'] : '',
+			'timer'    => isset( $item['time'] ) ? $item['time'] : '',
 			'note'     => isset( $item['genre'] ) ? $item['genre'] : '',
 		);
 

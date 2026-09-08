@@ -397,29 +397,34 @@ class Home_Event extends Base_Widget {
 	 * @return string
 	 */
 	private function meta( $item ) {
-		$settings = $this->get_settings_for_display();
+		$fact = $this->item_settings( $item );
 
-		$hour = $this->post_field( $item, isset( $settings['time_field'] ) ? $settings['time_field'] : '' );
-		$day  = $this->post_field( $item, isset( $settings['date_field'] ) ? $settings['date_field'] : '' );
+		$hour = isset( $fact['time'] ) ? $fact['time'] : '';
+		$day  = isset( $fact['date'] ) ? $fact['date'] : '';
 
 		return trim( '' !== $hour ? $hour . ' - ' . $day : $day );
 	}
 
 	/**
-	 * Which fields say when an item is.
+	 * The two facts the card states.
+	 *
+	 * Typed, a fact is the section's and every card states the same thing.
+	 * Pointed at a field, it is the item's and each card states its own.
 	 */
 	protected function register_more_source_controls() {
-		$this->add_field_control(
-			'date_field',
-			esc_html__( 'Date', 'custom-elementor-widgets' ),
-			array( 'default' => 'event_date' )
-		);
-
-		$this->add_field_control(
-			'time_field',
-			esc_html__( 'Time', 'custom-elementor-widgets' ),
-			array( 'default' => 'event_time_from' )
-		);
+		foreach ( array(
+			'date' => esc_html__( 'Date', 'custom-elementor-widgets' ),
+			'time' => esc_html__( 'Time', 'custom-elementor-widgets' ),
+		) as $key => $label ) {
+			$this->add_control(
+				$key,
+				array(
+					'label'   => $label,
+					'type'    => Controls_Manager::TEXT,
+					'dynamic' => array( 'active' => true ),
+				)
+			);
+		}
 	}
 
 	/**
