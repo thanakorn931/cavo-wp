@@ -6,10 +6,6 @@
  */
 
 .custom-home-space {
-	--custom-home-space-near: rgba( 157, 84, 52, 0.7 );
-	--custom-home-space-mid: rgba( 100, 49, 26, 0.7 );
-	--custom-home-space-far: rgba( 76, 37, 19, 0.7 );
-
 	position: relative;
 	display: flex;
 	flex-direction: column;
