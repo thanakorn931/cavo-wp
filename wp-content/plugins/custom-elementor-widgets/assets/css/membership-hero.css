@@ -126,9 +126,11 @@
 	outline-offset: 2px;
 }
 
-/* With nowhere to go the file takes the disc away and leaves the mark, pale.
-   The colours a client may set are asked for the arrow that can be pressed,
-   so this one is the section's own. */
+/* With nowhere to go the file takes the disc away and leaves the mark. The
+   file draws that mark pale (#d1d1d1), which on this ground can hardly be
+   seen; it is drawn in the section's brown instead, as asked. The colours a
+   client may set are asked for the arrow that can be pressed, so this one
+   is the section's own. */
 .custom-membership-hero__arrow[disabled],
 .custom-membership-hero__arrow[disabled]:hover {
 	background: transparent;
@@ -137,7 +139,7 @@
 }
 
 .custom-membership-hero__arrow[disabled] svg {
-	fill: #d1d1d1;
+	fill: #3a2114;
 }
 
 /* The file draws the mark in a box 24 across and 20 down, in the middle of
