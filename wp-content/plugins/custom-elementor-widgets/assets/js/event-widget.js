@@ -81,15 +81,16 @@
 		var button = root.querySelector( '.custom-event-more' );
 		var cards  = root.querySelectorAll( '.custom-event-card' );
 
-		// On the narrow screens the newest item stands in the grid like the rest
-		// and is counted with them.
+		// On the wide screen the newest item stands across the top on its own
+		// and the count is of the grid beneath it; on the narrow screens it
+		// stands in the grid like the rest and is counted with them.
 		var lead     = root.querySelector( '.custom-event-list__lead' ) ? 1 : 0;
 		var revealed = 0;
 		var pressed  = false;
 
 		// How many cards stand on this screen before anything is pressed.
 		function opening() {
-			return Math.max( 0, count( root, 'shown' ) - lead );
+			return Math.max( 0, count( root, 'shown' ) - ( 'desktop' === tier() ? 0 : lead ) );
 		}
 
 		function apply() {

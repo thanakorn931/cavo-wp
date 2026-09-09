@@ -98,7 +98,7 @@ class Event_Events extends Event_Widget {
 				'default'        => 6,
 				'tablet_default' => 6,
 				'mobile_default' => 3,
-				'description'    => esc_html__( 'Before the button is pressed, and again with each press. The design shows two rows of three; on a phone, three.', 'custom-elementor-widgets' ),
+				'description'    => esc_html__( 'Beneath the newest, before the button is pressed, and again with each press. The design shows two rows of three; on a phone, where the newest stands with the rest, three in all.', 'custom-elementor-widgets' ),
 			)
 		);
 
