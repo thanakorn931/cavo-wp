@@ -124,3 +124,71 @@
 		transition: none;
 	}
 }
+
+/* Tablet and mobile — the file draws one of them (11186:13547, 11205:3065):
+   how to reach the place in one column, each way of getting in touch with
+   its mark above its name, and the map the width of the screen beneath.
+   Tablet is not drawn and takes the same figures, the map deeper. */
+@media ( max-width: 1024px ) {
+	.custom-contact-detail {
+		flex-direction: column;
+	}
+
+	.custom-contact-detail__column {
+		flex: 0 0 auto;
+		gap: 24px;
+		padding: 38px 16px;
+	}
+
+	.custom-contact-detail__block {
+		gap: 8px;
+	}
+
+	/* The two rows of ways stand 16 under their names, the rest 8. */
+	.custom-contact-detail__block:has( .custom-contact-detail__row ) {
+		gap: 16px;
+	}
+
+	.custom-contact-detail__block-body {
+		width: 100%;
+	}
+
+	.custom-contact-detail__row {
+		justify-content: space-between;
+		gap: 16px 24px;
+		width: 100%;
+	}
+
+	.custom-contact-detail__item,
+	.custom-contact-detail__item:hover,
+	.custom-contact-detail__item:focus,
+	.custom-contact-detail__item:active {
+		flex-direction: column;
+		gap: 4px;
+	}
+
+	.custom-contact-detail__mark {
+		padding: 4px;
+	}
+
+	.custom-contact-detail__mark svg {
+		width: 8px;
+		height: 8px;
+	}
+
+	.custom-contact-detail__button {
+		padding: 6px 12px;
+	}
+
+	.custom-contact-detail__map {
+		flex: 0 0 auto;
+		width: 100%;
+		height: 260px;
+	}
+}
+
+@media ( min-width: 768px ) and ( max-width: 1024px ) {
+	.custom-contact-detail__map {
+		height: 400px;
+	}
+}

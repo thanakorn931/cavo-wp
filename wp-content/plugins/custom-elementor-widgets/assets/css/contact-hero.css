@@ -20,3 +20,18 @@
 	text-align: center;
 	text-transform: uppercase;
 }
+
+/* Tablet and mobile — the file draws one of them (11186:13229): the name
+   stands 10 in from the top and the foot of its band. Tablet is not drawn and
+   is given a little more room. */
+@media ( max-width: 1024px ) {
+	.custom-contact-hero {
+		padding: 10px 16px;
+	}
+}
+
+@media ( min-width: 768px ) and ( max-width: 1024px ) {
+	.custom-contact-hero {
+		padding: 24px 16px;
+	}
+}

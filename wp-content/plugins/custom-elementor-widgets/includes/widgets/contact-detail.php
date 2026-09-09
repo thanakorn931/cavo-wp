@@ -352,7 +352,11 @@ class Contact_Detail extends Base_Widget {
 				'fields_options' => array(
 					'typography'  => array( 'default' => 'yes' ),
 					'font_family' => array( 'default' => 'Roboto' ),
-					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 20 ) ),
+					'font_size'   => array(
+						'default'        => array( 'unit' => 'px', 'size' => 20 ),
+						'tablet_default' => array( 'unit' => 'px', 'size' => 12 ),
+						'mobile_default' => array( 'unit' => 'px', 'size' => 12 ),
+					),
 					'font_weight' => array( 'default' => '500' ),
 				),
 			)
@@ -367,7 +371,11 @@ class Contact_Detail extends Base_Widget {
 				'fields_options' => array(
 					'typography'  => array( 'default' => 'yes' ),
 					'font_family' => array( 'default' => 'Roboto' ),
-					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 16 ) ),
+					'font_size'   => array(
+						'default'        => array( 'unit' => 'px', 'size' => 16 ),
+						'tablet_default' => array( 'unit' => 'px', 'size' => 12 ),
+						'mobile_default' => array( 'unit' => 'px', 'size' => 12 ),
+					),
 				),
 			)
 		);
@@ -381,7 +389,11 @@ class Contact_Detail extends Base_Widget {
 				'fields_options' => array(
 					'typography'  => array( 'default' => 'yes' ),
 					'font_family' => array( 'default' => 'Roboto' ),
-					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 14 ) ),
+					'font_size'   => array(
+						'default'        => array( 'unit' => 'px', 'size' => 14 ),
+						'tablet_default' => array( 'unit' => 'px', 'size' => 9 ),
+						'mobile_default' => array( 'unit' => 'px', 'size' => 9 ),
+					),
 				),
 			)
 		);

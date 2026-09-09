@@ -204,3 +204,35 @@ input[ type="date" ].custom-contact-form__input.custom-contact-form__input {
 		transition: none;
 	}
 }
+
+/* Tablet and mobile — the file draws one of them (11186:13297): the band 38
+   above the name and 50 beneath the button, the column 350 across with the
+   fields 16 in from its edges, every field the width of it, the button 38
+   beneath them. A field asked to take half the row keeps half on the tablet,
+   which the file does not draw, and takes the whole row on a phone. */
+@media ( max-width: 1024px ) {
+	.custom-contact-form {
+		gap: 48px;
+		padding: 38px 16px 50px;
+	}
+
+	.custom-contact-form__column {
+		gap: 38px;
+		width: 350px;
+		padding: 0 16px;
+	}
+
+	.custom-contact-form__actions {
+		padding-top: 0;
+	}
+}
+
+@media ( max-width: 767px ) {
+	.custom-contact-form__fields {
+		grid-template-columns: minmax( 0, 1fr );
+	}
+
+	.custom-contact-form__field--half {
+		grid-column: 1 / -1;
+	}
+}
