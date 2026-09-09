@@ -39,6 +39,21 @@ abstract class Base_Widget extends \Elementor\Widget_Base {
 	 *
 	 * @return array
 	 */
+	/**
+	 * Every section marks the box Elementor stands it in.
+	 *
+	 * The box is a flex item of Elementor's, and a flex item is measured
+	 * before its width is settled. A section whose depth comes from a
+	 * picture holding its shape reads as shallower than it is in that
+	 * measure, and the section after it starts before it has ended. Told
+	 * its width, the box measures the section as it stands.
+	 */
+	public function before_render() {
+		$this->add_render_attribute( '_wrapper', 'class', 'custom-section' );
+
+		parent::before_render();
+	}
+
 	public function get_categories(): array {
 		return array( Widgets_Loader::CATEGORY );
 	}

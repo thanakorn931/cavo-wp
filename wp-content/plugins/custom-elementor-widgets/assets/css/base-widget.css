@@ -5,6 +5,14 @@
  * it is still a section's asset rather than the plugin's.
  */
 
+/* The box Elementor stands a section in is a flex item, and a flex item is
+   measured before its width is settled; a section whose depth comes from a
+   picture holding its shape is then read as shallower than it is. Told its
+   width, the box measures the section as it stands. */
+.custom-section {
+	width: 100%;
+}
+
 .custom-media-empty {
 	position: absolute;
 	inset: 0;
