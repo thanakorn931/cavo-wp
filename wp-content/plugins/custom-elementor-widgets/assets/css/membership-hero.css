@@ -293,3 +293,143 @@
 .custom-membership-hero__heading {
 	padding: 0;
 }
+
+/* Tablet and mobile — the file draws one of them (11174:11664, 11174:11672).
+   The page's words stand 42 in from either edge; beneath them the name of the
+   row and its two arrows share one line, the plans run off the right edge
+   under that, and the way in stands in the middle under the plans. Tablet is
+   not drawn and takes the same figures. */
+@media ( max-width: 1024px ) {
+	.custom-membership-hero__intro {
+		gap: 24px;
+		padding: 0 42px 84px;
+	}
+
+	.custom-membership-hero__body {
+		max-width: none;
+	}
+
+	.custom-membership-hero__plans {
+		padding: 38px 0 43px;
+	}
+
+	/* The words, the arrows and the way in are one column on the wide tier;
+	   here that column gives up its own box and the three stand in the band
+	   with the row, in the order the file draws them. */
+	.custom-membership-hero__inner {
+		flex-direction: column;
+		align-items: stretch;
+		gap: 0;
+		height: auto;
+	}
+
+	.custom-membership-hero__aside {
+		display: contents;
+	}
+
+	.custom-membership-hero__aside-top {
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		order: 1;
+		gap: 16px;
+		padding: 0 16px 38px;
+		box-sizing: border-box;
+	}
+
+	.custom-membership-hero__title {
+		width: auto;
+		max-width: 243px;
+	}
+
+	.custom-membership-hero__arrows {
+		gap: 16px;
+	}
+
+	.custom-membership-hero__arrow,
+	.custom-membership-hero__arrow svg {
+		width: 24px;
+		height: 24px;
+	}
+
+	.custom-membership-hero__stage {
+		order: 2;
+		flex: 0 0 auto;
+		width: 100%;
+	}
+
+	.custom-membership-hero__track {
+		gap: 24px;
+		padding-left: 16px;
+	}
+
+	.custom-membership-hero__card {
+		flex: 0 0 250px;
+		width: 250px;
+		height: 310px;
+		border-radius: 14px;
+	}
+
+	.custom-membership-hero__words {
+		top: 15px;
+		left: 16px;
+		right: 16px;
+		gap: 14px;
+	}
+
+	.custom-membership-hero__head {
+		height: 29px;
+	}
+
+	.custom-membership-hero__badge {
+		width: 31px;
+		height: 29px;
+	}
+
+	.custom-membership-hero__features {
+		gap: 9px;
+	}
+
+	.custom-membership-hero__feature {
+		gap: 6px;
+	}
+
+	.custom-membership-hero__feature svg {
+		width: 14px;
+		height: 14px;
+	}
+
+	.custom-membership-hero__feature-text {
+		width: 96px;
+	}
+
+	.custom-membership-hero__picture {
+		top: 146px;
+		left: 3px;
+		width: 244px;
+		height: 162px;
+		border-radius: 14px;
+	}
+
+	.custom-membership-hero__join {
+		order: 3;
+		align-self: center;
+		width: auto;
+		height: 27px;
+		margin-top: 44px;
+		padding: 9px 13px;
+		border-radius: 14px;
+	}
+}
+
+/* Tablet — not drawn. The page's words are given more of the width than the
+   narrow tier keeps for them. */
+@media ( min-width: 768px ) and ( max-width: 1024px ) {
+	.custom-membership-hero__intro {
+		padding: 0 48px 84px;
+	}
+
+	.custom-membership-hero__body {
+		max-width: 600px;
+	}
+}

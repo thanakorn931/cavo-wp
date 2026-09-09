@@ -334,7 +334,11 @@ class Membership_Hero extends Base_Widget {
 				'fields_options' => array(
 					'typography'  => array( 'default' => 'yes' ),
 					'font_family' => array( 'default' => 'Fenul Compressed' ),
-					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 64 ) ),
+					'font_size'   => array(
+						'default'        => array( 'unit' => 'px', 'size' => 64 ),
+						'tablet_default' => array( 'unit' => 'px', 'size' => 32 ),
+						'mobile_default' => array( 'unit' => 'px', 'size' => 32 ),
+					),
 					'font_weight' => array( 'default' => '500' ),
 				),
 			)
@@ -349,7 +353,11 @@ class Membership_Hero extends Base_Widget {
 				'fields_options' => array(
 					'typography'  => array( 'default' => 'yes' ),
 					'font_family' => array( 'default' => 'Roboto' ),
-					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 24 ) ),
+					'font_size'   => array(
+						'default'        => array( 'unit' => 'px', 'size' => 24 ),
+						'tablet_default' => array( 'unit' => 'px', 'size' => 16 ),
+						'mobile_default' => array( 'unit' => 'px', 'size' => 16 ),
+					),
 				),
 			)
 		);
@@ -363,7 +371,11 @@ class Membership_Hero extends Base_Widget {
 				'fields_options' => array(
 					'typography'  => array( 'default' => 'yes' ),
 					'font_family' => array( 'default' => 'Fenul Compressed' ),
-					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 48 ) ),
+					'font_size'   => array(
+						'default'        => array( 'unit' => 'px', 'size' => 48 ),
+						'tablet_default' => array( 'unit' => 'px', 'size' => 24 ),
+						'mobile_default' => array( 'unit' => 'px', 'size' => 24 ),
+					),
 					'font_weight' => array( 'default' => '500' ),
 				),
 			)
@@ -378,7 +390,11 @@ class Membership_Hero extends Base_Widget {
 				'fields_options' => array(
 					'typography'  => array( 'default' => 'yes' ),
 					'font_family' => array( 'default' => 'Roboto' ),
-					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 24 ) ),
+					'font_size'   => array(
+						'default'        => array( 'unit' => 'px', 'size' => 24 ),
+						'tablet_default' => array( 'unit' => 'px', 'size' => 14 ),
+						'mobile_default' => array( 'unit' => 'px', 'size' => 14 ),
+					),
 				),
 			)
 		);
@@ -392,7 +408,11 @@ class Membership_Hero extends Base_Widget {
 				'fields_options' => array(
 					'typography'  => array( 'default' => 'yes' ),
 					'font_family' => array( 'default' => 'Roboto' ),
-					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 16 ) ),
+					'font_size'   => array(
+						'default'        => array( 'unit' => 'px', 'size' => 16 ),
+						'tablet_default' => array( 'unit' => 'px', 'size' => 9 ),
+						'mobile_default' => array( 'unit' => 'px', 'size' => 9 ),
+					),
 					'font_weight' => array( 'default' => '500' ),
 				),
 			)
@@ -432,7 +452,11 @@ class Membership_Hero extends Base_Widget {
 				'fields_options' => array(
 					'typography'  => array( 'default' => 'yes' ),
 					'font_family' => array( 'default' => 'Roboto' ),
-					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 14 ) ),
+					'font_size'   => array(
+						'default'        => array( 'unit' => 'px', 'size' => 14 ),
+						'tablet_default' => array( 'unit' => 'px', 'size' => 8 ),
+						'mobile_default' => array( 'unit' => 'px', 'size' => 8 ),
+					),
 				),
 			)
 		);
