@@ -145,7 +145,6 @@
 		inset: auto;
 		display: block;
 		width: 100%;
-		aspect-ratio: 415 / 360;
 		border-radius: 16px;
 		overflow: hidden;
 		pointer-events: auto;
@@ -171,18 +170,14 @@
 	}
 }
 
-/* Tablet — not drawn. Two to a row; the newest and five more stand at first. */
+/* Tablet — not drawn. Two to a row; the newest and three more stand at first. */
 @media ( min-width: 768px ) and ( max-width: 1024px ) {
 	.custom-event-list__band {
 		grid-template-columns: repeat( 2, minmax( 0, 1fr ) );
 	}
 
-	.custom-event-list__grid > .custom-event-card:nth-child( n + 3 ):not( .is-shown ) {
+	.custom-event-list__grid > .custom-event-card:nth-child( 3 ):not( .is-shown ) {
 		display: flex;
-	}
-
-	.custom-event-list__grid > .custom-event-card:nth-child( n + 6 ):not( .is-shown ) {
-		display: none;
 	}
 }
 

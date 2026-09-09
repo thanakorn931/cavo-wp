@@ -168,8 +168,8 @@ class Event_Past_Events extends Event_Widget {
 				'type'           => Controls_Manager::NUMBER,
 				'min'            => 1,
 				'default'        => 3,
-				'tablet_default' => 4,
-				'mobile_default' => 3,
+				'tablet_default' => 2,
+				'mobile_default' => 2,
 			)
 		);
 		$this->add_responsive_control(
@@ -179,8 +179,8 @@ class Event_Past_Events extends Event_Widget {
 				'type'           => Controls_Manager::NUMBER,
 				'min'            => 0,
 				'default'        => 0,
-				'tablet_default' => 4,
-				'mobile_default' => 3,
+				'tablet_default' => 2,
+				'mobile_default' => 2,
 				'description'    => esc_html__( 'Nought brings the rest at once.', 'custom-elementor-widgets' ),
 			)
 		);
@@ -365,8 +365,8 @@ class Event_Past_Events extends Event_Widget {
 		$settings = $this->get_settings_for_display();
 
 		$items = $this->items( $settings );
-		$shows = $this->per_tier( $settings, 'shown', array( 'desktop' => 3, 'tablet' => 4, 'mobile' => 3 ) );
-		$steps = $this->per_tier( $settings, 'step', array( 'desktop' => 0, 'tablet' => 4, 'mobile' => 3 ), 0 );
+		$shows = $this->per_tier( $settings, 'shown', array( 'desktop' => 3, 'tablet' => 2, 'mobile' => 2 ) );
+		$steps = $this->per_tier( $settings, 'step', array( 'desktop' => 0, 'tablet' => 2, 'mobile' => 2 ), 0 );
 		$shown = $shows['desktop'];
 		$tag   = isset( $settings['heading_tag'] ) ? $settings['heading_tag'] : 'h2';
 		$tag   = in_array( $tag, array( 'h2', 'h3', 'span' ), true ) ? $tag : 'h2';

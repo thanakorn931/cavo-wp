@@ -96,9 +96,9 @@ class Event_Events extends Event_Widget {
 				'type'           => Controls_Manager::NUMBER,
 				'min'            => 1,
 				'default'        => 6,
-				'tablet_default' => 6,
+				'tablet_default' => 4,
 				'mobile_default' => 3,
-				'description'    => esc_html__( 'Beneath the newest, before the button is pressed, and again with each press. The design shows two rows of three; on a phone, where the newest stands with the rest, three in all.', 'custom-elementor-widgets' ),
+				'description'    => esc_html__( 'Beneath the newest, before the button is pressed, and again with each press. The design shows two rows of three; on a tablet, where the newest stands with the rest, four in all, and on a phone three.', 'custom-elementor-widgets' ),
 			)
 		);
 
@@ -243,7 +243,7 @@ class Event_Events extends Event_Widget {
 		$items = $this->items( $settings );
 		$lead  = ! empty( $items ) ? array_shift( $items ) : null;
 
-		$steps   = $this->per_tier( $settings, 'step', array( 'desktop' => 6, 'tablet' => 6, 'mobile' => 3 ) );
+		$steps   = $this->per_tier( $settings, 'step', array( 'desktop' => 6, 'tablet' => 4, 'mobile' => 3 ) );
 		$step    = $steps['desktop'];
 		$button  = isset( $settings['button_text'] ) ? trim( (string) $settings['button_text'] ) : '';
 		$button  = '' !== $button ? $button : esc_html__( 'See More', 'custom-elementor-widgets' );

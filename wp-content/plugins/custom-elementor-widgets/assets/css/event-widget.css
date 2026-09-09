@@ -26,7 +26,11 @@
 	overflow: hidden;
 }
 
-.custom-event-card__picture img {
+.custom-event-card__picture img,
+.custom-event-card__picture video,
+.custom-event-card__picture .custom-media-empty {
+	position: absolute;
+	inset: 0;
 	display: block;
 	width: 100%;
 	height: 100%;
@@ -197,5 +201,34 @@
 
 	.custom-event-more {
 		padding: 8px 16px;
+	}
+
+	/* The picture's depth is stated from the screen's width rather than left
+	   to its ratio. The band stands in a column that sizes itself before the
+	   grid's columns are settled, and a depth that follows the column's width
+	   is counted short there — three cards came out 42 short and the band
+	   after them stood on the last one. A depth that follows the screen is
+	   counted the same in every pass. The past band is padded 16, the coming
+	   band 20; the two columns of the tablet are 24 apart. */
+	.custom-event-past .custom-event-card__picture {
+		height: calc( ( 100vw - 32px ) * 0.86747 );
+		aspect-ratio: auto;
+	}
+
+	.custom-event-list .custom-event-card__picture,
+	.custom-event-list .custom-event-list__lead-picture {
+		height: calc( ( 100vw - 40px ) * 0.86747 );
+		aspect-ratio: auto;
+	}
+}
+
+@media ( min-width: 768px ) and ( max-width: 1024px ) {
+	.custom-event-past .custom-event-card__picture {
+		height: calc( ( ( 100vw - 32px - 24px ) / 2 ) * 0.86747 );
+	}
+
+	.custom-event-list .custom-event-card__picture,
+	.custom-event-list .custom-event-list__lead-picture {
+		height: calc( ( ( 100vw - 40px - 24px ) / 2 ) * 0.86747 );
 	}
 }

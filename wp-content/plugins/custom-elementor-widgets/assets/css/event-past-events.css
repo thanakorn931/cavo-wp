@@ -80,8 +80,9 @@
 }
 
 /* Tablet and mobile — the file draws one of them (11174:11371): the heading
-   and its link on one row, the items one to a row beneath. Tablet is not
-   drawn: two to a row, and four stand at first. */
+   and its link on one row, the items one to a row beneath. The client has
+   said two stand at first on both, and two more with each press; on the
+   tablet, which the file does not draw, the two share a row. */
 @media ( max-width: 1024px ) {
 	.custom-event-past {
 		gap: 38px;
@@ -121,8 +122,8 @@
 		margin-top: 0;
 	}
 
-	/* Before the script has read which screen this is, three stand. */
-	.custom-event-past__grid > .custom-event-card:nth-child( n + 4 ):not( .is-shown ) {
+	/* Before the script has read which screen this is, two stand. */
+	.custom-event-past__grid > .custom-event-card:nth-child( n + 3 ):not( .is-shown ) {
 		display: none;
 	}
 }
@@ -130,9 +131,5 @@
 @media ( min-width: 768px ) and ( max-width: 1024px ) {
 	.custom-event-past__grid {
 		grid-template-columns: repeat( 2, minmax( 0, 1fr ) );
-	}
-
-	.custom-event-past__grid > .custom-event-card:nth-child( 4 ):not( .is-shown ) {
-		display: flex;
 	}
 }
