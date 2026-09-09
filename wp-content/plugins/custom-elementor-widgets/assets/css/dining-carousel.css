@@ -127,7 +127,7 @@
 .custom-dining-carousel__arrow svg {
 	display: block;
 	width: 24px;
-	height: 24px;
+	height: 20px;
 	fill: #3d3426;
 }
 
@@ -140,12 +140,6 @@
 	background-position: center;
 	background-repeat: no-repeat;
 	background-size: cover;
-}
-
-/* One mark serves both: the one that goes back is the one that goes on, turned
-   about. */
-.custom-dining-carousel__arrow--next svg {
-	transform: scaleX( -1 );
 }
 
 @media ( prefers-reduced-motion: reduce ) {
