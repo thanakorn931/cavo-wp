@@ -361,6 +361,9 @@
 	   whole band, so they sit 12 into it at either edge as the file draws. */
 	.custom-home-space__stage {
 		position: relative;
+		/* What is lifted in front here is lifted within the band, not over the
+		   page. */
+		isolation: isolate;
 		display: flex;
 		flex-direction: column;
 		width: 100%;
@@ -415,14 +418,14 @@
 	}
 
 	/* The band stands its children in an order of its own here, and the picture
-	   is given a later place in it than the arrows. A later place is also a
-	   place in front, so the picture was drawn over them. The arrows take the
-	   last place, which is where they are meant to be read. */
+	   is given a later place in it than the arrows — a later place is also a
+	   place in front, so the picture was drawn over them. The arrows are lifted
+	   out of that order and kept in front, where they are meant to be read. */
 	.custom-home-space__arrow {
 		top: 90px;
 		width: 24px;
 		height: 24px;
-		order: 4;
+		z-index: 1;
 	}
 
 	/* The mark is drawn against the disc, and the disc is 24 across here rather
