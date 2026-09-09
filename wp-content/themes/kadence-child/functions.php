@@ -211,7 +211,7 @@ function kadence_child_event_post_type() {
 	register_post_type(
 		'event',
 		array(
-			'labels'        => array(
+			'labels'              => array(
 				'name'               => esc_html__( 'Events', 'kadence-child' ),
 				'singular_name'      => esc_html__( 'Event', 'kadence-child' ),
 				'add_new_item'       => esc_html__( 'Add Event', 'kadence-child' ),
@@ -223,13 +223,19 @@ function kadence_child_event_post_type() {
 				'all_items'          => esc_html__( 'All Events', 'kadence-child' ),
 				'menu_name'          => esc_html__( 'Events', 'kadence-child' ),
 			),
-			'public'        => true,
-			'has_archive'   => false,
-			'menu_position' => 21,
-			'menu_icon'     => 'dashicons-calendar-alt',
-			'supports'      => array( 'title', 'editor', 'thumbnail', 'revisions' ),
-			'show_in_rest'  => true,
-			'rewrite'       => array( 'slug' => 'event' ),
+			// An event is drawn by the sections that list it and is read nowhere
+			// else, so it is given no address of its own. Written, it appears in
+			// those lists and in no other place.
+			'public'              => false,
+			'publicly_queryable'  => false,
+			'exclude_from_search' => true,
+			'has_archive'         => false,
+			'show_ui'             => true,
+			'show_in_menu'        => true,
+			'menu_position'       => 21,
+			'menu_icon'           => 'dashicons-calendar-alt',
+			'supports'            => array( 'title', 'editor', 'thumbnail', 'revisions' ),
+			'show_in_rest'        => true,
 		)
 	);
 
@@ -243,10 +249,11 @@ function kadence_child_event_post_type() {
 				'menu_name'     => esc_html__( 'Categories', 'kadence-child' ),
 			),
 			'hierarchical'      => true,
-			'public'            => true,
+			// The terms sort the lists; they are not a place to be read either.
+			'public'            => false,
+			'show_ui'           => true,
 			'show_admin_column' => true,
 			'show_in_rest'      => true,
-			'rewrite'           => array( 'slug' => 'event-category' ),
 		)
 	);
 }

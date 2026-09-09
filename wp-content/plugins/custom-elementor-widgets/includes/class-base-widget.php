@@ -573,8 +573,12 @@ abstract class Base_Widget extends \Elementor\Widget_Base {
 	protected static function post_type_options() {
 		$options = array();
 
-		foreach ( get_post_types( array( 'public' => true ), 'objects' ) as $type ) {
-			if ( 'attachment' === $type->name ) {
+		// What a section may draw from is what the client writes, which is a
+		// type they have a screen for and words to put in it. A type the site
+		// keeps for itself — what a form was sent, who asked for the news — has
+		// a screen too, and nothing to read.
+		foreach ( get_post_types( array( 'show_ui' => true ), 'objects' ) as $type ) {
+			if ( 'attachment' === $type->name || ! post_type_supports( $type->name, 'editor' ) ) {
 				continue;
 			}
 
