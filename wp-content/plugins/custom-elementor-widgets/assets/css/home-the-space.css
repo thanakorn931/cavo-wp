@@ -454,6 +454,11 @@
 		margin-top: 16px;
 		padding: 8px 16px;
 	}
+
+	.custom-home-space__space {
+		width: auto;
+		padding: 6px 12px;
+	}
 }
 
 /* Tablet — not drawn. The band is near twice the width the narrow tier gives

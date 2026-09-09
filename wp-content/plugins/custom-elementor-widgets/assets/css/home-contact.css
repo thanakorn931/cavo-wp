@@ -165,7 +165,19 @@
 	}
 
 	.custom-home-contact__hour-name {
-		width: 80px;
+		width: 104px;
+	}
+
+	/* The disc is drawn smaller here, and the three ways stand on one row
+	   again once it is. */
+	.custom-home-contact__mark {
+		width: 19px;
+		height: 19px;
+	}
+
+	.custom-home-contact__mark svg {
+		width: 10px;
+		height: 10px;
 	}
 
 	.custom-home-contact__ways {

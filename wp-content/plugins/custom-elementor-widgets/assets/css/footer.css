@@ -320,8 +320,20 @@
 		min-width: 0;
 	}
 
-	.custom-footer__submit {
+	.custom-footer .custom-footer__field {
+		height: 27px;
+		padding: 8px 16px;
+		border-radius: 19px;
+		font-size: 9px;
+	}
+
+	.custom-footer .custom-footer__submit,
+	.custom-footer button.custom-footer__submit {
 		flex: 0 0 auto;
+		width: 81px;
+		height: 27px;
+		padding: 8px 16px;
+		font-size: 9px;
 	}
 
 	.custom-footer__contact {
