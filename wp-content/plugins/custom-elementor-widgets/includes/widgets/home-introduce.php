@@ -212,7 +212,11 @@ class Home_Introduce extends Base_Widget {
 				'fields_options' => array(
 					'typography'      => array( 'default' => 'yes' ),
 					'font_family'     => array( 'default' => 'Roboto' ),
-					'font_size'       => array( 'default' => array( 'unit' => 'px', 'size' => 36 ) ),
+					'font_size'       => array(
+						'default'        => array( 'unit' => 'px', 'size' => 36 ),
+						'tablet_default' => array( 'unit' => 'px', 'size' => 16 ),
+						'mobile_default' => array( 'unit' => 'px', 'size' => 16 ),
+					),
 					'line_height'     => array( 'default' => array( 'unit' => 'px', 'size' => 45 ) ),
 					'text_transform'  => array( 'default' => 'uppercase' ),
 				),
@@ -253,7 +257,11 @@ class Home_Introduce extends Base_Widget {
 				'fields_options' => array(
 					'typography'  => array( 'default' => 'yes' ),
 					'font_family' => array( 'default' => 'Roboto' ),
-					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 14 ) ),
+					'font_size'   => array(
+						'default'        => array( 'unit' => 'px', 'size' => 14 ),
+						'tablet_default' => array( 'unit' => 'px', 'size' => 11 ),
+						'mobile_default' => array( 'unit' => 'px', 'size' => 11 ),
+					),
 				),
 			)
 		);
