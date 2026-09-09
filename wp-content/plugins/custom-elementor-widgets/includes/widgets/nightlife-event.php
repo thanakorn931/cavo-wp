@@ -94,6 +94,15 @@ class Nightlife_Event extends Event_Widget {
 	}
 
 	/**
+	 * What is still to come — the section says so above itself.
+	 *
+	 * @return string
+	 */
+	protected function shows() {
+		return 'coming';
+	}
+
+	/**
 	 * The Content tab and the Style tab.
 	 */
 	protected function register_controls() {
