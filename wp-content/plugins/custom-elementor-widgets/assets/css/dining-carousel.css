@@ -156,3 +156,102 @@
 .custom-dining-carousel.is-settling .custom-dining-carousel__slide {
 	transition: none;
 }
+
+/* Tablet and mobile — neither is drawn: the file leaves the band empty on
+   the narrow frame. What follows is a decision, and says so. The run keeps
+   the wide tier's shape scaled to the frame: the slide being read 358
+   across and 240 deep on mobile, its neighbours 278 by 186, 18 between, the
+   arrows 24 standing 12 inside the slide's edges and in the middle of its
+   depth. Tablet takes the same shape at a size that suits its width: 720 by
+   480, 560 by 374, 36 between, the arrows 40. */
+@media ( max-width: 1024px ) {
+	.custom-dining-carousel {
+		gap: 16px;
+		padding-top: 38px;
+	}
+
+	.custom-dining-carousel__title {
+		padding: 10px 16px;
+	}
+
+	.custom-dining-carousel__stage,
+	.custom-dining-carousel__track {
+		height: 240px;
+	}
+
+	.custom-dining-carousel__track {
+		gap: 18px;
+	}
+
+	.custom-dining-carousel__slide {
+		width: 278px;
+		height: 186px;
+		border-radius: 16px;
+	}
+
+	.custom-dining-carousel__slide.is-current {
+		width: 358px;
+		height: 240px;
+	}
+
+	.custom-dining-carousel__arrow {
+		top: 108px;
+		width: 24px;
+		height: 24px;
+	}
+
+	.custom-dining-carousel__arrow svg {
+		width: 10px;
+		height: 9px;
+	}
+
+	.custom-dining-carousel__arrow--prev {
+		left: calc( 50% - 167px );
+	}
+
+	.custom-dining-carousel__arrow--next {
+		left: calc( 50% + 143px );
+	}
+}
+
+@media ( min-width: 768px ) and ( max-width: 1024px ) {
+	.custom-dining-carousel__stage,
+	.custom-dining-carousel__track {
+		height: 480px;
+	}
+
+	.custom-dining-carousel__track {
+		gap: 36px;
+	}
+
+	.custom-dining-carousel__slide {
+		width: 560px;
+		height: 374px;
+		border-radius: 24px;
+	}
+
+	.custom-dining-carousel__slide.is-current {
+		width: 720px;
+		height: 480px;
+	}
+
+	.custom-dining-carousel__arrow {
+		top: 220px;
+		width: 40px;
+		height: 40px;
+	}
+
+	.custom-dining-carousel__arrow svg {
+		width: 17px;
+		height: 14px;
+	}
+
+	.custom-dining-carousel__arrow--prev {
+		left: calc( 50% - 348px );
+	}
+
+	.custom-dining-carousel__arrow--next {
+		left: calc( 50% + 308px );
+	}
+}
+
