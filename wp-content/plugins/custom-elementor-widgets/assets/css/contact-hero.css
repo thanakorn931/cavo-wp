@@ -34,6 +34,6 @@
 
 @media ( min-width: 768px ) and ( max-width: 1024px ) {
 	.custom-contact-hero {
-		padding: 24px 16px 48px;
+		padding: 48px 16px 72px;
 	}
 }
