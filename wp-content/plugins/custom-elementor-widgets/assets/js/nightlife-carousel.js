@@ -81,6 +81,13 @@
 		function restOn( index ) {
 			var target = index < 0 ? 0 : index * pitch;
 
+			// The snap is held off before anything else, so the row is not
+			// taken from where the hand left it before the move begins — the
+			// browser draws that taking as a move of its own, back and then
+			// on again.
+			stop();
+			stage.classList.add( 'is-moving' );
+
 			// A step back out of the middle run is taken from the same place a
 			// run further on, where the copies are identical, so the step stays
 			// inside the run and is never put back while it is still moving.
@@ -100,9 +107,6 @@
 			var dist  = target - from;
 			var began = Date.now();
 			var SPAN  = 450;
-
-			stop();
-			stage.classList.add( 'is-moving' );
 
 			function arrive() {
 				stop();
@@ -223,17 +227,18 @@
 				}
 
 				holding = false;
-				stage.classList.remove( 'is-holding' );
 
-				if ( pitch <= 0 ) {
-					return;
+				// The move to rest begins before the hold is given up: between
+				// the two the snap would take the row.
+				if ( pitch > 0 ) {
+					var pulled = name === 'pointercancel' ? 0 : event.clientX - startX;
+					var from   = Math.round( startAt / pitch );
+					var step   = Math.abs( pulled ) >= PULL ? ( pulled < 0 ? 1 : -1 ) : 0;
+
+					restOn( from + step );
 				}
 
-				var pulled = name === 'pointercancel' ? 0 : event.clientX - startX;
-				var from   = Math.round( startAt / pitch );
-				var step   = Math.abs( pulled ) >= PULL ? ( pulled < 0 ? 1 : -1 ) : 0;
-
-				restOn( from + step );
+				stage.classList.remove( 'is-holding' );
 			} );
 		} );
 	}
