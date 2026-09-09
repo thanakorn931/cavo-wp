@@ -440,7 +440,8 @@
 }
 
 /* Tablet — not drawn. The page's words are given more of the width than the
-   narrow tier keeps for them. */
+   narrow tier keeps for them, and the arrows come up with it, short of the
+   wide tier's 56. */
 @media ( min-width: 768px ) and ( max-width: 1024px ) {
 	.custom-membership-hero__intro {
 		padding: 0 48px 84px;
@@ -448,5 +449,15 @@
 
 	.custom-membership-hero__body {
 		max-width: 600px;
+	}
+
+	.custom-membership-hero__arrow {
+		width: 40px;
+		height: 40px;
+	}
+
+	.custom-membership-hero__arrow svg {
+		width: 17px;
+		height: 14px;
 	}
 }
