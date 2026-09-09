@@ -22,6 +22,21 @@
 	box-sizing: border-box;
 }
 
+/* Signed in, WordPress puts its own bar across the top of the window and pushes
+   the page down by the height of it. A bar out of the flow is measured against
+   the window, not the page, so it would sit under that bar and leave the height
+   of it uncovered beneath. It starts below it instead. Nobody but the client
+   ever sees this. */
+body.admin-bar .custom-header__bar {
+	top: 32px;
+}
+
+@media screen and ( max-width: 782px ) {
+	body.admin-bar .custom-header__bar {
+		top: 46px;
+	}
+}
+
 .custom-header__inner {
 	display: flex;
 	flex-direction: column;

@@ -34,12 +34,26 @@
 
 		measure( root );
 
+		// Measured once and never again, the band keeps whatever the bar came to
+		// before the fonts arrived or while the window was some other size — and
+		// a band that no longer matches the bar is a strip of nothing under it.
+		// Every occasion the bar can change on is watched, not one of them.
 		if ( window.ResizeObserver ) {
 			new window.ResizeObserver( function () {
 				measure( root );
 			} ).observe( root.querySelector( '.custom-header__bar' ) );
-		} else {
-			window.addEventListener( 'resize', function () {
+		}
+
+		window.addEventListener( 'resize', function () {
+			measure( root );
+		} );
+
+		window.addEventListener( 'load', function () {
+			measure( root );
+		} );
+
+		if ( document.fonts && document.fonts.ready ) {
+			document.fonts.ready.then( function () {
 				measure( root );
 			} );
 		}
