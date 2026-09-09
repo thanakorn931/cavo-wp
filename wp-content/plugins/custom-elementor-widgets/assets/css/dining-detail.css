@@ -124,3 +124,90 @@
 	margin: 0;
 	white-space: nowrap;
 }
+
+/* Tablet and mobile — the file draws one of them (11167:8671): each picture
+   beside its own words, the first on the left and the second on the right,
+   and the hours in the middle under both. The pictures and the words are two
+   boxes on the wide tier, so here each gives up its own and lets what it
+   holds take a place in the band's grid: 180 for a picture and the rest for
+   the words, 14 between, the rows 38 apart. Tablet is not drawn; it takes
+   the same figures, and the picture takes half the row rather than 180,
+   which at that width leaves the words a line too long to read. */
+@media ( max-width: 1024px ) {
+	.custom-dining-detail {
+		display: grid;
+		grid-template-columns: 180px minmax( 0, 1fr );
+		align-items: start;
+		column-gap: 14px;
+		row-gap: 38px;
+		padding: 46px 14px 26px;
+	}
+
+	.custom-dining-detail__pictures,
+	.custom-dining-detail__column {
+		display: contents;
+	}
+
+	.custom-dining-detail__picture {
+		flex: 0 0 auto;
+		width: 180px;
+		height: 180px;
+	}
+
+	.custom-dining-detail__picture--one {
+		order: 1;
+		border-top-left-radius: 24px;
+		border-bottom-right-radius: 24px;
+	}
+
+	.custom-dining-detail__column > .custom-dining-detail__block:nth-child( 1 ) {
+		order: 2;
+	}
+
+	.custom-dining-detail__column > .custom-dining-detail__block:nth-child( 2 ) {
+		order: 3;
+	}
+
+	.custom-dining-detail__picture--two {
+		order: 4;
+		border-top-right-radius: 24px;
+		border-bottom-left-radius: 24px;
+	}
+
+	.custom-dining-detail__block {
+		gap: 10px;
+	}
+
+	.custom-dining-detail__hours {
+		order: 5;
+		grid-column: 1 / -1;
+		justify-self: center;
+		gap: 16px;
+		width: auto;
+		margin-top: 0;
+		padding: 12px 12px 8px;
+		border-radius: 8px;
+	}
+
+	.custom-dining-detail__hours-icon {
+		width: 18px;
+		height: 18px;
+	}
+
+	.custom-dining-detail__hours-words {
+		gap: 6px;
+		min-width: 0;
+	}
+}
+
+@media ( min-width: 768px ) and ( max-width: 1024px ) {
+	.custom-dining-detail {
+		grid-template-columns: minmax( 0, 1fr ) minmax( 0, 1fr );
+	}
+
+	.custom-dining-detail__picture {
+		width: 100%;
+		height: auto;
+		aspect-ratio: 1 / 1;
+	}
+}

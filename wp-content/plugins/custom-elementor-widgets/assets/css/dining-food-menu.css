@@ -102,3 +102,57 @@
 		transition: none;
 	}
 }
+
+/* Tablet and mobile — the file draws one of them (11167:8352): the words
+   over the picture rather than beside it, 356 across in the middle of a band
+   38 deep above and below, the two 24 apart. The picture is 300 deep here
+   and its corner 18. Tablet is not drawn; it takes the same figures, and the
+   picture is given more depth than 300, which at that width is a strip. */
+@media ( max-width: 1024px ) {
+	.custom-dining-menu {
+		flex-direction: column;
+		align-items: center;
+		gap: 24px;
+		padding: 38px 18px;
+	}
+
+	.custom-dining-menu__column {
+		align-items: center;
+		gap: 24px;
+		width: 100%;
+		min-height: 0;
+	}
+
+	.custom-dining-menu__heading,
+	.custom-dining-menu__body {
+		width: 100%;
+	}
+
+	.custom-dining-menu__button,
+	.custom-dining-menu__button:hover,
+	.custom-dining-menu__button:focus,
+	.custom-dining-menu__button:active {
+		margin-top: 0;
+		padding: 8px 16px;
+		border-radius: 16px;
+	}
+
+	.custom-dining-menu__gallery {
+		width: 100%;
+		height: 300px;
+		margin-top: 0;
+	}
+
+	.custom-dining-menu__gallery img,
+	.custom-dining-menu__gallery .custom-media-empty {
+		inset: 0;
+		height: 100%;
+		border-radius: 18px;
+	}
+}
+
+@media ( min-width: 768px ) and ( max-width: 1024px ) {
+	.custom-dining-menu__gallery {
+		height: 500px;
+	}
+}

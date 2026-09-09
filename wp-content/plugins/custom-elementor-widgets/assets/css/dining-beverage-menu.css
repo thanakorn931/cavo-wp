@@ -136,3 +136,60 @@
 		transition: none;
 	}
 }
+
+/* Tablet and mobile — the file draws one of them (11167:8699): the words
+   over the pictures rather than beside them, 16 in from either edge, the
+   band 34 deep above and 54 below, the pictures 320 deep in two columns 8
+   apart. Tablet is not drawn and takes the same figures. */
+@media ( max-width: 1024px ) {
+	.custom-dining-beverage {
+		padding: 34px 16px 54px;
+	}
+
+	.custom-dining-beverage__row {
+		flex-direction: column;
+		align-items: center;
+		gap: 36px;
+	}
+
+	.custom-dining-beverage__column {
+		align-items: center;
+		gap: 24px;
+		width: 100%;
+		min-height: 0;
+	}
+
+	.custom-dining-beverage__words {
+		gap: 16px;
+	}
+
+	.custom-dining-beverage__button,
+	.custom-dining-beverage__button:hover,
+	.custom-dining-beverage__button:focus,
+	.custom-dining-beverage__button:active {
+		padding: 8px 16px;
+	}
+
+	/* 358 across and 320 deep in the file — held as that shape, so on tablet
+	   the tiles keep the proportion drawn rather than flattening. */
+	.custom-dining-beverage__gallery {
+		gap: 8px;
+		width: 100%;
+		height: auto;
+		aspect-ratio: 358 / 320;
+	}
+
+	.custom-dining-beverage__tile--one {
+		border-top-left-radius: 20px;
+		border-bottom-right-radius: 20px;
+	}
+
+	.custom-dining-beverage__tile--two {
+		border-top-right-radius: 20px;
+		border-bottom-left-radius: 20px;
+	}
+
+	.custom-dining-beverage__tile--wide {
+		border-radius: 10px;
+	}
+}

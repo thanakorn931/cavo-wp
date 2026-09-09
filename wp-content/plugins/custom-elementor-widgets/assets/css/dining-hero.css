@@ -71,3 +71,21 @@
 .custom-dining-hero__button {
 	color: inherit;
 }
+
+/* Tablet and mobile — the file draws one of them (11167:8299): the block
+   stands 62 down a band 252 deep, 263 across in the middle, its two parts
+   24 apart. What is left below the block is the band's own. Tablet is not
+   drawn and takes the same figures. */
+@media ( max-width: 1024px ) {
+	.custom-dining-hero {
+		gap: 24px;
+		padding: 62px 64px 64px;
+	}
+
+	.custom-dining-hero__button,
+	.custom-dining-hero__button:hover,
+	.custom-dining-hero__button:focus,
+	.custom-dining-hero__button:active {
+		padding: 9px 14px;
+	}
+}

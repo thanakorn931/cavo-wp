@@ -147,7 +147,11 @@ class Dining_Membership extends Base_Widget {
 				'fields_options' => array(
 					'typography'  => array( 'default' => 'yes' ),
 					'font_family' => array( 'default' => 'Roboto' ),
-					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 14 ) ),
+					'font_size'   => array(
+						'default'        => array( 'unit' => 'px', 'size' => 14 ),
+						'tablet_default' => array( 'unit' => 'px', 'size' => 9 ),
+						'mobile_default' => array( 'unit' => 'px', 'size' => 9 ),
+					),
 				),
 			)
 		);

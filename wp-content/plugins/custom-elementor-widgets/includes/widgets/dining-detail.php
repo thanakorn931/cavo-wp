@@ -258,7 +258,11 @@ class Dining_Detail extends Base_Widget {
 				'fields_options' => array(
 					'typography'  => array( 'default' => 'yes' ),
 					'font_family' => array( 'default' => 'Roboto' ),
-					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 24 ) ),
+					'font_size'   => array(
+						'default'        => array( 'unit' => 'px', 'size' => 24 ),
+						'tablet_default' => array( 'unit' => 'px', 'size' => 20 ),
+						'mobile_default' => array( 'unit' => 'px', 'size' => 20 ),
+					),
 					'font_weight' => array( 'default' => '400' ),
 				),
 			)
@@ -273,7 +277,11 @@ class Dining_Detail extends Base_Widget {
 				'fields_options' => array(
 					'typography'  => array( 'default' => 'yes' ),
 					'font_family' => array( 'default' => 'Roboto' ),
-					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 16 ) ),
+					'font_size'   => array(
+						'default'        => array( 'unit' => 'px', 'size' => 16 ),
+						'tablet_default' => array( 'unit' => 'px', 'size' => 12 ),
+						'mobile_default' => array( 'unit' => 'px', 'size' => 12 ),
+					),
 				),
 			)
 		);
@@ -312,7 +320,11 @@ class Dining_Detail extends Base_Widget {
 				'fields_options' => array(
 					'typography'  => array( 'default' => 'yes' ),
 					'font_family' => array( 'default' => 'Roboto' ),
-					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 18 ) ),
+					'font_size'   => array(
+						'default'        => array( 'unit' => 'px', 'size' => 18 ),
+						'tablet_default' => array( 'unit' => 'px', 'size' => 9 ),
+						'mobile_default' => array( 'unit' => 'px', 'size' => 9 ),
+					),
 					'font_weight' => array( 'default' => '500' ),
 				),
 			)
@@ -339,7 +351,11 @@ class Dining_Detail extends Base_Widget {
 				'fields_options' => array(
 					'typography'  => array( 'default' => 'yes' ),
 					'font_family' => array( 'default' => 'Roboto' ),
-					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 16 ) ),
+					'font_size'   => array(
+						'default'        => array( 'unit' => 'px', 'size' => 16 ),
+						'tablet_default' => array( 'unit' => 'px', 'size' => 8 ),
+						'mobile_default' => array( 'unit' => 'px', 'size' => 8 ),
+					),
 				),
 			)
 		);
