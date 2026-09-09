@@ -153,8 +153,10 @@
 		width: 100%;
 	}
 
+	/* The ways stand in a row from the left, 24 apart, as asked — not spread
+	   to the edges. */
 	.custom-contact-detail__row {
-		justify-content: space-between;
+		justify-content: flex-start;
 		gap: 16px 24px;
 		width: 100%;
 	}
