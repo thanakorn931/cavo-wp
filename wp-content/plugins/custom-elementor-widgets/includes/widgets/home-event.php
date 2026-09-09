@@ -148,6 +148,10 @@ class Home_Event extends Base_Widget {
 			)
 		);
 
+		// The file sends every card to the same place, so it is asked once for
+		// the section, beside the words on the button that goes there.
+		$this->add_link_controls( $this, 'card_link', esc_html__( 'Button url', 'custom-elementor-widgets' ) );
+
 		$this->end_controls_section();
 
 		$this->register_style_controls();
@@ -444,15 +448,6 @@ class Home_Event extends Base_Widget {
 			)
 		);
 
-		// Where a card leads. The file sends every card to the same place, so it
-		// is asked once for the section — and asked here, beside the facts, so
-		// that pointing it at a field of each item later is one change.
-		$this->add_link_controls(
-			$this,
-			'card_link',
-			esc_html__( 'Where a card leads', 'custom-elementor-widgets' ),
-			array( 'separator' => 'before' )
-		);
 	}
 
 	/**
