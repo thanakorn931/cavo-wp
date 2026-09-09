@@ -137,21 +137,6 @@ class Home_Event extends Base_Widget {
 			)
 		);
 
-		$this->add_control(
-			'more_text',
-			array(
-				'label'       => esc_html__( 'Button text', 'custom-elementor-widgets' ),
-				'type'        => Controls_Manager::TEXT,
-				'dynamic'     => array( 'active' => true ),
-				'placeholder' => $design['more_text'],
-				'separator'   => 'before',
-			)
-		);
-
-		// The file sends every card to the same place, so it is asked once for
-		// the section, beside the words on the button that goes there.
-		$this->add_link_controls( $this, 'card_link', esc_html__( 'Button url', 'custom-elementor-widgets' ) );
-
 		$this->end_controls_section();
 
 		$this->register_style_controls();
@@ -363,13 +348,13 @@ class Home_Event extends Base_Widget {
 	 * @param \WP_Post $item     The post.
 	 */
 	private function render_item( $settings, $item ) {
-		$more = $this->text( $settings, 'more_text' );
 		$meta = $this->meta( $item );
 
-		// Read as this item, so a link pointed at a field sends each card to its
-		// own place. Typed instead, every card is sent to the one the section
-		// was given.
+		// Read as this item: pointed at a field, the words on the button and the
+		// place it leads are each card's own. Typed instead, every card carries
+		// what the section was given.
 		$fact  = $this->item_settings( $item );
+		$more  = $this->text( $fact, 'more_text' );
 		$leads = isset( $fact['card_link'] ) ? trim( (string) $fact['card_link'] ) : '';
 		$where = $this->link_from( $fact, 'card_link' );
 		?>
@@ -452,6 +437,21 @@ class Home_Event extends Base_Widget {
 				'dynamic' => array( 'active' => true ),
 			)
 		);
+
+		$design = $this->design_text();
+
+		$this->add_control(
+			'more_text',
+			array(
+				'label'       => esc_html__( 'Button text', 'custom-elementor-widgets' ),
+				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
+				'placeholder' => $design['more_text'],
+				'separator'   => 'before',
+			)
+		);
+
+		$this->add_link_controls( $this, 'card_link', esc_html__( 'Button url', 'custom-elementor-widgets' ) );
 
 	}
 
