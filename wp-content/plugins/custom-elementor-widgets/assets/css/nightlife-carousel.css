@@ -41,6 +41,9 @@
 	   the band with its neighbours either side of it, never a position it
 	   happened to stop at. */
 	scroll-snap-type: x mandatory;
+	/* A finger moves the row the way a mouse does; the page keeps the up and
+	   down. */
+	touch-action: pan-y;
 }
 
 .custom-nightlife-carousel__stage::-webkit-scrollbar {
@@ -51,6 +54,12 @@
    to the nearest picture. It comes to rest when the hold ends, not during it. */
 .custom-nightlife-carousel__stage.is-holding {
 	cursor: grabbing;
+}
+
+/* Held, or on its way to rest, the row is not snapped: the snap would take
+   the move out of the hand, or cut it short. */
+.custom-nightlife-carousel__stage.is-holding,
+.custom-nightlife-carousel__stage.is-moving {
 	scroll-snap-type: none;
 }
 

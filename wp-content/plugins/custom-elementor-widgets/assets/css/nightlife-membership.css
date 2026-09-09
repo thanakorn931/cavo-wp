@@ -146,7 +146,7 @@
    it as a row of three that runs off the frame. As asked, the wide panel
    takes a row of its own, 16 in from either edge, at the shape the file
    gives it (297 by 217) with its button 16 above the foot, and the two
-   beside it divide a row under it, 16 apart, at the wide panel's shape —
+   beside it divide a row under it, touching, at the wide panel's shape —
    a decision, since the file's own shape for them (100 by 217) is a strip.
    The name stands 23 down the band with 24 above and below it, and 24 is
    left under the panels. Each picture stands in the flow at its shape, and
@@ -174,7 +174,7 @@
 @media ( max-width: 767px ) {
 	.custom-nightlife-membership__panels {
 		flex-wrap: wrap;
-		gap: 16px;
+		gap: 0;
 		aspect-ratio: auto;
 	}
 

@@ -1,8 +1,10 @@
 /**
  * Nightlife, atmosphere.
  *
- * The row is moved by taking hold of it. Nothing is added on a touch screen or
- * a trackpad, which already move it; this is only for a mouse, which does not.
+ * The row is moved by taking hold of it, with a finger or a mouse, and let go:
+ * pulled a little either way it moves one slide that way and comes to rest
+ * on it, and pulled hardly at all it settles back. It never moves more than
+ * one slide for one hold, however far the hold travelled.
  *
  * The run is written three times and the row is put back a run whenever it
  * leaves the middle one. Where the row stands is a number rather than a
@@ -33,6 +35,17 @@
 		var many   = track ? parseInt( track.getAttribute( 'data-many' ), 10 ) || slides.length : slides.length;
 		var runs   = many > 0 ? Math.round( slides.length / many ) : 1;
 		var run    = 0;
+		var pitch  = 0;
+
+		// While the row is being put back a run, the putting back is not
+		// itself something to put back.
+		var shifting = false;
+
+		// How far a hold must travel before it counts as a pull.
+		var PULL = 24;
+
+		// The move under way, so a new hold can cut it short.
+		var flight = 0;
 
 		// What one run is worth: as many slides as the client gave, each of them
 		// a slide and the space beside it.
@@ -49,10 +62,67 @@
 			run = many * ( wide + gap );
 		}
 
+		// A slide and the space beside it, whether or not there is more than
+		// one run to keep to.
+		function measurePitch() {
+			if ( slides.length === 0 || ! track ) {
+				pitch = 0;
+
+				return;
+			}
+
+			pitch = slides[ 0 ].offsetWidth + ( parseFloat( window.getComputedStyle( track ).columnGap ) || 0 );
+		}
+
+		// The row rests with a slide in the middle, and the slide in the middle
+		// is a count: the first stands there when the row has not moved, each
+		// after it one pitch further on.
+		function restOn( index ) {
+			var target = index < 0 ? 0 : index * pitch;
+
+			// A step back out of the middle run is taken from the same place a
+			// run further on, where the copies are identical, so the step stays
+			// inside the run and is never put back while it is still moving.
+			if ( run > 0 && target < run ) {
+				shifting = true;
+				stage.scrollLeft += run;
+				shifting = false;
+				target += run;
+			}
+
+			// The move is drawn step by step, easing out, with the snap held
+			// off until it has arrived: left to the browser it is cut short by
+			// the snap, or not drawn at all where nothing pulls it. The steps
+			// are timed rather than tied to frames, so a move goes on to its end
+			// even where nothing is being drawn.
+			var from  = stage.scrollLeft;
+			var dist  = target - from;
+			var began = Date.now();
+			var SPAN  = 450;
+
+			window.clearTimeout( flight );
+			stage.classList.add( 'is-moving' );
+
+			function step() {
+				var t = Math.min( 1, ( Date.now() - began ) / SPAN );
+				var e = 1 - Math.pow( 1 - t, 3 );
+
+				stage.scrollLeft = from + dist * e;
+
+				if ( t < 1 ) {
+					flight = window.setTimeout( step, 16 );
+				} else {
+					stage.classList.remove( 'is-moving' );
+				}
+			}
+
+			step();
+		}
+
 		// The copies are identical, so a row put back by exactly one run shows
 		// the same pictures in the same places and the move cannot be seen.
 		function keepToTheMiddle() {
-			if ( run <= 0 ) {
+			if ( run <= 0 || shifting ) {
 				return;
 			}
 
@@ -81,26 +151,33 @@
 
 		window.addEventListener( 'resize', function () {
 			measure();
+			measurePitch();
 			keepToTheMiddle();
 		} );
 
 		measure();
+		measurePitch();
 
 		// The row opens on the middle run, which is what puts a picture either
 		// side of the one being read.
 		stage.scrollLeft = run;
 
 		stage.addEventListener( 'pointerdown', function ( event ) {
-			if ( event.pointerType === 'touch' ) {
-				return;
-			}
+			window.clearTimeout( flight );
+			stage.classList.remove( 'is-moving' );
 
 			holding = true;
 			startX  = event.clientX;
 			startAt = stage.scrollLeft;
 
 			stage.classList.add( 'is-holding' );
-			stage.setPointerCapture( event.pointerId );
+
+			try {
+				stage.setPointerCapture( event.pointerId );
+			} catch ( error ) {
+				// A pointer the page did not see begin cannot be held; the hold
+				// goes on without it.
+			}
 		} );
 
 		stage.addEventListener( 'pointermove', function ( event ) {
@@ -112,10 +189,26 @@
 			stage.scrollLeft = startAt - ( event.clientX - startX );
 		} );
 
+		// Let go, the row goes one slide the way it was pulled, or settles back
+		// where it was if it was hardly pulled at all.
 		[ 'pointerup', 'pointercancel', 'pointerleave' ].forEach( function ( name ) {
-			stage.addEventListener( name, function () {
+			stage.addEventListener( name, function ( event ) {
+				if ( ! holding ) {
+					return;
+				}
+
 				holding = false;
 				stage.classList.remove( 'is-holding' );
+
+				if ( pitch <= 0 ) {
+					return;
+				}
+
+				var pulled = name === 'pointercancel' ? 0 : event.clientX - startX;
+				var from   = Math.round( startAt / pitch );
+				var step   = Math.abs( pulled ) >= PULL ? ( pulled < 0 ? 1 : -1 ) : 0;
+
+				restOn( from + step );
 			} );
 		} );
 	}
