@@ -446,3 +446,12 @@
 		padding: 8px 16px;
 	}
 }
+
+/* Tablet — not drawn. The band is near twice the width the narrow tier gives
+   the words, and a line that runs the whole of it is too long to read, so the
+   description keeps half. */
+@media ( min-width: 768px ) and ( max-width: 1024px ) {
+	.custom-home-space__body {
+		width: 50%;
+	}
+}
