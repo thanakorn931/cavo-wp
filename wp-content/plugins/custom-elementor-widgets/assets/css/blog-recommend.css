@@ -65,3 +65,47 @@
 		transition: none;
 	}
 }
+
+/* Tablet and mobile — the file draws one of them (11186:13228): the name and
+   the way to the whole list on one line, the cards one under another 20 in
+   from either edge and 38 apart. The client has said the tablet, which the
+   file does not draw, keeps the wide tier's three across. */
+@media ( max-width: 1024px ) {
+	.custom-blog-recommend {
+		gap: 38px;
+		padding: 38px 16px;
+	}
+
+	.custom-blog-recommend__head {
+		align-items: flex-end;
+		gap: 16px;
+	}
+
+	.custom-blog-recommend__heading {
+		width: auto;
+		max-width: 178px;
+	}
+
+	.custom-blog-recommend__more {
+		padding: 8px 16px;
+	}
+
+	.custom-blog-recommend__cards {
+		grid-template-columns: minmax( 0, 1fr );
+		gap: 38px;
+		padding: 0 4px;
+		box-sizing: border-box;
+	}
+}
+
+@media ( min-width: 768px ) and ( max-width: 1024px ) {
+	.custom-blog-recommend__heading {
+		max-width: 508px;
+	}
+
+	.custom-blog-recommend__cards {
+		grid-template-columns: repeat( 3, minmax( 0, 1fr ) );
+		gap: 24px;
+		padding: 0;
+	}
+}

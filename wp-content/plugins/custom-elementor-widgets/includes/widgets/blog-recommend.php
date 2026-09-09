@@ -198,7 +198,11 @@ class Blog_Recommend extends Blog_Widget {
 				'fields_options' => array(
 					'typography'  => array( 'default' => 'yes' ),
 					'font_family' => array( 'default' => 'Fenul Compressed' ),
-					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 48 ) ),
+					'font_size'   => array(
+						'default'        => array( 'unit' => 'px', 'size' => 48 ),
+						'tablet_default' => array( 'unit' => 'px', 'size' => 32 ),
+						'mobile_default' => array( 'unit' => 'px', 'size' => 32 ),
+					),
 					'font_weight' => array( 'default' => '500' ),
 				),
 			)
@@ -226,7 +230,11 @@ class Blog_Recommend extends Blog_Widget {
 				'fields_options' => array(
 					'typography'  => array( 'default' => 'yes' ),
 					'font_family' => array( 'default' => 'Roboto' ),
-					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 14 ) ),
+					'font_size'   => array(
+						'default'        => array( 'unit' => 'px', 'size' => 14 ),
+						'tablet_default' => array( 'unit' => 'px', 'size' => 9 ),
+						'mobile_default' => array( 'unit' => 'px', 'size' => 9 ),
+					),
 				),
 			)
 		);
@@ -265,7 +273,11 @@ class Blog_Recommend extends Blog_Widget {
 				'fields_options' => array(
 					'typography'  => array( 'default' => 'yes' ),
 					'font_family' => array( 'default' => 'Roboto' ),
-					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 16 ) ),
+					'font_size'   => array(
+						'default'        => array( 'unit' => 'px', 'size' => 16 ),
+						'tablet_default' => array( 'unit' => 'px', 'size' => 13 ),
+						'mobile_default' => array( 'unit' => 'px', 'size' => 13 ),
+					),
 				),
 			)
 		);
@@ -279,7 +291,11 @@ class Blog_Recommend extends Blog_Widget {
 				'fields_options' => array(
 					'typography'  => array( 'default' => 'yes' ),
 					'font_family' => array( 'default' => 'Roboto' ),
-					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 20 ) ),
+					'font_size'   => array(
+						'default'        => array( 'unit' => 'px', 'size' => 20 ),
+						'tablet_default' => array( 'unit' => 'px', 'size' => 16 ),
+						'mobile_default' => array( 'unit' => 'px', 'size' => 16 ),
+					),
 					'font_weight' => array( 'default' => '500' ),
 				),
 			)
@@ -294,7 +310,11 @@ class Blog_Recommend extends Blog_Widget {
 				'fields_options' => array(
 					'typography'  => array( 'default' => 'yes' ),
 					'font_family' => array( 'default' => 'Roboto' ),
-					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 20 ) ),
+					'font_size'   => array(
+						'default'        => array( 'unit' => 'px', 'size' => 20 ),
+						'tablet_default' => array( 'unit' => 'px', 'size' => 16 ),
+						'mobile_default' => array( 'unit' => 'px', 'size' => 16 ),
+					),
 				),
 			)
 		);

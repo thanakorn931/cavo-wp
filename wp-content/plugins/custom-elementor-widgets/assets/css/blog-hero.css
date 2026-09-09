@@ -104,3 +104,45 @@
 		transition: none;
 	}
 }
+
+/* Tablet and mobile — the file draws one of them (11205:2918): the name and
+   what is known about the post in a column of 307 under the bar, the picture
+   the width of the screen 24 beneath. The way back is not drawn. Tablet is
+   not drawn and takes the same figures, the picture deeper. */
+@media ( max-width: 1024px ) {
+	.custom-blog-hero__back {
+		display: none;
+	}
+
+	.custom-blog-hero__name {
+		padding: 0 41px 24px;
+	}
+
+	.custom-blog-hero__column {
+		gap: 24px;
+		max-width: 307px;
+	}
+
+	.custom-blog-hero__meta {
+		gap: 16px;
+	}
+
+	.custom-blog-hero__date svg {
+		width: 16px;
+		height: 16px;
+	}
+
+	.custom-blog-hero__picture {
+		height: 268px;
+	}
+}
+
+@media ( min-width: 768px ) and ( max-width: 1024px ) {
+	.custom-blog-hero__column {
+		max-width: 600px;
+	}
+
+	.custom-blog-hero__picture {
+		height: 420px;
+	}
+}

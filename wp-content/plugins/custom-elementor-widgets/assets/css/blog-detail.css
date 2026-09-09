@@ -7,7 +7,10 @@
 .custom-blog-detail {
 	display: flex;
 	align-items: flex-start;
-	gap: 48px;
+	/* The file draws the article 880 and the card 48 from it across the 1248
+	   inside the band; each is held as its share, so a band narrower than
+	   1440 still holds both. */
+	gap: 3.846%;
 	width: 100%;
 	/* The band runs the full width; what stands in it stops at the 1248 the
 	   file draws inside 1440, and centres there. */
@@ -19,8 +22,8 @@
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
-	flex: 0 0 880px;
-	max-width: 880px;
+	flex: 0 0 70.513%;
+	max-width: none;
 	min-width: 0;
 }
 
@@ -137,5 +140,100 @@
 @media ( prefers-reduced-motion: reduce ) {
 	.custom-blog-detail__mark {
 		transition: none;
+	}
+}
+
+/* Tablet and mobile — the file draws one of them (11205:2920): the article
+   269 across and the card that hands it on 55 across at the right edge, 32
+   apart, in a band padded 38 and 16. Held as shares of the 356 the two take.
+   The tablet, which the file does not draw, keeps the card at the wide
+   tier's marks. */
+@media ( max-width: 1024px ) {
+	.custom-blog-detail {
+		gap: 9%;
+		padding: 38px 16px;
+	}
+
+	.custom-blog-detail__article {
+		flex: 0 0 75.56%;
+		max-width: none;
+	}
+
+	.custom-blog-detail__block {
+		padding: 4px 0;
+	}
+
+	.custom-blog-detail__shown {
+		aspect-ratio: 269 / 142;
+		margin: 7px 0;
+	}
+
+	.custom-blog-detail__share {
+		flex: 0 0 15.35%;
+		gap: 4px;
+		padding: 10px 5px;
+		border-radius: 5px;
+	}
+
+	.custom-blog-detail__share-title {
+		justify-content: center;
+		padding: 2px 0;
+		text-align: center;
+	}
+
+	.custom-blog-detail__marks {
+		flex-direction: column;
+		align-items: center;
+		justify-content: flex-start;
+		gap: 12px;
+	}
+
+	.custom-blog-detail__mark,
+	.custom-blog-detail__mark:hover,
+	.custom-blog-detail__mark:focus,
+	.custom-blog-detail__mark:active {
+		width: 16px;
+		height: 16px;
+	}
+
+	.custom-blog-detail__mark svg {
+		width: 8px;
+		height: 8px;
+	}
+
+	.custom-blog-detail__mark--twitter svg {
+		width: 7px;
+		height: 7px;
+	}
+}
+
+@media ( min-width: 768px ) and ( max-width: 1024px ) {
+	.custom-blog-detail__share {
+		flex: 0 0 96px;
+		gap: 12px;
+		padding: 16px 8px;
+		border-radius: 12px;
+	}
+
+	.custom-blog-detail__marks {
+		gap: 16px;
+	}
+
+	.custom-blog-detail__mark,
+	.custom-blog-detail__mark:hover,
+	.custom-blog-detail__mark:focus,
+	.custom-blog-detail__mark:active {
+		width: 32px;
+		height: 32px;
+	}
+
+	.custom-blog-detail__mark svg {
+		width: 16px;
+		height: 16px;
+	}
+
+	.custom-blog-detail__mark--twitter svg {
+		width: 14px;
+		height: 14px;
 	}
 }
