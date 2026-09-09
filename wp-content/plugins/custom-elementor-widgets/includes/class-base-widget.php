@@ -28,6 +28,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 abstract class Base_Widget extends \Elementor\Widget_Base {
 
 	/**
+	 * What each item answered, while this printing lasts.
+	 *
+	 * @var array
+	 */
+	private $read_items = array();
+
+	/**
 	 * The project's own panel category.
 	 *
 	 * @return array
@@ -305,6 +312,12 @@ abstract class Base_Widget extends \Elementor\Widget_Base {
 	protected function item_settings( $post ) {
 		global $wp_query;
 
+		// Asked for the same item twice in one printing — once to put the list
+		// in order, once to state it — the answer is the same both times.
+		if ( isset( $this->read_items[ $post->ID ] ) ) {
+			return $this->read_items[ $post->ID ];
+		}
+
 		$keep = isset( $GLOBALS['post'] ) ? $GLOBALS['post'] : null;
 
 		// What is standing has two answers: the post being printed, and the post
@@ -332,12 +345,14 @@ abstract class Base_Widget extends \Elementor\Widget_Base {
 			wp_reset_postdata();
 		}
 
-		return array_map(
+		$this->read_items[ $post->ID ] = array_map(
 			function ( $value ) {
 				return is_scalar( $value ) ? trim( (string) $value ) : $value;
 			},
 			$settings
 		);
+
+		return $this->read_items[ $post->ID ];
 	}
 
 	/**

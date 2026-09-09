@@ -100,7 +100,7 @@ abstract class Event_Widget extends Base_Widget {
 	 * @return array
 	 */
 	protected function items( $settings ) {
-		return get_posts(
+		$posts = get_posts(
 			$this->source_query(
 				$settings,
 				array(
@@ -110,6 +110,50 @@ abstract class Event_Widget extends Base_Widget {
 				)
 			)
 		);
+
+		$standing = array();
+
+		foreach ( $posts as $place => $post ) {
+			$standing[] = array(
+				'when'  => $this->item_starts( $post ),
+				'place' => $place,
+				'post'  => $post,
+			);
+		}
+
+		$way = isset( $settings['order'] ) && 'ASC' === $settings['order'] ? 1 : -1;
+
+		usort(
+			$standing,
+			function ( $a, $b ) use ( $way ) {
+				// Two on the same day keep the order the source gave them,
+				// whichever way round the list is being read.
+				if ( $a['when'] === $b['when'] ) {
+					return $a['place'] - $b['place'];
+				}
+
+				return $a['when'] < $b['when'] ? -$way : $way;
+			}
+		);
+
+		return wp_list_pluck( $standing, 'post' );
+	}
+
+	/**
+	 * When an item is, as a moment.
+	 *
+	 * The day the client set for it. A day they have not set is the day the post
+	 * appeared, so an item is never left without a place in the order.
+	 *
+	 * @param \WP_Post $post The item.
+	 * @return int
+	 */
+	private function item_starts( $post ) {
+		$item = $this->item_settings( $post );
+		$date = isset( $item['date'] ) ? trim( (string) $item['date'] ) : '';
+		$when = '' !== $date ? strtotime( $date ) : false;
+
+		return (int) ( $when ? $when : strtotime( $post->post_date ) );
 	}
 
 	/**
