@@ -74,6 +74,7 @@
 }
 
 .custom-contact-form__field {
+	position: relative;
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
@@ -90,38 +91,67 @@
 	margin: 0;
 }
 
-.custom-contact-form__input {
+/* The theme paints every bare box it finds — a ground, a border, an ink and a
+   corner — and names it by element and attribute, which outweighs one class.
+   The class is said twice so the field is the box the file draws: a rule around
+   it and nothing behind it. */
+.custom-contact-form__input.custom-contact-form__input {
 	width: 100%;
+	/* The file draws a field 43 tall, border and all. */
+	height: 43px;
 	padding: 12px;
 	border: 1px solid currentColor;
 	border-radius: 8px;
-	background: none;
+	background-color: transparent;
+	background-image: none;
 	color: inherit;
 	box-sizing: border-box;
 	appearance: none;
 }
 
-.custom-contact-form__input:focus {
+.custom-contact-form__input.custom-contact-form__input:focus {
 	outline: none;
 }
 
-.custom-contact-form__input::placeholder {
+.custom-contact-form__input.custom-contact-form__input::placeholder {
+	color: #9b8d89;
 	opacity: 1;
 }
 
 /* A message has a shape to hold; the fields above it take a line each. */
-.custom-contact-form__input--area {
+.custom-contact-form__input--area.custom-contact-form__input--area {
 	height: 180px;
 	resize: vertical;
 }
 
-/* What is chosen rather than typed carries the mark the file draws beside it. */
-select.custom-contact-form__input,
-input[ type="date" ].custom-contact-form__input {
-	background-image: url( "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='%23FFFFFF'%3E%3Cpath d='M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6z'/%3E%3C/svg%3E" );
-	background-repeat: no-repeat;
-	background-position: right 12px center;
+/* What is chosen rather than typed carries the mark the file draws beside it.
+
+   Drawn as a ground it would not survive: Elementor holds back every ground
+   inside a container it has not yet called loaded, and says so with a weight
+   nothing outranks. The mark is cut out of ink instead, which that rule does
+   not reach. */
+select.custom-contact-form__input.custom-contact-form__input,
+input[ type="date" ].custom-contact-form__input.custom-contact-form__input {
 	padding-right: 44px;
+}
+
+.custom-contact-form__field:has( select )::after,
+.custom-contact-form__field:has( input[ type="date" ] )::after {
+	content: "";
+	position: absolute;
+	right: 12px;
+	bottom: 22px;
+	width: 24px;
+	height: 24px;
+	transform: translateY( 50% );
+	background-color: currentColor;
+	-webkit-mask-image: url( "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6z'/%3E%3C/svg%3E" );
+	mask-image: url( "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cpath d='M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6z'/%3E%3C/svg%3E" );
+	-webkit-mask-repeat: no-repeat;
+	mask-repeat: no-repeat;
+	-webkit-mask-position: center;
+	mask-position: center;
+	pointer-events: none;
 }
 
 /* What the reader has to answer stands directly above the button. */
