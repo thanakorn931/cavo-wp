@@ -21,17 +21,19 @@
 	text-transform: uppercase;
 }
 
-/* Tablet and mobile — the file draws one of them (11186:13229): the name
-   stands 10 in from the top and the foot of its band. Tablet is not drawn and
-   is given a little more room. */
+/* Tablet and mobile — the file draws one of them: the name stands 10 in from
+   the top and the foot of its own box (11186:13229), and that box stands 24
+   above the band beneath it (11186:13607). The two are one band here, so the
+   24 is the band's own foot. Tablet is not drawn and is given a little more
+   room above and below. */
 @media ( max-width: 1024px ) {
 	.custom-contact-hero {
-		padding: 10px 16px;
+		padding: 10px 16px 34px;
 	}
 }
 
 @media ( min-width: 768px ) and ( max-width: 1024px ) {
 	.custom-contact-hero {
-		padding: 24px 16px;
+		padding: 24px 16px 48px;
 	}
 }
