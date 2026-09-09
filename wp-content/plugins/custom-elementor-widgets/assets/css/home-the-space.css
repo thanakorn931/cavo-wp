@@ -419,6 +419,13 @@
 		height: 24px;
 	}
 
+	/* The mark is drawn against the disc, and the disc is 24 across here rather
+	   than 56 — so the mark comes down with it. */
+	.custom-home-space__arrow svg {
+		width: 10px;
+		height: 9px;
+	}
+
 	.custom-home-space__arrow--prev {
 		left: 32px;
 	}
@@ -436,5 +443,6 @@
 		top: auto;
 		align-self: center;
 		margin-top: 26px;
+		padding: 8px 16px;
 	}
 }

@@ -276,6 +276,13 @@
 		height: 24px;
 	}
 
+	/* The mark is drawn against the disc, and the disc is 24 across here rather
+	   than 56 — so the mark comes down with it. */
+	.custom-home-event__arrow svg {
+		width: 10px;
+		height: 9px;
+	}
+
 	/* The band stands its children at the start on the wide tier, which in a
 	   column makes each of them as wide as its own content — and the row's
 	   content is every card at once. Told to fill the width, it becomes the
@@ -305,6 +312,10 @@
 	.custom-home-event__words {
 		width: 250px;
 		gap: 8px;
+	}
+
+	.custom-home-event__more {
+		padding: 8px 13px;
 	}
 
 	/* The picture and the mark are placed and sized against the card, and the

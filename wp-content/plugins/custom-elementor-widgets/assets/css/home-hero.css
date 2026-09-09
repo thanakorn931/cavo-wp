@@ -94,6 +94,10 @@
 		padding: 60px 16px 44px;
 	}
 
+	.custom-home-hero__button {
+		padding: 8px 16px;
+	}
+
 	.custom-home-hero__mark {
 		right: 8px;
 		bottom: 6px;

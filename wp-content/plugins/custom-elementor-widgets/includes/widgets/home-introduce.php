@@ -217,7 +217,11 @@ class Home_Introduce extends Base_Widget {
 						'tablet_default' => array( 'unit' => 'px', 'size' => 16 ),
 						'mobile_default' => array( 'unit' => 'px', 'size' => 16 ),
 					),
-					'line_height'     => array( 'default' => array( 'unit' => 'px', 'size' => 45 ) ),
+					'line_height'     => array(
+						'default'        => array( 'unit' => 'px', 'size' => 45 ),
+						'tablet_default' => array( 'unit' => 'px', 'size' => 20 ),
+						'mobile_default' => array( 'unit' => 'px', 'size' => 20 ),
+					),
 					'text_transform'  => array( 'default' => 'uppercase' ),
 				),
 			)
@@ -259,8 +263,8 @@ class Home_Introduce extends Base_Widget {
 					'font_family' => array( 'default' => 'Roboto' ),
 					'font_size'   => array(
 						'default'        => array( 'unit' => 'px', 'size' => 14 ),
-						'tablet_default' => array( 'unit' => 'px', 'size' => 11 ),
-						'mobile_default' => array( 'unit' => 'px', 'size' => 11 ),
+						'tablet_default' => array( 'unit' => 'px', 'size' => 9 ),
+						'mobile_default' => array( 'unit' => 'px', 'size' => 9 ),
 					),
 				),
 			)

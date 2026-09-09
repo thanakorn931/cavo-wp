@@ -234,8 +234,8 @@ class Home_Event extends Base_Widget {
 					'font_family' => array( 'default' => 'Roboto' ),
 					'font_size'   => array(
 						'default'        => array( 'unit' => 'px', 'size' => 20 ),
-						'tablet_default' => array( 'unit' => 'px', 'size' => 10 ),
-						'mobile_default' => array( 'unit' => 'px', 'size' => 10 ),
+						'tablet_default' => array( 'unit' => 'px', 'size' => 11 ),
+						'mobile_default' => array( 'unit' => 'px', 'size' => 11 ),
 					),
 				),
 			)
@@ -277,8 +277,8 @@ class Home_Event extends Base_Widget {
 					'font_family' => array( 'default' => 'Roboto' ),
 					'font_size'   => array(
 						'default'        => array( 'unit' => 'px', 'size' => 14 ),
-						'tablet_default' => array( 'unit' => 'px', 'size' => 11 ),
-						'mobile_default' => array( 'unit' => 'px', 'size' => 11 ),
+						'tablet_default' => array( 'unit' => 'px', 'size' => 9 ),
+						'mobile_default' => array( 'unit' => 'px', 'size' => 9 ),
 					),
 				),
 			)
