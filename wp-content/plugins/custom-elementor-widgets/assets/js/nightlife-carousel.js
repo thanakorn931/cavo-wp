@@ -4,7 +4,8 @@
  * The row is moved by taking hold of it, with a finger or a mouse, and let go:
  * pulled a little either way it moves one slide that way and comes to rest
  * on it, and pulled hardly at all it settles back. It never moves more than
- * one slide for one hold, however far the hold travelled.
+ * one slide for one hold, however far the hold travelled, and while it is
+ * held it follows the hand no further than that one slide.
  *
  * The run is written three times and the row is put back a run whenever it
  * leaves the middle one. Where the row stands is a number rather than a
@@ -194,13 +195,23 @@
 			}
 		} );
 
+		// Held, the row follows the hand, but no further than one slide either
+		// way: a long pull shows the next slide arriving and no more, so that
+		// letting go never has far to come back from.
 		stage.addEventListener( 'pointermove', function ( event ) {
 			if ( ! holding ) {
 				return;
 			}
 
 			event.preventDefault();
-			stage.scrollLeft = startAt - ( event.clientX - startX );
+
+			var pulled = event.clientX - startX;
+
+			if ( pitch > 0 ) {
+				pulled = Math.max( -pitch, Math.min( pitch, pulled ) );
+			}
+
+			stage.scrollLeft = startAt - pulled;
 		} );
 
 		// Let go, the row goes one slide the way it was pulled, or settles back
