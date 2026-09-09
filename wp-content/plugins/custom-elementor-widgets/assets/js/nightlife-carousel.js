@@ -141,7 +141,9 @@
 		// The copies are identical, so a row put back by exactly one run shows
 		// the same pictures in the same places and the move cannot be seen.
 		function keepToTheMiddle() {
-			if ( run <= 0 || shifting ) {
+			// A run narrower than the band was measured before the row had its
+			// shape; it is not a run, and nothing is put back by it.
+			if ( run <= 0 || run < stage.clientWidth || shifting ) {
 				return;
 			}
 
@@ -168,22 +170,39 @@
 
 		stage.addEventListener( 'scroll', keepToTheMiddle );
 
-		window.addEventListener( 'resize', function () {
+		// What a slide is worth is read again whenever it may have changed:
+		// when the page has finished arriving, when the window changes, and
+		// as a hold begins. Read once, before the stylesheet had reached the
+		// row, it is the width of nothing, and every move after is measured
+		// against that.
+		function measureAll() {
 			measure();
 			measurePitch();
+		}
+
+		window.addEventListener( 'resize', function () {
+			measureAll();
 			keepToTheMiddle();
 		} );
 
-		measure();
-		measurePitch();
-
 		// The row opens on the middle run, which is what puts a picture either
-		// side of the one being read.
-		stage.scrollLeft = run;
+		// side of the one being read. It is put there once the row has its
+		// shape, and again on load in case it had not.
+		function open() {
+			measureAll();
+
+			if ( run > 0 && stage.scrollLeft < run ) {
+				stage.scrollLeft = run;
+			}
+		}
+
+		open();
+		window.addEventListener( 'load', open );
 
 		stage.addEventListener( 'pointerdown', function ( event ) {
 			stop();
 			stage.classList.remove( 'is-moving' );
+			measureAll();
 
 			holding = true;
 			startX  = event.clientX;
