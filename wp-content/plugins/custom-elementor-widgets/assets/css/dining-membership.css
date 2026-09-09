@@ -96,3 +96,55 @@
 		transition: none;
 	}
 }
+
+/* Mobile — the file draws the wide panel alone, 390 across and 244 deep
+   (11205:3030), the button standing 26 above its foot. The two beside it are
+   not drawn there; they take a row of their own under it, dividing it in
+   two, at the depth the file gives them (11205:3036). Tablet is not drawn
+   and keeps the wide tier's row of three.
+
+   Each picture stands in the flow here at its own shape, and the row takes
+   its depth from them: a shape given to the band or a panel is read by
+   nothing above it once the row wraps, and the section after it started
+   before it had ended. */
+@media ( max-width: 767px ) {
+	.custom-dining-membership {
+		flex-wrap: wrap;
+		aspect-ratio: auto;
+	}
+
+	.custom-dining-membership__panel--wide {
+		flex: 0 0 100%;
+		padding-bottom: 0;
+	}
+
+	/* Each asks for half the row, which is more than the wide panel leaves on
+	   its line, so the two take a line of their own. */
+	.custom-dining-membership__panel--side {
+		flex: 1 1 50%;
+	}
+
+	.custom-dining-membership__picture {
+		position: relative;
+		inset: auto;
+		display: block;
+		width: 100%;
+	}
+
+	.custom-dining-membership__panel--wide .custom-dining-membership__picture {
+		aspect-ratio: 390 / 244;
+	}
+
+	.custom-dining-membership__panel--side .custom-dining-membership__picture {
+		aspect-ratio: 370 / 242;
+	}
+
+	.custom-dining-membership__button,
+	.custom-dining-membership__button:hover,
+	.custom-dining-membership__button:focus,
+	.custom-dining-membership__button:active {
+		position: absolute;
+		bottom: 26px;
+		padding: 8px 16px;
+	}
+}

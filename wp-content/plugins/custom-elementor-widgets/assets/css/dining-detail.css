@@ -129,14 +129,14 @@
    beside its own words, the first on the left and the second on the right,
    and the hours in the middle under both. The pictures and the words are two
    boxes on the wide tier, so here each gives up its own and lets what it
-   holds take a place in the band's grid: 180 for a picture and the rest for
-   the words, 14 between, the rows 38 apart. Tablet is not drawn; it takes
-   the same figures, and the picture takes half the row rather than 180,
-   which at that width leaves the words a line too long to read. */
+   holds take a place in the band's grid. The file draws the row 180 and 168
+   with 14 between — two halves — so the row is divided in two and the
+   picture holds its square at whatever width the half comes to. Tablet is
+   not drawn and takes the same figures. */
 @media ( max-width: 1024px ) {
 	.custom-dining-detail {
 		display: grid;
-		grid-template-columns: 180px minmax( 0, 1fr );
+		grid-template-columns: minmax( 0, 1fr ) minmax( 0, 1fr );
 		align-items: start;
 		column-gap: 14px;
 		row-gap: 38px;
@@ -150,8 +150,9 @@
 
 	.custom-dining-detail__picture {
 		flex: 0 0 auto;
-		width: 180px;
-		height: 180px;
+		width: 100%;
+		height: auto;
+		aspect-ratio: 1 / 1;
 	}
 
 	.custom-dining-detail__picture--one {
@@ -197,17 +198,5 @@
 	.custom-dining-detail__hours-words {
 		gap: 6px;
 		min-width: 0;
-	}
-}
-
-@media ( min-width: 768px ) and ( max-width: 1024px ) {
-	.custom-dining-detail {
-		grid-template-columns: minmax( 0, 1fr ) minmax( 0, 1fr );
-	}
-
-	.custom-dining-detail__picture {
-		width: 100%;
-		height: auto;
-		aspect-ratio: 1 / 1;
 	}
 }
