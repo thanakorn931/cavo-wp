@@ -141,3 +141,40 @@
 		transition: none;
 	}
 }
+
+/* Tablet and mobile — the words and the map stand one under the other, the map
+   the width of the band and as deep as the file draws it. */
+@media ( max-width: 1024px ) {
+	.custom-home-contact {
+		flex-direction: column;
+	}
+
+	.custom-home-contact__column {
+		flex: 0 0 auto;
+		width: 100%;
+		gap: 26px;
+		padding: 38px 20px 44px;
+	}
+
+	.custom-home-contact__block {
+		gap: 8px;
+	}
+
+	.custom-home-contact__hour {
+		gap: 38px;
+	}
+
+	.custom-home-contact__hour-name {
+		width: 80px;
+	}
+
+	.custom-home-contact__ways {
+		gap: 14px;
+	}
+
+	.custom-home-contact__map {
+		flex: 0 0 auto;
+		width: 100%;
+		height: 260px;
+	}
+}

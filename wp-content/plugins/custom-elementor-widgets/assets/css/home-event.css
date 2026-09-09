@@ -228,3 +228,55 @@
 		transition: none;
 	}
 }
+
+/* Tablet and mobile — the words stand over the row rather than beside it, and
+   the cards come down to the width the file draws them at. */
+@media ( max-width: 1024px ) {
+	.custom-home-event {
+		flex-direction: column;
+		padding: 38px 0 44px;
+	}
+
+	.custom-home-event__aside {
+		flex: 0 0 auto;
+		flex-direction: row;
+		align-items: center;
+		justify-content: space-between;
+		gap: 16px;
+		width: 100%;
+		padding: 0 16px;
+		box-sizing: border-box;
+	}
+
+	.custom-home-event__arrows {
+		gap: 8px;
+	}
+
+	.custom-home-event__arrow {
+		width: 24px;
+		height: 24px;
+	}
+
+	.custom-home-event__track {
+		gap: 24px;
+		padding: 28px 0 0 16px;
+	}
+
+	.custom-home-event__item {
+		flex: 0 0 250px;
+		gap: 13px;
+	}
+
+	.custom-home-event__card,
+	.custom-home-event__card:hover,
+	.custom-home-event__card:focus,
+	.custom-home-event__card:active {
+		width: 250px;
+		height: 338px;
+	}
+
+	.custom-home-event__words {
+		width: 250px;
+		gap: 8px;
+	}
+}

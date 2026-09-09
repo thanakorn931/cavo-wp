@@ -337,3 +337,82 @@
 		transition: none;
 	}
 }
+
+/* Tablet and mobile — the file drops the row of tabs and lays the one picture
+   over the words: the picture with an arrow at either edge, the way in beneath
+   it, then what the place is. */
+@media ( max-width: 1024px ) {
+	.custom-home-space {
+		padding: 38px 0 44px;
+	}
+
+	.custom-home-space__heading {
+		padding: 0 16px;
+		box-sizing: border-box;
+	}
+
+	/* Not drawn on this tier: the picture is turned with the two arrows. */
+	.custom-home-space__tabs {
+		display: none;
+	}
+
+	/* The arrows are placed against the picture here rather than against the
+	   whole band, so they sit 12 into it at either edge as the file draws. */
+	.custom-home-space__stage {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+		height: auto;
+		margin-top: 30px;
+		padding: 0 20px;
+		box-sizing: border-box;
+	}
+
+	.custom-home-space__large {
+		position: relative;
+		width: 100%;
+		max-width: 100%;
+		height: 202px;
+	}
+
+	/* The second picture and the words stand under the first rather than beside
+	   it, so neither is placed by hand any more. */
+	.custom-home-space__small {
+		display: none;
+	}
+
+	.custom-home-space__panel {
+		position: relative;
+		left: auto;
+		top: auto;
+		width: 100%;
+		margin-top: 46px;
+		gap: 16px;
+	}
+
+	.custom-home-space__arrow {
+		top: 90px;
+		width: 24px;
+		height: 24px;
+	}
+
+	.custom-home-space__arrow--prev {
+		left: 32px;
+	}
+
+	.custom-home-space__arrow--next {
+		left: auto;
+		right: 32px;
+	}
+
+	/* Placed by hand beside the picture on the wide tier; in the flow here,
+	   under it and in the middle. */
+	.custom-home-space__reserve {
+		position: relative;
+		left: auto;
+		top: auto;
+		align-self: center;
+		margin-top: 26px;
+	}
+}

@@ -115,3 +115,33 @@
 		transition: none;
 	}
 }
+
+/* Tablet and mobile — the file lays the pictures one under another rather than
+   in a figure of three columns. */
+@media ( max-width: 1024px ) {
+	.custom-home-dining {
+		gap: 34px;
+		padding: 38px 16px 44px;
+	}
+
+	.custom-home-dining__head {
+		gap: 16px;
+	}
+
+	.custom-home-dining__grid {
+		grid-template-columns: 1fr;
+		grid-template-rows: none;
+		grid-auto-rows: 300px;
+		gap: 24px;
+	}
+
+	/* Each takes the row it falls in, in the order the section prints them. */
+	.custom-home-dining__slot--tall,
+	.custom-home-dining__slot--wide,
+	.custom-home-dining__slot--left,
+	.custom-home-dining__slot--middle,
+	.custom-home-dining__slot--right {
+		grid-column: auto;
+		grid-row: auto;
+	}
+}

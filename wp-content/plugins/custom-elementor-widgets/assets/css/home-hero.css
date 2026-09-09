@@ -85,3 +85,19 @@
 		transition: none;
 	}
 }
+
+/* Tablet and mobile — the file draws one of them. The band is the picture and
+   what stands on it, so what changes is how much room is left around them. */
+@media ( max-width: 1024px ) {
+	.custom-home-hero {
+		gap: 30px;
+		padding: 60px 16px 44px;
+	}
+
+	.custom-home-hero__mark {
+		right: 8px;
+		bottom: 6px;
+		width: 90px;
+		height: 30px;
+	}
+}
