@@ -46,7 +46,9 @@
    wider than the band, as the file draws it. */
 .custom-private-tour__wordmark {
 	display: block;
-	width: 1516px;
+	/* 1516 across a band of 1440, held as that share so it comes down with
+	   the band. */
+	width: 105.278%;
 	max-width: none;
 	aspect-ratio: 1516 / 315;
 	background-image: url( "../img/cavo-wordmark.webp" );
@@ -56,7 +58,7 @@
 }
 
 /* Tablet and mobile — the file draws one of them (11174:12011): the band 49
-   above the film, the film 10 in from either edge and 195 deep, the wordmark
+   above the film, the film the width of the screen and 195 deep, the wordmark
    the width of the screen 16 beneath it. Tablet is not drawn and takes the
    same figures, the film deeper. */
 @media ( max-width: 1024px ) {
@@ -66,7 +68,6 @@
 	}
 
 	.custom-private-tour__stage {
-		width: calc( 100% - 20px );
 		height: 195px;
 	}
 

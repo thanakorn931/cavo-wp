@@ -10,7 +10,10 @@
 	position: relative;
 	display: flex;
 	align-items: stretch;
-	gap: 64px;
+	/* The file draws 640, 64 and 640 across a band of 1344. Held as the share
+	   each takes, the two keep the file's figures where the band is at its full
+	   width and their proportion where it is narrower. */
+	gap: 4.762%;
 	width: 100%;
 	padding: 96px calc( 48px + max( 0px, calc( ( 100% - 1440px ) / 2 ) ) );
 	box-sizing: border-box;
@@ -45,8 +48,8 @@
 	align-items: center;
 	justify-content: center;
 	gap: 48px;
-	flex: 0 0 auto;
-	width: 640px;
+	flex: 0 0 47.619%;
+	width: auto;
 }
 
 .custom-private-introduce__body {
@@ -84,8 +87,8 @@
 
 .custom-private-introduce__picture {
 	position: relative;
-	flex: 0 0 auto;
-	width: 640px;
+	flex: 0 0 47.619%;
+	width: auto;
 	height: 491px;
 	border-radius: 24px;
 	overflow: hidden;

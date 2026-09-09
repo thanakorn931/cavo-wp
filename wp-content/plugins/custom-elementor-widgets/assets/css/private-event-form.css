@@ -36,9 +36,12 @@
 	flex-direction: column;
 	align-items: flex-start;
 	gap: 12px;
-	flex: 0 0 auto;
-	width: 585px;
-	margin: 96px 70px 96px 65px;
+	/* The file draws the column 585 across, 65 in from the picture and 70
+	   from the edge, in the half of 1440 the picture leaves; each is held as
+	   its share of the band. */
+	flex: 0 0 40.625%;
+	width: auto;
+	margin: 96px 4.861% 96px 4.514%;
 }
 
 .custom-private-form__heading,
@@ -238,6 +241,7 @@ select.custom-private-form__input.custom-private-form__input:invalid {
 
 	.custom-private-form__column.custom-private-form__column {
 		order: 1;
+		flex: 0 0 auto;
 		gap: 8px;
 		width: auto;
 		margin: 25px 11px 41px;
