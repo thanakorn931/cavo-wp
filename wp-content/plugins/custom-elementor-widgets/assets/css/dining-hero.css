@@ -89,3 +89,13 @@
 		padding: 9px 14px;
 	}
 }
+
+/* Tablet — not drawn. The band is the room around the block, so it is given
+   a good deal more of it here than the narrow tier keeps, and still well
+   short of the wide tier's. */
+@media ( min-width: 768px ) and ( max-width: 1024px ) {
+	.custom-dining-hero {
+		padding: 180px 64px 180px;
+	}
+}
+
