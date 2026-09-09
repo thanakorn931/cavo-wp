@@ -365,11 +365,16 @@ class Home_Event extends Base_Widget {
 	private function render_item( $settings, $item ) {
 		$more = $this->text( $settings, 'more_text' );
 		$meta = $this->meta( $item );
+
+		// Read as this item, so a link pointed at a field sends each card to its
+		// own place. Typed instead, every card is sent to the one the section
+		// was given.
+		$fact  = $this->item_settings( $item );
+		$leads = isset( $fact['card_link'] ) ? trim( (string) $fact['card_link'] ) : '';
+		$where = $this->link_from( $fact, 'card_link' );
 		?>
 		<div class="custom-home-event__item">
-			<?php $where = $this->link_from( $settings, 'card_link' ); ?>
-
-			<?php if ( '' !== trim( (string) $this->text( $settings, 'card_link' ) ) ) : ?>
+			<?php if ( '' !== $leads ) : ?>
 				<a class="custom-home-event__card"<?php
 					echo $where; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in link_attributes().
 				?>>
