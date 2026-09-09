@@ -461,27 +461,17 @@ class Membership_Hero extends Base_Widget {
 			)
 		);
 
+		// The colours are asked for the arrow that can be pressed. One with
+		// nowhere to go is drawn by the section: no disc, and a pale mark.
 		$this->add_control(
 			'arrow_background',
 			array(
 				'label'     => esc_html__( 'Arrows', 'custom-elementor-widgets' ),
 				'type'      => Controls_Manager::COLOR,
-				'default'   => '#FAF6EA',
+				'default'   => '#3A2114',
 				'separator' => 'before',
 				'selectors' => array(
-					'{{WRAPPER}} .custom-membership-hero__arrow' => 'background-color: {{VALUE}};',
-				),
-			)
-		);
-
-		$this->add_control(
-			'arrow_off_background',
-			array(
-				'label'     => esc_html__( 'Arrows, with nowhere to go', 'custom-elementor-widgets' ),
-				'type'      => Controls_Manager::COLOR,
-				'default'   => '#C9BCA6',
-				'selectors' => array(
-					'{{WRAPPER}} .custom-membership-hero__arrow[disabled]' => 'background-color: {{VALUE}};',
+					'{{WRAPPER}} .custom-membership-hero__arrow:not( [disabled] )' => 'background-color: {{VALUE}};',
 				),
 			)
 		);
@@ -491,9 +481,9 @@ class Membership_Hero extends Base_Widget {
 			array(
 				'label'     => esc_html__( 'Arrow mark', 'custom-elementor-widgets' ),
 				'type'      => Controls_Manager::COLOR,
-				'default'   => '#121212',
+				'default'   => '#FAF6EA',
 				'selectors' => array(
-					'{{WRAPPER}} .custom-membership-hero__arrow svg' => 'fill: {{VALUE}};',
+					'{{WRAPPER}} .custom-membership-hero__arrow:not( [disabled] ) svg' => 'fill: {{VALUE}};',
 				),
 			)
 		);

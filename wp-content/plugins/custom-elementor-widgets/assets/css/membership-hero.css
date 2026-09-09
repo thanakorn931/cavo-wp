@@ -126,14 +126,26 @@
 	outline-offset: 2px;
 }
 
-.custom-membership-hero__arrow[disabled] {
+/* With nowhere to go the file takes the disc away and leaves the mark, pale.
+   The colours a client may set are asked for the arrow that can be pressed,
+   so this one is the section's own. */
+.custom-membership-hero__arrow[disabled],
+.custom-membership-hero__arrow[disabled]:hover {
+	background: transparent;
+	box-shadow: none;
 	cursor: default;
 }
 
+.custom-membership-hero__arrow[disabled] svg {
+	fill: #d1d1d1;
+}
+
+/* The file draws the mark in a box 24 across and 20 down, in the middle of
+   the disc (7036:7259). */
 .custom-membership-hero__arrow svg {
 	display: block;
-	width: 56px;
-	height: 56px;
+	width: 24px;
+	height: 20px;
 }
 
 .custom-membership-hero__arrow--next svg {
@@ -346,10 +358,15 @@
 		gap: 16px;
 	}
 
-	.custom-membership-hero__arrow,
-	.custom-membership-hero__arrow svg {
+	.custom-membership-hero__arrow {
 		width: 24px;
 		height: 24px;
+	}
+
+	/* The mark keeps the share of the disc the file gives it. */
+	.custom-membership-hero__arrow svg {
+		width: 10px;
+		height: 9px;
 	}
 
 	.custom-membership-hero__stage {
