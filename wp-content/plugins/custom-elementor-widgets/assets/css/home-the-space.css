@@ -365,7 +365,7 @@
 		flex-direction: column;
 		width: 100%;
 		height: auto;
-		margin-top: 30px;
+		margin-top: 16px;
 		padding: 0 20px;
 		box-sizing: border-box;
 	}
@@ -377,7 +377,7 @@
 		width: 100%;
 		max-width: 100%;
 		height: 202px;
-		border-radius: 24px;
+		border-radius: 8px;
 	}
 
 	/* The file puts the way in under the picture, above the words. The picture
@@ -410,7 +410,7 @@
 		left: auto;
 		top: auto;
 		width: 100%;
-		margin-top: 46px;
+		margin-top: 24px;
 		gap: 16px;
 	}
 
@@ -448,7 +448,7 @@
 		left: auto;
 		top: auto;
 		align-self: center;
-		margin-top: 26px;
+		margin-top: 16px;
 		padding: 8px 16px;
 	}
 }
