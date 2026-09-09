@@ -112,9 +112,9 @@
 	}
 
 	/* The file keeps the name on two lines here as on the wide tier: 130 is
-	   to 32 what 260 is to 64. */
+	   to 32 what 260 is to 64, with a little over so a word is never split. */
 	.custom-nightlife-event__heading {
-		max-width: 130px;
+		max-width: 140px;
 	}
 
 	.custom-nightlife-event__grid {
