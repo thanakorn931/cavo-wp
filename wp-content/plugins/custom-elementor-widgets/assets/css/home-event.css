@@ -276,6 +276,14 @@
 		height: 24px;
 	}
 
+	/* The band stands its children at the start on the wide tier, which in a
+	   column makes each of them as wide as its own content — and the row's
+	   content is every card at once. Told to fill the width, it becomes the
+	   window the row is cut by again, and the arrows have somewhere to go. */
+	.custom-home-event__rail {
+		width: 100%;
+	}
+
 	.custom-home-event__track {
 		gap: 24px;
 		padding: 28px 0 0 16px;

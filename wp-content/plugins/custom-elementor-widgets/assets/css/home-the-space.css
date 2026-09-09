@@ -369,11 +369,33 @@
 		box-sizing: border-box;
 	}
 
+	/* Inset on both sides here, so all four corners are drawn rather than the
+	   two the wide tier leaves on view. */
 	.custom-home-space__large {
 		position: relative;
 		width: 100%;
 		max-width: 100%;
 		height: 202px;
+		border-radius: 24px;
+	}
+
+	/* The file puts the way in under the picture, above the words. The picture
+	   and the words are one box on the wide tier, so here that box gives up its
+	   own and lets the three stand in the band together. */
+	.custom-home-space__area {
+		display: contents;
+	}
+
+	.custom-home-space__large {
+		order: 1;
+	}
+
+	.custom-home-space__reserve {
+		order: 2;
+	}
+
+	.custom-home-space__panel {
+		order: 3;
 	}
 
 	/* The second picture and the words stand under the first rather than beside

@@ -158,3 +158,18 @@
 		margin-top: 0;
 	}
 }
+
+/* Tablet — not drawn. The picture is given more of the room it has here than
+   the narrow tier allows, without reaching the height the wide one draws. */
+@media ( min-width: 768px ) and ( max-width: 1024px ) {
+	.custom-home-introduce__picture {
+		height: 500px;
+	}
+
+	.custom-home-introduce__mark {
+		left: 60px;
+		top: 420px;
+		width: 300px;
+		height: 286px;
+	}
+}
