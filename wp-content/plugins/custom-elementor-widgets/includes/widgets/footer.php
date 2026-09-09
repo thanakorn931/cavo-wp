@@ -175,7 +175,7 @@ class Footer extends Base_Widget {
 		$this->add_control(
 			'contact_details',
 			array(
-				'label'       => esc_html__( 'Telephone and email', 'custom-elementor-widgets' ),
+				'label'       => esc_html__( 'Contact info', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXTAREA,
 				'dynamic'     => array( 'active' => true ),
 				'rows'        => 5,
