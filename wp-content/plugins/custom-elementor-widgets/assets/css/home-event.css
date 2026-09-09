@@ -13,7 +13,13 @@
 	display: flex;
 	align-items: flex-start;
 	width: 100%;
-	padding: 96px 0 44px calc( 48px + max( 0px, calc( ( 100% - 1440px ) / 2 ) ) );
+	/* The row is drawn wider than the band and runs off its right edge, where it
+	   is cut. Cut at the window instead, it carries on past every other section
+	   on the page. */
+	padding-top: 96px;
+	padding-bottom: 44px;
+	padding-left: calc( 48px + max( 0px, calc( ( 100% - 1440px ) / 2 ) ) );
+	padding-right: max( 0px, calc( ( 100% - 1440px ) / 2 ) );
 	box-sizing: border-box;
 
 	/* The band's own gradient, read from the file. */
