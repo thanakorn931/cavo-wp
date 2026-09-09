@@ -4,12 +4,16 @@
  * How to reach the place beside the map of it.
  */
 
+/* The band runs the full width and carries its own ground; what stands in it is
+   held to 1440 and centred. The margins either side are the band's too, so they
+   take the same ground rather than showing whatever is behind the page. */
 .custom-contact-detail {
 	display: flex;
 	align-items: stretch;
 	width: 100%;
 	padding: 0 max( 0px, calc( ( 100% - 1440px ) / 2 ) );
 	box-sizing: border-box;
+	background-color: #c9bca6;
 }
 
 .custom-contact-detail__column {

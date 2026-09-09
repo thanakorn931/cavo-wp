@@ -326,7 +326,7 @@ class Contact_Detail extends Base_Widget {
 				'type'      => Controls_Manager::COLOR,
 				'default'   => '#C9BCA6',
 				'selectors' => array(
-					'{{WRAPPER}} .custom-contact-detail__column' => 'background-color: {{VALUE}};',
+					'{{WRAPPER}} .custom-contact-detail' => 'background-color: {{VALUE}};',
 				),
 			)
 		);
