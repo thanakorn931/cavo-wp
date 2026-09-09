@@ -173,3 +173,85 @@
 	object-fit: cover;
 	object-position: center;
 }
+
+/* Tablet and mobile — the file draws one of them (6688:3121, 11186:12190,
+   11205:3053): what the place stands for one part under the other, then how
+   to reach it, then the map the width of the screen. Tablet is not drawn and
+   takes the same figures, the map deeper. */
+@media ( max-width: 1024px ) {
+	.custom-about-detail__intro {
+		flex-direction: column;
+		gap: 38px;
+		padding: 38px 16px;
+	}
+
+	.custom-about-detail__vision,
+	.custom-about-detail__mission {
+		flex: 0 0 auto;
+		width: 100%;
+	}
+
+	.custom-about-detail__vision-body {
+		width: 100%;
+	}
+
+	.custom-about-detail__split {
+		flex-direction: column;
+	}
+
+	.custom-about-detail__column {
+		flex: 0 0 auto;
+		gap: 35px;
+		padding: 38px 16px;
+	}
+
+	.custom-about-detail__block {
+		gap: 9px;
+	}
+
+	.custom-about-detail__block-body {
+		width: 100%;
+	}
+
+	/* The file draws the name 70 across at a smaller size than the words are
+	   set here; at this size it needs 100 to stand on one line. */
+	.custom-about-detail__hours {
+		gap: 24px;
+	}
+
+	.custom-about-detail__hours-name {
+		width: 100px;
+	}
+
+	.custom-about-detail__contacts {
+		gap: 13px;
+	}
+
+	.custom-about-detail__contact,
+	.custom-about-detail__contact:hover,
+	.custom-about-detail__contact:focus,
+	.custom-about-detail__contact:active {
+		gap: 9px;
+	}
+
+	.custom-about-detail__contact-mark {
+		padding: 4px;
+	}
+
+	.custom-about-detail__contact-mark svg {
+		width: 9px;
+		height: 9px;
+	}
+
+	.custom-about-detail__map {
+		flex: 0 0 auto;
+		width: 100%;
+		height: 260px;
+	}
+}
+
+@media ( min-width: 768px ) and ( max-width: 1024px ) {
+	.custom-about-detail__map {
+		height: 400px;
+	}
+}

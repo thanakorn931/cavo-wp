@@ -48,3 +48,28 @@
 .custom-about-hero__heading {
 	padding: 0;
 }
+
+/* Tablet and mobile — the file draws one of them (11205:2923): the words 16
+   in from either edge under the bar, the picture the width of the screen 24
+   beneath them. Tablet is not drawn and takes the same figures, the picture
+   deeper. */
+@media ( max-width: 1024px ) {
+	.custom-about-hero__words {
+		gap: 16px;
+		padding: 0 16px 24px;
+	}
+
+	.custom-about-hero__body {
+		max-width: none;
+	}
+
+	.custom-about-hero__picture {
+		height: 288px;
+	}
+}
+
+@media ( min-width: 768px ) and ( max-width: 1024px ) {
+	.custom-about-hero__picture {
+		height: 420px;
+	}
+}

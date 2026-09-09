@@ -338,7 +338,11 @@ class About_Detail extends Base_Widget {
 				'fields_options' => array(
 					'typography'  => array( 'default' => 'yes' ),
 					'font_family' => array( 'default' => 'Roboto' ),
-					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 24 ) ),
+					'font_size'   => array(
+						'default'        => array( 'unit' => 'px', 'size' => 24 ),
+						'tablet_default' => array( 'unit' => 'px', 'size' => 16 ),
+						'mobile_default' => array( 'unit' => 'px', 'size' => 16 ),
+					),
 					'font_weight' => array( 'default' => '400' ),
 				),
 			)
@@ -353,7 +357,11 @@ class About_Detail extends Base_Widget {
 				'fields_options' => array(
 					'typography'  => array( 'default' => 'yes' ),
 					'font_family' => array( 'default' => 'Roboto' ),
-					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 20 ) ),
+					'font_size'   => array(
+						'default'        => array( 'unit' => 'px', 'size' => 20 ),
+						'tablet_default' => array( 'unit' => 'px', 'size' => 12 ),
+						'mobile_default' => array( 'unit' => 'px', 'size' => 12 ),
+					),
 					'font_weight' => array( 'default' => '500' ),
 				),
 			)
@@ -364,11 +372,15 @@ class About_Detail extends Base_Widget {
 			array(
 				'name'           => 'body_typography',
 				'label'          => esc_html__( 'Text', 'custom-elementor-widgets' ),
-				'selector'       => '{{WRAPPER}} .custom-about-detail p',
+				'selector'       => '{{WRAPPER}} .custom-about-detail p, {{WRAPPER}} .custom-about-detail__contact',
 				'fields_options' => array(
 					'typography'  => array( 'default' => 'yes' ),
 					'font_family' => array( 'default' => 'Roboto' ),
-					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 16 ) ),
+					'font_size'   => array(
+						'default'        => array( 'unit' => 'px', 'size' => 16 ),
+						'tablet_default' => array( 'unit' => 'px', 'size' => 12 ),
+						'mobile_default' => array( 'unit' => 'px', 'size' => 12 ),
+					),
 					'font_weight' => array( 'default' => '400' ),
 				),
 			)
@@ -383,7 +395,11 @@ class About_Detail extends Base_Widget {
 				'fields_options' => array(
 					'typography'  => array( 'default' => 'yes' ),
 					'font_family' => array( 'default' => 'Roboto' ),
-					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 16 ) ),
+					'font_size'   => array(
+						'default'        => array( 'unit' => 'px', 'size' => 16 ),
+						'tablet_default' => array( 'unit' => 'px', 'size' => 12 ),
+						'mobile_default' => array( 'unit' => 'px', 'size' => 12 ),
+					),
 					'font_weight' => array( 'default' => '500' ),
 				),
 			)
