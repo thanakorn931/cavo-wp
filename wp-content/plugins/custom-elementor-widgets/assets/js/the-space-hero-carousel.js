@@ -106,15 +106,30 @@
 			}
 		}
 
-		// What a slide is worth is read once, before anything is moving. Read
-		// again mid-move it would answer with the width it is passing through,
-		// and the run would settle half a slide's growth off centre.
-		var gap    = parseFloat( window.getComputedStyle( track ).columnGap ) || 0;
-		var wide   = slides[ current ].offsetWidth;
-		var narrow = slides[ current === 0 ? 1 : 0 ].offsetWidth;
-		var spread = wide + ( ( slides.length - 1 ) * ( narrow + gap ) );
+		// What a slide is worth is read while nothing is moving. Read mid-move it
+		// would answer with the width it is passing through, and the run would
+		// settle half a slide's growth off centre. It is read again whenever the
+		// run is placed at rest, because the slides are not one size on every
+		// width of screen and a reading taken on one is wrong on the next.
+		var gap, wide, narrow, spread;
+
+		function measure() {
+			var one = slides[ 0 ].getBoundingClientRect();
+			var two = slides[ 1 ].getBoundingClientRect();
+
+			// The gap is read as the room between two slides rather than asked of
+			// the stylesheet, which answers a share of the band as a bare number.
+			gap    = Math.max( 0, two.left - one.right );
+			wide   = slides[ current ].offsetWidth;
+			narrow = slides[ current === 0 ? 1 : 0 ].offsetWidth;
+			spread = wide + ( ( slides.length - 1 ) * ( narrow + gap ) );
+		}
 
 		function place( moving ) {
+			if ( ! moving ) {
+				measure();
+			}
+
 			var room  = stage.offsetWidth;
 			var left  = ( ( room - spread ) / 2 ) + ( current * ( narrow + gap ) );
 			var shift = left + ( wide / 2 ) - ( room / 2 );
@@ -229,8 +244,26 @@
 			}
 		} );
 
-		window.addEventListener( 'resize', function () {
+		// A screen that changes width changes what every slide is worth. The run
+		// is placed straight away with the slides held at their new size, and
+		// once more a moment later, after the browser has finished with the
+		// change of width itself.
+		function replace() {
+			if ( moving ) {
+				return;
+			}
+
+			root.classList.add( 'is-settling' );
 			place( false );
+			void root.offsetWidth;
+			root.classList.remove( 'is-settling' );
+		}
+
+		window.addEventListener( 'resize', function () {
+			replace();
+
+			window.clearTimeout( replace.timer );
+			replace.timer = window.setTimeout( replace, 120 );
 		} );
 
 		mark();

@@ -259,11 +259,16 @@
 	transition: none;
 }
 
-/* Tablet and mobile — the file draws one of them (11167:8184, 11194:2758,
-   11167:8181). The name and the two actions stand as before, smaller; the
-   slides are all one size, the one being read in the middle with its
-   neighbours cut at either edge of the screen; the words stand under them in
-   a shallower band. Tablet is not drawn and takes the same figures. */
+/* Tablet and mobile — the file draws one of them (11167:8184, 11167:8181).
+   The name and the two actions stand as before, smaller; the words stand
+   under the slides in a shallower band. Tablet is not drawn and takes the same
+   figures.
+
+   The file draws the slides all one size here (11194:2758); the client has
+   said the wide tier's arrangement is the one wanted on every screen — the
+   slide being read large in the middle, its neighbours showing a little at
+   either edge. So the run keeps the wide tier's shares of the band: 1080, 840
+   and 56 across 1440, each slide three by two. */
 @media ( max-width: 1024px ) {
 	.custom-space-hero__band {
 		gap: 24px;
@@ -301,36 +306,40 @@
 
 	.custom-space-hero__stage {
 		margin-top: 25px;
-		height: 168px;
+		height: auto;
 	}
 
 	.custom-space-hero__track {
-		gap: 16px;
-		height: 168px;
+		gap: 3.889%;
+		height: auto;
 	}
 
-	/* The slide being read is no larger than its neighbours here. */
-	.custom-space-hero__slide,
+	.custom-space-hero__slide {
+		width: 58.333%;
+		height: auto;
+		aspect-ratio: 3 / 2;
+		border-radius: 8px;
+	}
+
 	.custom-space-hero__slide.is-current {
-		width: 250px;
-		height: 168px;
-		border-radius: 6px;
+		width: 75%;
+		height: auto;
 	}
 
-	/* The arrows stand 8 inside either edge of the slide being read, which is
-	   the one in the middle of the screen, and in the middle of its height. */
+	/* The arrows keep the wide tier's place too — 76 in from either edge of a
+	   band of 1440 — and stand in the middle of the run's height. */
 	.custom-space-hero__arrow {
-		top: 75px;
-		width: 18px;
-		height: 18px;
+		top: calc( 50% - 12px );
+		width: 24px;
+		height: 24px;
 	}
 
 	.custom-space-hero__arrow--prev {
-		left: calc( 50% - 117px );
+		left: 5.278%;
 	}
 
 	.custom-space-hero__arrow--next {
-		right: calc( 50% - 117px );
+		right: 5.278%;
 	}
 
 	/* The mark keeps the share of the disc the file gives it. */
@@ -345,5 +354,20 @@
 
 	.custom-space-hero__words {
 		width: 100%;
+	}
+}
+
+/* Tablet — not drawn. The arrows come up with the run, larger than the narrow
+   tier's and short of the wide tier's. */
+@media ( min-width: 768px ) and ( max-width: 1024px ) {
+	.custom-space-hero__arrow {
+		top: calc( 50% - 20px );
+		width: 40px;
+		height: 40px;
+	}
+
+	.custom-space-hero__arrow svg {
+		width: 10px;
+		height: 8px;
 	}
 }

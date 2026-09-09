@@ -133,3 +133,16 @@
 		height: 150px;
 	}
 }
+
+/* Tablet — not drawn. The pictures are given a good deal more depth than the
+   narrow tier keeps for them, and still well short of the wide tier's. */
+@media ( min-width: 768px ) and ( max-width: 1024px ) {
+	.custom-space-content__slot--wide,
+	.custom-space-content__slot--tall {
+		height: 300px;
+	}
+
+	.custom-space-content__slot--full {
+		height: 360px;
+	}
+}
