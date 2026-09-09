@@ -414,10 +414,15 @@
 		gap: 16px;
 	}
 
+	/* The band stands its children in an order of its own here, and the picture
+	   is given a later place in it than the arrows. A later place is also a
+	   place in front, so the picture was drawn over them. The arrows take the
+	   last place, which is where they are meant to be read. */
 	.custom-home-space__arrow {
 		top: 90px;
 		width: 24px;
 		height: 24px;
+		order: 4;
 	}
 
 	/* The mark is drawn against the disc, and the disc is 24 across here rather
