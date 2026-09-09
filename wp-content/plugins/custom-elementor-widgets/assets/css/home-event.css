@@ -118,7 +118,13 @@
 	min-width: 0;
 	border-top-left-radius: 48px;
 	border-bottom-left-radius: 48px;
+	/* The row is cut where it leaves the band, and that is a cut across, not
+	   down: the last card ends level with this box, so cutting down as well
+	   shaves the way in at the foot of it. The first line is for a browser
+	   that does not know the second. */
 	overflow: hidden;
+	overflow-x: clip;
+	overflow-y: visible;
 }
 
 .custom-home-event__track {
