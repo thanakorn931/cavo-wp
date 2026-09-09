@@ -45,7 +45,7 @@
 		var PULL = 24;
 
 		// The move under way, so a new hold can cut it short.
-		var flight = 0;
+		var flight = { frame: 0, clock: 0 };
 
 		// What one run is worth: as many slides as the client gave, each of them
 		// a slide and the space beside it.
@@ -90,33 +90,47 @@
 				target += run;
 			}
 
-			// The move is drawn step by step, easing out, with the snap held
+			// The move is drawn frame by frame, easing out, with the snap held
 			// off until it has arrived: left to the browser it is cut short by
-			// the snap, or not drawn at all where nothing pulls it. The steps
-			// are timed rather than tied to frames, so a move goes on to its end
-			// even where nothing is being drawn.
+			// the snap, or not drawn at all where nothing pulls it. Where no
+			// frames are drawn the clock ends the move instead, so it arrives
+			// either way.
 			var from  = stage.scrollLeft;
 			var dist  = target - from;
 			var began = Date.now();
 			var SPAN  = 450;
 
-			window.clearTimeout( flight );
+			stop();
 			stage.classList.add( 'is-moving' );
+
+			function arrive() {
+				stop();
+				stage.scrollLeft = target;
+				stage.classList.remove( 'is-moving' );
+			}
 
 			function step() {
 				var t = Math.min( 1, ( Date.now() - began ) / SPAN );
 				var e = 1 - Math.pow( 1 - t, 3 );
 
-				stage.scrollLeft = from + dist * e;
+				if ( t >= 1 ) {
+					arrive();
 
-				if ( t < 1 ) {
-					flight = window.setTimeout( step, 16 );
-				} else {
-					stage.classList.remove( 'is-moving' );
+					return;
 				}
+
+				stage.scrollLeft = from + dist * e;
+				flight.frame = window.requestAnimationFrame( step );
 			}
 
+			flight.clock = window.setTimeout( arrive, SPAN + 100 );
 			step();
+		}
+
+		// Whatever move is under way is left where it is.
+		function stop() {
+			window.cancelAnimationFrame( flight.frame );
+			window.clearTimeout( flight.clock );
 		}
 
 		// The copies are identical, so a row put back by exactly one run shows
@@ -163,7 +177,7 @@
 		stage.scrollLeft = run;
 
 		stage.addEventListener( 'pointerdown', function ( event ) {
-			window.clearTimeout( flight );
+			stop();
 			stage.classList.remove( 'is-moving' );
 
 			holding = true;
