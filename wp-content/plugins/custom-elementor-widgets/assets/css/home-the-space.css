@@ -454,4 +454,15 @@
 	.custom-home-space__body {
 		width: 50%;
 	}
+
+	/* The picture is given a good deal more of the band than the narrow tier
+	   keeps for it, and still well short of the wide tier's. */
+	.custom-home-space__large {
+		height: 400px;
+	}
+
+	/* The arrows stand in the middle of the picture's height. */
+	.custom-home-space__arrow {
+		top: 188px;
+	}
 }
