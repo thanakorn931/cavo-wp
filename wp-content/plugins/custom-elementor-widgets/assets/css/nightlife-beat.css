@@ -349,3 +349,89 @@
 		max-height: none;
 	}
 }
+
+/* Tablet — not drawn. The narrow tier's card, 128 across, is a stamp at
+   this width, so the card is given the share of the wide tier's that 240
+   is of 346, and everything in it the same share; the arrows come back as
+   discs, 40 across, short of the wide tier's 56. */
+@media ( min-width: 768px ) and ( max-width: 1024px ) {
+	.custom-nightlife-beat__band {
+		padding: 40px 0 24px;
+	}
+
+	.custom-nightlife-beat__heading.custom-nightlife-beat__heading {
+		margin-left: 24px;
+	}
+
+	.custom-nightlife-beat__stage {
+		height: 336px;
+		padding-top: 24px;
+	}
+
+	.custom-nightlife-beat__track {
+		gap: 12px;
+		padding-left: 24px;
+	}
+
+	.custom-nightlife-beat__card {
+		width: 240px;
+		height: 312px;
+		border-radius: 17px;
+	}
+
+	.custom-nightlife-beat__inner {
+		top: 6px;
+		left: 4px;
+		width: 232px;
+		height: 301px;
+		padding: 230px 119px 28px 21px;
+		border-radius: 11px;
+	}
+
+	.custom-nightlife-beat__words {
+		gap: 6px;
+	}
+
+	.custom-nightlife-beat__chips {
+		gap: 6px;
+	}
+
+	.custom-nightlife-beat__chip,
+	.custom-nightlife-beat__chip:hover,
+	.custom-nightlife-beat__chip:focus,
+	.custom-nightlife-beat__chip:active {
+		gap: 6px;
+		height: 22px;
+		padding: 7px;
+	}
+
+	.custom-nightlife-beat__chip svg {
+		width: 14px;
+		height: 14px;
+	}
+
+	.custom-nightlife-beat__badge {
+		top: 17px;
+		right: 15px;
+		width: 37px;
+		height: 35px;
+	}
+
+	.custom-nightlife-beat__actions {
+		gap: 16px;
+		margin-top: 24px;
+		padding-right: 24px;
+	}
+
+	.custom-nightlife-beat__arrow {
+		width: 40px;
+		height: 40px;
+		box-shadow: 0 4px 10px rgba( 0, 0, 0, 0.06 );
+	}
+
+	.custom-nightlife-beat__arrow svg {
+		width: 40px;
+		height: 40px;
+	}
+}
+

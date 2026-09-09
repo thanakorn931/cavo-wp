@@ -118,3 +118,26 @@
 		border-radius: 6px;
 	}
 }
+
+/* Tablet — not drawn. At 250 the slides stand three abreast and none is the
+   one being read; the slide is given 720 by 480, so one stands whole in the
+   middle with its neighbours showing at either edge, as on the wide tier
+   and the narrow one, and the run still comes to rest on the middle of a
+   slide. */
+@media ( min-width: 768px ) and ( max-width: 1024px ) {
+	.custom-nightlife-carousel__stage,
+	.custom-nightlife-carousel__track {
+		height: 480px;
+	}
+
+	.custom-nightlife-carousel__track {
+		padding: 0 calc( 50% - 360px );
+	}
+
+	.custom-nightlife-carousel__slide {
+		width: 720px;
+		height: 480px;
+		border-radius: 16px;
+	}
+}
+
