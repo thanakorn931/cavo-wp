@@ -17,7 +17,6 @@ namespace Custom_Elementor_Widgets;
 
 use Elementor\Controls_Manager;
 use Elementor\Group_Control_Typography;
-use Elementor\Icons_Manager;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -253,20 +252,6 @@ abstract class Header_Widget extends Base_Widget {
 
 		$this->add_link_controls( $this, 'button_two_link', esc_html__( 'Second button link', 'custom-elementor-widgets' ) );
 
-		$this->add_control(
-			'icon_link_icon',
-			array(
-				'label'                  => esc_html__( 'Icon', 'custom-elementor-widgets' ),
-				'type'                   => Controls_Manager::ICONS,
-				'separator'              => 'before',
-				'skin'                   => 'inline',
-				'label_block'            => false,
-				'exclude_inline_options' => array( 'svg' ),
-			)
-		);
-
-		$this->add_link_controls( $this, 'icon_link_url', esc_html__( 'Icon link', 'custom-elementor-widgets' ) );
-
 		$this->end_controls_section();
 	}
 
@@ -432,8 +417,6 @@ abstract class Header_Widget extends Base_Widget {
 				'default'   => self::INK,
 				'separator' => 'before',
 				'selectors' => array(
-					'{{WRAPPER}} .custom-header__icon-link'     => 'color: {{VALUE}};',
-					'{{WRAPPER}} .custom-header__icon-link svg' => 'fill: {{VALUE}};',
 				),
 			)
 		);
@@ -555,8 +538,6 @@ abstract class Header_Widget extends Base_Widget {
 				'default'   => self::TOP_INK,
 				'separator' => 'before',
 				'selectors' => array(
-					$at_top . '.custom-header__icon-link'     => 'color: {{VALUE}};',
-					$at_top . '.custom-header__icon-link svg' => 'fill: {{VALUE}};',
 				),
 			)
 		);
@@ -701,17 +682,14 @@ abstract class Header_Widget extends Base_Widget {
 	}
 
 	/**
-	 * The two buttons and the icon beside the bar.
+	 * The two buttons at the end of the bar.
 	 *
 	 * @param array $settings The widget's settings.
 	 */
 	private function render_actions( $settings ) {
 		$one_text = $this->text( $settings, 'button_one_text' );
 		$two_text = $this->text( $settings, 'button_two_text' );
-		$icon     = isset( $settings['icon_link_icon'] ) ? $settings['icon_link_icon'] : array();
-		$has_icon = ! empty( $icon['value'] );
-
-		if ( '' === $one_text && '' === $two_text && ! $has_icon ) {
+		if ( '' === $one_text && '' === $two_text ) {
 			return;
 		}
 		?>
@@ -726,12 +704,6 @@ abstract class Header_Widget extends Base_Widget {
 				<a class="custom-header__button custom-header__button--solid"<?php
 					echo $this->link_from( $settings, 'button_two_link' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in link_attributes().
 				?>><?php echo esc_html( $two_text ); ?></a>
-			<?php endif; ?>
-
-			<?php if ( $has_icon ) : ?>
-				<a class="custom-header__icon-link"<?php
-					echo $this->link_from( $settings, 'icon_link_url' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in link_attributes().
-				?>><?php Icons_Manager::render_icon( $icon, array( 'aria-hidden' => 'true' ) ); ?></a>
 			<?php endif; ?>
 		</div>
 		<?php
