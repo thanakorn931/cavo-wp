@@ -12,7 +12,13 @@
 	align-items: stretch;
 	gap: 54px;
 	width: 100%;
-	padding: 90px 49px 90px 48px;
+	/* The band runs the full width and carries its own ground; what stands in
+	   it is held to 1440 and centred, so the file's 48 and 49 are measured from
+	   the band rather than from the window. */
+	padding-top: 90px;
+	padding-bottom: 90px;
+	padding-left: calc( 48px + max( 0px, calc( ( 100% - 1440px ) / 2 ) ) );
+	padding-right: calc( 49px + max( 0px, calc( ( 100% - 1440px ) / 2 ) ) );
 	box-sizing: border-box;
 
 	background-image: radial-gradient(
