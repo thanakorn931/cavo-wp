@@ -363,12 +363,25 @@ class Home_Event extends Base_Widget {
 		$meta = $this->meta( $item );
 		?>
 		<div class="custom-home-event__item">
-			<a class="custom-home-event__card" href="<?php echo esc_url( (string) get_permalink( $item ) ); ?>">
-				<span class="custom-home-event__picture">
-					<?php $this->media( get_the_post_thumbnail_url( $item, 'large' ), '', true ); ?>
+			<?php $where = $this->link_from( $settings, 'card_link' ); ?>
+
+			<?php if ( '' !== trim( (string) $this->text( $settings, 'card_link' ) ) ) : ?>
+				<a class="custom-home-event__card"<?php
+					echo $where; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in link_attributes().
+				?>>
+					<span class="custom-home-event__picture">
+						<?php $this->media( get_the_post_thumbnail_url( $item, 'large' ), '', true ); ?>
+					</span>
+					<span class="custom-home-event__mark" aria-hidden="true"></span>
+				</a>
+			<?php else : ?>
+				<span class="custom-home-event__card">
+					<span class="custom-home-event__picture">
+						<?php $this->media( get_the_post_thumbnail_url( $item, 'large' ), '', true ); ?>
+					</span>
+					<span class="custom-home-event__mark" aria-hidden="true"></span>
 				</span>
-				<span class="custom-home-event__mark" aria-hidden="true"></span>
-			</a>
+			<?php endif; ?>
 
 			<div class="custom-home-event__words">
 				<div class="custom-home-event__lines">
@@ -380,9 +393,9 @@ class Home_Event extends Base_Widget {
 				</div>
 
 				<?php if ( '' !== $more ) : ?>
-					<a class="custom-home-event__more" href="<?php echo esc_url( (string) get_permalink( $item ) ); ?>"><?php
-						echo esc_html( $more );
-					?></a>
+					<a class="custom-home-event__more"<?php
+						echo $where; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in link_attributes().
+					?>><?php echo esc_html( $more ); ?></a>
 				<?php endif; ?>
 			</div>
 		</div>
@@ -422,18 +435,24 @@ class Home_Event extends Base_Widget {
 			)
 		);
 
-		foreach ( array(
-			'time' => esc_html__( 'Time', 'custom-elementor-widgets' ),
-		) as $key => $label ) {
-			$this->add_control(
-				$key,
-				array(
-					'label'   => $label,
-					'type'    => Controls_Manager::TEXT,
-					'dynamic' => array( 'active' => true ),
-				)
-			);
-		}
+		$this->add_control(
+			'time',
+			array(
+				'label'   => esc_html__( 'Time', 'custom-elementor-widgets' ),
+				'type'    => Controls_Manager::TEXT,
+				'dynamic' => array( 'active' => true ),
+			)
+		);
+
+		// Where a card leads. The file sends every card to the same place, so it
+		// is asked once for the section — and asked here, beside the facts, so
+		// that pointing it at a field of each item later is one change.
+		$this->add_link_controls(
+			$this,
+			'card_link',
+			esc_html__( 'Where a card leads', 'custom-elementor-widgets' ),
+			array( 'separator' => 'before' )
+		);
 	}
 
 	/**

@@ -200,6 +200,12 @@
 	overflow-wrap: anywhere;
 }
 
+/* The file writes the line in capitals — the month with them, whatever case
+   the client's own field answers in. */
+.custom-home-event__meta {
+	text-transform: uppercase;
+}
+
 .custom-home-event__more {
 	display: inline-flex;
 	align-items: center;
