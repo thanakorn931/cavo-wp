@@ -420,7 +420,7 @@ class Contact_Detail extends Base_Widget {
 	protected function render() {
 		$settings = $this->get_settings_for_display();
 
-		$map  = isset( $settings['map']['url'] ) ? $settings['map']['url'] : '';
+		$map  = isset( $settings['map'] ) ? (string) $settings['map'] : '';
 		$note = isset( $settings['location_note'] ) ? trim( (string) $settings['location_note'] ) : '';
 		?>
 		<div class="custom-contact-detail">
