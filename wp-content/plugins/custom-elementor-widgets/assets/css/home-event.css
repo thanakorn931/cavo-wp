@@ -306,4 +306,21 @@
 		width: 250px;
 		gap: 8px;
 	}
+
+	/* The picture and the mark are placed and sized against the card, and the
+	   card is smaller here — left at the wide tier's figures they stand at more
+	   than the card can hold and only a strip of the picture is on view. */
+	.custom-home-event__picture {
+		left: 8px;
+		top: 8px;
+		width: 234px;
+		height: 322px;
+	}
+
+	.custom-home-event__mark {
+		left: 190px;
+		top: 18px;
+		width: 42px;
+		height: 40px;
+	}
 }
