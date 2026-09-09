@@ -104,3 +104,54 @@
 		transition: none;
 	}
 }
+
+/* Tablet and mobile — the file draws one of them (11174:11964): the words,
+   the way in and the picture one under another, 16 in from either edge.
+   Tablet is not drawn and takes the same figures. */
+@media ( max-width: 1024px ) {
+	.custom-private-introduce {
+		flex-direction: column;
+		align-items: center;
+		gap: 24px;
+		padding: 38px 16px 77px;
+	}
+
+	.custom-private-introduce__shape {
+		top: 78px;
+		left: 52px;
+		width: 244px;
+		height: 240px;
+	}
+
+	.custom-private-introduce__words {
+		flex: 0 0 auto;
+		gap: 24px;
+		width: 100%;
+	}
+
+	.custom-private-introduce__button {
+		gap: 2px;
+		padding: 6px 13px;
+		border-radius: 13px;
+	}
+
+	.custom-private-introduce__button svg {
+		width: 13px;
+		height: 13px;
+	}
+
+	.custom-private-introduce__picture {
+		flex: 0 0 auto;
+		width: 100%;
+		height: 268px;
+		border-radius: 13px;
+	}
+}
+
+/* Tablet — not drawn. The picture is given more depth than the phone keeps
+   for it, short of the wide tier's. */
+@media ( min-width: 768px ) and ( max-width: 1024px ) {
+	.custom-private-introduce__picture {
+		height: 400px;
+	}
+}

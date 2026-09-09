@@ -67,3 +67,27 @@
 		transition: none;
 	}
 }
+
+/* Tablet and mobile — the file draws one of them (11174:11921): the band is
+   204 deep with the bar across the top of it, so 160 stands below the bar.
+   Tablet is not drawn and is given more depth than the phone, short of the
+   wide tier's. */
+@media ( max-width: 1024px ) {
+	.custom-private-hero {
+		gap: 16px;
+		padding: 40px 16px;
+	}
+
+	.custom-private-hero__button,
+	.custom-private-hero__button:hover,
+	.custom-private-hero__button:focus,
+	.custom-private-hero__button:active {
+		padding: 9px 13px;
+	}
+}
+
+@media ( min-width: 768px ) and ( max-width: 1024px ) {
+	.custom-private-hero {
+		padding: 100px 16px;
+	}
+}

@@ -53,6 +53,12 @@
 	padding: 0;
 }
 
+/* The form takes the column's width; left to itself it would take only its
+   widest field's. */
+.custom-private-form__form {
+	width: 100%;
+}
+
 /* The fields, two to a row where one is asked to take half of it. */
 .custom-private-form__fields {
 	display: grid;
@@ -211,4 +217,76 @@ select.custom-private-form__input.custom-private-form__input:invalid {
 .custom-private-form__send[disabled] {
 	cursor: progress;
 	opacity: 0.6;
+}
+
+/* Tablet and mobile — the file draws one of them (11183:12151): the form
+   first, every field the width of it, and the picture under the form the
+   width of the screen. The client has said a field asked to take half the
+   row keeps half on the tablet, which the file does not draw, and takes the
+   whole row on a phone. */
+@media ( max-width: 1024px ) {
+	.custom-private-form {
+		flex-direction: column;
+	}
+
+	.custom-private-form__picture {
+		order: 2;
+		flex: 0 0 auto;
+		width: 100%;
+		height: 588px;
+	}
+
+	.custom-private-form__column.custom-private-form__column {
+		order: 1;
+		gap: 8px;
+		width: auto;
+		margin: 25px 11px 41px;
+	}
+
+	.custom-private-form__fields {
+		column-gap: 8px;
+		row-gap: 16px;
+		padding: 16px 0 0;
+	}
+
+	.custom-private-form__field {
+		gap: 5px;
+	}
+
+	.custom-private-form__input.custom-private-form__input {
+		padding: 8px;
+	}
+
+	.custom-private-form__actions {
+		padding-top: 15px;
+	}
+
+	.custom-private-form__send {
+		width: auto;
+		padding: 8px 15px;
+	}
+
+	/* The mark beside what is chosen comes down with the field (11183:12119). */
+	select.custom-private-form__input.custom-private-form__input,
+	input[type="date"].custom-private-form__input.custom-private-form__input {
+		padding-right: 32px;
+	}
+
+	.custom-private-form__field:has( select )::after,
+	.custom-private-form__field:has( input[type="date"] )::after {
+		right: 8px;
+		bottom: 15px;
+		width: 16px;
+		height: 16px;
+	}
+}
+
+@media ( max-width: 767px ) {
+	.custom-private-form__fields {
+		grid-template-columns: minmax( 0, 1fr );
+	}
+
+	.custom-private-form__field--half {
+		grid-column: 1 / -1;
+	}
 }

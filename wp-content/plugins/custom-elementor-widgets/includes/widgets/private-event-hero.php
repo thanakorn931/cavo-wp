@@ -189,7 +189,11 @@ class Private_Event_Hero extends Base_Widget {
 				'fields_options' => array(
 					'typography'  => array( 'default' => 'yes' ),
 					'font_family' => array( 'default' => 'Fenul Compressed' ),
-					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 64 ) ),
+					'font_size'   => array(
+						'default'        => array( 'unit' => 'px', 'size' => 64 ),
+						'tablet_default' => array( 'unit' => 'px', 'size' => 32 ),
+						'mobile_default' => array( 'unit' => 'px', 'size' => 32 ),
+					),
 					'font_weight' => array( 'default' => '500' ),
 				),
 			)
@@ -204,7 +208,11 @@ class Private_Event_Hero extends Base_Widget {
 				'fields_options' => array(
 					'typography'  => array( 'default' => 'yes' ),
 					'font_family' => array( 'default' => 'Roboto' ),
-					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 14 ) ),
+					'font_size'   => array(
+						'default'        => array( 'unit' => 'px', 'size' => 14 ),
+						'tablet_default' => array( 'unit' => 'px', 'size' => 9 ),
+						'mobile_default' => array( 'unit' => 'px', 'size' => 9 ),
+					),
 				),
 			)
 		);

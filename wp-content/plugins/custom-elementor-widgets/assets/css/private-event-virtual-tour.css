@@ -54,3 +54,29 @@
 	background-position: center;
 	background-size: cover;
 }
+
+/* Tablet and mobile — the file draws one of them (11174:12011): the band 49
+   above the film, the film 10 in from either edge and 195 deep, the wordmark
+   the width of the screen 16 beneath it. Tablet is not drawn and takes the
+   same figures, the film deeper. */
+@media ( max-width: 1024px ) {
+	.custom-private-tour {
+		gap: 16px;
+		padding-top: 49px;
+	}
+
+	.custom-private-tour__stage {
+		width: calc( 100% - 20px );
+		height: 195px;
+	}
+
+	.custom-private-tour__wordmark {
+		width: 100%;
+	}
+}
+
+@media ( min-width: 768px ) and ( max-width: 1024px ) {
+	.custom-private-tour__stage {
+		height: 400px;
+	}
+}
