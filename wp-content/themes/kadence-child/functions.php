@@ -343,6 +343,79 @@ function kadence_child_event_fields() {
 add_action( 'acf/init', 'kadence_child_event_fields' );
 
 /**
+ * A post's article: the blocks it is made of, one under another.
+ *
+ * Each block is a paragraph or a picture, and the client adds as many as the
+ * article needs. The list ships empty and its rows come collapsed, each
+ * named by the words it holds.
+ */
+function kadence_child_article_fields() {
+	if ( ! function_exists( 'acf_add_local_field_group' ) ) {
+		return;
+	}
+
+	acf_add_local_field_group(
+		array(
+			'key'      => 'group_post_article',
+			'title'    => esc_html__( 'Article', 'kadence-child' ),
+			'location' => array(
+				array(
+					array(
+						'param'    => 'post_type',
+						'operator' => '==',
+						'value'    => 'post',
+					),
+				),
+			),
+			'position' => 'normal',
+			'fields'   => array(
+				array(
+					'key'          => 'field_post_article',
+					'label'        => esc_html__( 'Blocks', 'kadence-child' ),
+					'name'         => 'article',
+					'type'         => 'repeater',
+					'layout'       => 'block',
+					'collapsed'    => 'field_post_article_body',
+					'button_label' => esc_html__( 'Add a block', 'kadence-child' ),
+					'sub_fields'   => array(
+						array(
+							'key'     => 'field_post_article_kind',
+							'label'   => esc_html__( 'Block', 'kadence-child' ),
+							'name'    => 'kind',
+							'type'    => 'select',
+							'choices' => array(
+								'paragraph' => esc_html__( 'Paragraph', 'kadence-child' ),
+								'picture'   => esc_html__( 'Picture', 'kadence-child' ),
+							),
+							'default_value' => 'paragraph',
+							'return_format' => 'value',
+						),
+						array(
+							'key'               => 'field_post_article_body',
+							'label'             => esc_html__( 'Paragraph', 'kadence-child' ),
+							'name'              => 'body',
+							'type'              => 'textarea',
+							'rows'              => 5,
+							'conditional_logic' => array( array( array( 'field' => 'field_post_article_kind', 'operator' => '==', 'value' => 'paragraph' ) ) ),
+						),
+						array(
+							'key'               => 'field_post_article_picture',
+							'label'             => esc_html__( 'Picture', 'kadence-child' ),
+							'name'              => 'picture',
+							'type'              => 'image',
+							'return_format'     => 'url',
+							'preview_size'      => 'medium',
+							'conditional_logic' => array( array( array( 'field' => 'field_post_article_kind', 'operator' => '==', 'value' => 'picture' ) ) ),
+						),
+					),
+				),
+			),
+		)
+	);
+}
+add_action( 'acf/init', 'kadence_child_article_fields' );
+
+/**
  * The edit screen is a form, not a dashboard.
  *
  * A plugin drops its panel wherever it registered, opened, and WordPress lets
