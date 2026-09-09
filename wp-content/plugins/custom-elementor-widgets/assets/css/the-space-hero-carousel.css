@@ -264,11 +264,10 @@
    under the slides in a shallower band. Tablet is not drawn and takes the same
    figures.
 
-   The file draws the slides all one size here (11194:2758); the client has
-   said the wide tier's arrangement is the one wanted on every screen — the
-   slide being read large in the middle, its neighbours showing a little at
-   either edge. So the run keeps the wide tier's shares of the band: 1080, 840
-   and 56 across 1440, each slide three by two. */
+   The slides are all one size here (11194:2758): 250 across a band of 390,
+   16 apart, each three by two, the one being read in the middle and its
+   neighbours showing a little at either edge. Held as shares of the band the
+   run keeps that arrangement on the tablet too, where the file draws nothing. */
 @media ( max-width: 1024px ) {
 	.custom-space-hero__band {
 		gap: 24px;
@@ -310,24 +309,20 @@
 	}
 
 	.custom-space-hero__track {
-		gap: 3.889%;
+		gap: 4.103%;
 		height: auto;
 	}
 
-	.custom-space-hero__slide {
-		width: 58.333%;
+	.custom-space-hero__slide,
+	.custom-space-hero__slide.is-current {
+		width: 64.103%;
 		height: auto;
 		aspect-ratio: 3 / 2;
-		border-radius: 8px;
+		border-radius: 6px;
 	}
 
-	.custom-space-hero__slide.is-current {
-		width: 75%;
-		height: auto;
-	}
-
-	/* The arrows keep the wide tier's place too — 76 in from either edge of a
-	   band of 1440 — and stand in the middle of the run's height. */
+	/* The arrows stand inside the slide being read, 8 in from either of its
+	   edges as the file draws them, and in the middle of its height. */
 	.custom-space-hero__arrow {
 		top: calc( 50% - 12px );
 		width: 24px;
@@ -335,11 +330,11 @@
 	}
 
 	.custom-space-hero__arrow--prev {
-		left: 5.278%;
+		left: 20.1%;
 	}
 
 	.custom-space-hero__arrow--next {
-		right: 5.278%;
+		right: 20.1%;
 	}
 
 	/* The mark keeps the share of the disc the file gives it. */

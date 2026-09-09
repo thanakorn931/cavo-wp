@@ -93,3 +93,11 @@
 		padding: 8px 16px;
 	}
 }
+
+/* Tablet — not drawn. The band is given a good deal more depth than the
+   narrow tier keeps for it, and still well short of the wide tier's. */
+@media ( min-width: 768px ) and ( max-width: 1024px ) {
+	.custom-cta {
+		padding: 80px 0;
+	}
+}
