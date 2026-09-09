@@ -223,3 +223,77 @@
 		transition: none;
 	}
 }
+
+/* Tablet and mobile — the file draws one of them (11001:2575): the name in
+   a band the heroes of the contact and events pages share, then the cards
+   one to a row, 20 in from either edge and 76 apart, and 38 under the last
+   the pages and the way to follow, 38 apart, with 38 left under them. The
+   name's band takes the shared figures, and the cards' band the 14 that
+   with the 34 under the name comes to the 48 the file draws between name
+   and first card. Tablet is not drawn; it takes the same figures, and the
+   cards two to a row, 24 apart across and 48 down. */
+@media ( max-width: 1024px ) {
+	.custom-blog-list__name {
+		padding: 10px 16px 34px;
+	}
+
+	.custom-blog-list__band {
+		gap: 38px;
+		padding: 14px 20px 38px;
+	}
+
+	.custom-blog-list__cards {
+		grid-template-columns: minmax( 0, 1fr );
+		row-gap: 76px;
+	}
+
+	.custom-blog-list__pages {
+		gap: 6px;
+	}
+
+	.custom-blog-list__page {
+		min-width: 32px;
+		height: 32px;
+		padding: 0 6px;
+	}
+
+	.custom-blog-list__go {
+		gap: 6px;
+		margin-left: 6px;
+	}
+
+	.custom-blog-list__field {
+		width: 56px;
+		height: 32px;
+	}
+
+	.custom-blog-list__close {
+		gap: 24px;
+	}
+
+	.custom-blog-list__handle {
+		gap: 6px;
+		padding: 6px 12px;
+	}
+
+	.custom-blog-list__handle svg {
+		width: 16px;
+		height: 16px;
+	}
+}
+
+@media ( min-width: 768px ) and ( max-width: 1024px ) {
+	.custom-blog-list__name {
+		padding: 48px 16px 72px;
+	}
+
+	.custom-blog-list__band {
+		padding: 24px 20px 48px;
+	}
+
+	.custom-blog-list__cards {
+		grid-template-columns: repeat( 2, minmax( 0, 1fr ) );
+		column-gap: 24px;
+		row-gap: 48px;
+	}
+}

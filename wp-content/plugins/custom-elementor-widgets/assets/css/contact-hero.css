@@ -26,6 +26,9 @@
    above the band beneath it (11186:13607). The two are one band here, so the
    24 is the band's own foot. Tablet is not drawn and is given a little more
    room above and below. */
+/* The heroes of the contact, blog and events pages stand at one set of
+   figures on every tier, as asked: 96 above and below on the wide tier, 48
+   and 72 on tablet, 10 and 34 on mobile. */
 @media ( max-width: 1024px ) {
 	.custom-contact-hero {
 		padding: 10px 16px 34px;

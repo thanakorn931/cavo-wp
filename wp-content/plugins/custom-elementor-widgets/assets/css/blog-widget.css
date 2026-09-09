@@ -83,3 +83,31 @@
 		transition: none;
 	}
 }
+
+/* Tablet and mobile — the file draws one of them (11186:12608): the corner
+   20, the words 20 down and 13 in with 13 between the day and the rest,
+   and 6 between the name and the words. Tablet is not drawn and takes the
+   same figures. */
+@media ( max-width: 1024px ) {
+	.custom-blog-card {
+		border-radius: 20px;
+	}
+
+	.custom-blog-card__body {
+		gap: 13px;
+		padding: 20px 13px;
+	}
+
+	.custom-blog-card__date {
+		gap: 4px;
+	}
+
+	.custom-blog-card__date svg {
+		width: 13px;
+		height: 13px;
+	}
+
+	.custom-blog-card__text {
+		gap: 6px;
+	}
+}
