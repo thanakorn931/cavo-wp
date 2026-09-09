@@ -297,16 +297,7 @@ class Home_Event extends Base_Widget {
 		$tag = isset( $settings['heading_tag'] ) ? $settings['heading_tag'] : 'h2';
 		$tag = in_array( $tag, array( 'h2', 'h3', 'span' ), true ) ? $tag : 'h2';
 
-		$items = get_posts(
-			$this->source_query(
-				$settings,
-				array(
-					'posts_per_page'      => self::HOW_MANY,
-					'ignore_sticky_posts' => true,
-					'no_found_rows'       => true,
-				)
-			)
-		);
+		$items = $this->items( $settings );
 		?>
 		<div class="custom-home-event">
 			<div class="custom-home-event__aside">
@@ -339,6 +330,80 @@ class Home_Event extends Base_Widget {
 			?>
 		</div>
 		<?php
+	}
+
+	/**
+	 * The nights still to come, in the order of the day each falls on.
+	 *
+	 * The day is the event's own, so neither the order nor what is left out can
+	 * be read off the query — the source is asked for its list and the list is
+	 * made from what came back. A day itself is still to come, since it has not
+	 * finished while it is being read.
+	 *
+	 * @param array $settings The widget's settings.
+	 * @return array
+	 */
+	private function items( $settings ) {
+		$posts = get_posts(
+			$this->source_query(
+				$settings,
+				array(
+					'posts_per_page'      => 100,
+					'ignore_sticky_posts' => true,
+					'no_found_rows'       => true,
+				)
+			)
+		);
+
+		$today = (int) strtotime( 'today', current_time( 'timestamp' ) ); // phpcs:ignore WordPress.DateTime.CurrentTimeTimestamp.Requested -- the client's day, not UTC's.
+
+		$coming = array();
+
+		foreach ( $posts as $place => $post ) {
+			$when = $this->item_starts( $post );
+
+			if ( $when < $today ) {
+				continue;
+			}
+
+			$coming[] = array(
+				'when'  => $when,
+				'place' => $place,
+				'post'  => $post,
+			);
+		}
+
+		$way = isset( $settings['order'] ) && 'ASC' === $settings['order'] ? 1 : -1;
+
+		usort(
+			$coming,
+			function ( $a, $b ) use ( $way ) {
+				if ( $a['when'] === $b['when'] ) {
+					return $a['place'] - $b['place'];
+				}
+
+				return $a['when'] < $b['when'] ? -$way : $way;
+			}
+		);
+
+		return array_slice( wp_list_pluck( $coming, 'post' ), 0, self::HOW_MANY );
+	}
+
+	/**
+	 * When an item is, as a moment.
+	 *
+	 * The day the client set for it. A day they have not set is the day the post
+	 * appeared, so an item is never left without a place in the order.
+	 *
+	 * @param \WP_Post $post The item.
+	 * @return int
+	 */
+	private function item_starts( $post ) {
+		$fact = $this->item_settings( $post );
+		$date = isset( $fact['date'] ) ? trim( (string) $fact['date'] ) : '';
+		$when = '' !== $date ? strtotime( $date ) : false;
+
+		return (int) ( $when ? $when : strtotime( $post->post_date ) );
 	}
 
 	/**
