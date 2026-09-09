@@ -150,7 +150,16 @@ class Footer extends Base_Widget {
 				'placeholder' => esc_html__( 'Contact Info', 'custom-elementor-widgets' ),
 			)
 		);
-
+		$this->add_control(
+			'contact_details',
+			array(
+				'label'       => esc_html__( 'Contact info', 'custom-elementor-widgets' ),
+				'type'        => Controls_Manager::TEXTAREA,
+				'dynamic'     => array( 'active' => true ),
+				'rows'        => 5,
+				'placeholder' => "0xx-xxx-xxxx\nexample@gmail.com",
+			)
+		);
 		$this->add_control(
 			'location_label',
 			array(
@@ -160,7 +169,6 @@ class Footer extends Base_Widget {
 				'placeholder' => esc_html__( 'Location', 'custom-elementor-widgets' ),
 			)
 		);
-
 		$this->add_control(
 			'contact_address',
 			array(
@@ -169,17 +177,6 @@ class Footer extends Base_Widget {
 				'dynamic'     => array( 'active' => true ),
 				'rows'        => 5,
 				'placeholder' => esc_html__( 'Town Hall Sukhumvit 49, Sukhumvit 49, Khlong Tan Nuea, Watthana, Bangkok 10110', 'custom-elementor-widgets' ),
-			)
-		);
-
-		$this->add_control(
-			'contact_details',
-			array(
-				'label'       => esc_html__( 'Contact info', 'custom-elementor-widgets' ),
-				'type'        => Controls_Manager::TEXTAREA,
-				'dynamic'     => array( 'active' => true ),
-				'rows'        => 5,
-				'placeholder' => "0xx-xxx-xxxx\nexample@gmail.com",
 			)
 		);
 
