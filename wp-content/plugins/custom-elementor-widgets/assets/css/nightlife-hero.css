@@ -74,3 +74,24 @@
 		transition: none;
 	}
 }
+
+/* Tablet and mobile — the file draws one of them (11194:2793): the words 351
+   across in the middle, the three of them 16 apart, standing 78 down the band
+   and leaving 68 below. Tablet is not drawn and takes the same figures. */
+@media ( max-width: 1024px ) {
+	.custom-nightlife-hero {
+		gap: 16px;
+		padding: 78px 20px 68px;
+	}
+
+	.custom-nightlife-hero__body {
+		max-width: 351px;
+	}
+
+	.custom-nightlife-hero__button,
+	.custom-nightlife-hero__button:hover,
+	.custom-nightlife-hero__button:focus,
+	.custom-nightlife-hero__button:active {
+		padding: 9px 14px;
+	}
+}

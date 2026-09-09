@@ -86,3 +86,35 @@
 	user-select: none;
 	pointer-events: none;
 }
+
+/* Tablet and mobile — the file draws one of them (11174:10586): the name in
+   a band 38 deep above and below it, then the slides 250 by 167 with 16
+   between, the one being read in the middle, and 46 left under them. The
+   file draws two arrows on the slide; the wide tier has none and, as asked,
+   neither does this one. Tablet is not drawn and takes the same figures. */
+@media ( max-width: 1024px ) {
+	.custom-nightlife-carousel {
+		gap: 38px;
+		padding: 38px 0 46px;
+	}
+
+	.custom-nightlife-carousel__heading {
+		padding: 0 16px;
+	}
+
+	.custom-nightlife-carousel__stage,
+	.custom-nightlife-carousel__track {
+		height: 167px;
+	}
+
+	.custom-nightlife-carousel__track {
+		gap: 16px;
+		padding: 0 calc( 50% - 125px );
+	}
+
+	.custom-nightlife-carousel__slide {
+		width: 250px;
+		height: 167px;
+		border-radius: 6px;
+	}
+}

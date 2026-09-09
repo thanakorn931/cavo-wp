@@ -251,3 +251,101 @@
 		transition: none;
 	}
 }
+
+/* Tablet and mobile — the file draws one of them (11205:2998): the name 13
+   in and 18 down, the cards 128 by 166 running from 13 in with 7 between,
+   13 under the name, and the two arrows bare, 12 across, at the right foot
+   of the band 22 under the cards. Everything inside a card is drawn at the
+   share of the wide tier's card that 128 is of 346. Tablet is not drawn and
+   takes the same figures. */
+@media ( max-width: 1024px ) {
+	.custom-nightlife-beat__band {
+		gap: 0;
+		padding: 18px 0;
+	}
+
+	.custom-nightlife-beat__heading.custom-nightlife-beat__heading {
+		margin-left: 13px;
+	}
+
+	.custom-nightlife-beat__stage {
+		height: 179px;
+		padding-top: 13px;
+	}
+
+	.custom-nightlife-beat__track {
+		gap: 7px;
+		padding-left: 13px;
+	}
+
+	.custom-nightlife-beat__card {
+		width: 128px;
+		height: 166px;
+		border-radius: 9px;
+	}
+
+	.custom-nightlife-beat__inner {
+		top: 3px;
+		left: 2px;
+		width: 123px;
+		height: 160px;
+		padding: 122px 24px 15px 11px;
+		border-radius: 6px;
+	}
+
+	.custom-nightlife-beat__words {
+		gap: 3px;
+	}
+
+	.custom-nightlife-beat__chips {
+		gap: 3px;
+	}
+
+	.custom-nightlife-beat__chip,
+	.custom-nightlife-beat__chip:hover,
+	.custom-nightlife-beat__chip:focus,
+	.custom-nightlife-beat__chip:active {
+		gap: 3px;
+		height: 12px;
+		padding: 4px;
+	}
+
+	.custom-nightlife-beat__chip svg {
+		width: 7px;
+		height: 7px;
+	}
+
+	.custom-nightlife-beat__badge {
+		top: 9px;
+		right: 8px;
+		width: 20px;
+		height: 18px;
+	}
+
+	.custom-nightlife-beat__actions {
+		gap: 5px;
+		margin-top: 22px;
+		padding-right: 13px;
+	}
+
+	.custom-nightlife-beat__arrow,
+	.custom-nightlife-beat__arrow:hover,
+	.custom-nightlife-beat__arrow:focus,
+	.custom-nightlife-beat__arrow:focus-visible,
+	.custom-nightlife-beat__arrow:active {
+		width: 12px;
+		height: 12px;
+		background: none;
+		box-shadow: none;
+	}
+
+	.custom-nightlife-beat__arrow svg {
+		width: 12px;
+		height: 12px;
+	}
+
+	.custom-nightlife-beat__strip {
+		aspect-ratio: 390 / 127;
+		max-height: none;
+	}
+}

@@ -141,3 +141,68 @@
 		transition: none;
 	}
 }
+
+/* Tablet and mobile — the file draws one of them (11174:10617), and draws
+   it as a row of three that runs off the frame. As asked, the wide panel
+   takes a row of its own, 16 in from either edge, at the shape the file
+   gives it (297 by 217) with its button 16 above the foot, and the two
+   beside it divide a row under it, 16 apart, at the wide panel's shape —
+   a decision, since the file's own shape for them (100 by 217) is a strip.
+   The name stands 23 down the band with 24 above and below it, and 24 is
+   left under the panels. Each picture stands in the flow at its shape, and
+   the row takes its depth from them: a shape given to the panels is read by
+   nothing above it once the row wraps. Tablet is not drawn and keeps the
+   wide tier's row of three. */
+@media ( max-width: 1024px ) {
+	.custom-nightlife-membership {
+		gap: 0;
+		padding: 23px 16px 24px;
+	}
+
+	.custom-nightlife-membership__heading {
+		padding: 24px 0;
+	}
+
+	.custom-nightlife-membership__button,
+	.custom-nightlife-membership__button:hover,
+	.custom-nightlife-membership__button:focus,
+	.custom-nightlife-membership__button:active {
+		padding: 6px 10px;
+	}
+}
+
+@media ( max-width: 767px ) {
+	.custom-nightlife-membership__panels {
+		flex-wrap: wrap;
+		gap: 16px;
+		aspect-ratio: auto;
+	}
+
+	.custom-nightlife-membership__panel--wide {
+		flex: 0 0 100%;
+		padding-bottom: 0;
+	}
+
+	.custom-nightlife-membership__panel--side,
+	.custom-nightlife-membership__panel--side:hover,
+	.custom-nightlife-membership__panel--side:focus,
+	.custom-nightlife-membership__panel--side:active {
+		flex: 1 1 40%;
+	}
+
+	.custom-nightlife-membership__panel-picture {
+		position: relative;
+		inset: auto;
+		display: block;
+		width: 100%;
+		aspect-ratio: 297 / 217;
+	}
+
+	.custom-nightlife-membership__button,
+	.custom-nightlife-membership__button:hover,
+	.custom-nightlife-membership__button:focus,
+	.custom-nightlife-membership__button:active {
+		position: absolute;
+		bottom: 16px;
+	}
+}

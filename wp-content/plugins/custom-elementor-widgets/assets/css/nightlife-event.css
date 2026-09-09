@@ -91,3 +91,50 @@
 		transition: none;
 	}
 }
+
+/* Tablet and mobile — the file draws one of them (11174:9517): the cards one
+   under another, 22 in from either edge and 38 apart, the name 38 above the
+   first, the band 38 deep above and below, and the way in 38 under the last.
+   The soft mark stands where the file puts it. Tablet is not drawn; it takes
+   the same figures, and the cards take two to a row rather than one, which
+   at that width leaves a card wider than its picture was drawn. */
+@media ( max-width: 1024px ) {
+	.custom-nightlife-event {
+		gap: 38px;
+		padding: 38px 22px;
+	}
+
+	.custom-nightlife-event__mark {
+		top: 253px;
+		left: 91px;
+		width: 472px;
+		height: 449px;
+	}
+
+	/* The file keeps the name on two lines here as on the wide tier: 130 is
+	   to 32 what 260 is to 64. */
+	.custom-nightlife-event__heading {
+		max-width: 130px;
+	}
+
+	.custom-nightlife-event__grid {
+		grid-template-columns: minmax( 0, 1fr );
+		gap: 38px;
+	}
+
+	.custom-nightlife-event__actions {
+		margin-top: 0;
+	}
+
+	.custom-nightlife-event__button {
+		width: auto;
+		height: 27px;
+		padding: 8px 16px;
+	}
+}
+
+@media ( min-width: 768px ) and ( max-width: 1024px ) {
+	.custom-nightlife-event__grid {
+		grid-template-columns: repeat( 2, minmax( 0, 1fr ) );
+	}
+}

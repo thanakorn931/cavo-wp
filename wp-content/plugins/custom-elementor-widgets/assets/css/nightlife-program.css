@@ -213,3 +213,126 @@
 	padding: 0;
 	color: inherit;
 }
+
+/* Tablet and mobile — the file draws one of them (11174:9193): the name 24
+   above a card 16 in from either edge, the two 24 apart, the band 47 deep
+   above and 57 below. Inside the card the words stand in the flow, 32 down
+   and 34 in, 18 apart, and the stamp under them the width of the words with
+   the perforation down its left edge. The slides share one cell rather than
+   standing on top of one another, so the card is as deep as the one on
+   view. Tablet is not drawn and takes the same figures. */
+@media ( max-width: 1024px ) {
+	.custom-nightlife-program {
+		gap: 24px;
+		padding: 47px 16px 57px;
+	}
+
+	.custom-nightlife-program__heading {
+		padding: 0;
+	}
+
+	.custom-nightlife-program__card {
+		display: grid;
+		height: auto;
+		border-radius: 18px;
+	}
+
+	.custom-nightlife-program__slide {
+		grid-area: 1 / 1;
+		position: relative;
+		inset: auto;
+		padding: 32px 34px;
+		box-sizing: border-box;
+	}
+
+	.custom-nightlife-program__words {
+		position: relative;
+		top: auto;
+		left: auto;
+		gap: 18px;
+		width: 100%;
+		max-width: none;
+	}
+
+	.custom-nightlife-program__actions {
+		gap: 6px;
+		margin-top: 0;
+	}
+
+	.custom-nightlife-program__button {
+		width: auto;
+		height: 27px;
+		padding: 7px 16px;
+	}
+
+	.custom-nightlife-program__stamp {
+		position: relative;
+		top: auto;
+		right: auto;
+		width: 100%;
+		height: auto;
+		aspect-ratio: 288 / 274;
+		margin-top: 18px;
+		border-radius: 14px;
+		overflow: visible;
+	}
+
+	.custom-nightlife-program__stamp img {
+		border-radius: 14px;
+	}
+
+	/* The perforation is punched into the stamp's left edge here, 4 short of
+	   either end, so it is drawn by the stamp itself and stands astride the
+	   edge, half in the picture. */
+	.custom-nightlife-program__perforation {
+		display: none;
+	}
+
+	.custom-nightlife-program__stamp::before {
+		content: "";
+		position: absolute;
+		top: 4px;
+		bottom: 4px;
+		left: -4px;
+		width: 7px;
+		background-image: radial-gradient(
+			3.5px 3px at 3.5px 3px,
+			#ebe4ca 100%,
+			rgba( 255, 255, 255, 0 ) 100%
+		);
+		background-size: 7px 8px;
+		background-repeat: repeat-y;
+		pointer-events: none;
+		z-index: 1;
+	}
+
+	/* Not drawn: the file shows one day and no way to the next. The arrows
+	   stay, small, on the card's edges — a decision. */
+	.custom-nightlife-program__arrow {
+		width: 24px;
+		height: 24px;
+		box-shadow: none;
+	}
+
+	.custom-nightlife-program__arrow svg {
+		width: 24px;
+		height: 24px;
+	}
+
+	.custom-nightlife-program__arrow--prev {
+		left: 6px;
+	}
+
+	.custom-nightlife-program__arrow--next {
+		right: 6px;
+	}
+}
+
+/* Tablet — not drawn. The stamp the width of the words is, at this width,
+   deeper than the screen; it keeps half the row. */
+@media ( min-width: 768px ) and ( max-width: 1024px ) {
+	.custom-nightlife-program__stamp {
+		width: 50%;
+	}
+}
+
