@@ -54,3 +54,22 @@
 		transition: none;
 	}
 }
+
+/* Tablet and mobile — the file draws one of them (11174:10633): the way back
+   at the top, the heading 24 under it, the list 38 under that. Tablet is not
+   drawn and takes the same figures. */
+@media ( max-width: 1024px ) {
+	.custom-event-hero {
+		gap: 24px;
+		padding: 0 16px 38px;
+	}
+
+	.custom-event-hero__back {
+		gap: 4px;
+	}
+
+	.custom-event-hero__back-icon {
+		width: 16px;
+		height: 16px;
+	}
+}

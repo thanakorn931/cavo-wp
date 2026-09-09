@@ -78,3 +78,61 @@
 		transition: none;
 	}
 }
+
+/* Tablet and mobile — the file draws one of them (11174:11371): the heading
+   and its link on one row, the items one to a row beneath. Tablet is not
+   drawn: two to a row, and four stand at first. */
+@media ( max-width: 1024px ) {
+	.custom-event-past {
+		gap: 38px;
+		padding: 38px 16px;
+	}
+
+	.custom-event-past__head {
+		gap: 16px;
+	}
+
+	.custom-event-past__heading {
+		max-width: none;
+	}
+
+	.custom-event-past__action,
+	.custom-event-past__action:hover,
+	.custom-event-past__action:focus,
+	.custom-event-past__action:active {
+		padding: 9px 13px;
+	}
+
+	.custom-event-past__grid {
+		grid-template-columns: minmax( 0, 1fr );
+		gap: 38px 24px;
+	}
+
+	.custom-event-past .custom-event-card {
+		gap: 24px;
+	}
+
+	.custom-event-past .custom-event-card__mark {
+		width: 15px;
+		height: 15px;
+	}
+
+	.custom-event-past__actions {
+		margin-top: 0;
+	}
+
+	/* Before the script has read which screen this is, three stand. */
+	.custom-event-past__grid > .custom-event-card:nth-child( n + 4 ):not( .is-shown ) {
+		display: none;
+	}
+}
+
+@media ( min-width: 768px ) and ( max-width: 1024px ) {
+	.custom-event-past__grid {
+		grid-template-columns: repeat( 2, minmax( 0, 1fr ) );
+	}
+
+	.custom-event-past__grid > .custom-event-card:nth-child( 4 ):not( .is-shown ) {
+		display: flex;
+	}
+}

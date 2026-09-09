@@ -107,3 +107,92 @@
 	inset: 0;
 	background-color: rgba( 58, 33, 20, 0.5 );
 }
+
+/* Tablet and mobile — the file draws one of them (11174:11073). The client
+   has said every item is to stand the same size here, the newest with the
+   rest: one to a row on a phone, two on a tablet, which the file does not
+   draw. The band itself becomes the grid, so the newest item and the rest
+   share its rows. */
+@media ( max-width: 1024px ) {
+	.custom-event-list__band {
+		display: grid;
+		grid-template-columns: minmax( 0, 1fr );
+		gap: 38px 24px;
+		padding: 38px 20px;
+	}
+
+	.custom-event-list__grid {
+		display: contents;
+	}
+
+	.custom-event-list__actions {
+		grid-column: 1 / -1;
+	}
+
+	/* The newest item is a card like the others: the picture above, the words
+	   beneath it rather than on it. */
+	.custom-event-list__lead {
+		aspect-ratio: auto;
+		justify-content: flex-start;
+		gap: 8px;
+		padding: 0;
+		border-radius: 0;
+		overflow: visible;
+	}
+
+	.custom-event-list__lead-picture {
+		position: relative;
+		inset: auto;
+		display: block;
+		width: 100%;
+		aspect-ratio: 415 / 360;
+		border-radius: 16px;
+		overflow: hidden;
+		pointer-events: auto;
+	}
+
+	.custom-event-list__lead-veil {
+		display: none;
+	}
+
+	.custom-event-list__lead .custom-event-card__words {
+		width: 100%;
+	}
+
+	/* Before the script has read which screen this is, no more stand than the
+	   phone shows: the newest and two more. */
+	.custom-event-list__grid > .custom-event-card:nth-child( n + 3 ):not( .is-shown ) {
+		display: none;
+	}
+
+	.custom-event-list__strip {
+		aspect-ratio: auto;
+		height: 80px;
+	}
+}
+
+/* Tablet — not drawn. Two to a row; the newest and five more stand at first. */
+@media ( min-width: 768px ) and ( max-width: 1024px ) {
+	.custom-event-list__band {
+		grid-template-columns: repeat( 2, minmax( 0, 1fr ) );
+	}
+
+	.custom-event-list__grid > .custom-event-card:nth-child( n + 3 ):not( .is-shown ) {
+		display: flex;
+	}
+
+	.custom-event-list__grid > .custom-event-card:nth-child( n + 6 ):not( .is-shown ) {
+		display: none;
+	}
+}
+
+/* The mark on the newest item's picture is the narrow tiers' only. */
+.custom-event-list__lead .custom-event-card__badge {
+	display: none;
+}
+
+@media ( max-width: 1024px ) {
+	.custom-event-list__lead .custom-event-card__badge {
+		display: block;
+	}
+}

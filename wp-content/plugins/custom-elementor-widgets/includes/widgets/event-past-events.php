@@ -161,14 +161,27 @@ class Event_Past_Events extends Event_Widget {
 			)
 		);
 
-		$this->add_control(
+		$this->add_responsive_control(
 			'shown',
 			array(
-				'label'       => esc_html__( 'How many stand before the button is pressed', 'custom-elementor-widgets' ),
-				'type'        => Controls_Manager::NUMBER,
-				'min'         => 1,
-				'default'     => 3,
-				'description' => esc_html__( 'The button then brings the rest on screen, all of them at once.', 'custom-elementor-widgets' ),
+				'label'          => esc_html__( 'How many stand before the button is pressed', 'custom-elementor-widgets' ),
+				'type'           => Controls_Manager::NUMBER,
+				'min'            => 1,
+				'default'        => 3,
+				'tablet_default' => 4,
+				'mobile_default' => 3,
+			)
+		);
+		$this->add_responsive_control(
+			'step',
+			array(
+				'label'          => esc_html__( 'How many more each press brings', 'custom-elementor-widgets' ),
+				'type'           => Controls_Manager::NUMBER,
+				'min'            => 0,
+				'default'        => 0,
+				'tablet_default' => 4,
+				'mobile_default' => 3,
+				'description'    => esc_html__( 'Nought brings the rest at once.', 'custom-elementor-widgets' ),
 			)
 		);
 
@@ -222,7 +235,11 @@ class Event_Past_Events extends Event_Widget {
 				'fields_options' => array(
 					'typography'  => array( 'default' => 'yes' ),
 					'font_family' => array( 'default' => 'Fenul Compressed' ),
-					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 64 ) ),
+					'font_size'   => array(
+						'default'        => array( 'unit' => 'px', 'size' => 64 ),
+						'tablet_default' => array( 'unit' => 'px', 'size' => 32 ),
+						'mobile_default' => array( 'unit' => 'px', 'size' => 32 ),
+					),
 					'font_weight' => array( 'default' => '500' ),
 				),
 			)
@@ -237,7 +254,11 @@ class Event_Past_Events extends Event_Widget {
 				'fields_options' => array(
 					'typography'  => array( 'default' => 'yes' ),
 					'font_family' => array( 'default' => 'Roboto' ),
-					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 16 ) ),
+					'font_size'   => array(
+						'default'        => array( 'unit' => 'px', 'size' => 16 ),
+						'tablet_default' => array( 'unit' => 'px', 'size' => 15 ),
+						'mobile_default' => array( 'unit' => 'px', 'size' => 15 ),
+					),
 				),
 			)
 		);
@@ -251,7 +272,11 @@ class Event_Past_Events extends Event_Widget {
 				'fields_options' => array(
 					'typography'  => array( 'default' => 'yes' ),
 					'font_family' => array( 'default' => 'Roboto' ),
-					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 20 ) ),
+					'font_size'   => array(
+						'default'        => array( 'unit' => 'px', 'size' => 20 ),
+						'tablet_default' => array( 'unit' => 'px', 'size' => 19 ),
+						'mobile_default' => array( 'unit' => 'px', 'size' => 19 ),
+					),
 					'font_weight' => array( 'default' => '500' ),
 				),
 			)
@@ -266,7 +291,11 @@ class Event_Past_Events extends Event_Widget {
 				'fields_options' => array(
 					'typography'  => array( 'default' => 'yes' ),
 					'font_family' => array( 'default' => 'Roboto' ),
-					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 20 ) ),
+					'font_size'   => array(
+						'default'        => array( 'unit' => 'px', 'size' => 20 ),
+						'tablet_default' => array( 'unit' => 'px', 'size' => 19 ),
+						'mobile_default' => array( 'unit' => 'px', 'size' => 19 ),
+					),
 				),
 			)
 		);
@@ -280,7 +309,11 @@ class Event_Past_Events extends Event_Widget {
 				'fields_options' => array(
 					'typography'  => array( 'default' => 'yes' ),
 					'font_family' => array( 'default' => 'Roboto' ),
-					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 14 ) ),
+					'font_size'   => array(
+						'default'        => array( 'unit' => 'px', 'size' => 14 ),
+						'tablet_default' => array( 'unit' => 'px', 'size' => 9 ),
+						'mobile_default' => array( 'unit' => 'px', 'size' => 9 ),
+					),
 				),
 			)
 		);
@@ -332,11 +365,13 @@ class Event_Past_Events extends Event_Widget {
 		$settings = $this->get_settings_for_display();
 
 		$items = $this->items( $settings );
-		$shown = isset( $settings['shown'] ) ? max( 1, (int) $settings['shown'] ) : 3;
+		$shows = $this->per_tier( $settings, 'shown', array( 'desktop' => 3, 'tablet' => 4, 'mobile' => 3 ) );
+		$steps = $this->per_tier( $settings, 'step', array( 'desktop' => 0, 'tablet' => 4, 'mobile' => 3 ), 0 );
+		$shown = $shows['desktop'];
 		$tag   = isset( $settings['heading_tag'] ) ? $settings['heading_tag'] : 'h2';
 		$tag   = in_array( $tag, array( 'h2', 'h3', 'span' ), true ) ? $tag : 'h2';
 		?>
-		<div class="custom-event-past" data-event-feed>
+		<div class="custom-event-past" data-event-feed<?php $this->tier_attributes( 'shown', $shows ); ?><?php $this->tier_attributes( 'step', $steps ); ?>>
 			<div class="custom-event-past__head">
 				<<?php echo esc_attr( $tag ); ?> class="custom-event-past__heading"><?php
 					echo esc_html( $this->text( $settings, 'heading' ) );
@@ -355,9 +390,9 @@ class Event_Past_Events extends Event_Widget {
 				</div>
 			<?php endif; ?>
 
-			<?php if ( count( $items ) > $shown ) : ?>
+			<?php if ( count( $items ) > min( $shows ) ) : ?>
 				<div class="custom-event-past__actions">
-					<?php $this->render_more_button( $this->text( $settings, 'button_text' ), 0 ); ?>
+					<?php $this->render_more_button( $this->text( $settings, 'button_text' ), $steps['desktop'] ); ?>
 				</div>
 			<?php endif; ?>
 

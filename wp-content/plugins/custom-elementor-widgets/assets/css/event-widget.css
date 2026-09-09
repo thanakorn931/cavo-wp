@@ -161,3 +161,41 @@
 		animation-duration: 2s;
 	}
 }
+
+/* Tablet and mobile — the file draws one of them (11174:11096, 11174:11336).
+   The card keeps its shape; the mark on the picture, the room between its
+   parts and the button that brings more all come down. Tablet is not drawn
+   and takes the same figures. */
+@media ( max-width: 1024px ) {
+	.custom-event-card {
+		gap: 8px;
+	}
+
+	.custom-event-card__badge {
+		top: 13px;
+		right: 13px;
+		width: 45px;
+		height: 42px;
+	}
+
+	.custom-event-card__words {
+		gap: 8px;
+	}
+
+	.custom-event-card__meta {
+		gap: 4px;
+	}
+
+	.custom-event-card__fact {
+		gap: 4px;
+	}
+
+	.custom-event-card__mark {
+		width: 13px;
+		height: 13px;
+	}
+
+	.custom-event-more {
+		padding: 8px 16px;
+	}
+}

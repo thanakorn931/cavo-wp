@@ -89,14 +89,16 @@ class Event_Events extends Event_Widget {
 			)
 		);
 
-		$this->add_control(
+		$this->add_responsive_control(
 			'step',
 			array(
-				'label'       => esc_html__( 'How many more each press brings', 'custom-elementor-widgets' ),
-				'type'        => Controls_Manager::NUMBER,
-				'min'         => 1,
-				'default'     => 6,
-				'description' => esc_html__( 'The design shows two rows of three at a time.', 'custom-elementor-widgets' ),
+				'label'          => esc_html__( 'How many stand at a time', 'custom-elementor-widgets' ),
+				'type'           => Controls_Manager::NUMBER,
+				'min'            => 1,
+				'default'        => 6,
+				'tablet_default' => 6,
+				'mobile_default' => 3,
+				'description'    => esc_html__( 'Before the button is pressed, and again with each press. The design shows two rows of three; on a phone, three.', 'custom-elementor-widgets' ),
 			)
 		);
 
@@ -138,7 +140,11 @@ class Event_Events extends Event_Widget {
 				'fields_options' => array(
 					'typography'  => array( 'default' => 'yes' ),
 					'font_family' => array( 'default' => 'Roboto' ),
-					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 16 ) ),
+					'font_size'   => array(
+						'default'        => array( 'unit' => 'px', 'size' => 16 ),
+						'tablet_default' => array( 'unit' => 'px', 'size' => 13 ),
+						'mobile_default' => array( 'unit' => 'px', 'size' => 13 ),
+					),
 				),
 			)
 		);
@@ -152,7 +158,11 @@ class Event_Events extends Event_Widget {
 				'fields_options' => array(
 					'typography'  => array( 'default' => 'yes' ),
 					'font_family' => array( 'default' => 'Roboto' ),
-					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 20 ) ),
+					'font_size'   => array(
+						'default'        => array( 'unit' => 'px', 'size' => 20 ),
+						'tablet_default' => array( 'unit' => 'px', 'size' => 17 ),
+						'mobile_default' => array( 'unit' => 'px', 'size' => 17 ),
+					),
 					'font_weight' => array( 'default' => '500' ),
 				),
 			)
@@ -167,7 +177,11 @@ class Event_Events extends Event_Widget {
 				'fields_options' => array(
 					'typography'  => array( 'default' => 'yes' ),
 					'font_family' => array( 'default' => 'Roboto' ),
-					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 20 ) ),
+					'font_size'   => array(
+						'default'        => array( 'unit' => 'px', 'size' => 20 ),
+						'tablet_default' => array( 'unit' => 'px', 'size' => 17 ),
+						'mobile_default' => array( 'unit' => 'px', 'size' => 17 ),
+					),
 				),
 			)
 		);
@@ -181,7 +195,11 @@ class Event_Events extends Event_Widget {
 				'fields_options' => array(
 					'typography'  => array( 'default' => 'yes' ),
 					'font_family' => array( 'default' => 'Roboto' ),
-					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 14 ) ),
+					'font_size'   => array(
+						'default'        => array( 'unit' => 'px', 'size' => 14 ),
+						'tablet_default' => array( 'unit' => 'px', 'size' => 9 ),
+						'mobile_default' => array( 'unit' => 'px', 'size' => 9 ),
+					),
 				),
 			)
 		);
@@ -225,12 +243,15 @@ class Event_Events extends Event_Widget {
 		$items = $this->items( $settings );
 		$lead  = ! empty( $items ) ? array_shift( $items ) : null;
 
-		$step    = isset( $settings['step'] ) ? max( 1, (int) $settings['step'] ) : 6;
+		$steps   = $this->per_tier( $settings, 'step', array( 'desktop' => 6, 'tablet' => 6, 'mobile' => 3 ) );
+		$step    = $steps['desktop'];
 		$button  = isset( $settings['button_text'] ) ? trim( (string) $settings['button_text'] ) : '';
 		$button  = '' !== $button ? $button : esc_html__( 'See More', 'custom-elementor-widgets' );
-		$waiting = count( $items ) > $step;
+		// The button stands whenever any screen would have something left to
+		// bring; which screen this is, and so whether it has, is settled there.
+		$waiting = count( $items ) > min( $steps );
 		?>
-		<div class="custom-event-list" data-event-feed>
+		<div class="custom-event-list" data-event-feed<?php $this->tier_attributes( 'shown', $steps ); ?><?php $this->tier_attributes( 'step', $steps ); ?>>
 			<div class="custom-event-list__band">
 				<?php if ( $lead ) : ?>
 					<?php $this->render_lead( $lead ); ?>
@@ -273,6 +294,7 @@ class Event_Events extends Event_Widget {
 		<div class="custom-event-list__lead">
 			<span class="custom-event-list__lead-picture" aria-hidden="true">
 				<?php $this->media( $picture ); ?>
+				<span class="custom-event-card__badge" aria-hidden="true"></span>
 			</span>
 
 			<span class="custom-event-list__lead-veil" aria-hidden="true"></span>

@@ -256,6 +256,49 @@ abstract class Event_Widget extends Base_Widget {
 	 * @param string $text What it says.
 	 * @param int    $step How many more it brings, or 0 for all that are left.
 	 */
+	/**
+	 * One count read for each of the three screens. Outside the editor only
+	 * the wide screen's control is registered, so the narrow screens' figures
+	 * are not filled in for a widget that has never had them typed; what the
+	 * control declares for each screen is handed in here and stands instead.
+	 * A count below the floor is the floor.
+	 *
+	 * @param array  $settings The widget's settings.
+	 * @param string $key      The control's name.
+	 * @param array  $declared What the control declares, keyed desktop, tablet, mobile.
+	 * @param int    $floor    The least a count may be.
+	 * @return array<string,int> Keyed desktop, tablet, mobile.
+	 */
+	protected function per_tier( $settings, $key, $declared, $floor = 1 ) {
+		$tiers = array();
+
+		foreach ( array( 'desktop', 'tablet', 'mobile' ) as $tier ) {
+			$name  = 'desktop' === $tier ? $key : $key . '_' . $tier;
+			$typed = isset( $settings[ $name ] ) ? $settings[ $name ] : '';
+			$stood = '' !== $typed && null !== $typed ? (int) $typed : (int) $declared[ $tier ];
+
+			$tiers[ $tier ] = max( $floor, $stood );
+		}
+
+		return $tiers;
+	}
+
+	/**
+	 * The three counts printed for the script to read.
+	 *
+	 * @param string $name  What the counts are.
+	 * @param array  $tiers From per_tier().
+	 */
+	protected function tier_attributes( $name, $tiers ) {
+		printf(
+			' data-%1$s="%2$d" data-%1$s-tablet="%3$d" data-%1$s-mobile="%4$d"',
+			esc_attr( $name ),
+			(int) $tiers['desktop'],
+			(int) $tiers['tablet'],
+			(int) $tiers['mobile']
+		);
+	}
+
 	protected function render_more_button( $text, $step ) {
 		?>
 		<button

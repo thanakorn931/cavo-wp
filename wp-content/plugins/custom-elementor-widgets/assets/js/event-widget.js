@@ -46,47 +46,110 @@
 		}
 	}
 
+	// Which of the three screens this is. The counts are the section's, one
+	// for each screen, and the script reads the one for the screen it is on.
+	function tier() {
+		if ( window.matchMedia( '(max-width: 767px)' ).matches ) {
+			return 'mobile';
+		}
+
+		if ( window.matchMedia( '(max-width: 1024px)' ).matches ) {
+			return 'tablet';
+		}
+
+		return 'desktop';
+	}
+
+	function count( root, name ) {
+		var which = tier();
+		var value = root.getAttribute( 'data-' + name + ( 'desktop' === which ? '' : '-' + which ) );
+
+		if ( null === value ) {
+			value = root.getAttribute( 'data-' + name );
+		}
+
+		return parseInt( value, 10 ) || 0;
+	}
+
 	function setUp( root ) {
-		if ( ! root ) {
+		if ( ! root || root.dataset.wired ) {
 			return;
 		}
+
+		root.dataset.wired = '1';
 
 		var button = root.querySelector( '.custom-event-more' );
+		var cards  = root.querySelectorAll( '.custom-event-card' );
 
-		if ( ! button || button.dataset.wired ) {
+		// On the narrow screens the newest item stands in the grid like the rest
+		// and is counted with them.
+		var lead     = root.querySelector( '.custom-event-list__lead' ) ? 1 : 0;
+		var revealed = 0;
+		var pressed  = false;
+
+		// How many cards stand on this screen before anything is pressed.
+		function opening() {
+			return Math.max( 0, count( root, 'shown' ) - lead );
+		}
+
+		function apply() {
+			for ( var i = 0; i < cards.length; i++ ) {
+				var shown = i < revealed;
+
+				cards[ i ].hidden = ! shown;
+				cards[ i ].classList.toggle( 'is-shown', shown );
+				cards[ i ].classList.toggle( 'is-waiting', ! shown );
+			}
+
+			if ( button ) {
+				button.hidden = revealed >= cards.length;
+			}
+		}
+
+		revealed = Math.min( cards.length, opening() );
+		apply();
+
+		// A screen that changes width changes how many stand; what a press has
+		// already brought on screen is not taken back.
+		var was = tier();
+
+		window.addEventListener( 'resize', function () {
+			var now = tier();
+
+			if ( now === was ) {
+				return;
+			}
+
+			was      = now;
+			revealed = Math.min( cards.length, pressed ? Math.max( revealed, opening() ) : opening() );
+			apply();
+		} );
+
+		if ( ! button ) {
 			return;
 		}
 
-		button.dataset.wired = '1';
-
-		// A step of nothing means everything that is left, at once.
-		var step = parseInt( button.getAttribute( 'data-step' ), 10 ) || 0;
-
 		button.addEventListener( 'click', function () {
-			var waiting = root.querySelectorAll( '.custom-event-card.is-waiting' );
+			// A step of nothing means everything that is left, at once.
+			var step  = count( root, 'step' );
+			var batch = Array.prototype.slice.call( cards, revealed, step > 0 ? revealed + step : cards.length );
 
-			if ( ! waiting.length ) {
+			if ( ! batch.length ) {
 				button.hidden = true;
 				return;
 			}
 
-			var batch = Array.prototype.slice.call( waiting, 0, step > 0 ? step : waiting.length );
+			pressed  = true;
+			revealed = Math.min( cards.length, revealed + batch.length );
 
 			button.classList.add( 'is-working' );
 			button.disabled = true;
 
-			for ( var i = 0; i < batch.length; i++ ) {
-				batch[ i ].classList.remove( 'is-waiting' );
-				batch[ i ].hidden = false;
-			}
+			apply();
 
 			whenLoaded( batch, function () {
 				button.classList.remove( 'is-working' );
 				button.disabled = false;
-
-				if ( ! root.querySelector( '.custom-event-card.is-waiting' ) ) {
-					button.hidden = true;
-				}
 			} );
 		} );
 	}
