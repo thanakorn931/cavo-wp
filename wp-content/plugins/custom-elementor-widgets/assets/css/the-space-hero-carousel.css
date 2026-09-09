@@ -258,3 +258,92 @@
 .custom-space-hero.is-settling .custom-space-hero__slide {
 	transition: none;
 }
+
+/* Tablet and mobile — the file draws one of them (11167:8184, 11194:2758,
+   11167:8181). The name and the two actions stand as before, smaller; the
+   slides are all one size, the one being read in the middle with its
+   neighbours cut at either edge of the screen; the words stand under them in
+   a shallower band. Tablet is not drawn and takes the same figures. */
+@media ( max-width: 1024px ) {
+	.custom-space-hero__band {
+		gap: 24px;
+		padding-top: 17px;
+		padding-bottom: 25px;
+	}
+
+	.custom-space-hero__title {
+		padding: 0;
+	}
+
+	.custom-space-hero__actions {
+		gap: 16px;
+	}
+
+	.custom-space-hero__button,
+	.custom-space-hero__button:hover,
+	.custom-space-hero__button:focus,
+	.custom-space-hero__button:active {
+		padding: 8px 16px;
+	}
+
+	.custom-space-hero__tour {
+		gap: 3px;
+	}
+
+	.custom-space-hero__tour-link {
+		padding-top: 3px;
+	}
+
+	.custom-space-hero__tour-icon {
+		width: 16px;
+		height: 16px;
+	}
+
+	.custom-space-hero__stage {
+		margin-top: 25px;
+		height: 168px;
+	}
+
+	.custom-space-hero__track {
+		gap: 16px;
+		height: 168px;
+	}
+
+	/* The slide being read is no larger than its neighbours here. */
+	.custom-space-hero__slide,
+	.custom-space-hero__slide.is-current {
+		width: 250px;
+		height: 168px;
+		border-radius: 6px;
+	}
+
+	/* The arrows stand 8 inside either edge of the slide being read, which is
+	   the one in the middle of the screen, and in the middle of its height. */
+	.custom-space-hero__arrow {
+		top: 75px;
+		width: 18px;
+		height: 18px;
+	}
+
+	.custom-space-hero__arrow--prev {
+		left: calc( 50% - 117px );
+	}
+
+	.custom-space-hero__arrow--next {
+		right: calc( 50% - 117px );
+	}
+
+	/* The mark keeps the share of the disc the file gives it. */
+	.custom-space-hero__arrow svg {
+		width: 6px;
+		height: 5px;
+	}
+
+	.custom-space-hero__banner {
+		padding: 28px 23px;
+	}
+
+	.custom-space-hero__words {
+		width: 100%;
+	}
+}

@@ -94,3 +94,42 @@
 	object-fit: cover;
 	object-position: center;
 }
+
+/* Tablet and mobile — the file draws one of them (11167:8224): the two
+   pictures on one row, the third under them, each 150 deep in a band padded
+   16 at either side. The file runs the row 27 past the right edge; the
+   client has said that is the file's slip, so the row is held inside the
+   band's padding and the two keep the file's proportion (267 : 126) of it.
+   Tablet is not drawn and takes the same figures. */
+@media ( max-width: 1024px ) {
+	.custom-space-content__gallery {
+		padding: 38px 16px;
+	}
+
+	.custom-space-content__grid {
+		gap: 24px;
+		max-width: none;
+	}
+
+	.custom-space-content__row {
+		gap: 8px;
+	}
+
+	.custom-space-content__slot {
+		border-radius: 8px;
+	}
+
+	.custom-space-content__slot--wide {
+		height: 150px;
+	}
+
+	.custom-space-content__slot--tall {
+		flex: 0 0 31.4%;
+		width: auto;
+		height: 150px;
+	}
+
+	.custom-space-content__slot--full {
+		height: 150px;
+	}
+}

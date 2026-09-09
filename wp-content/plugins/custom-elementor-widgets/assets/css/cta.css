@@ -77,3 +77,19 @@
 	color: inherit;
 	text-decoration: none;
 }
+
+/* Tablet and mobile — the file draws one of them (11174:8782): the band is
+   38 deep above and below what it holds, and holds it the width of the
+   screen. Tablet is not drawn and takes the same figures. */
+@media ( max-width: 1024px ) {
+	.custom-cta {
+		padding: 38px 0;
+	}
+
+	.custom-cta__button,
+	.custom-cta__button:hover,
+	.custom-cta__button:focus,
+	.custom-cta__button:active {
+		padding: 8px 16px;
+	}
+}
