@@ -278,16 +278,6 @@ class Footer extends Base_Widget {
 			)
 		);
 
-		$this->add_control(
-			'copyright',
-			array(
-				'label'       => esc_html__( 'Copyright', 'custom-elementor-widgets' ),
-				'type'        => Controls_Manager::TEXT,
-				'dynamic'     => array( 'active' => true ),
-				'placeholder' => esc_html__( '© 2026 CAVO design by Yes Web Design.', 'custom-elementor-widgets' ),
-			)
-		);
-
 		$this->end_controls_section();
 	}
 
@@ -577,7 +567,6 @@ class Footer extends Base_Widget {
 			'location_label'     => esc_html__( 'Location', 'custom-elementor-widgets' ),
 			'contact_address'    => esc_html__( 'Town Hall Sukhumvit 49, Sukhumvit 49, Khlong Tan Nuea, Watthana, Bangkok 10110', 'custom-elementor-widgets' ),
 			'contact_details'    => "0xx-xxx-xxxx\nexample@gmail.com",
-			'copyright'          => esc_html__( '© 2026 CAVO design by Yes Web Design.', 'custom-elementor-widgets' ),
 		);
 	}
 
@@ -623,7 +612,7 @@ class Footer extends Base_Widget {
 
 					<div class="custom-footer__bottom">
 						<?php
-						$this->render_copyright( $settings );
+						$this->render_copyright();
 						$this->render_social( $settings );
 						?>
 					</div>
@@ -794,18 +783,30 @@ class Footer extends Base_Widget {
 	}
 
 	/**
-	 * The copyright line.
+	 * The line at the foot of the page, and who made it.
 	 *
-	 * @param array $settings The widget's settings.
+	 * Not asked for: it says who built the site, which is not the client's to
+	 * write. The maker's name is followed from the front page alone — one page
+	 * vouching for the work, and the rest of the site saying nothing about it.
 	 */
-	private function render_copyright( $settings ) {
-		$copyright = $this->text( $settings, 'copyright' );
+	private function render_copyright() {
+		// A tab opened from here must not be handed a way back to this one.
+		$rel = is_front_page() ? 'noopener' : 'nofollow noopener';
 
-		if ( '' === $copyright ) {
-			return;
-		}
+		$maker = sprintf(
+			'<a class="custom-footer__maker" href="%1$s" target="_blank" rel="%2$s">%3$s</a>',
+			esc_url( 'https://yeswebdesignstudio.com/' ),
+			esc_attr( $rel ),
+			esc_html__( 'Yes Web Design.', 'custom-elementor-widgets' )
+		);
 		?>
-		<p class="custom-footer__copyright"><?php echo esc_html( $copyright ); ?></p>
+		<p class="custom-footer__copyright"><?php
+			printf(
+				/* translators: %s: the maker's name, as a link. */
+				esc_html__( '© 2026 CAVO design by %s', 'custom-elementor-widgets' ),
+				$maker // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- built above from escaped parts.
+			);
+		?></p>
 		<?php
 	}
 
