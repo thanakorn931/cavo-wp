@@ -141,7 +141,6 @@
 
 .custom-footer__contact {
 	display: flex;
-	flex-wrap: wrap;
 	align-items: flex-start;
 	gap: 24px;
 }
@@ -150,9 +149,16 @@
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
+	/* A column keeps the room its own lines need. */
 	flex: 0 0 auto;
 	gap: 16px;
 	min-width: 0;
+}
+
+/* The one carrying prose is the one that gives: its lines break, and the
+   columns beside it stay where they are on the row. */
+.custom-footer__contact-column:last-child {
+	flex: 0 1 auto;
 }
 
 .custom-footer__contact-lines {

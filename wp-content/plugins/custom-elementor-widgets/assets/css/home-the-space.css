@@ -258,7 +258,8 @@
 /* The table is booked from the section, not from any one area. */
 .custom-home-space__reserve {
 	position: absolute;
-	left: 426px;
+	/* The file stands it 426 across a stage of 1440. */
+	left: 29.583%;
 	top: 458px;
 	display: inline-flex;
 	align-items: center;
@@ -308,12 +309,13 @@
 	outline-offset: 2px;
 }
 
+/* The file stands them 47 and 895 across a stage of 1440. */
 .custom-home-space__arrow--prev {
-	left: 47px;
+	left: 3.264%;
 }
 
 .custom-home-space__arrow--next {
-	left: 895px;
+	left: 62.153%;
 }
 
 .custom-home-space__arrow:hover {
