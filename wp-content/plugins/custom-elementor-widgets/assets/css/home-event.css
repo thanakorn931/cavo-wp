@@ -61,7 +61,8 @@
 	height: 56px;
 	padding: 0;
 	border: 0;
-	background: none;
+	border-radius: 50%;
+	background-color: #faf6ea;
 	color: inherit;
 	cursor: pointer;
 	transition: opacity 300ms ease-in-out;
@@ -73,8 +74,8 @@
 .custom-home-event__arrow:focus,
 .custom-home-event__arrow:focus-visible,
 .custom-home-event__arrow:active {
-	background: none;
-	border-color: currentColor;
+	background-color: #faf6ea;
+	border-color: transparent;
 	box-shadow: none;
 }
 
@@ -87,15 +88,27 @@
 	opacity: 0.7;
 }
 
-.custom-home-event__arrow[disabled] {
-	opacity: 0.4;
+/* With nowhere to go the file takes the disc away and leaves the mark, pale
+   against the band. The colours a client may set are asked for the state that
+   can be pressed alone, so this one is the section's own and stays. */
+.custom-home-event__arrow[disabled],
+.custom-home-event__arrow[disabled]:hover {
+	background-color: transparent;
+	opacity: 1;
 	cursor: default;
 }
 
+.custom-home-event__arrow[disabled] svg {
+	fill: #e8e4db;
+}
+
+/* The file draws the mark in a box 24 across and 20 down, in the middle of
+   the disc. */
 .custom-home-event__arrow svg {
 	display: block;
-	width: 100%;
-	height: 100%;
+	width: 24px;
+	height: 20px;
+	fill: #121212;
 }
 
 /* The cards run to the right edge of the viewport, and the band's own corner

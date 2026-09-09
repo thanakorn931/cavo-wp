@@ -273,14 +273,26 @@ class Home_Event extends Base_Widget {
 		);
 
 		$this->add_control(
-			'arrow_color',
+			'arrow_disc',
 			array(
 				'label'     => esc_html__( 'Arrows', 'custom-elementor-widgets' ),
 				'type'      => Controls_Manager::COLOR,
-				'default'   => '#F5E9E4',
-				'separator' => 'before',
+				'default'   => '#FAF6EA',
 				'selectors' => array(
-					'{{WRAPPER}} .custom-home-event__arrow' => 'color: {{VALUE}};',
+					'{{WRAPPER}} .custom-home-event__arrow:not( [disabled] )'       => 'background-color: {{VALUE}};',
+					'{{WRAPPER}} .custom-home-event__arrow:not( [disabled] ):hover' => 'background-color: {{VALUE}};',
+				),
+			)
+		);
+
+		$this->add_control(
+			'arrow_mark',
+			array(
+				'label'     => esc_html__( 'Arrow mark', 'custom-elementor-widgets' ),
+				'type'      => Controls_Manager::COLOR,
+				'default'   => '#121212',
+				'selectors' => array(
+					'{{WRAPPER}} .custom-home-event__arrow:not( [disabled] ) svg' => 'fill: {{VALUE}};',
 				),
 			)
 		);
@@ -527,13 +539,12 @@ class Home_Event extends Base_Widget {
 	 * @param string $label What a reader who cannot see it is told.
 	 */
 	private function render_arrow( $way, $label ) {
-		$path = 'prev' === $way ? 'M34 20L24 28L34 36' : 'M24 20L34 28L24 36';
-
-		printf(
-			'<button class="custom-home-event__arrow custom-home-event__arrow--%1$s" type="button" aria-label="%2$s"><svg width="56" height="56" viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true"><circle cx="28" cy="28" r="27" stroke="currentColor" stroke-width="1.5"/><path d="%3$s" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>',
-			esc_attr( $way ),
-			esc_attr( $label ),
-			esc_attr( $path )
-		);
+		?>
+		<button
+			type="button"
+			class="custom-home-event__arrow custom-home-event__arrow--<?php echo esc_attr( $way ); ?>"
+			aria-label="<?php echo esc_attr( $label ); ?>"
+		><?php $this->render_arrow_mark( $way ); ?></button>
+		<?php
 	}
 }
