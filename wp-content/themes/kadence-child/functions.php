@@ -272,31 +272,6 @@ function kadence_child_one_description() {
 add_action( 'init', 'kadence_child_one_description', 20 );
 
 /**
- * The two categories the design draws, put there once.
- *
- * A term the client has to create before the page works is a page that arrives
- * broken. Renaming or adding to them afterwards is theirs; these two are only
- * ever created where they are missing.
- */
-function kadence_child_event_terms() {
-	if ( get_option( 'kadence_child_event_terms' ) ) {
-		return;
-	}
-
-	foreach ( array(
-		'current-events' => esc_html__( 'Current Events', 'kadence-child' ),
-		'past-events'    => esc_html__( 'Past Events', 'kadence-child' ),
-	) as $slug => $name ) {
-		if ( ! term_exists( $slug, 'event_category' ) ) {
-			wp_insert_term( $name, 'event_category', array( 'slug' => $slug ) );
-		}
-	}
-
-	update_option( 'kadence_child_event_terms', 1 );
-}
-add_action( 'init', 'kadence_child_event_terms', 20 );
-
-/**
  * What an event carries that WordPress has no field for.
  *
  * When it is, from when until when, and the kind of music. When a post is

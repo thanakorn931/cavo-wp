@@ -111,11 +111,27 @@ abstract class Event_Widget extends Base_Widget {
 			)
 		);
 
+		// The day divides the list: an event is over once its own day has been
+		// and gone, and is still to come until then. A day itself counts as
+		// still to come, since it has not finished while it is being read.
+		$today = (int) strtotime( 'today', current_time( 'timestamp' ) ); // phpcs:ignore WordPress.DateTime.CurrentTimeTimestamp.Requested -- the client's day, not UTC's.
+		$shows = $this->shows();
+
 		$standing = array();
 
 		foreach ( $posts as $place => $post ) {
+			$when = $this->item_starts( $post );
+
+			if ( 'coming' === $shows && $when < $today ) {
+				continue;
+			}
+
+			if ( 'past' === $shows && $when >= $today ) {
+				continue;
+			}
+
 			$standing[] = array(
-				'when'  => $this->item_starts( $post ),
+				'when'  => $when,
 				'place' => $place,
 				'post'  => $post,
 			);
@@ -137,6 +153,18 @@ abstract class Event_Widget extends Base_Widget {
 		);
 
 		return wp_list_pluck( $standing, 'post' );
+	}
+
+	/**
+	 * Which side of today this section shows.
+	 *
+	 * A section that shows both says nothing, and takes whatever the source
+	 * hands it. The two that face one way each say which.
+	 *
+	 * @return string Either coming, past, or nothing for both.
+	 */
+	protected function shows() {
+		return '';
 	}
 
 	/**

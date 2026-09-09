@@ -89,6 +89,15 @@ class Event_Past_Events extends Event_Widget {
 	}
 
 	/**
+	 * What has already been.
+	 *
+	 * @return string
+	 */
+	protected function shows() {
+		return 'past';
+	}
+
+	/**
 	 * The Content tab and the Style tab.
 	 */
 	protected function register_controls() {

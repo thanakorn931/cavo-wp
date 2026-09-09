@@ -57,6 +57,15 @@ class Event_Events extends Event_Widget {
 	}
 
 	/**
+	 * What is still to come.
+	 *
+	 * @return string
+	 */
+	protected function shows() {
+		return 'coming';
+	}
+
+	/**
 	 * The Content tab and the Style tab.
 	 */
 	protected function register_controls() {
