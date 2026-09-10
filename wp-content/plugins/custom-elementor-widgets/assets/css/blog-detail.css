@@ -207,7 +207,18 @@
 	}
 }
 
+/* Tablet — not drawn. Each block of the article is given more of the room
+   around it than the phone keeps, short of the wide tier's 24 above and
+   below. */
 @media ( min-width: 768px ) and ( max-width: 1024px ) {
+	.custom-blog-detail__block {
+		padding: 12px 0;
+	}
+
+	.custom-blog-detail__shown {
+		margin: 12px 0;
+	}
+
 	.custom-blog-detail__share {
 		flex: 0 0 96px;
 		gap: 12px;
