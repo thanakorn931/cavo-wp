@@ -1999,7 +1999,11 @@ function kadence_child_form_submit() {
 	update_post_meta( $message, 'cavo_form_slug', $slug );
 	update_post_meta( $message, 'cavo_form_name', $forms[ $slug ] );
 	update_post_meta( $message, 'cavo_sender', $sender );
-	update_post_meta( $message, 'cavo_answers', wp_json_encode( $answers ) );
+	// What is stored is stored with its backslashes: meta strips a level of
+	// them on the way in, and a Thai answer written as escapes would come
+	// back as the escapes with their marks gone. Written as itself, and
+	// slashed once for the stripping, it comes back as it was typed.
+	update_post_meta( $message, 'cavo_answers', wp_slash( wp_json_encode( $answers, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES ) ) );
 	update_post_meta( $message, 'cavo_lang', $lang );
 	update_post_meta( $message, 'cavo_unread', 1 );
 
