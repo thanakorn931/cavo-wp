@@ -651,7 +651,7 @@ class Footer extends Base_Widget {
 	}
 
 	/**
-	 * The heading and the mocked sign-up form.
+	 * The heading and the sign-up form.
 	 *
 	 * @param array $settings The widget's settings.
 	 */

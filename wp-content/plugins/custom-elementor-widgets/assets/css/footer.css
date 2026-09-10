@@ -116,6 +116,13 @@
 	box-sizing: border-box;
 }
 
+/* A press that has been heard, and cannot be repeated by accident. */
+.custom-footer .custom-footer__submit[ disabled ],
+.custom-footer button.custom-footer__submit[ disabled ] {
+	cursor: progress;
+	opacity: 0.6;
+}
+
 .custom-footer .custom-footer__field::placeholder {
 	color: inherit;
 	opacity: 1;
