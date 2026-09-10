@@ -260,6 +260,38 @@ function kadence_child_event_post_type() {
 add_action( 'init', 'kadence_child_event_post_type' );
 
 /**
+ * An event has a language, as a page does.
+ *
+ * Polylang offers a language to the post types it can see, and it sees only
+ * the public ones; an event is drawn by the sections that list it and has no
+ * address of its own, so it is named to Polylang here. Named, each event is
+ * written once per language, and a list draws the events of the language of
+ * the page it stands on. Where Polylang is not there the filter is never run.
+ *
+ * @param array $types What Polylang gives a language to.
+ * @return array
+ */
+function kadence_child_event_has_language( $types ) {
+	$types['event'] = 'event';
+
+	return $types;
+}
+add_filter( 'pll_get_post_types', 'kadence_child_event_has_language' );
+
+/**
+ * So does the category that sorts events.
+ *
+ * @param array $taxonomies What Polylang gives a language to.
+ * @return array
+ */
+function kadence_child_event_category_has_language( $taxonomies ) {
+	$taxonomies['event_category'] = 'event_category';
+
+	return $taxonomies;
+}
+add_filter( 'pll_get_taxonomies', 'kadence_child_event_category_has_language' );
+
+/**
  * A post is written once, not summarised beside itself.
  *
  * The words the client types are the description, and a card that shows less of
