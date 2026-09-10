@@ -1525,17 +1525,27 @@ function kadence_child_form_token_picker( $field ) {
 		return;
 	}
 
+	kadence_child_variables( kadence_child_form_tokens_of( $slug ) );
+}
+add_action( 'acf/render_field', 'kadence_child_form_token_picker', 20 );
+
+/**
+ * The press that offers a box its variables — the same two words, and the same
+ * window, wherever it stands.
+ *
+ * @param array $tokens Token to what it is.
+ */
+function kadence_child_variables( $tokens ) {
 	echo '<div class="cavo-tokens">';
 	echo '<button type="button" class="button cavo-tokens__open" data-cavo-pick>' . esc_html__( 'Add variables', 'kadence-child' ) . '</button>';
 	echo '<ul class="cavo-tokens__list" hidden>';
 
-	foreach ( kadence_child_form_tokens_of( $slug ) as $token => $name ) {
+	foreach ( $tokens as $token => $name ) {
 		printf( '<li data-cavo-token="%1$s" data-cavo-name="%2$s"></li>', esc_attr( $token ), esc_attr( $name ) );
 	}
 
 	echo '</ul></div>';
 }
-add_action( 'acf/render_field', 'kadence_child_form_token_picker', 20 );
 
 /**
  * What the picker does: the press opens a window listing the form's fields,
@@ -1543,7 +1553,9 @@ add_action( 'acf/render_field', 'kadence_child_form_token_picker', 20 );
  * field, or at its end where the cursor never stood, and shuts the window.
  */
 function kadence_child_form_token_picker_script() {
-	if ( ! isset( $_GET['page'] ) || 'cavo-form-settings' !== sanitize_key( wp_unslash( $_GET['page'] ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- reading which screen is open.
+	$page = isset( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- reading which screen is open.
+
+	if ( ! in_array( $page, array( 'cavo-form-settings', 'cavo-subscribers' ), true ) ) {
 		return;
 	}
 	?>
@@ -2763,10 +2775,59 @@ function kadence_child_form_trapped( $post ) {
  */
 function kadence_child_subscription_defaults() {
 	return array(
-		'sending'    => 0,
-		'post_types' => array( 'post' ),
-		'subject'    => '{title}',
+		'sending'         => 0,
+		'post_types'      => array( 'post' ),
+		'subject'         => '',
+		'body'            => '',
+		'confirm_subject' => '',
+		'confirm_body'    => '',
 	);
+}
+
+/**
+ * The words a mail to the list may stand in for: what was published, and the
+ * way off the list. A mail that names no way off is given one at its foot —
+ * every mail to the list carries one.
+ *
+ * @return array Token to what it is.
+ */
+function kadence_child_news_tokens_of() {
+	return array(
+		'{title}'       => esc_html__( 'Title of what was published', 'kadence-child' ),
+		'{excerpt}'     => esc_html__( 'Its excerpt', 'kadence-child' ),
+		'{link}'        => esc_html__( 'Its address', 'kadence-child' ),
+		'{unsubscribe}' => esc_html__( 'The way off the list', 'kadence-child' ),
+	);
+}
+
+/**
+ * The words the mail asking an address to confirm itself may stand in for.
+ *
+ * @return array Token to what it is.
+ */
+function kadence_child_confirm_tokens_of() {
+	return array(
+		'{confirm_link}' => esc_html__( 'The link that confirms the address', 'kadence-child' ),
+	);
+}
+
+/**
+ * Words with their tokens filled, and the one link the mail cannot go without
+ * written at its foot where it was not written in.
+ *
+ * @param string $said  What was written.
+ * @param array  $words Token to value.
+ * @param string $must  The token every mail of this kind carries.
+ * @return string
+ */
+function kadence_child_news_fill( $said, $words, $must ) {
+	$said = (string) $said;
+
+	if ( false === strpos( $said, $must ) ) {
+		$said = rtrim( $said ) . ( '' !== trim( $said ) ? "\r\n\r\n" : '' ) . $must;
+	}
+
+	return strtr( $said, $words );
 }
 
 /**
@@ -3053,9 +3114,12 @@ function kadence_child_subscribers_act() {
 
 		kadence_child_subscription_save(
 			array(
-				'sending'    => isset( $_POST['sending'] ) ? 1 : 0,
-				'post_types' => isset( $_POST['post_types'] ) ? array_map( 'sanitize_key', (array) wp_unslash( $_POST['post_types'] ) ) : array(),
-				'subject'    => isset( $_POST['subject'] ) ? sanitize_text_field( wp_unslash( $_POST['subject'] ) ) : '',
+				'sending'         => isset( $_POST['sending'] ) ? 1 : 0,
+				'post_types'      => isset( $_POST['post_types'] ) ? array_map( 'sanitize_key', (array) wp_unslash( $_POST['post_types'] ) ) : array(),
+				'subject'         => isset( $_POST['subject'] ) ? sanitize_text_field( wp_unslash( $_POST['subject'] ) ) : '',
+				'body'            => isset( $_POST['body'] ) ? sanitize_textarea_field( wp_unslash( $_POST['body'] ) ) : '',
+				'confirm_subject' => isset( $_POST['confirm_subject'] ) ? sanitize_text_field( wp_unslash( $_POST['confirm_subject'] ) ) : '',
+				'confirm_body'    => isset( $_POST['confirm_body'] ) ? sanitize_textarea_field( wp_unslash( $_POST['confirm_body'] ) ) : '',
 			)
 		);
 
@@ -3152,7 +3216,7 @@ function kadence_child_subscribers_settings_screen() {
 				</td>
 			</tr>
 			<tr>
-				<th scope="row"><?php esc_html_e( 'What counts as news', 'kadence-child' ); ?></th>
+				<th scope="row"><?php esc_html_e( 'Notifications', 'kadence-child' ); ?></th>
 				<td>
 					<?php foreach ( $types as $type ) : ?>
 						<label style="display:block">
@@ -3168,7 +3232,29 @@ function kadence_child_subscribers_settings_screen() {
 				<td>
 					<input type="text" id="cavo-subject" name="subject" class="regular-text"
 						value="<?php echo esc_attr( $settings['subject'] ); ?>" />
-					<p class="description"><?php esc_html_e( '{title} stands for what was published.', 'kadence-child' ); ?></p>
+					<?php kadence_child_variables( kadence_child_news_tokens_of() ); ?>
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="cavo-body"><?php esc_html_e( 'Body', 'kadence-child' ); ?></label></th>
+				<td>
+					<textarea id="cavo-body" name="body" class="large-text" rows="6"><?php echo esc_textarea( $settings['body'] ); ?></textarea>
+					<?php kadence_child_variables( kadence_child_news_tokens_of() ); ?>
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="cavo-confirm-subject"><?php esc_html_e( 'Confirmation subject', 'kadence-child' ); ?></label></th>
+				<td>
+					<input type="text" id="cavo-confirm-subject" name="confirm_subject" class="regular-text"
+						value="<?php echo esc_attr( $settings['confirm_subject'] ); ?>" />
+					<?php kadence_child_variables( kadence_child_confirm_tokens_of() ); ?>
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="cavo-confirm-body"><?php esc_html_e( 'Confirmation body', 'kadence-child' ); ?></label></th>
+				<td>
+					<textarea id="cavo-confirm-body" name="confirm_body" class="large-text" rows="6"><?php echo esc_textarea( $settings['confirm_body'] ); ?></textarea>
+					<?php kadence_child_variables( kadence_child_confirm_tokens_of() ); ?>
 				</td>
 			</tr>
 		</table>
@@ -3579,51 +3665,6 @@ function kadence_child_subscriber_link( $id, $arg = 'cavo_unsub' ) {
 }
 
 /**
- * One mail's body.
- *
- * @param WP_Post $post  What was published.
- * @param int     $who   The subscriber it is going to.
- * @return string
- */
-function kadence_child_broadcast_body( $post, $who ) {
-	$title   = get_the_title( $post );
-	$link    = get_permalink( $post );
-	$excerpt = get_the_excerpt( $post );
-	$image   = get_the_post_thumbnail_url( $post, 'large' );
-	$unsub   = kadence_child_subscriber_link( $who, 'cavo_unsub' );
-
-	ob_start();
-	?>
-	<div style="margin:0;padding:24px;background:#faf6ea;font-family:Helvetica,Arial,sans-serif;color:#29180e">
-		<div style="max-width:560px;margin:0 auto;background:#ffffff;padding:24px">
-			<?php if ( $image ) : ?>
-				<img src="<?php echo esc_url( $image ); ?>" alt="" width="512" style="display:block;width:100%;height:auto;margin:0 0 20px" />
-			<?php endif; ?>
-
-			<h1 style="margin:0 0 12px;font-size:24px;line-height:1.25;font-weight:500"><?php echo esc_html( $title ); ?></h1>
-
-			<?php if ( '' !== trim( (string) $excerpt ) ) : ?>
-				<p style="margin:0 0 20px;font-size:16px;line-height:1.5"><?php echo esc_html( $excerpt ); ?></p>
-			<?php endif; ?>
-
-			<p style="margin:0 0 8px">
-				<a href="<?php echo esc_url( $link ); ?>" style="display:inline-block;padding:12px 20px;background:#29180e;color:#faf6ea;text-decoration:none;font-size:14px">
-					<?php echo esc_html__( 'Read it', 'kadence-child' ); ?>
-				</a>
-			</p>
-		</div>
-
-		<p style="max-width:560px;margin:16px auto 0;font-size:12px;line-height:1.5;color:#6b5a4c">
-			<?php echo esc_html__( 'You are receiving this because you asked to hear from us.', 'kadence-child' ); ?>
-			<a href="<?php echo esc_url( $unsub ); ?>" style="color:#6b5a4c"><?php echo esc_html__( 'Unsubscribe', 'kadence-child' ); ?></a>
-		</p>
-	</div>
-	<?php
-
-	return (string) ob_get_clean();
-}
-
-/**
  * Publishing something is what makes it news.
  *
  * A post that has already gone out never goes out again, whatever is done to it
@@ -3728,11 +3769,18 @@ function kadence_child_broadcast_run( $broadcast ) {
 		return;
 	}
 
+	// The subject and the body are the client's words and nothing else, with
+	// what was published filled in where it was named, and the way off the
+	// list written in where it was named or at the foot where it was not.
 	$settings = kadence_child_subscription_settings();
 	$subject  = trim( (string) $settings['subject'] );
-	$subject  = '' !== $subject ? $subject : '{title}';
-	$subject  = str_replace( '{title}', get_the_title( $post ), $subject );
+	$body     = trim( (string) $settings['body'] );
 	$from     = kadence_child_broadcast_from();
+	$words    = array(
+		'{title}'   => get_the_title( $post ),
+		'{excerpt}' => trim( (string) get_the_excerpt( $post ) ),
+		'{link}'    => (string) get_permalink( $post ),
+	);
 
 	foreach ( $people as $who ) {
 		$who   = (int) $who;
@@ -3744,13 +3792,13 @@ function kadence_child_broadcast_run( $broadcast ) {
 		}
 
 		$unsub = kadence_child_subscriber_link( $who, 'cavo_unsub' );
+		$mine  = array_merge( $words, array( '{unsubscribe}' => $unsub ) );
 
 		$state = kadence_child_send(
 			$email,
-			$subject,
-			kadence_child_broadcast_body( $post, $who ),
+			strtr( $subject, $words ),
+			kadence_child_news_fill( $body, $mine, '{unsubscribe}' ),
 			array(
-				'Content-Type: text/html; charset=UTF-8',
 				$from,
 				'List-Unsubscribe: <' . esc_url_raw( $unsub ) . '>',
 				'List-Unsubscribe-Post: List-Unsubscribe=One-Click',
@@ -3783,34 +3831,14 @@ function kadence_child_subscribe_confirm_mail( $who ) {
 		return 'nothing';
 	}
 
-	$link = kadence_child_subscriber_link( $who, 'cavo_confirm' );
-	$name = wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES );
-
-	ob_start();
-	?>
-	<div style="margin:0;padding:24px;background:#faf6ea;font-family:Helvetica,Arial,sans-serif;color:#29180e">
-		<div style="max-width:560px;margin:0 auto;background:#ffffff;padding:24px">
-			<h1 style="margin:0 0 12px;font-size:20px;line-height:1.3;font-weight:500">
-				<?php echo esc_html__( 'One press and you are on the list', 'kadence-child' ); ?>
-			</h1>
-			<p style="margin:0 0 20px;font-size:16px;line-height:1.5">
-				<?php echo esc_html__( 'Somebody asked for this address to hear from us. If that was you, confirm it below. If it was not, do nothing and nothing will be sent.', 'kadence-child' ); ?>
-			</p>
-			<p style="margin:0">
-				<a href="<?php echo esc_url( $link ); ?>" style="display:inline-block;padding:12px 20px;background:#29180e;color:#faf6ea;text-decoration:none;font-size:14px">
-					<?php echo esc_html__( 'Confirm', 'kadence-child' ); ?>
-				</a>
-			</p>
-		</div>
-	</div>
-	<?php
+	$settings = kadence_child_subscription_settings();
+	$words    = array( '{confirm_link}' => kadence_child_subscriber_link( $who, 'cavo_confirm' ) );
 
 	return kadence_child_send(
 		$email,
-		/* translators: %s: the site's name. */
-		sprintf( esc_html__( 'Confirm your address — %s', 'kadence-child' ), $name ),
-		(string) ob_get_clean(),
-		array( 'Content-Type: text/html; charset=UTF-8', kadence_child_broadcast_from() )
+		strtr( trim( (string) $settings['confirm_subject'] ), $words ),
+		kadence_child_news_fill( trim( (string) $settings['confirm_body'] ), $words, '{confirm_link}' ),
+		array( kadence_child_broadcast_from() )
 	);
 }
 
