@@ -1858,9 +1858,22 @@ function kadence_child_form_captcha_passed( $slug, $token ) {
  * its turn — the plugin that sends is on this hook too, and its answer is the
  * one that counts.
  *
+ * FluentSMTP does not change what PHPMailer says of itself: a message it
+ * hands to a provider's own API leaves the mailer reading `mail` as before. So
+ * FluentSMTP is asked, the way it asks itself, whether a connection takes this
+ * From — and where one does, the message went through that connection.
+ *
  * @param \PHPMailer $mailer The mailer.
  */
 function kadence_child_mail_transport( $mailer ) {
+	$from = isset( $mailer->From ) ? (string) $mailer->From : ''; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- PHPMailer's own property.
+
+	if ( function_exists( 'fluentMailGetProvider' ) && fluentMailGetProvider( $from ) ) {
+		$GLOBALS['cavo_transport'] = 'provider';
+
+		return;
+	}
+
 	$GLOBALS['cavo_transport'] = isset( $mailer->Mailer ) ? (string) $mailer->Mailer : ''; // phpcs:ignore WordPress.NamingConventions.ValidVariableName.UsedPropertyNotSnakeCase -- PHPMailer's own property.
 }
 add_action( 'phpmailer_init', 'kadence_child_mail_transport', PHP_INT_MAX );
