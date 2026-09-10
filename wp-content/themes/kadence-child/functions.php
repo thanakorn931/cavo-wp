@@ -3776,10 +3776,13 @@ function kadence_child_broadcast_run( $broadcast ) {
 	$subject  = trim( (string) $settings['subject'] );
 	$body     = trim( (string) $settings['body'] );
 	$from     = kadence_child_broadcast_from();
+	// What has no address of its own — an event — stands in for `{link}`
+	// with nothing, rather than with an address that opens on nothing.
+	$link     = is_post_type_viewable( $post->post_type ) ? (string) get_permalink( $post ) : '';
 	$words    = array(
 		'{title}'   => get_the_title( $post ),
 		'{excerpt}' => trim( (string) get_the_excerpt( $post ) ),
-		'{link}'    => (string) get_permalink( $post ),
+		'{link}'    => $link,
 	);
 
 	foreach ( $people as $who ) {
@@ -3914,7 +3917,10 @@ function kadence_child_subscribers_broadcasts_screen() {
 }
 
 /**
- * What a reader could be told about.
+ * What a reader could be told about: every public kind, and the kinds the
+ * theme registers as content of the site's own — an event is published like
+ * a post, and has no address only because the sections that list it are
+ * where it is read.
  *
  * A page builder keeps its own posts — a template, a saved element — and an
  * upload is a post as well. None of them is news, and a list that offers them
@@ -3924,8 +3930,13 @@ function kadence_child_subscribers_broadcasts_screen() {
  */
 function kadence_child_news_post_types() {
 	$kept = array();
+	$own  = array( 'event' );
 
-	foreach ( get_post_types( array( 'public' => true ), 'objects' ) as $type ) {
+	foreach ( get_post_types( array( 'show_ui' => true ), 'objects' ) as $type ) {
+		if ( ! $type->public && ! in_array( $type->name, $own, true ) ) {
+			continue;
+		}
+
 		if ( 'attachment' === $type->name || 0 === strpos( $type->name, 'elementor' ) || 0 === strpos( $type->name, 'e-' ) ) {
 			continue;
 		}
