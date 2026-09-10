@@ -1731,7 +1731,7 @@ function kadence_child_form_settings( $slug, $group, $lang = null ) {
 	$read  = (array) get_field( $group . '_' . $slug, 'option' );
 	$words = array(
 		'client' => array( 'subject', 'body' ),
-		'result' => array( 'success', 'confirm', 'fail' ),
+		'result' => array( 'success', 'fail' ),
 	);
 
 	return isset( $words[ $group ] ) ? kadence_child_in_language( $read, $words[ $group ], $lang ) : $read;
@@ -4099,12 +4099,6 @@ function kadence_child_signup_settings_fields( $key ) {
 							'type'  => 'text',
 						),
 						array(
-							'key'   => 'field_cavo_confirm_' . $key . $suffix,
-							'label' => esc_html__( 'Sent to confirm', 'kadence-child' ),
-							'name'  => 'confirm' . $suffix,
-							'type'  => 'text',
-						),
-						array(
 							'key'   => 'field_cavo_fail_' . $key . $suffix,
 							'label' => esc_html__( 'Fail', 'kadence-child' ),
 							'name'  => 'fail' . $suffix,
@@ -4165,9 +4159,11 @@ function kadence_child_signup_word( $slug, $which ) {
 function kadence_child_signup_answer( $slug, $state ) {
 	$said = kadence_child_form_settings( $slug, 'result' );
 
+	// Every address is asked to confirm itself, so a sign-up that went through
+	// is one thing, said in one way.
 	$written = array(
 		'ok'      => isset( $said['success'] ) ? trim( (string) $said['success'] ) : '',
-		'confirm' => isset( $said['confirm'] ) ? trim( (string) $said['confirm'] ) : '',
+		'confirm' => isset( $said['success'] ) ? trim( (string) $said['success'] ) : '',
 		'invalid' => isset( $said['fail'] ) ? trim( (string) $said['fail'] ) : '',
 	);
 

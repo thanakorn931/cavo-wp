@@ -65,8 +65,14 @@ select[ class*="custom-" ]:-webkit-autofill {
 }
 
 /* The ring a reader arriving by keyboard needs, drawn in whatever ink the band
-   is already using. */
-[ class*="custom-" ]:focus-visible {
+   is already using — on what can be pressed or typed into, and on nothing
+   else: a page brought back to a form by its address gives the form itself
+   the focus, and a ring around a whole form is a frame nobody asked for. */
+a[ class*="custom-" ]:focus-visible,
+button[ class*="custom-" ]:focus-visible,
+input[ class*="custom-" ]:focus-visible,
+select[ class*="custom-" ]:focus-visible,
+textarea[ class*="custom-" ]:focus-visible {
 	outline: 2px solid currentColor;
 	outline-offset: 2px;
 }

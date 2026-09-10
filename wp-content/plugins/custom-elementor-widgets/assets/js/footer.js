@@ -22,6 +22,25 @@
 
 		root.dataset.wired = '1';
 
+		// What the sign-up says back stands in the button itself for a few
+		// seconds, the button held meanwhile: the design leaves it one line
+		// and nothing beneath. The words stay on the page for a reader who
+		// hears rather than sees.
+		var said = root.querySelector( '.custom-footer__result' );
+
+		if ( said && said.textContent.trim() ) {
+			var was = send.textContent;
+
+			send.textContent = said.textContent.trim();
+			send.disabled    = true;
+			said.classList.add( 'is-in-button' );
+
+			window.setTimeout( function () {
+				send.textContent = was;
+				send.disabled    = false;
+			}, 5000 );
+		}
+
 		form.addEventListener( 'submit', function () {
 			// The browser has already refused a form it does not like, so by
 			// here the press is going somewhere.
