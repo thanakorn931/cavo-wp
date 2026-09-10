@@ -2789,9 +2789,8 @@ function kadence_child_form_trapped( $post ) {
  */
 function kadence_child_subscription_defaults() {
 	return array(
-		'sending'         => 0,
-		'post_types'      => array( 'post' ),
-		'subject'         => '',
+		'sending'        => 0,
+		'post_types'     => array( 'post' ),
 		'confirm_subject' => '',
 		'confirm_body'    => '',
 		'confirm_button'  => '',
@@ -2811,17 +2810,6 @@ function kadence_child_confirm_tokens_of() {
 	return array(
 		'{email}'         => esc_html__( 'The address that signed up', 'kadence-child' ),
 		'{accept_button}' => esc_html__( 'The press that confirms it', 'kadence-child' ),
-	);
-}
-
-/**
- * The word a news mail's subject may stand in for.
- *
- * @return array Token to what it is.
- */
-function kadence_child_news_tokens_of() {
-	return array(
-		'{title}' => esc_html__( 'Title of what was published', 'kadence-child' ),
 	);
 }
 
@@ -3122,7 +3110,6 @@ function kadence_child_subscribers_act() {
 			array(
 				'sending'         => isset( $_POST['sending'] ) ? 1 : 0,
 				'post_types'      => isset( $_POST['post_types'] ) ? array_map( 'sanitize_key', (array) wp_unslash( $_POST['post_types'] ) ) : array(),
-				'subject'         => isset( $_POST['subject'] ) ? sanitize_text_field( wp_unslash( $_POST['subject'] ) ) : '',
 				'confirm_subject' => isset( $_POST['confirm_subject'] ) ? sanitize_text_field( wp_unslash( $_POST['confirm_subject'] ) ) : '',
 				'confirm_body'    => isset( $_POST['confirm_body'] ) ? sanitize_textarea_field( wp_unslash( $_POST['confirm_body'] ) ) : '',
 				'confirm_button'  => isset( $_POST['confirm_button'] ) ? sanitize_text_field( wp_unslash( $_POST['confirm_button'] ) ) : '',
@@ -3234,15 +3221,7 @@ function kadence_child_subscribers_settings_screen() {
 				</td>
 			</tr>
 			<tr>
-				<th scope="row"><label for="cavo-subject"><?php esc_html_e( 'Subject', 'kadence-child' ); ?></label></th>
-				<td>
-					<input type="text" id="cavo-subject" name="subject" class="regular-text"
-						value="<?php echo esc_attr( $settings['subject'] ); ?>" />
-					<?php kadence_child_variables( kadence_child_news_tokens_of() ); ?>
-				</td>
-			</tr>
-			<tr>
-				<th scope="row"><label for="cavo-confirm-subject"><?php esc_html_e( 'Confirmation subject', 'kadence-child' ); ?></label></th>
+				<th scope="row"><label for="cavo-confirm-subject"><?php esc_html_e( 'Subject', 'kadence-child' ); ?></label></th>
 				<td>
 					<input type="text" id="cavo-confirm-subject" name="confirm_subject" class="regular-text"
 						value="<?php echo esc_attr( $settings['confirm_subject'] ); ?>" />
@@ -3250,7 +3229,7 @@ function kadence_child_subscribers_settings_screen() {
 				</td>
 			</tr>
 			<tr>
-				<th scope="row"><label for="cavo-confirm-body"><?php esc_html_e( 'Confirmation body', 'kadence-child' ); ?></label></th>
+				<th scope="row"><label for="cavo-confirm-body"><?php esc_html_e( 'Body', 'kadence-child' ); ?></label></th>
 				<td>
 					<textarea id="cavo-confirm-body" name="confirm_body" class="large-text" rows="6"><?php echo esc_textarea( $settings['confirm_body'] ); ?></textarea>
 					<?php kadence_child_variables( kadence_child_confirm_tokens_of() ); ?>
@@ -3903,11 +3882,10 @@ function kadence_child_broadcast_run( $broadcast ) {
 		return;
 	}
 
-	// The subject is the client's words with the title filled in where it was
-	// named; the body is what was published, as it was published.
-	$settings = kadence_child_subscription_settings();
-	$subject  = strtr( trim( (string) $settings['subject'] ), array( '{title}' => get_the_title( $post ) ) );
-	$from     = kadence_child_broadcast_from();
+	// The news is what was published, as it was published: its name for the
+	// subject, and itself for the body.
+	$subject = get_the_title( $post );
+	$from    = kadence_child_broadcast_from();
 
 	foreach ( $people as $who ) {
 		$who   = (int) $who;
