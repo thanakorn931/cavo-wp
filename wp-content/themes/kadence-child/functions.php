@@ -695,6 +695,48 @@ function kadence_child_enquiry_forms() {
 }
 
 /**
+ * What a field is called inside a subject or a body: its label, lowered,
+ * its letters kept in whatever script they are and everything between them
+ * an underscore, inside braces — `First Name` is `{first_name}`. Taken from
+ * the label as first written, so a label translated later still answers to
+ * the same word.
+ *
+ * @param string $label The field's label.
+ * @return string The token, braces and all.
+ */
+function kadence_child_form_token( $label ) {
+	$word = function_exists( 'mb_strtolower' ) ? mb_strtolower( trim( (string) $label ), 'UTF-8' ) : strtolower( trim( (string) $label ) );
+	$word = trim( (string) preg_replace( '/[^\p{L}\p{M}\p{N}]+/u', '_', $word ), '_' );
+
+	return '{' . $word . '}';
+}
+
+/**
+ * Every word a form's subject or body may stand in for: the form's own name,
+ * and each of its fields. A sign-up asks one thing and offers only its name.
+ *
+ * @param string $slug The form's slug.
+ * @return array Token to what it is.
+ */
+function kadence_child_form_tokens_of( $slug ) {
+	$tokens = array( '{form}' => esc_html__( 'Form name', 'kadence-child' ) );
+
+	if ( kadence_child_form_is_signup( $slug ) ) {
+		return $tokens;
+	}
+
+	foreach ( kadence_child_form_definition( $slug, kadence_child_default_language() ) as $field ) {
+		$label = isset( $field['label'] ) ? trim( (string) $field['label'] ) : '';
+
+		if ( '' !== $label ) {
+			$tokens[ kadence_child_form_token( $label ) ] = $label;
+		}
+	}
+
+	return $tokens;
+}
+
+/**
  * The site's languages, as Polylang has them, once there is more than one.
  *
  * A form's words are written once per language; its shape is written once.
@@ -1344,11 +1386,10 @@ function kadence_child_form_notification_fields( $key ) {
 					),
 				),
 				array(
-					'key'         => 'field_cavo_team_subject_' . $key,
-					'label'       => esc_html__( 'Subject', 'kadence-child' ),
-					'name'        => 'subject',
-					'type'        => 'text',
-					'placeholder' => '{form} — {name}',
+					'key'   => 'field_cavo_team_subject_' . $key,
+					'label' => esc_html__( 'Subject', 'kadence-child' ),
+					'name'  => 'subject',
+					'type'  => 'text',
 				),
 				array(
 					'key'   => 'field_cavo_team_body_' . $key,
@@ -1373,14 +1414,6 @@ function kadence_child_form_notification_fields( $key ) {
 					'type'          => 'true_false',
 					'ui'            => 1,
 					'default_value' => 1,
-				),
-				array(
-					'key'           => 'field_cavo_client_answers_' . $key,
-					'label'         => esc_html__( 'Include their answers', 'kadence-child' ),
-					'name'          => 'answers',
-					'type'          => 'true_false',
-					'ui'            => 1,
-					'default_value' => 0,
 				),
 				),
 				// What is written to the reader is written in the language they
@@ -1462,6 +1495,143 @@ function kadence_child_form_settings_fields( $key ) {
 		)
 	);
 }
+
+/**
+ * Under every subject and body, the words it may stand in for, each one a
+ * press that writes it in where the cursor stands.
+ *
+ * @param array $field The field just drawn.
+ */
+function kadence_child_form_token_picker( $field ) {
+	$key = isset( $field['key'] ) ? (string) $field['key'] : '';
+
+	if ( ! preg_match( '/^field_cavo_(team|client)_(subject|body)_(.+)$/', $key, $found ) ) {
+		return;
+	}
+
+	// The rest of the key is the form's slug, and a language's after it.
+	$slug = '';
+
+	foreach ( array_keys( kadence_child_forms() ) as $form ) {
+		if ( $found[3] === $form || 0 === strpos( $found[3], $form . '_' ) ) {
+			$slug = $form;
+		}
+	}
+
+	if ( '' === $slug ) {
+		return;
+	}
+
+	echo '<div class="cavo-tokens">';
+	echo '<button type="button" class="button cavo-tokens__open" data-cavo-pick aria-expanded="false">' . esc_html__( 'Add Form Field', 'kadence-child' ) . '</button>';
+	echo '<div class="cavo-tokens__list" hidden>';
+
+	foreach ( kadence_child_form_tokens_of( $slug ) as $token => $name ) {
+		printf(
+			'<button type="button" class="button-link cavo-tokens__token" data-cavo-token="%1$s" title="%2$s">%1$s</button>',
+			esc_attr( $token ),
+			esc_attr( $name )
+		);
+	}
+
+	echo '</div></div>';
+}
+add_action( 'acf/render_field', 'kadence_child_form_token_picker', 20 );
+
+/**
+ * What the picker does: a press writes the token where the cursor last stood
+ * in that field, or at its end where the cursor never stood.
+ */
+function kadence_child_form_token_picker_script() {
+	if ( ! isset( $_GET['page'] ) || 'cavo-form-settings' !== sanitize_key( wp_unslash( $_GET['page'] ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- reading which screen is open.
+		return;
+	}
+	?>
+	<style>
+		.cavo-tokens { margin-top: 6px; }
+		.cavo-tokens__list { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+		.cavo-tokens__token { padding: 2px 8px; border: 1px solid #c3c4c7; border-radius: 3px; background: #f6f7f7; font-family: monospace; text-decoration: none; }
+		.cavo-tokens__token:hover { background: #fff; }
+	</style>
+	<script>
+	( function () {
+		document.addEventListener( 'focusout', function ( event ) {
+			var el = event.target;
+			if ( el && ( el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' ) && typeof el.selectionStart === 'number' ) {
+				el.dataset.cavoAt = el.selectionStart;
+			}
+		} );
+		document.addEventListener( 'click', function ( event ) {
+			var open = event.target.closest( '[data-cavo-pick]' );
+			if ( open ) {
+				var list = open.nextElementSibling;
+				list.hidden = ! list.hidden;
+				open.setAttribute( 'aria-expanded', list.hidden ? 'false' : 'true' );
+				return;
+			}
+			var press = event.target.closest( '[data-cavo-token]' );
+			if ( ! press ) {
+				return;
+			}
+			var box = press.closest( '.cavo-tokens' ).parentNode.querySelector( 'input[type="text"], textarea' );
+			if ( ! box ) {
+				return;
+			}
+			var token = press.dataset.cavoToken;
+			var at    = box.dataset.cavoAt !== undefined ? Math.min( +box.dataset.cavoAt, box.value.length ) : box.value.length;
+			box.value = box.value.slice( 0, at ) + token + box.value.slice( at );
+			box.dispatchEvent( new Event( 'input', { bubbles: true } ) );
+			box.dispatchEvent( new Event( 'change', { bubbles: true } ) );
+			box.focus();
+			box.setSelectionRange( at + token.length, at + token.length );
+			box.dataset.cavoAt = at + token.length;
+		} );
+	}() );
+	</script>
+	<?php
+}
+add_action( 'admin_footer', 'kadence_child_form_token_picker_script' );
+
+/**
+ * Two fields of one form cannot share a label: the label is the word a
+ * subject or a body knows the field by, and one word cannot name two things.
+ *
+ * @param bool|string $valid Whether it passed so far, or why not.
+ * @param mixed       $value The label being saved.
+ * @param array       $field The label field.
+ * @return bool|string
+ */
+function kadence_child_form_label_once( $valid, $value, $field ) {
+	if ( true !== $valid || ! isset( $field['key'] ) ) {
+		return $valid;
+	}
+
+	$forms = kadence_child_forms();
+	$slug  = '';
+
+	foreach ( array_keys( $forms ) as $form ) {
+		if ( 'field_cavo_label_' . $form === $field['key'] ) {
+			$slug = $form;
+		}
+	}
+
+	if ( '' === $slug ) {
+		return $valid;
+	}
+
+	$rows  = isset( $_POST['acf'][ 'field_cavo_fields_' . $slug ] ) ? (array) wp_unslash( $_POST['acf'][ 'field_cavo_fields_' . $slug ] ) : array(); // phpcs:ignore WordPress.Security.NonceVerification.Missing -- ACF has verified its own save by now.
+	$token = kadence_child_form_token( (string) $value );
+	$count = 0;
+
+	foreach ( $rows as $row ) {
+		if ( is_array( $row ) && isset( $row[ $field['key'] ] ) && kadence_child_form_token( (string) $row[ $field['key'] ] ) === $token ) {
+			++$count;
+		}
+	}
+
+	return $count > 1 ? esc_html__( 'Two fields cannot share a label.', 'kadence-child' ) : $valid;
+}
+add_filter( 'acf/validate_value', 'kadence_child_form_label_once', 10, 3 );
 
 /**
  * One form's settings, whatever key they are stored under.
@@ -1691,6 +1861,9 @@ function kadence_child_form_submit() {
 	// Answered and written to in the language they read the form in.
 	$lang       = kadence_child_posted_language( wp_unslash( $_POST ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- read against the site's own list.
 	$definition = kadence_child_form_definition( $slug, $lang );
+	// A field answers to the label it was first written under, whatever
+	// language it was read in.
+	$written_as = kadence_child_form_definition( $slug, kadence_child_default_language() );
 	$answers    = array();
 	$typed      = array();
 	$sender     = '';
@@ -1715,8 +1888,8 @@ function kadence_child_form_submit() {
 		}
 
 		// Two fields that share a label are told apart before either is stored.
-		$key = sanitize_title( $label );
-		$key = isset( $seen[ $key ] ) ? $key . '-' . ( ++$seen[ $key ] ) : $key;
+		$key = kadence_child_form_token( isset( $written_as[ $index ]['label'] ) ? $written_as[ $index ]['label'] : $label );
+		$key = isset( $seen[ $key ] ) ? substr( $key, 0, -1 ) . '_' . ( ++$seen[ $key ] ) . '}' : $key;
 
 		if ( ! isset( $seen[ $key ] ) ) {
 			$seen[ $key ] = 1;
@@ -1820,12 +1993,6 @@ function kadence_child_form_mail( $slug, $form, $sender, $name, $answers, $messa
 		$headers[] = 'Reply-To: ' . $sender;
 	}
 
-	$written = '';
-
-	foreach ( $answers as $answer ) {
-		$written .= $answer['label'] . ': ' . $answer['value'] . "\r\n";
-	}
-
 	$team = kadence_child_form_settings( $slug, 'team' );
 	$to   = array();
 
@@ -1839,8 +2006,10 @@ function kadence_child_form_mail( $slug, $form, $sender, $name, $answers, $messa
 		}
 	}
 
+	// The subject and the body are the client's words and nothing else: what
+	// they name of the answers is carried, and what they left unwritten is
+	// sent unwritten.
 	$subject = isset( $team['subject'] ) ? trim( (string) $team['subject'] ) : '';
-	$subject = '' !== $subject ? $subject : sprintf( '%1$s — %2$s', $form, '' !== $name ? $name : $sender );
 	$body    = isset( $team['body'] ) ? trim( (string) $team['body'] ) : '';
 
 	update_post_meta(
@@ -1848,8 +2017,8 @@ function kadence_child_form_mail( $slug, $form, $sender, $name, $answers, $messa
 		'cavo_team_mail',
 		kadence_child_send(
 			$to,
-			kadence_child_form_tokens( $subject, $form, $name, $sender ),
-			( '' !== $body ? kadence_child_form_tokens( $body, $form, $name, $sender ) . "\r\n\r\n" : '' ) . $written,
+			kadence_child_form_tokens( $subject, $form, $answers ),
+			kadence_child_form_tokens( $body, $form, $answers ),
 			$headers
 		)
 	);
@@ -1863,7 +2032,6 @@ function kadence_child_form_mail( $slug, $form, $sender, $name, $answers, $messa
 	}
 
 	$subject = isset( $client['subject'] ) ? trim( (string) $client['subject'] ) : '';
-	$subject = '' !== $subject ? $subject : sprintf( '%s — we have your message', $form );
 	$body    = isset( $client['body'] ) ? trim( (string) $client['body'] ) : '';
 
 	update_post_meta(
@@ -1871,31 +2039,33 @@ function kadence_child_form_mail( $slug, $form, $sender, $name, $answers, $messa
 		'cavo_client_mail',
 		kadence_child_send(
 			$sender,
-			kadence_child_form_tokens( $subject, $form, $name, $sender ),
-			kadence_child_form_tokens( $body, $form, $name, $sender ) . ( empty( $client['answers'] ) ? '' : "\r\n\r\n" . $written ),
+			kadence_child_form_tokens( $subject, $form, $answers ),
+			kadence_child_form_tokens( $body, $form, $answers ),
 			$headers
 		)
 	);
 }
 
 /**
- * The few words a subject or a body may stand in for.
+ * The words a subject or a body stands in for: the form's name, and any of
+ * its fields by the token the settings screen offers for it. A token no field
+ * answers to is left as written, where whoever wrote it will see it.
  *
- * @param string $said   What was written.
- * @param string $form   The form's name.
- * @param string $name   What they called themselves.
- * @param string $sender Their address.
+ * @param string $said    What was written.
+ * @param string $form    The form's name.
+ * @param array  $answers What they wrote, each under its token.
  * @return string
  */
-function kadence_child_form_tokens( $said, $form, $name, $sender ) {
-	return strtr(
-		$said,
-		array(
-			'{form}'  => $form,
-			'{name}'  => '' !== $name ? $name : $sender,
-			'{email}' => $sender,
-		)
-	);
+function kadence_child_form_tokens( $said, $form, $answers ) {
+	$words = array( '{form}' => $form );
+
+	foreach ( (array) $answers as $answer ) {
+		if ( isset( $answer['key'], $answer['value'] ) ) {
+			$words[ $answer['key'] ] = (string) $answer['value'];
+		}
+	}
+
+	return strtr( $said, $words );
 }
 
 /**
@@ -3838,15 +4008,15 @@ function kadence_child_subscribe_notify( $slug, $email, $lang = '' ) {
 		}
 	}
 
+	// A sign-up's one answer is the address, which the team is always told.
 	if ( ! empty( $to ) ) {
 		$subject = isset( $team['subject'] ) ? trim( (string) $team['subject'] ) : '';
-		$subject = '' !== $subject ? $subject : sprintf( '%1$s — %2$s', $form, $email );
 		$body    = isset( $team['body'] ) ? trim( (string) $team['body'] ) : '';
 
 		kadence_child_send(
 			$to,
-			$subject,
-			( '' !== $body ? $body . "\r\n\r\n" : '' ) . $email,
+			kadence_child_form_tokens( $subject, $form, array() ),
+			( '' !== $body ? kadence_child_form_tokens( $body, $form, array() ) . "\r\n\r\n" : '' ) . $email,
 			$reply
 		);
 	}
@@ -3858,13 +4028,12 @@ function kadence_child_subscribe_notify( $slug, $email, $lang = '' ) {
 	}
 
 	$subject = isset( $client['subject'] ) ? trim( (string) $client['subject'] ) : '';
-	$subject = '' !== $subject ? $subject : sprintf( '%1$s — %2$s', $form, $name );
 	$body    = isset( $client['body'] ) ? trim( (string) $client['body'] ) : '';
 
 	kadence_child_send(
 		$email,
-		$subject,
-		( '' !== $body ? $body . "\r\n\r\n" : '' ) . ( ! empty( $client['answers'] ) ? $email : '' ),
+		kadence_child_form_tokens( $subject, $form, array() ),
+		kadence_child_form_tokens( $body, $form, array() ),
 		$headers
 	);
 }
