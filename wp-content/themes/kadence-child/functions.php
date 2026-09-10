@@ -723,7 +723,8 @@ function kadence_child_form_tokens_of( $slug ) {
 	$tokens = array( '{form}' => esc_html__( 'Form name', 'kadence-child' ) );
 
 	if ( kadence_child_form_is_signup( $slug ) ) {
-		$tokens['{email}'] = esc_html__( 'Email address', 'kadence-child' );
+		$tokens['{email}']        = esc_html__( 'Email address', 'kadence-child' );
+		$tokens['{confirm_link}'] = esc_html__( 'The link that confirms the address', 'kadence-child' );
 
 		return $tokens;
 	}
@@ -2775,60 +2776,23 @@ function kadence_child_form_trapped( $post ) {
  */
 function kadence_child_subscription_defaults() {
 	return array(
-		'sending'         => 0,
-		'post_types'      => array( 'post' ),
-		'subject'         => '',
-		'body'            => '',
-		'confirm_subject' => '',
-		'confirm_body'    => '',
+		'sending'    => 0,
+		'post_types' => array( 'post' ),
+		'subject'    => '',
 	);
 }
 
 /**
- * The words a mail to the list may stand in for: what was published, and the
- * way off the list. A mail that names no way off is given one at its foot —
- * every mail to the list carries one.
+ * The word a news mail's subject may stand in for.
  *
  * @return array Token to what it is.
  */
 function kadence_child_news_tokens_of() {
 	return array(
-		'{title}'       => esc_html__( 'Title of what was published', 'kadence-child' ),
-		'{excerpt}'     => esc_html__( 'Its excerpt', 'kadence-child' ),
-		'{link}'        => esc_html__( 'Its address', 'kadence-child' ),
-		'{unsubscribe}' => esc_html__( 'The way off the list', 'kadence-child' ),
+		'{title}' => esc_html__( 'Title of what was published', 'kadence-child' ),
 	);
 }
 
-/**
- * The words the mail asking an address to confirm itself may stand in for.
- *
- * @return array Token to what it is.
- */
-function kadence_child_confirm_tokens_of() {
-	return array(
-		'{confirm_link}' => esc_html__( 'The link that confirms the address', 'kadence-child' ),
-	);
-}
-
-/**
- * Words with their tokens filled, and the one link the mail cannot go without
- * written at its foot where it was not written in.
- *
- * @param string $said  What was written.
- * @param array  $words Token to value.
- * @param string $must  The token every mail of this kind carries.
- * @return string
- */
-function kadence_child_news_fill( $said, $words, $must ) {
-	$said = (string) $said;
-
-	if ( false === strpos( $said, $must ) ) {
-		$said = rtrim( $said ) . ( '' !== trim( $said ) ? "\r\n\r\n" : '' ) . $must;
-	}
-
-	return strtr( $said, $words );
-}
 
 /**
  * The subscription's settings.
@@ -2935,11 +2899,7 @@ function kadence_child_subscribe_submit() {
 	// address that had already confirmed itself is not asked again.
 	$status = kadence_child_subscriber_status( $added );
 
-	if ( 'pending' === $status ) {
-		kadence_child_subscribe_confirm_mail( $added );
-	}
-
-	kadence_child_subscribe_notify( $slug, $email, kadence_child_posted_language( wp_unslash( $_POST ) ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- read against the site's own list.
+	kadence_child_subscribe_notify( $slug, $email, kadence_child_posted_language( wp_unslash( $_POST ) ), $added, 'pending' === $status ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- read against the site's own list.
 
 	kadence_child_subscribe_back( $back, 'pending' === $status ? 'confirm' : 'ok' );
 }
@@ -3114,12 +3074,9 @@ function kadence_child_subscribers_act() {
 
 		kadence_child_subscription_save(
 			array(
-				'sending'         => isset( $_POST['sending'] ) ? 1 : 0,
-				'post_types'      => isset( $_POST['post_types'] ) ? array_map( 'sanitize_key', (array) wp_unslash( $_POST['post_types'] ) ) : array(),
-				'subject'         => isset( $_POST['subject'] ) ? sanitize_text_field( wp_unslash( $_POST['subject'] ) ) : '',
-				'body'            => isset( $_POST['body'] ) ? sanitize_textarea_field( wp_unslash( $_POST['body'] ) ) : '',
-				'confirm_subject' => isset( $_POST['confirm_subject'] ) ? sanitize_text_field( wp_unslash( $_POST['confirm_subject'] ) ) : '',
-				'confirm_body'    => isset( $_POST['confirm_body'] ) ? sanitize_textarea_field( wp_unslash( $_POST['confirm_body'] ) ) : '',
+				'sending'    => isset( $_POST['sending'] ) ? 1 : 0,
+				'post_types' => isset( $_POST['post_types'] ) ? array_map( 'sanitize_key', (array) wp_unslash( $_POST['post_types'] ) ) : array(),
+				'subject'    => isset( $_POST['subject'] ) ? sanitize_text_field( wp_unslash( $_POST['subject'] ) ) : '',
 			)
 		);
 
@@ -3233,28 +3190,6 @@ function kadence_child_subscribers_settings_screen() {
 					<input type="text" id="cavo-subject" name="subject" class="regular-text"
 						value="<?php echo esc_attr( $settings['subject'] ); ?>" />
 					<?php kadence_child_variables( kadence_child_news_tokens_of() ); ?>
-				</td>
-			</tr>
-			<tr>
-				<th scope="row"><label for="cavo-body"><?php esc_html_e( 'Body', 'kadence-child' ); ?></label></th>
-				<td>
-					<textarea id="cavo-body" name="body" class="large-text" rows="6"><?php echo esc_textarea( $settings['body'] ); ?></textarea>
-					<?php kadence_child_variables( kadence_child_news_tokens_of() ); ?>
-				</td>
-			</tr>
-			<tr>
-				<th scope="row"><label for="cavo-confirm-subject"><?php esc_html_e( 'Confirmation subject', 'kadence-child' ); ?></label></th>
-				<td>
-					<input type="text" id="cavo-confirm-subject" name="confirm_subject" class="regular-text"
-						value="<?php echo esc_attr( $settings['confirm_subject'] ); ?>" />
-					<?php kadence_child_variables( kadence_child_confirm_tokens_of() ); ?>
-				</td>
-			</tr>
-			<tr>
-				<th scope="row"><label for="cavo-confirm-body"><?php esc_html_e( 'Confirmation body', 'kadence-child' ); ?></label></th>
-				<td>
-					<textarea id="cavo-confirm-body" name="confirm_body" class="large-text" rows="6"><?php echo esc_textarea( $settings['confirm_body'] ); ?></textarea>
-					<?php kadence_child_variables( kadence_child_confirm_tokens_of() ); ?>
 				</td>
 			</tr>
 		</table>
@@ -3665,6 +3600,77 @@ function kadence_child_subscriber_link( $id, $arg = 'cavo_unsub' ) {
 }
 
 /**
+ * One mail's body: what was published, as it was published — its picture, its
+ * name, its words, and every field of its own that carries a value — then its
+ * address where it has one, and the way off the list, which every mail to the
+ * list carries.
+ *
+ * @param WP_Post $post What was published.
+ * @param int     $who  The subscriber it is going to.
+ * @return string
+ */
+function kadence_child_broadcast_body( $post, $who ) {
+	$title = get_the_title( $post );
+	$image = get_the_post_thumbnail_url( $post, 'large' );
+	$words = trim( (string) $post->post_content );
+	$link  = is_post_type_viewable( $post->post_type ) ? (string) get_permalink( $post ) : '';
+	$unsub = kadence_child_subscriber_link( $who, 'cavo_unsub' );
+	$rows  = array();
+
+	// The fields the theme gave this kind, each by its label, where it says
+	// something a mail can carry.
+	if ( function_exists( 'get_field_objects' ) ) {
+		foreach ( (array) get_field_objects( $post->ID ) as $field ) {
+			$value = isset( $field['value'] ) ? $field['value'] : '';
+
+			if ( is_array( $value ) || is_object( $value ) || '' === trim( (string) $value ) ) {
+				continue;
+			}
+
+			$rows[] = array( (string) $field['label'], (string) $value );
+		}
+	}
+
+	ob_start();
+	?>
+	<div style="margin:0;padding:24px;background:#faf6ea;font-family:Helvetica,Arial,sans-serif;color:#29180e">
+		<div style="max-width:560px;margin:0 auto;background:#ffffff;padding:24px">
+			<?php if ( $image ) : ?>
+				<img src="<?php echo esc_url( $image ); ?>" alt="" width="512" style="display:block;width:100%;height:auto;margin:0 0 20px" />
+			<?php endif; ?>
+
+			<h1 style="margin:0 0 12px;font-size:24px;line-height:1.25;font-weight:500"><?php echo esc_html( $title ); ?></h1>
+
+			<?php if ( ! empty( $rows ) ) : ?>
+				<table style="margin:0 0 20px;border-collapse:collapse;font-size:14px;line-height:1.5">
+					<?php foreach ( $rows as $row ) : ?>
+						<tr>
+							<th scope="row" style="padding:2px 12px 2px 0;text-align:left;font-weight:500;white-space:nowrap"><?php echo esc_html( $row[0] ); ?></th>
+							<td style="padding:2px 0"><?php echo esc_html( $row[1] ); ?></td>
+						</tr>
+					<?php endforeach; ?>
+				</table>
+			<?php endif; ?>
+
+			<?php if ( '' !== $words ) : ?>
+				<div style="margin:0 0 20px;font-size:16px;line-height:1.5"><?php echo wp_kses_post( wpautop( $words ) ); ?></div>
+			<?php endif; ?>
+
+			<?php if ( '' !== $link ) : ?>
+				<p style="margin:0"><a href="<?php echo esc_url( $link ); ?>" style="color:#29180e"><?php echo esc_html( $link ); ?></a></p>
+			<?php endif; ?>
+		</div>
+
+		<p style="max-width:560px;margin:16px auto 0;font-size:12px;line-height:1.5;color:#6b5a4c">
+			<a href="<?php echo esc_url( $unsub ); ?>" style="color:#6b5a4c"><?php echo esc_html__( 'Unsubscribe', 'kadence-child' ); ?></a>
+		</p>
+	</div>
+	<?php
+
+	return (string) ob_get_clean();
+}
+
+/**
  * Publishing something is what makes it news.
  *
  * A post that has already gone out never goes out again, whatever is done to it
@@ -3769,21 +3775,11 @@ function kadence_child_broadcast_run( $broadcast ) {
 		return;
 	}
 
-	// The subject and the body are the client's words and nothing else, with
-	// what was published filled in where it was named, and the way off the
-	// list written in where it was named or at the foot where it was not.
+	// The subject is the client's words with the title filled in where it was
+	// named; the body is what was published, as it was published.
 	$settings = kadence_child_subscription_settings();
-	$subject  = trim( (string) $settings['subject'] );
-	$body     = trim( (string) $settings['body'] );
+	$subject  = strtr( trim( (string) $settings['subject'] ), array( '{title}' => get_the_title( $post ) ) );
 	$from     = kadence_child_broadcast_from();
-	// What has no address of its own — an event — stands in for `{link}`
-	// with nothing, rather than with an address that opens on nothing.
-	$link     = is_post_type_viewable( $post->post_type ) ? (string) get_permalink( $post ) : '';
-	$words    = array(
-		'{title}'   => get_the_title( $post ),
-		'{excerpt}' => trim( (string) get_the_excerpt( $post ) ),
-		'{link}'    => $link,
-	);
 
 	foreach ( $people as $who ) {
 		$who   = (int) $who;
@@ -3795,13 +3791,13 @@ function kadence_child_broadcast_run( $broadcast ) {
 		}
 
 		$unsub = kadence_child_subscriber_link( $who, 'cavo_unsub' );
-		$mine  = array_merge( $words, array( '{unsubscribe}' => $unsub ) );
 
 		$state = kadence_child_send(
 			$email,
-			strtr( $subject, $words ),
-			kadence_child_news_fill( $body, $mine, '{unsubscribe}' ),
+			$subject,
+			kadence_child_broadcast_body( $post, $who ),
 			array(
+				'Content-Type: text/html; charset=UTF-8',
 				$from,
 				'List-Unsubscribe: <' . esc_url_raw( $unsub ) . '>',
 				'List-Unsubscribe-Post: List-Unsubscribe=One-Click',
@@ -3818,32 +3814,6 @@ function kadence_child_broadcast_run( $broadcast ) {
 }
 add_action( 'cavo_broadcast_run', 'kadence_child_broadcast_run' );
 
-/**
- * The one mail an address gets before it counts.
- *
- * Sent only where confirming is asked for. Nothing else goes to an address
- * that has not answered this.
- *
- * @param int $who The subscriber.
- * @return string What state the mail left in.
- */
-function kadence_child_subscribe_confirm_mail( $who ) {
-	$email = get_post_field( 'post_title', $who );
-
-	if ( ! is_email( $email ) ) {
-		return 'nothing';
-	}
-
-	$settings = kadence_child_subscription_settings();
-	$words    = array( '{confirm_link}' => kadence_child_subscriber_link( $who, 'cavo_confirm' ) );
-
-	return kadence_child_send(
-		$email,
-		strtr( trim( (string) $settings['confirm_subject'] ), $words ),
-		kadence_child_news_fill( trim( (string) $settings['confirm_body'] ), $words, '{confirm_link}' ),
-		array( kadence_child_broadcast_from() )
-	);
-}
 
 /**
  * What has gone out.
@@ -4114,15 +4084,20 @@ function kadence_child_signup_answer( $slug, $state ) {
 /**
  * Who hears that somebody signed up.
  *
- * A sign-up says one thing, so that one thing is what both emails carry. The
- * row was written first; these are the courtesy on top of it, and neither can
- * lose the address by failing.
+ * The team's mail is the team's words. The client's mail is the mail that
+ * asks the address to confirm itself: the client's words, with the link that
+ * confirms written in where it was named and at the foot where it was not,
+ * and sent whether or not the switch is on, since without it the address
+ * never counts. An address that had already confirmed itself gets the
+ * client's mail only if the switch is on, and the link stands for nothing.
  *
- * @param string $slug  The form's slug.
- * @param string $email What they typed.
- * @param string $lang  The language they signed up in.
+ * @param string $slug    The form's slug.
+ * @param string $email   What they typed.
+ * @param string $lang    The language they signed up in.
+ * @param int    $who     The subscriber's row.
+ * @param bool   $pending Whether the address has still to confirm itself.
  */
-function kadence_child_subscribe_notify( $slug, $email, $lang = '' ) {
+function kadence_child_subscribe_notify( $slug, $email, $lang = '', $who = 0, $pending = false ) {
 	$domain  = preg_replace( '/^www\./', '', (string) wp_parse_url( home_url(), PHP_URL_HOST ) );
 	$name    = wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES );
 	$forms   = kadence_child_forms();
@@ -4161,17 +4136,23 @@ function kadence_child_subscribe_notify( $slug, $email, $lang = '' ) {
 
 	$client = kadence_child_form_settings( $slug, 'client', '' !== $lang ? $lang : null );
 
-	if ( empty( $client['copy'] ) || ! is_email( $email ) ) {
+	if ( ! is_email( $email ) || ( ! $pending && empty( $client['copy'] ) ) ) {
 		return;
 	}
 
-	$subject = isset( $client['subject'] ) ? trim( (string) $client['subject'] ) : '';
-	$body    = isset( $client['body'] ) ? trim( (string) $client['body'] ) : '';
+	$link      = $pending && $who ? kadence_child_subscriber_link( $who, 'cavo_confirm' ) : '';
+	$answers[] = array( 'key' => '{confirm_link}', 'value' => $link );
+	$subject   = isset( $client['subject'] ) ? trim( (string) $client['subject'] ) : '';
+	$body      = isset( $client['body'] ) ? trim( (string) $client['body'] ) : '';
+
+	if ( $pending && false === strpos( $body, '{confirm_link}' ) ) {
+		$body = rtrim( $body ) . ( '' !== trim( $body ) ? "\r\n\r\n" : '' ) . '{confirm_link}';
+	}
 
 	kadence_child_send(
 		$email,
 		kadence_child_form_tokens( $subject, $form, $answers ),
 		kadence_child_form_tokens( $body, $form, $answers ),
-		$headers
+		array_merge( $headers, array( kadence_child_broadcast_from() ) )
 	);
 }
