@@ -1523,24 +1523,21 @@ function kadence_child_form_token_picker( $field ) {
 	}
 
 	echo '<div class="cavo-tokens">';
-	echo '<button type="button" class="button cavo-tokens__open" data-cavo-pick aria-expanded="false">' . esc_html__( 'Add Form Field', 'kadence-child' ) . '</button>';
-	echo '<div class="cavo-tokens__list" hidden>';
+	echo '<button type="button" class="button cavo-tokens__open" data-cavo-pick>' . esc_html__( 'Add Form Field', 'kadence-child' ) . '</button>';
+	echo '<ul class="cavo-tokens__list" hidden>';
 
 	foreach ( kadence_child_form_tokens_of( $slug ) as $token => $name ) {
-		printf(
-			'<button type="button" class="button-link cavo-tokens__token" data-cavo-token="%1$s" title="%2$s">%1$s</button>',
-			esc_attr( $token ),
-			esc_attr( $name )
-		);
+		printf( '<li data-cavo-token="%1$s" data-cavo-name="%2$s"></li>', esc_attr( $token ), esc_attr( $name ) );
 	}
 
-	echo '</div></div>';
+	echo '</ul></div>';
 }
 add_action( 'acf/render_field', 'kadence_child_form_token_picker', 20 );
 
 /**
- * What the picker does: a press writes the token where the cursor last stood
- * in that field, or at its end where the cursor never stood.
+ * What the picker does: the press opens a window listing the form's fields,
+ * and choosing one writes its token where the cursor last stood in that
+ * field, or at its end where the cursor never stood, and shuts the window.
  */
 function kadence_child_form_token_picker_script() {
 	if ( ! isset( $_GET['page'] ) || 'cavo-form-settings' !== sanitize_key( wp_unslash( $_GET['page'] ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- reading which screen is open.
@@ -1549,42 +1546,105 @@ function kadence_child_form_token_picker_script() {
 	?>
 	<style>
 		.cavo-tokens { margin-top: 6px; }
-		.cavo-tokens__list { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
-		.cavo-tokens__token { padding: 2px 8px; border: 1px solid #c3c4c7; border-radius: 3px; background: #f6f7f7; font-family: monospace; text-decoration: none; }
-		.cavo-tokens__token:hover { background: #fff; }
+		.cavo-pick { position: fixed; inset: 0; z-index: 100000; display: flex; align-items: center; justify-content: center; background: rgba( 0, 0, 0, 0.5 ); }
+		.cavo-pick__box { width: 420px; max-width: calc( 100% - 32px ); max-height: calc( 100% - 64px ); overflow: auto; background: #fff; border-radius: 4px; box-shadow: 0 5px 15px rgba( 0, 0, 0, 0.3 ); }
+		.cavo-pick__head { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid #dcdcde; font-size: 14px; font-weight: 600; }
+		.cavo-pick__close { border: 0; background: none; font-size: 20px; line-height: 1; cursor: pointer; color: #50575e; }
+		.cavo-pick__list { margin: 0; padding: 8px; list-style: none; }
+		.cavo-pick__item { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; padding: 10px 8px; border: 0; border-radius: 3px; background: none; text-align: left; cursor: pointer; font-size: 13px; }
+		.cavo-pick__item:hover, .cavo-pick__item:focus { background: #f0f0f1; }
+		.cavo-pick__token { font-family: monospace; color: #2271b1; }
 	</style>
 	<script>
 	( function () {
-		document.addEventListener( 'focusout', function ( event ) {
-			var el = event.target;
-			if ( el && ( el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' ) && typeof el.selectionStart === 'number' ) {
-				el.dataset.cavoAt = el.selectionStart;
-			}
-		} );
-		document.addEventListener( 'click', function ( event ) {
-			var open = event.target.closest( '[data-cavo-pick]' );
+		var open = null;
+
+		function shut() {
 			if ( open ) {
-				var list = open.nextElementSibling;
-				list.hidden = ! list.hidden;
-				open.setAttribute( 'aria-expanded', list.hidden ? 'false' : 'true' );
-				return;
+				open.remove();
+				open = null;
 			}
-			var press = event.target.closest( '[data-cavo-token]' );
-			if ( ! press ) {
-				return;
-			}
-			var box = press.closest( '.cavo-tokens' ).parentNode.querySelector( 'input[type="text"], textarea' );
-			if ( ! box ) {
-				return;
-			}
-			var token = press.dataset.cavoToken;
-			var at    = box.dataset.cavoAt !== undefined ? Math.min( +box.dataset.cavoAt, box.value.length ) : box.value.length;
+		}
+
+		function write( box, token ) {
+			var at = box.dataset.cavoAt !== undefined ? Math.min( +box.dataset.cavoAt, box.value.length ) : box.value.length;
+
 			box.value = box.value.slice( 0, at ) + token + box.value.slice( at );
 			box.dispatchEvent( new Event( 'input', { bubbles: true } ) );
 			box.dispatchEvent( new Event( 'change', { bubbles: true } ) );
 			box.focus();
 			box.setSelectionRange( at + token.length, at + token.length );
 			box.dataset.cavoAt = at + token.length;
+		}
+
+		function show( wrap ) {
+			var box = wrap.parentNode.querySelector( 'input[type="text"], textarea' );
+
+			if ( ! box ) {
+				return;
+			}
+
+			shut();
+
+			var pick = document.createElement( 'div' );
+			pick.className = 'cavo-pick';
+			pick.innerHTML = '<div class="cavo-pick__box" role="dialog" aria-modal="true"><div class="cavo-pick__head"><span><?php echo esc_js( __( 'Add Form Field', 'kadence-child' ) ); ?></span><button type="button" class="cavo-pick__close" aria-label="<?php echo esc_js( __( 'Close', 'kadence-child' ) ); ?>">&times;</button></div><ul class="cavo-pick__list"></ul></div>';
+
+			var list = pick.querySelector( '.cavo-pick__list' );
+
+			wrap.querySelectorAll( '[data-cavo-token]' ).forEach( function ( item ) {
+				var li  = document.createElement( 'li' );
+				var row = document.createElement( 'button' );
+
+				row.type = 'button';
+				row.className = 'cavo-pick__item';
+				row.innerHTML = '<span></span><code class="cavo-pick__token"></code>';
+				row.firstChild.textContent = item.dataset.cavoName;
+				row.lastChild.textContent = item.dataset.cavoToken;
+				row.addEventListener( 'click', function () {
+					write( box, item.dataset.cavoToken );
+					shut();
+				} );
+				li.appendChild( row );
+				list.appendChild( li );
+			} );
+
+			pick.addEventListener( 'click', function ( event ) {
+				if ( event.target === pick || event.target.closest( '.cavo-pick__close' ) ) {
+					shut();
+				}
+			} );
+
+			document.body.appendChild( pick );
+			open = pick;
+
+			var first = list.querySelector( 'button' );
+
+			if ( first ) {
+				first.focus();
+			}
+		}
+
+		document.addEventListener( 'focusout', function ( event ) {
+			var el = event.target;
+
+			if ( el && ( el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' ) && typeof el.selectionStart === 'number' ) {
+				el.dataset.cavoAt = el.selectionStart;
+			}
+		} );
+
+		document.addEventListener( 'click', function ( event ) {
+			var press = event.target.closest( '[data-cavo-pick]' );
+
+			if ( press ) {
+				show( press.closest( '.cavo-tokens' ) );
+			}
+		} );
+
+		document.addEventListener( 'keydown', function ( event ) {
+			if ( event.key === 'Escape' ) {
+				shut();
+			}
 		} );
 	}() );
 	</script>
