@@ -713,7 +713,8 @@ function kadence_child_form_token( $label ) {
 
 /**
  * Every word a form's subject or body may stand in for: the form's own name,
- * and each of its fields. A sign-up asks one thing and offers only its name.
+ * and each of its fields. A sign-up asks one thing, the address, and that is
+ * its one field, known as `{email}` whatever its label was made to say.
  *
  * @param string $slug The form's slug.
  * @return array Token to what it is.
@@ -722,6 +723,8 @@ function kadence_child_form_tokens_of( $slug ) {
 	$tokens = array( '{form}' => esc_html__( 'Form name', 'kadence-child' ) );
 
 	if ( kadence_child_form_is_signup( $slug ) ) {
+		$tokens['{email}'] = esc_html__( 'Email address', 'kadence-child' );
+
 		return $tokens;
 	}
 
@@ -4068,15 +4071,18 @@ function kadence_child_subscribe_notify( $slug, $email, $lang = '' ) {
 		}
 	}
 
-	// A sign-up's one answer is the address, which the team is always told.
+	// A sign-up's one answer is the address, carried wherever `{email}` was
+	// written and nowhere it was not.
+	$answers = array( array( 'key' => '{email}', 'value' => $email ) );
+
 	if ( ! empty( $to ) ) {
 		$subject = isset( $team['subject'] ) ? trim( (string) $team['subject'] ) : '';
 		$body    = isset( $team['body'] ) ? trim( (string) $team['body'] ) : '';
 
 		kadence_child_send(
 			$to,
-			kadence_child_form_tokens( $subject, $form, array() ),
-			( '' !== $body ? kadence_child_form_tokens( $body, $form, array() ) . "\r\n\r\n" : '' ) . $email,
+			kadence_child_form_tokens( $subject, $form, $answers ),
+			kadence_child_form_tokens( $body, $form, $answers ),
 			$reply
 		);
 	}
@@ -4092,8 +4098,8 @@ function kadence_child_subscribe_notify( $slug, $email, $lang = '' ) {
 
 	kadence_child_send(
 		$email,
-		kadence_child_form_tokens( $subject, $form, array() ),
-		kadence_child_form_tokens( $body, $form, array() ),
+		kadence_child_form_tokens( $subject, $form, $answers ),
+		kadence_child_form_tokens( $body, $form, $answers ),
 		$headers
 	);
 }
