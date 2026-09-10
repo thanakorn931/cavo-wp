@@ -38,6 +38,25 @@
 	color: inherit;
 }
 
+/* A field the browser fills in for the reader is still the section's field.
+ *
+ * Filled in, Chrome paints its own ground behind the words and its own ink on
+ * them, in weights a stylesheet cannot outrank — a field drawn as a rule with
+ * nothing behind it comes back a dark box with words in black. Its ink is
+ * given back through the one property it does honour, and its ground is never
+ * painted: the change it wants to make is one it is told will take forever.
+ */
+input[ class*="custom-" ]:-webkit-autofill,
+input[ class*="custom-" ]:-webkit-autofill:hover,
+input[ class*="custom-" ]:-webkit-autofill:focus,
+textarea[ class*="custom-" ]:-webkit-autofill,
+select[ class*="custom-" ]:-webkit-autofill {
+	-webkit-text-fill-color: currentColor;
+	caret-color: currentColor;
+	box-shadow: none;
+	transition: background-color 2147483647s ease-out 0s, color 2147483647s ease-out 0s;
+}
+
 /* The ring a reader arriving by keyboard needs, drawn in whatever ink the band
    is already using. */
 [ class*="custom-" ]:focus-visible {
