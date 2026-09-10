@@ -89,6 +89,17 @@ class Event_Events extends Event_Widget {
 			)
 		);
 
+		$this->add_control(
+			'strip',
+			array(
+				'label'       => esc_html__( 'Strip picture', 'custom-elementor-widgets' ),
+				'type'        => Controls_Manager::MEDIA,
+				'dynamic'     => array( 'active' => true ),
+				'description' => esc_html__( 'The picture the band ends on, 1440 by 198. It is drawn under a brown veil.', 'custom-elementor-widgets' ),
+				'separator'   => 'before',
+			)
+		);
+
 		$this->add_responsive_control(
 			'step',
 			array(
@@ -278,7 +289,9 @@ class Event_Events extends Event_Widget {
 				?>
 			</div>
 
-			<span class="custom-event-list__strip" aria-hidden="true"></span>
+			<span class="custom-event-list__strip" aria-hidden="true">
+				<?php $this->media( isset( $settings['strip']['url'] ) ? $settings['strip']['url'] : '', '', true ); ?>
+			</span>
 		</div>
 		<?php
 	}
