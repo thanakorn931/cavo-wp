@@ -355,9 +355,9 @@ class Contact_Form extends Base_Widget {
 							echo esc_html__( 'Submit', 'custom-elementor-widgets' );
 						?></button>
 					</div>
-				</form>
 
-				<?php $this->render_result( $slug ); ?>
+					<?php $this->render_result( $slug ); ?>
+				</form>
 
 				<?php
 				if ( empty( $fields ) ) {

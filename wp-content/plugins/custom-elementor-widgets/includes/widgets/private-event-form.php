@@ -445,9 +445,9 @@ class Private_Event_Form extends Base_Widget {
 							?></a>
 						<?php endif; ?>
 					</div>
-				</form>
 
-				<?php $this->render_result( $slug ); ?>
+					<?php $this->render_result( $slug ); ?>
+				</form>
 
 				<?php
 				if ( empty( $fields ) ) {
