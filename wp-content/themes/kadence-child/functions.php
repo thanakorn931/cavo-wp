@@ -1412,7 +1412,7 @@ function kadence_child_form_notification_fields( $key ) {
 				array(
 				array(
 					'key'           => 'field_cavo_client_copy_' . $key,
-					'label'         => esc_html__( 'Send a copy', 'kadence-child' ),
+					'label'         => esc_html__( 'Send notifications', 'kadence-child' ),
 					'name'          => 'copy',
 					'type'          => 'true_false',
 					'ui'            => 1,
@@ -2061,35 +2061,43 @@ function kadence_child_form_mail( $slug, $form, $sender, $name, $answers, $messa
 
 	// A switch that is off is not an address list left empty: the addresses stay
 	// where they were written, and nothing goes to them until it is on again.
-	if ( ! empty( $team['send'] ) ) {
-		foreach ( (array) ( isset( $team['to'] ) ? $team['to'] : array() ) as $row ) {
-			if ( ! empty( $row['email'] ) && is_email( $row['email'] ) ) {
-				$to[] = $row['email'];
-			}
+	foreach ( (array) ( isset( $team['to'] ) ? $team['to'] : array() ) as $row ) {
+		if ( ! empty( $row['email'] ) && is_email( $row['email'] ) ) {
+			$to[] = $row['email'];
 		}
 	}
 
 	// The subject and the body are the client's words and nothing else: what
 	// they name of the answers is carried, and what they left unwritten is
-	// sent unwritten.
+	// sent unwritten. Where nothing went, the record says why.
 	$subject = isset( $team['subject'] ) ? trim( (string) $team['subject'] ) : '';
 	$body    = isset( $team['body'] ) ? trim( (string) $team['body'] ) : '';
 
-	update_post_meta(
-		$message,
-		'cavo_team_mail',
-		kadence_child_send(
+	if ( empty( $team['send'] ) ) {
+		$state = 'off';
+	} elseif ( empty( $to ) ) {
+		$state = 'noone';
+	} else {
+		$state = kadence_child_send(
 			$to,
 			kadence_child_form_tokens( $subject, $form, $answers ),
 			kadence_child_form_tokens( $body, $form, $answers ),
 			$headers
-		)
-	);
+		);
+	}
+
+	update_post_meta( $message, 'cavo_team_mail', $state );
 
 	$client = kadence_child_form_settings( $slug, 'client', '' !== $lang ? $lang : null );
 
-	if ( '' === $sender || empty( $client['copy'] ) ) {
-		update_post_meta( $message, 'cavo_client_mail', 'nothing' );
+	if ( empty( $client['copy'] ) ) {
+		update_post_meta( $message, 'cavo_client_mail', 'off' );
+
+		return;
+	}
+
+	if ( '' === $sender ) {
+		update_post_meta( $message, 'cavo_client_mail', 'noemail' );
 
 		return;
 	}
@@ -2160,7 +2168,7 @@ function kadence_child_inbox_columns( $columns ) {
 		$mine['cavo_lang'] = esc_html__( 'Language', 'kadence-child' );
 	}
 
-	$mine['cavo_said']   = esc_html__( 'Said', 'kadence-child' );
+	$mine['cavo_said']   = esc_html__( 'Message', 'kadence-child' );
 	$mine['cavo_mail']   = esc_html__( 'Notified', 'kadence-child' );
 	$mine['date']        = esc_html__( 'Received', 'kadence-child' );
 
@@ -2237,6 +2245,9 @@ function kadence_child_inbox_mail_state( $post_id ) {
 		'nosmtp'  => array( '!', esc_html__( 'sent through PHP mail — no SMTP took it, so it may have arrived nowhere', 'kadence-child' ) ),
 		'failed'  => array( '✗', esc_html__( 'refused', 'kadence-child' ) ),
 		'nothing' => array( '–', esc_html__( 'nothing to send', 'kadence-child' ) ),
+		'off'     => array( '–', esc_html__( 'switched off', 'kadence-child' ) ),
+		'noone'   => array( '–', esc_html__( 'no address to send to', 'kadence-child' ) ),
+		'noemail' => array( '–', esc_html__( 'no address to send to — the form has no Email field, or it was left empty', 'kadence-child' ) ),
 	);
 
 	foreach ( array(
