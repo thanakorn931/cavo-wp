@@ -1526,7 +1526,7 @@ function kadence_child_form_token_picker( $field ) {
 	}
 
 	echo '<div class="cavo-tokens">';
-	echo '<button type="button" class="button cavo-tokens__open" data-cavo-pick>' . esc_html__( 'Add Form Field', 'kadence-child' ) . '</button>';
+	echo '<button type="button" class="button cavo-tokens__open" data-cavo-pick>' . esc_html__( 'Add variables', 'kadence-child' ) . '</button>';
 	echo '<ul class="cavo-tokens__list" hidden>';
 
 	foreach ( kadence_child_form_tokens_of( $slug ) as $token => $name ) {
@@ -1591,7 +1591,7 @@ function kadence_child_form_token_picker_script() {
 
 			var pick = document.createElement( 'div' );
 			pick.className = 'cavo-pick';
-			pick.innerHTML = '<div class="cavo-pick__box" role="dialog" aria-modal="true"><div class="cavo-pick__head"><span><?php echo esc_js( __( 'Add Form Field', 'kadence-child' ) ); ?></span><button type="button" class="cavo-pick__close" aria-label="<?php echo esc_js( __( 'Close', 'kadence-child' ) ); ?>">&times;</button></div><ul class="cavo-pick__list"></ul></div>';
+			pick.innerHTML = '<div class="cavo-pick__box" role="dialog" aria-modal="true"><div class="cavo-pick__head"><span><?php echo esc_js( __( 'Add variables', 'kadence-child' ) ); ?></span><button type="button" class="cavo-pick__close" aria-label="<?php echo esc_js( __( 'Close', 'kadence-child' ) ); ?>">&times;</button></div><ul class="cavo-pick__list"></ul></div>';
 
 			var list = pick.querySelector( '.cavo-pick__list' );
 
