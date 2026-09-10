@@ -2764,7 +2764,6 @@ function kadence_child_form_trapped( $post ) {
 function kadence_child_subscription_defaults() {
 	return array(
 		'sending'    => 0,
-		'confirms'   => 0,
 		'post_types' => array( 'post' ),
 		'subject'    => '{title}',
 	);
@@ -2862,17 +2861,20 @@ function kadence_child_subscribe_submit() {
 		kadence_child_subscribe_back( $back, 'invalid', $email );
 	}
 
-	$settings = kadence_child_subscription_settings();
-	$status   = empty( $settings['confirms'] ) ? 'confirmed' : 'pending';
-	$added    = kadence_child_subscriber_add( $email, $slug, $status );
+	// An address counts once it has confirmed itself, always: unconfirmed, the
+	// list would hold whoever anybody chose to put on it.
+	$added = kadence_child_subscriber_add( $email, $slug, 'pending' );
 
 	if ( is_wp_error( $added ) ) {
 		kadence_child_subscribe_back( $back, 'invalid', $email );
 	}
 
 	// The row is the record and the email a courtesy on top of it, so these
-	// happen after the address is stored and never instead of storing it.
-	if ( 'pending' === $status && 'pending' === kadence_child_subscriber_status( $added ) ) {
+	// happen after the address is stored and never instead of storing it. An
+	// address that had already confirmed itself is not asked again.
+	$status = kadence_child_subscriber_status( $added );
+
+	if ( 'pending' === $status ) {
 		kadence_child_subscribe_confirm_mail( $added );
 	}
 
@@ -3052,7 +3054,6 @@ function kadence_child_subscribers_act() {
 		kadence_child_subscription_save(
 			array(
 				'sending'    => isset( $_POST['sending'] ) ? 1 : 0,
-				'confirms'   => isset( $_POST['confirms'] ) ? 1 : 0,
 				'post_types' => isset( $_POST['post_types'] ) ? array_map( 'sanitize_key', (array) wp_unslash( $_POST['post_types'] ) ) : array(),
 				'subject'    => isset( $_POST['subject'] ) ? sanitize_text_field( wp_unslash( $_POST['subject'] ) ) : '',
 			)
@@ -3148,16 +3149,6 @@ function kadence_child_subscribers_settings_screen() {
 						<input type="checkbox" name="sending" value="1" <?php checked( ! empty( $settings['sending'] ) ); ?> />
 						<?php esc_html_e( 'Email the list when something is published', 'kadence-child' ); ?>
 					</label>
-				</td>
-			</tr>
-			<tr>
-				<th scope="row"><?php esc_html_e( 'Signing up', 'kadence-child' ); ?></th>
-				<td>
-					<label>
-						<input type="checkbox" name="confirms" value="1" <?php checked( ! empty( $settings['confirms'] ) ); ?> />
-						<?php esc_html_e( 'Ask the address to confirm itself before it counts', 'kadence-child' ); ?>
-					</label>
-					<p class="description"><?php esc_html_e( 'Off, anybody can put anybody else on the list.', 'kadence-child' ); ?></p>
 				</td>
 			</tr>
 			<tr>
