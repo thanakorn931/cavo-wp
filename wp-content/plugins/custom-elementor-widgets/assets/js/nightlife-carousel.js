@@ -45,8 +45,11 @@
 		// How far a hold must travel before it counts as a pull.
 		var PULL = 24;
 
-		// The move under way, so a new hold can cut it short.
+		// The move under way. A hold that begins before it has arrived is not
+		// taken: the row finishes coming to rest first, and is taken hold of
+		// from rest.
 		var flight = { frame: 0, clock: 0 };
+		var moving = false;
 
 		// What one run is worth: as many slides as the client gave, each of them
 		// a slide and the space beside it.
@@ -86,6 +89,7 @@
 			// browser draws that taking as a move of its own, back and then
 			// on again.
 			stop();
+			moving = true;
 			stage.classList.add( 'is-moving' );
 
 			// A step back out of the middle run is taken from the same place a
@@ -112,6 +116,7 @@
 				stop();
 				stage.scrollLeft = target;
 				stage.classList.remove( 'is-moving' );
+				moving = false;
 			}
 
 			function step() {
@@ -170,6 +175,10 @@
 
 		stage.addEventListener( 'scroll', keepToTheMiddle );
 
+		stage.addEventListener( 'dragstart', function ( event ) {
+			event.preventDefault();
+		} );
+
 		// What a slide is worth is read again whenever it may have changed:
 		// when the page has finished arriving, when the window changes, and
 		// as a hold begins. Read once, before the stylesheet had reached the
@@ -200,8 +209,15 @@
 		window.addEventListener( 'load', open );
 
 		stage.addEventListener( 'pointerdown', function ( event ) {
-			stop();
-			stage.classList.remove( 'is-moving' );
+			if ( moving ) {
+				return;
+			}
+
+			// A mouse pressed on the row is a hold on the row and nothing else:
+			// not the start of a selection, which the browser would go on
+			// dragging the row after once the hand has left it, and not a
+			// picture being picked up.
+			event.preventDefault();
 			measureAll();
 
 			holding = true;

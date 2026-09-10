@@ -44,6 +44,10 @@
 	/* A finger moves the row the way a mouse does; the page keeps the up and
 	   down. */
 	touch-action: pan-y;
+	/* Nothing in the row is there to be selected, and a selection begun on
+	   it would keep pulling the row along after the hand had left it. */
+	user-select: none;
+	-webkit-user-select: none;
 }
 
 .custom-nightlife-carousel__stage::-webkit-scrollbar {
