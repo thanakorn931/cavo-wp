@@ -407,8 +407,6 @@ class Private_Event_Form extends Base_Widget {
 					<p class="custom-private-form__body"><?php echo esc_html( $body ); ?></p>
 				<?php endif; ?>
 
-				<?php $this->render_result( $slug ); ?>
-
 				<form class="custom-private-form__form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 					<input type="hidden" name="action" value="cavo_form" />
 					<input type="hidden" name="cavo_form" value="<?php echo esc_attr( $slug ); ?>" />
@@ -448,6 +446,8 @@ class Private_Event_Form extends Base_Widget {
 						<?php endif; ?>
 					</div>
 				</form>
+
+				<?php $this->render_result( $slug ); ?>
 
 				<?php
 				if ( empty( $fields ) ) {
@@ -563,7 +563,7 @@ class Private_Event_Form extends Base_Widget {
 			return;
 		}
 		?>
-		<p class="custom-private-form__result"><?php echo esc_html( $said ); ?></p>
+		<p class="custom-private-form__result" role="status"><?php echo esc_html( $said ); ?></p>
 		<?php
 	}
 }

@@ -207,9 +207,12 @@ select.custom-private-form__input.custom-private-form__input:invalid {
 	white-space: nowrap;
 }
 
+/* What the form says back stands under the button that sent it, 12 below,
+   on the button's side, which is the left. */
 .custom-private-form__result {
 	width: 100%;
-	margin: 0;
+	margin: 12px 0 0;
+	text-align: left;
 }
 
 @media ( prefers-reduced-motion: reduce ) {

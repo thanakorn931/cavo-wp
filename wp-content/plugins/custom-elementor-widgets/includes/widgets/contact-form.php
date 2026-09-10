@@ -323,8 +323,6 @@ class Contact_Form extends Base_Widget {
 			?></<?php echo esc_attr( $tag ); ?>>
 
 			<div class="custom-contact-form__column">
-				<?php $this->render_result( $slug ); ?>
-
 				<form class="custom-contact-form__form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 					<input type="hidden" name="action" value="cavo_form" />
 					<input type="hidden" name="cavo_form" value="<?php echo esc_attr( $slug ); ?>" />
@@ -358,6 +356,8 @@ class Contact_Form extends Base_Widget {
 						?></button>
 					</div>
 				</form>
+
+				<?php $this->render_result( $slug ); ?>
 
 				<?php
 				if ( empty( $fields ) ) {
@@ -473,7 +473,7 @@ class Contact_Form extends Base_Widget {
 			return;
 		}
 		?>
-		<p class="custom-contact-form__result"><?php echo esc_html( $said ); ?></p>
+		<p class="custom-contact-form__result" role="status"><?php echo esc_html( $said ); ?></p>
 		<?php
 	}
 }
