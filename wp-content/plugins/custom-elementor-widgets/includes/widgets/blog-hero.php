@@ -147,15 +147,6 @@ class Blog_Hero extends Blog_Widget {
 			)
 		);
 
-		$this->add_control(
-			'read_minutes',
-			array(
-				'label'       => esc_html__( 'Minutes to read', 'custom-elementor-widgets' ),
-				'type'        => Controls_Manager::NUMBER,
-				'min'         => 1,
-			)
-		);
-
 		$this->end_controls_section();
 
 		$this->register_style_controls();
@@ -266,6 +257,40 @@ class Blog_Hero extends Blog_Widget {
 	}
 
 	/**
+	 * How long the post standing takes to read: its article's words at two
+	 * hundred a minute, rounded up, and never less than one. Nought where
+	 * there is nothing to read, so nothing is said.
+	 *
+	 * @return int
+	 */
+	private function read_minutes() {
+		$id = get_the_ID();
+
+		if ( ! $id || ! function_exists( 'get_field' ) ) {
+			return 0;
+		}
+
+		$rows  = get_field( 'article', $id );
+		$words = 0;
+
+		foreach ( is_array( $rows ) ? $rows : array() as $row ) {
+			if ( isset( $row['kind'] ) && 'picture' === $row['kind'] ) {
+				continue;
+			}
+
+			$said = isset( $row['body'] ) ? wp_strip_all_tags( (string) $row['body'] ) : '';
+
+			if ( '' === trim( $said ) ) {
+				continue;
+			}
+
+			$words += preg_match_all( '/[\p{L}\p{N}]+/u', $said );
+		}
+
+		return $words > 0 ? max( 1, (int) ceil( $words / 200 ) ) : 0;
+	}
+
+	/**
 	 * Print the section.
 	 */
 	protected function render() {
@@ -294,7 +319,7 @@ class Blog_Hero extends Blog_Widget {
 							<span><?php echo esc_html( get_the_date( self::DATE_FORMAT ) ); ?></span>
 						</span>
 
-						<?php $minutes = isset( $settings['read_minutes'] ) ? (int) $settings['read_minutes'] : 0; ?>
+						<?php $minutes = $this->read_minutes(); ?>
 						<?php if ( $minutes > 0 ) : ?>
 							<span class="custom-blog-hero__rule" aria-hidden="true">|</span>
 							<span><?php
