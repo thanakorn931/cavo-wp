@@ -355,7 +355,11 @@ abstract class Header_Widget extends Base_Widget {
 				'fields_options' => array(
 					'typography'  => array( 'default' => 'yes' ),
 					'font_family' => array( 'default' => 'Roboto' ),
-					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 14 ) ),
+					'font_size'   => array(
+						'default'        => array( 'unit' => 'px', 'size' => 14 ),
+						'tablet_default' => array( 'unit' => 'px', 'size' => 9 ),
+						'mobile_default' => array( 'unit' => 'px', 'size' => 9 ),
+					),
 				),
 			)
 		);
@@ -417,6 +421,7 @@ abstract class Header_Widget extends Base_Widget {
 				'default'   => self::INK,
 				'separator' => 'before',
 				'selectors' => array(
+					'{{WRAPPER}} .custom-header__toggle' => 'color: {{VALUE}};',
 				),
 			)
 		);
@@ -538,6 +543,7 @@ abstract class Header_Widget extends Base_Widget {
 				'default'   => self::TOP_INK,
 				'separator' => 'before',
 				'selectors' => array(
+					$at_top . '.custom-header__toggle' => 'color: {{VALUE}};',
 				),
 			)
 		);
@@ -597,6 +603,7 @@ abstract class Header_Widget extends Base_Widget {
 						<?php $this->render_logo( $settings ); ?>
 						<?php $this->render_menu( $settings ); ?>
 						<?php $this->render_actions( $settings ); ?>
+						<?php $this->render_toggle(); ?>
 					</div>
 					<?php
 					if ( ! $this->menu_chosen( $settings ) ) {
@@ -679,6 +686,26 @@ abstract class Header_Widget extends Base_Widget {
 		$menu = isset( $settings['menu'] ) ? (int) $settings['menu'] : 0;
 
 		return 0 !== $menu && (bool) wp_get_nav_menu_object( $menu );
+	}
+
+	/**
+	 * The mark that opens the menu on the narrow tiers, and the one that
+	 * shuts it: both the design's, carried by the build (11189:2794,
+	 * 11282:5307). The wide tier does not show it.
+	 */
+	private function render_toggle() {
+		?>
+		<button class="custom-header__toggle" type="button" aria-expanded="false">
+			<span class="custom-header__toggle-open">
+				<span class="screen-reader-text"><?php esc_html_e( 'Open the menu', 'custom-elementor-widgets' ); ?></span>
+				<svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true"><path d="M2 8C2 7.73478 2.10536 7.48043 2.29289 7.29289C2.48043 7.10536 2.73478 7 3 7H21C21.2652 7 21.5196 7.10536 21.7071 7.29289C21.8946 7.48043 22 7.73478 22 8C22 8.26522 21.8946 8.51957 21.7071 8.70711C21.5196 8.89464 21.2652 9 21 9H3C2.73478 9 2.48043 8.89464 2.29289 8.70711C2.10536 8.51957 2 8.26522 2 8ZM2 12C2 11.7348 2.10536 11.4804 2.29289 11.2929C2.48043 11.1054 2.73478 11 3 11H21C21.2652 11 21.5196 11.1054 21.7071 11.2929C21.8946 11.4804 22 11.7348 22 12C22 12.2652 21.8946 12.5196 21.7071 12.7071C21.5196 12.8946 21.2652 13 21 13H3C2.73478 13 2.48043 12.8946 2.29289 12.7071C2.10536 12.5196 2 12.2652 2 12ZM3 15C2.73478 15 2.48043 15.1054 2.29289 15.2929C2.10536 15.4804 2 15.7348 2 16C2 16.2652 2.10536 16.5196 2.29289 16.7071C2.48043 16.8946 2.73478 17 3 17H15C15.2652 17 15.5196 16.8946 15.7071 16.7071C15.8946 16.5196 16 16.2652 16 16C16 15.7348 15.8946 15.4804 15.7071 15.2929C15.5196 15.1054 15.2652 15 15 15H3Z"/></svg>
+			</span>
+			<span class="custom-header__toggle-shut">
+				<span class="screen-reader-text"><?php esc_html_e( 'Close the menu', 'custom-elementor-widgets' ); ?></span>
+				<svg viewBox="0 0 24.616 24.616" fill="currentColor" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true"><path d="M6.708 18.616L6 17.908L11.6 12.308L6 6.708L6.708 6L12.308 11.6L17.908 6L18.616 6.708L13.016 12.308L18.616 17.908L17.908 18.616L12.308 13.016L6.708 18.616Z"/></svg>
+			</span>
+		</button>
+		<?php
 	}
 
 	/**

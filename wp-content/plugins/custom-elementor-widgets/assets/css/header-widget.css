@@ -209,50 +209,177 @@ body.admin-bar .custom-header__bar {
 	}
 }
 
-/* Tablet — 768px to 1024px. Not drawn; the row keeps its shape and the side
-   padding comes in to the tier's own edge. */
-@media (max-width: 1024px) {
-	.custom-header__inner {
-		padding: 0 24px;
-	}
-
-	.custom-header__logo {
-		width: 154px;
-	}
-
-	.custom-header__menu ul {
-		gap: 24px;
-	}
+/* An anchor takes the browser's own colour unless it is told not to. */
+.custom-header__logo,
+.custom-header__menu a,
+.custom-header__button {
+	color: inherit;
 }
 
-/* Mobile — up to 767px. Not drawn; the menu drops under the row so nothing
-   reaches past the viewport. What the bar then comes to is measured rather
-   than guessed at, and the band is told it. */
-@media (max-width: 767px) {
+/* The mark that opens the menu on the narrow tiers, and the one that shuts
+   it. The wide tier does not show it. */
+.custom-header__toggle,
+.custom-header__toggle:hover,
+.custom-header__toggle:focus,
+.custom-header__toggle:active {
+	display: none;
+	align-items: center;
+	justify-content: center;
+	flex: 0 0 auto;
+	width: 24px;
+	height: 24px;
+	padding: 0;
+	border: 0;
+	background: none;
+	color: inherit;
+	cursor: pointer;
+}
+
+.custom-header__toggle:focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: 2px;
+}
+
+.custom-header__toggle-open,
+.custom-header__toggle-shut {
+	display: block;
+}
+
+.custom-header__toggle svg {
+	display: block;
+	width: 24px;
+	height: 24px;
+}
+
+.custom-header__toggle-shut,
+.custom-header.is-open .custom-header__toggle-open {
+	display: none;
+}
+
+.custom-header.is-open .custom-header__toggle-shut {
+	display: block;
+}
+
+/* While the menu stands open the page under it holds still. */
+html.custom-header-open,
+html.custom-header-open body {
+	overflow: hidden;
+}
+
+/* Tablet and mobile — the file draws one of them (11189:2792, 11190:2777):
+   a bar 44 deep, 16 in from either edge, the mark 53 by 22 and the way into
+   the menu 24 at the right. The menu and the two buttons are behind that
+   mark until it is pressed. Tablet is not drawn and takes the same figures. */
+@media ( max-width: 1024px ) {
 	.custom-header__inner {
 		padding: 0 16px;
 	}
 
 	.custom-header__row {
-		height: auto;
-		flex-wrap: wrap;
-		padding: 8px 0;
+		height: 44px;
 	}
 
-	.custom-header__menu {
+	.custom-header__logo {
+		width: 53px;
+		height: 44px;
+	}
+
+	.custom-header__logo-box {
+		width: 53px;
+		height: 22px;
+	}
+
+	.custom-header__menu,
+	.custom-header__actions {
+		display: none;
+	}
+
+	.custom-header__toggle,
+	.custom-header__toggle:hover,
+	.custom-header__toggle:focus,
+	.custom-header__toggle:active {
+		display: inline-flex;
+	}
+
+	/* Pressed, the bar becomes the menu (11282:5304): the whole screen, the
+	   same row across the top now 49 deep and ruled beneath, the pages one
+	   under another 44 deep each with a rule under the last, and the two
+	   buttons 24 under them in the middle, 5 apart. The bar takes the colours
+	   it has once the page has moved, which are the menu's. The pages and
+	   the buttons are the row's own children, so the row wraps them under. */
+	.custom-header.is-open .custom-header__bar {
+		bottom: 0;
+		overflow-y: auto;
+	}
+
+	.custom-header.is-open .custom-header__row {
+		flex-wrap: wrap;
+		align-content: flex-start;
+		height: auto;
+	}
+
+	.custom-header.is-open .custom-header__logo {
+		order: 1;
+		height: 49px;
+	}
+
+	.custom-header.is-open .custom-header__toggle {
+		order: 2;
+	}
+
+	.custom-header.is-open .custom-header__menu {
 		order: 3;
+		display: block;
+		width: 100%;
+		border-top: 1px solid #e1d8b1;
+	}
+
+	.custom-header.is-open .custom-header__menu ul {
+		flex-direction: column;
+		align-items: stretch;
+		gap: 0;
+		border-bottom: 1px solid #e1d8b1;
+	}
+
+	.custom-header.is-open .custom-header__menu li {
 		width: 100%;
 	}
 
-	.custom-header__menu ul {
-		flex-wrap: wrap;
+	.custom-header.is-open .custom-header__menu a {
+		flex-direction: row;
+		align-items: center;
 		justify-content: flex-start;
-		gap: 16px;
-		padding: 8px 0 16px 0;
+		height: 44px;
+		padding: 10px;
+		box-sizing: border-box;
+	}
+
+	.custom-header.is-open .custom-header__menu a::after {
+		display: none;
+	}
+
+	.custom-header.is-open .custom-header__actions {
+		order: 4;
+		display: flex;
+		justify-content: center;
+		width: 100%;
+		gap: 5px;
+		margin-top: 24px;
+	}
+
+	.custom-header__button,
+	.custom-header__button:hover,
+	.custom-header__button:focus,
+	.custom-header__button:active {
+		padding: 8px 16px;
+	}
+
+	/* The file draws both buttons the one height here; the filled one takes
+	   an edge it cannot be seen to have so that it stands as tall. */
+	.custom-header__button--solid,
+	.custom-header__button--solid:hover,
+	.custom-header__button--solid:focus,
+	.custom-header__button--solid:active {
+		border: 1px solid transparent;
 	}
 }
-
-/* An anchor takes the browser's own colour unless it is told not to. */
-.custom-header__logo,
-.custom-header__menu a,
-.custom-header__button,

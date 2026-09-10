@@ -13,7 +13,9 @@
 		var bar    = root.querySelector( '.custom-header__bar' );
 		var spacer = root.querySelector( '.custom-header__spacer' );
 
-		if ( ! bar || ! spacer ) {
+		// Open, the bar is the whole screen, which is not what the band
+		// under it should come to.
+		if ( ! bar || ! spacer || root.classList.contains( 'is-open' ) ) {
 			return;
 		}
 
@@ -21,8 +23,56 @@
 	}
 
 	function state( root ) {
-		// The design begins the moment the page has moved at all.
-		root.classList.toggle( 'is-scrolled', window.pageYOffset > 0 );
+		// The design begins the moment the page has moved at all — and the
+		// menu, open, takes the moved bar's colours whatever the page has done.
+		root.classList.toggle( 'is-scrolled', window.pageYOffset > 0 || root.classList.contains( 'is-open' ) );
+	}
+
+	// The menu is opened and shut by its own mark, shut by the Escape key, by
+	// choosing a page, and by the window growing past the tiers it belongs to.
+	function menu( root ) {
+		var toggle = root.querySelector( '.custom-header__toggle' );
+
+		if ( ! toggle ) {
+			return;
+		}
+
+		function set( open ) {
+			root.classList.toggle( 'is-open', open );
+			document.documentElement.classList.toggle( 'custom-header-open', open );
+			toggle.setAttribute( 'aria-expanded', open ? 'true' : 'false' );
+
+			if ( root.classList.contains( 'custom-header--scroll' ) ) {
+				state( root );
+			}
+
+			measure( root );
+		}
+
+		toggle.addEventListener( 'click', function () {
+			set( ! root.classList.contains( 'is-open' ) );
+		} );
+
+		document.addEventListener( 'keydown', function ( event ) {
+			if ( event.key === 'Escape' && root.classList.contains( 'is-open' ) ) {
+				set( false );
+				toggle.focus();
+			}
+		} );
+
+		root.addEventListener( 'click', function ( event ) {
+			var link = event.target.closest ? event.target.closest( '.custom-header__menu a, .custom-header__button' ) : null;
+
+			if ( link && root.classList.contains( 'is-open' ) ) {
+				set( false );
+			}
+		} );
+
+		window.addEventListener( 'resize', function () {
+			if ( window.innerWidth > 1024 && root.classList.contains( 'is-open' ) ) {
+				set( false );
+			}
+		} );
 	}
 
 	function setUp( root ) {
@@ -33,6 +83,7 @@
 		root.dataset.wired = '1';
 
 		measure( root );
+		menu( root );
 
 		// Measured once and never again, the band keeps whatever the bar came to
 		// before the fonts arrived or while the window was some other size — and
