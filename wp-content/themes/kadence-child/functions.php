@@ -723,8 +723,7 @@ function kadence_child_form_tokens_of( $slug ) {
 	$tokens = array( '{form}' => esc_html__( 'Form name', 'kadence-child' ) );
 
 	if ( kadence_child_form_is_signup( $slug ) ) {
-		$tokens['{email}']        = esc_html__( 'Email address', 'kadence-child' );
-		$tokens['{confirm_link}'] = esc_html__( 'The link that confirms the address', 'kadence-child' );
+		$tokens['{email}'] = esc_html__( 'Email address', 'kadence-child' );
 
 		return $tokens;
 	}
@@ -2790,9 +2789,28 @@ function kadence_child_form_trapped( $post ) {
  */
 function kadence_child_subscription_defaults() {
 	return array(
-		'sending'    => 0,
-		'post_types' => array( 'post' ),
-		'subject'    => '',
+		'sending'         => 0,
+		'post_types'      => array( 'post' ),
+		'subject'         => '',
+		'confirm_subject' => '',
+		'confirm_body'    => '',
+		'confirm_button'  => '',
+	);
+}
+
+/**
+ * The words the mail asking an address to confirm itself may stand in for:
+ * the address, and the press that confirms it — drawn as the site draws a
+ * press, in the site's own ink and ground, with the words the client gave
+ * it. A body that does not place the press is given it at its foot: without
+ * it the address never counts.
+ *
+ * @return array Token to what it is.
+ */
+function kadence_child_confirm_tokens_of() {
+	return array(
+		'{email}'         => esc_html__( 'The address that signed up', 'kadence-child' ),
+		'{accept_button}' => esc_html__( 'The press that confirms it', 'kadence-child' ),
 	);
 }
 
@@ -2913,7 +2931,13 @@ function kadence_child_subscribe_submit() {
 	// address that had already confirmed itself is not asked again.
 	$status = kadence_child_subscriber_status( $added );
 
-	kadence_child_subscribe_notify( $slug, $email, kadence_child_posted_language( wp_unslash( $_POST ) ), $added, 'pending' === $status ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- read against the site's own list.
+	update_post_meta( $added, 'cavo_lang', kadence_child_posted_language( wp_unslash( $_POST ) ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- read against the site's own list.
+
+	if ( 'pending' === $status ) {
+		kadence_child_subscribe_confirm_mail( $added );
+	}
+
+	kadence_child_subscribe_notify( $slug, $email, kadence_child_posted_language( wp_unslash( $_POST ) ), 'team' ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- read against the site's own list.
 
 	kadence_child_subscribe_back( $back, 'pending' === $status ? 'confirm' : 'ok' );
 }
@@ -2957,7 +2981,15 @@ function kadence_child_subscribe_follow() {
 		$id    = kadence_child_subscriber_by_token( $token );
 
 		if ( 0 !== $id ) {
+			$was = kadence_child_subscriber_status( $id );
+
 			kadence_child_subscriber_set_status( $id, $status );
+
+			// Confirmed, the address is written to as the client wished — once,
+			// the first time, not on every press of a link that stays live.
+			if ( 'confirmed' === $status && 'confirmed' !== $was ) {
+				kadence_child_subscribe_notify( 'newsletter', get_post_field( 'post_title', $id ), (string) get_post_meta( $id, 'cavo_lang', true ), 'client' );
+			}
 		}
 
 		kadence_child_subscribe_back( home_url( '/' ), 'confirmed' === $status ? 'welcome' : 'gone' );
@@ -3088,9 +3120,12 @@ function kadence_child_subscribers_act() {
 
 		kadence_child_subscription_save(
 			array(
-				'sending'    => isset( $_POST['sending'] ) ? 1 : 0,
-				'post_types' => isset( $_POST['post_types'] ) ? array_map( 'sanitize_key', (array) wp_unslash( $_POST['post_types'] ) ) : array(),
-				'subject'    => isset( $_POST['subject'] ) ? sanitize_text_field( wp_unslash( $_POST['subject'] ) ) : '',
+				'sending'         => isset( $_POST['sending'] ) ? 1 : 0,
+				'post_types'      => isset( $_POST['post_types'] ) ? array_map( 'sanitize_key', (array) wp_unslash( $_POST['post_types'] ) ) : array(),
+				'subject'         => isset( $_POST['subject'] ) ? sanitize_text_field( wp_unslash( $_POST['subject'] ) ) : '',
+				'confirm_subject' => isset( $_POST['confirm_subject'] ) ? sanitize_text_field( wp_unslash( $_POST['confirm_subject'] ) ) : '',
+				'confirm_body'    => isset( $_POST['confirm_body'] ) ? sanitize_textarea_field( wp_unslash( $_POST['confirm_body'] ) ) : '',
+				'confirm_button'  => isset( $_POST['confirm_button'] ) ? sanitize_text_field( wp_unslash( $_POST['confirm_button'] ) ) : '',
 			)
 		);
 
@@ -3204,6 +3239,29 @@ function kadence_child_subscribers_settings_screen() {
 					<input type="text" id="cavo-subject" name="subject" class="regular-text"
 						value="<?php echo esc_attr( $settings['subject'] ); ?>" />
 					<?php kadence_child_variables( kadence_child_news_tokens_of() ); ?>
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="cavo-confirm-subject"><?php esc_html_e( 'Confirmation subject', 'kadence-child' ); ?></label></th>
+				<td>
+					<input type="text" id="cavo-confirm-subject" name="confirm_subject" class="regular-text"
+						value="<?php echo esc_attr( $settings['confirm_subject'] ); ?>" />
+					<?php kadence_child_variables( array( '{email}' => esc_html__( 'The address that signed up', 'kadence-child' ) ) ); ?>
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="cavo-confirm-body"><?php esc_html_e( 'Confirmation body', 'kadence-child' ); ?></label></th>
+				<td>
+					<textarea id="cavo-confirm-body" name="confirm_body" class="large-text" rows="6"><?php echo esc_textarea( $settings['confirm_body'] ); ?></textarea>
+					<?php kadence_child_variables( kadence_child_confirm_tokens_of() ); ?>
+				</td>
+			</tr>
+			<tr>
+				<th scope="row"><label for="cavo-confirm-button"><?php esc_html_e( 'Accept button', 'kadence-child' ); ?></label></th>
+				<td>
+					<input type="text" id="cavo-confirm-button" name="confirm_button" class="regular-text"
+						value="<?php echo esc_attr( $settings['confirm_button'] ); ?>" />
+					<p class="description"><?php esc_html_e( 'The words on the press that confirms the address.', 'kadence-child' ); ?></p>
 				</td>
 			</tr>
 		</table>
@@ -3685,6 +3743,62 @@ function kadence_child_broadcast_body( $post, $who ) {
 }
 
 /**
+ * The mail that asks an address to confirm itself: the client's words, with
+ * the address filled in where it was named and the press that confirms
+ * standing where it was placed, or at the foot where it was not.
+ *
+ * The press is drawn as the site draws one — the site's ink for its ground,
+ * the site's ground for its words, a full round corner — so the mail is the
+ * site's, in a mailbox as on a page.
+ *
+ * @param int $who The subscriber.
+ * @return string What state the mail left in.
+ */
+function kadence_child_subscribe_confirm_mail( $who ) {
+	$email = get_post_field( 'post_title', $who );
+
+	if ( ! is_email( $email ) ) {
+		return 'nothing';
+	}
+
+	$settings = kadence_child_subscription_settings();
+	$link     = kadence_child_subscriber_link( $who, 'cavo_confirm' );
+	$label    = trim( (string) $settings['confirm_button'] );
+	$press    = sprintf(
+		'<a href="%1$s" style="display:inline-block;padding:12px 24px;border-radius:24px;background:#3a2114;color:#faf6ea;font-family:Roboto,Helvetica,Arial,sans-serif;font-size:14px;line-height:1.2;text-decoration:none">%2$s</a>',
+		esc_url( $link ),
+		esc_html( '' !== $label ? $label : $link )
+	);
+
+	$body = trim( (string) $settings['confirm_body'] );
+
+	if ( false === strpos( $body, '{accept_button}' ) ) {
+		$body = rtrim( $body ) . ( '' !== $body ? "\n\n" : '' ) . '{accept_button}';
+	}
+
+	// The words are written as words: escaped, then set in paragraphs, then
+	// the two things that are not words put in where they were named.
+	$html = wpautop( esc_html( $body ) );
+	$html = strtr( $html, array( '{email}' => esc_html( $email ), '{accept_button}' => $press ) );
+
+	ob_start();
+	?>
+	<div style="margin:0;padding:24px;background:#faf6ea;font-family:Roboto,Helvetica,Arial,sans-serif;color:#3a2114">
+		<div style="max-width:560px;margin:0 auto;background:#ffffff;padding:24px;font-size:16px;line-height:1.5">
+			<?php echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped above, piece by piece. ?>
+		</div>
+	</div>
+	<?php
+
+	return kadence_child_send(
+		$email,
+		strtr( trim( (string) $settings['confirm_subject'] ), array( '{email}' => $email ) ),
+		(string) ob_get_clean(),
+		array( 'Content-Type: text/html; charset=UTF-8', kadence_child_broadcast_from() )
+	);
+}
+
+/**
  * Publishing something is what makes it news.
  *
  * A post that has already gone out never goes out again, whatever is done to it
@@ -4096,22 +4210,16 @@ function kadence_child_signup_answer( $slug, $state ) {
 }
 
 /**
- * Who hears that somebody signed up.
+ * Who hears about a sign-up: the team, as it happens; the address itself,
+ * once it has confirmed. Each mail is the client's words on the form's
+ * settings, and each is switched on its own.
  *
- * The team's mail is the team's words. The client's mail is the mail that
- * asks the address to confirm itself: the client's words, with the link that
- * confirms written in where it was named and at the foot where it was not,
- * and sent whether or not the switch is on, since without it the address
- * never counts. An address that had already confirmed itself gets the
- * client's mail only if the switch is on, and the link stands for nothing.
- *
- * @param string $slug    The form's slug.
- * @param string $email   What they typed.
- * @param string $lang    The language they signed up in.
- * @param int    $who     The subscriber's row.
- * @param bool   $pending Whether the address has still to confirm itself.
+ * @param string $slug  The form's slug.
+ * @param string $email What they typed.
+ * @param string $lang  The language they signed up in.
+ * @param string $which Which mail: team or client.
  */
-function kadence_child_subscribe_notify( $slug, $email, $lang = '', $who = 0, $pending = false ) {
+function kadence_child_subscribe_notify( $slug, $email, $lang = '', $which = 'team' ) {
 	$domain  = preg_replace( '/^www\./', '', (string) wp_parse_url( home_url(), PHP_URL_HOST ) );
 	$name    = wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES );
 	$forms   = kadence_child_forms();
@@ -4121,22 +4229,26 @@ function kadence_child_subscribe_notify( $slug, $email, $lang = '', $who = 0, $p
 	// The address goes in a header only once it has been read as an address.
 	$reply = is_email( $email ) ? array_merge( $headers, array( 'Reply-To: ' . $email ) ) : $headers;
 
-	$team = kadence_child_form_settings( $slug, 'team' );
-	$to   = array();
-
-	if ( ! empty( $team['send'] ) ) {
-		foreach ( (array) ( isset( $team['to'] ) ? $team['to'] : array() ) as $row ) {
-			if ( ! empty( $row['email'] ) && is_email( $row['email'] ) ) {
-				$to[] = $row['email'];
-			}
-		}
-	}
-
 	// A sign-up's one answer is the address, carried wherever `{email}` was
 	// written and nowhere it was not.
 	$answers = array( array( 'key' => '{email}', 'value' => $email ) );
 
-	if ( ! empty( $to ) ) {
+	if ( 'team' === $which ) {
+		$team = kadence_child_form_settings( $slug, 'team' );
+		$to   = array();
+
+		if ( ! empty( $team['send'] ) ) {
+			foreach ( (array) ( isset( $team['to'] ) ? $team['to'] : array() ) as $row ) {
+				if ( ! empty( $row['email'] ) && is_email( $row['email'] ) ) {
+					$to[] = $row['email'];
+				}
+			}
+		}
+
+		if ( empty( $to ) ) {
+			return;
+		}
+
 		$subject = isset( $team['subject'] ) ? trim( (string) $team['subject'] ) : '';
 		$body    = isset( $team['body'] ) ? trim( (string) $team['body'] ) : '';
 
@@ -4146,27 +4258,23 @@ function kadence_child_subscribe_notify( $slug, $email, $lang = '', $who = 0, $p
 			kadence_child_form_tokens( $body, $form, $answers ),
 			$reply
 		);
+
+		return;
 	}
 
 	$client = kadence_child_form_settings( $slug, 'client', '' !== $lang ? $lang : null );
 
-	if ( ! is_email( $email ) || ( ! $pending && empty( $client['copy'] ) ) ) {
+	if ( empty( $client['copy'] ) || ! is_email( $email ) ) {
 		return;
 	}
 
-	$link      = $pending && $who ? kadence_child_subscriber_link( $who, 'cavo_confirm' ) : '';
-	$answers[] = array( 'key' => '{confirm_link}', 'value' => $link );
-	$subject   = isset( $client['subject'] ) ? trim( (string) $client['subject'] ) : '';
-	$body      = isset( $client['body'] ) ? trim( (string) $client['body'] ) : '';
-
-	if ( $pending && false === strpos( $body, '{confirm_link}' ) ) {
-		$body = rtrim( $body ) . ( '' !== trim( $body ) ? "\r\n\r\n" : '' ) . '{confirm_link}';
-	}
+	$subject = isset( $client['subject'] ) ? trim( (string) $client['subject'] ) : '';
+	$body    = isset( $client['body'] ) ? trim( (string) $client['body'] ) : '';
 
 	kadence_child_send(
 		$email,
 		kadence_child_form_tokens( $subject, $form, $answers ),
 		kadence_child_form_tokens( $body, $form, $answers ),
-		array_merge( $headers, array( kadence_child_broadcast_from() ) )
+		$headers
 	);
 }
