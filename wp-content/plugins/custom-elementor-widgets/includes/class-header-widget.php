@@ -153,6 +153,7 @@ abstract class Header_Widget extends Base_Widget {
 	protected function register_controls() {
 		$this->register_logo_controls();
 		$this->register_menu_controls();
+		$this->register_language_controls();
 		$this->register_action_controls();
 		$this->register_bar_style_controls();
 		$this->register_menu_style_controls();
@@ -209,6 +210,35 @@ abstract class Header_Widget extends Base_Widget {
 				'type'    => Controls_Manager::SELECT,
 				'default' => '',
 				'options' => $this->menu_options(),
+			)
+		);
+
+		$this->end_controls_section();
+	}
+
+	/**
+	 * Content → Language.
+	 *
+	 * The switch between the site's languages, drawn by the file (6916:1720,
+	 * 11282:6582, 11282:5363) and answered by Polylang: the languages it
+	 * knows are the ones offered, each to its own translation of the page.
+	 */
+	private function register_language_controls() {
+		$this->start_controls_section(
+			'section_language',
+			array(
+				'label' => esc_html__( 'Language', 'custom-elementor-widgets' ),
+				'tab'   => Controls_Manager::TAB_CONTENT,
+			)
+		);
+
+		$this->add_control(
+			'language_switch',
+			array(
+				'label'       => esc_html__( 'Show the language switch', 'custom-elementor-widgets' ),
+				'type'        => Controls_Manager::SWITCHER,
+				'default'     => 'yes',
+				'description' => esc_html__( 'Offers every language Polylang has. Shown only when Polylang is active and has more than one.', 'custom-elementor-widgets' ),
 			)
 		);
 
@@ -426,6 +456,55 @@ abstract class Header_Widget extends Base_Widget {
 			)
 		);
 
+		$this->add_control(
+			'language_color',
+			array(
+				'label'     => esc_html__( 'Language switch', 'custom-elementor-widgets' ),
+				'type'      => Controls_Manager::COLOR,
+				'default'   => self::INK,
+				'separator' => 'before',
+				'selectors' => array(
+					'{{WRAPPER}} .custom-header__language-toggle' => 'color: {{VALUE}}; border-color: {{VALUE}};',
+				),
+			)
+		);
+
+		$this->add_control(
+			'language_menu_color',
+			array(
+				'label'     => esc_html__( 'Language list text', 'custom-elementor-widgets' ),
+				'type'      => Controls_Manager::COLOR,
+				'default'   => self::INK,
+				'selectors' => array(
+					'{{WRAPPER}} .custom-header__language-menu a' => 'color: {{VALUE}};',
+				),
+			)
+		);
+
+		$this->add_control(
+			'language_menu_background',
+			array(
+				'label'     => esc_html__( 'Language list background', 'custom-elementor-widgets' ),
+				'type'      => Controls_Manager::COLOR,
+				'default'   => '#FFFFFF',
+				'selectors' => array(
+					'{{WRAPPER}} .custom-header__language-menu' => 'background-color: {{VALUE}};',
+				),
+			)
+		);
+
+		$this->add_control(
+			'language_menu_current',
+			array(
+				'label'     => esc_html__( 'Language list, the current one', 'custom-elementor-widgets' ),
+				'type'      => Controls_Manager::COLOR,
+				'default'   => '#F3EEDC',
+				'selectors' => array(
+					'{{WRAPPER}} .custom-header__language-menu .is-current a' => 'background-color: {{VALUE}};',
+				),
+			)
+		);
+
 		$this->end_controls_section();
 	}
 
@@ -548,6 +627,31 @@ abstract class Header_Widget extends Base_Widget {
 			)
 		);
 
+		$this->add_control(
+			'top_language_color',
+			array(
+				'label'     => esc_html__( 'Language switch', 'custom-elementor-widgets' ),
+				'type'      => Controls_Manager::COLOR,
+				'default'   => '#F3EEDC',
+				'separator' => 'before',
+				'selectors' => array(
+					$at_top . '.custom-header__language-toggle' => 'color: {{VALUE}};',
+				),
+			)
+		);
+
+		$this->add_control(
+			'top_language_border',
+			array(
+				'label'     => esc_html__( 'Language switch edge', 'custom-elementor-widgets' ),
+				'type'      => Controls_Manager::COLOR,
+				'default'   => '#E1D8B1',
+				'selectors' => array(
+					$at_top . '.custom-header__language-toggle' => 'border-color: {{VALUE}};',
+				),
+			)
+		);
+
 		$this->end_controls_section();
 	}
 
@@ -666,13 +770,107 @@ abstract class Header_Widget extends Base_Widget {
 	 * @param array $settings The widget's settings.
 	 */
 	private function render_menu( $settings ) {
-		if ( ! $this->menu_chosen( $settings ) ) {
+		?>
+		<div class="custom-header__middle">
+			<?php if ( $this->menu_chosen( $settings ) ) : ?>
+				<nav class="custom-header__menu">
+					<?php $this->menu( $settings['menu'] ); ?>
+				</nav>
+			<?php endif; ?>
+			<?php $this->render_language( $settings ); ?>
+		</div>
+		<?php
+	}
+
+	/**
+	 * The languages Polylang offers, each with the words it is shown by.
+	 *
+	 * A language whose own name is written in its own script is shown by that
+	 * name, as the file shows Thai; one written in Latin letters is shown by
+	 * its code, as the file shows English.
+	 *
+	 * @return array Each with slug, locale, url, current and words.
+	 */
+	private function languages() {
+		if ( ! function_exists( 'pll_the_languages' ) ) {
+			return array();
+		}
+
+		$raw = pll_the_languages(
+			array(
+				'raw'                    => 1,
+				'hide_if_empty'          => 0,
+				'hide_if_no_translation' => 0,
+				'hide_current'           => 0,
+			)
+		);
+
+		$languages = array();
+
+		foreach ( (array) $raw as $language ) {
+			$slug = isset( $language['slug'] ) ? (string) $language['slug'] : '';
+			$name = isset( $language['name'] ) ? (string) $language['name'] : '';
+
+			if ( '' === $slug ) {
+				continue;
+			}
+
+			$languages[] = array(
+				'slug'    => $slug,
+				'locale'  => isset( $language['locale'] ) ? (string) $language['locale'] : $slug,
+				'url'     => isset( $language['url'] ) ? (string) $language['url'] : '',
+				'current' => ! empty( $language['current_lang'] ),
+				'words'   => preg_match( '/[^\x00-\x7F]/', $name ) ? $name : strtoupper( $slug ),
+			);
+		}
+
+		return $languages;
+	}
+
+	/**
+	 * The switch between languages: the current one on a pill, the rest in a
+	 * list that opens from it (6916:1720, 11282:6582, 11282:5363).
+	 *
+	 * @param array $settings The widget's settings.
+	 */
+	private function render_language( $settings ) {
+		if ( isset( $settings['language_switch'] ) && 'yes' !== $settings['language_switch'] ) {
 			return;
 		}
+
+		$languages = $this->languages();
+
+		if ( count( $languages ) < 2 ) {
+			if ( $this->is_editing() ) {
+				$this->editor_hint( __( 'The language switch shows once Polylang is active with more than one language.', 'custom-elementor-widgets' ) );
+			}
+
+			return;
+		}
+
+		$current = $languages[0];
+
+		foreach ( $languages as $language ) {
+			if ( $language['current'] ) {
+				$current = $language;
+			}
+		}
 		?>
-		<nav class="custom-header__menu">
-			<?php $this->menu( $settings['menu'] ); ?>
-		</nav>
+		<div class="custom-header__language">
+			<button class="custom-header__language-toggle" type="button" aria-expanded="false" aria-haspopup="true">
+				<span class="screen-reader-text"><?php esc_html_e( 'Language', 'custom-elementor-widgets' ); ?></span>
+				<svg class="custom-header__language-globe" focusable="false" aria-hidden="true" viewBox="0 0 14.5125 14.5125" fill="none" xmlns="http://www.w3.org/2000/svg"><g><path d="M0.50625 7.25625C0.50625 10.9843 3.52823 14.0063 7.25625 14.0063C10.9843 14.0063 14.0063 10.9843 14.0063 7.25625C14.0063 3.52823 10.9843 0.50625 7.25625 0.50625C3.52823 0.50625 0.50625 3.52823 0.50625 7.25625Z" stroke="currentColor" stroke- stroke-linecap="round" stroke-linejoin="round"/><path d="M7.93117 0.540033C7.93117 0.540033 9.95617 3.20628 9.95617 7.25628C9.95617 11.3063 7.93117 13.9725 7.93117 13.9725M6.58117 13.9725C6.58117 13.9725 4.55617 11.3063 4.55617 7.25628C4.55617 3.20628 6.58117 0.540033 6.58117 0.540033M0.931421 9.61878H13.5809M0.931421 4.89378H13.5809" stroke="currentColor" stroke- stroke-linecap="round" stroke-linejoin="round"/></g></svg>
+				<span class="custom-header__language-name"><?php echo esc_html( $current['words'] ); ?></span>
+				<svg class="custom-header__language-chevron" focusable="false" aria-hidden="true" viewBox="0 0 9.02812 6.075" fill="none" xmlns="http://www.w3.org/2000/svg"><g><path fill-rule="evenodd" clip-rule="evenodd" d="M4.16275 4.59091L1.3502 1.99817L2.05321 1.3501L4.51426 3.6188L6.97531 1.3501L7.67832 1.99817L4.86577 4.59091C4.77253 4.67683 4.64609 4.7251 4.51426 4.7251C4.38242 4.7251 4.25599 4.67683 4.16275 4.59091Z" fill="currentColor"/></g></svg>
+			</button>
+			<ul class="custom-header__language-menu">
+				<?php foreach ( $languages as $language ) : ?>
+					<li<?php echo $language['current'] ? ' class="is-current"' : ''; ?>>
+						<a href="<?php echo esc_url( $language['url'] ); ?>" lang="<?php echo esc_attr( $language['slug'] ); ?>" hreflang="<?php echo esc_attr( $language['slug'] ); ?>"<?php echo $language['current'] ? ' aria-current="true"' : ''; ?>><?php echo esc_html( $language['words'] ); ?></a>
+					</li>
+				<?php endforeach; ?>
+			</ul>
+		</div>
 		<?php
 	}
 

@@ -108,9 +108,8 @@ body.admin-bar .custom-header__bar {
    pushes the buttons or stands over its own items; the bar shows no scrollbar
    for it. What fits stands in the middle, as the file draws it. */
 .custom-header__menu {
-	flex: 1 1 auto;
+	flex: 0 1 auto;
 	min-width: 0;
-	margin: 0 24px;
 	overflow-x: auto;
 	overflow-y: hidden;
 	-ms-overflow-style: none;
@@ -132,6 +131,21 @@ body.admin-bar .custom-header__bar {
 	-webkit-user-select: none;
 }
 
+/* The pages and, after them, the language switch stand together in the
+   middle of what is left between the logo and the buttons, 36 apart like
+   the pages themselves (6916:1720), 24 off either neighbour. The switch
+   stands outside the pages' box, so what that box is told — its type, its
+   ink, its scrolling — does not reach it. */
+.custom-header__middle {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 36px;
+	flex: 1 1 auto;
+	min-width: 0;
+	margin: 0 24px;
+}
+
 .custom-header__menu ul {
 	display: flex;
 	align-items: center;
@@ -141,6 +155,111 @@ body.admin-bar .custom-header__bar {
 	margin: 0 auto;
 	padding: 0;
 	list-style: none;
+}
+
+/* The language switch (6916:1720, 11282:6582): a pill 24 deep with a 1
+   edge, 7 in at either end, the globe, the language's code at 11 Roboto
+   Medium and a chevron 5 apart; and beneath it, 4 down, the list: 126
+   across, 12 inside, a 1 edge and corners of 8, each language on a row 10
+   inside with corners of 4, at 16 Roboto Medium, the current one on its own
+   ground. Colour is the controls'. The list stands out of the menu's box,
+   which clips, so it is placed against the window by the script. */
+.custom-header__language {
+	position: relative;
+	flex: 0 0 auto;
+}
+
+.custom-header__language-toggle,
+.custom-header__language-toggle:hover,
+.custom-header__language-toggle:focus,
+.custom-header__language-toggle:active {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 5px;
+	height: 24px;
+	margin: 0;
+	padding: 0 7px;
+	border: 1px solid currentColor;
+	border-radius: 24px;
+	background: none;
+	color: inherit;
+	font-family: Roboto, sans-serif;
+	font-size: 11px;
+	font-weight: 500;
+	line-height: 1;
+	text-transform: uppercase;
+	white-space: nowrap;
+	cursor: pointer;
+	box-sizing: border-box;
+}
+
+.custom-header__language-toggle:focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: 2px;
+}
+
+.custom-header__language-globe {
+	display: block;
+	width: 14px;
+	height: 14px;
+	flex: 0 0 auto;
+}
+
+.custom-header__language-chevron {
+	display: block;
+	width: 9px;
+	height: 6px;
+	flex: 0 0 auto;
+	transition: transform 300ms ease-in-out;
+}
+
+.custom-header__language.is-open .custom-header__language-chevron {
+	transform: scaleY( -1 );
+}
+
+.custom-header__language-menu {
+	display: none;
+	position: fixed;
+	z-index: 1000;
+	width: 126px;
+	margin: 0;
+	padding: 12px;
+	border: 1px solid #ebe4ca;
+	border-radius: 8px;
+	list-style: none;
+	box-sizing: border-box;
+}
+
+.custom-header__language.is-open .custom-header__language-menu {
+	display: block;
+}
+
+.custom-header__language-menu li {
+	margin: 0;
+	padding: 0;
+}
+
+.custom-header__language-menu a,
+.custom-header__language-menu a:hover,
+.custom-header__language-menu a:focus,
+.custom-header__language-menu a:active {
+	display: block;
+	padding: 10px;
+	border-radius: 4px;
+	font-family: Roboto, sans-serif;
+	font-size: 16px;
+	font-weight: 500;
+	line-height: normal;
+	text-transform: uppercase;
+	text-decoration: none;
+	white-space: nowrap;
+}
+
+@media ( prefers-reduced-motion: reduce ) {
+	.custom-header__language-chevron {
+		transition: none;
+	}
 }
 
 .custom-header__menu li {
@@ -319,6 +438,7 @@ html.custom-header-open body {
 		height: 22px;
 	}
 
+	.custom-header__middle,
 	.custom-header__menu,
 	.custom-header__actions {
 		display: none;
@@ -358,13 +478,19 @@ html.custom-header-open body {
 	}
 
 	.custom-header.is-open .custom-header__menu {
-		order: 3;
 		display: block;
 		width: 100%;
 		margin: 0;
 		overflow: visible;
 		border-top: 1px solid #e1d8b1;
 		cursor: auto;
+	}
+
+	.custom-header.is-open .custom-header__middle {
+		order: 3;
+		display: block;
+		width: 100%;
+		margin: 0;
 	}
 
 	.custom-header.is-open .custom-header__menu ul {
@@ -374,6 +500,61 @@ html.custom-header-open body {
 		width: auto;
 		margin: 0;
 		border-bottom: 1px solid #e1d8b1;
+	}
+
+	/* The language switch stands at the foot of the open menu, 16 in and 26
+	   up from the bottom of the screen (11282:5363), a pill 27 deep, 6 in at
+	   either end, the globe 12, the code at 9 and the chevron 8 by 5, 5
+	   apart. Its list opens upward, 4 above it: 89 across, 8 inside, corners
+	   of 6, each row 7 inside with corners of 3, at 11. Until the menu is
+	   opened it is not there. */
+	.custom-header__language {
+		display: none;
+	}
+
+	.custom-header.is-open .custom-header__language {
+		display: block;
+		position: absolute;
+		left: 16px;
+		bottom: 26px;
+	}
+
+	.custom-header__language-toggle,
+	.custom-header__language-toggle:hover,
+	.custom-header__language-toggle:focus,
+	.custom-header__language-toggle:active {
+		gap: 5px;
+		height: 27px;
+		padding: 0 6px;
+		font-size: 9px;
+	}
+
+	.custom-header__language-globe {
+		width: 12px;
+		height: 12px;
+	}
+
+	.custom-header__language-chevron {
+		width: 8px;
+		height: 5px;
+	}
+
+	.custom-header__language-menu {
+		position: absolute;
+		left: 0;
+		bottom: calc( 100% + 4px );
+		width: 89px;
+		padding: 8px;
+		border-radius: 6px;
+	}
+
+	.custom-header__language-menu a,
+	.custom-header__language-menu a:hover,
+	.custom-header__language-menu a:focus,
+	.custom-header__language-menu a:active {
+		padding: 7px;
+		border-radius: 3px;
+		font-size: 11px;
 	}
 
 	.custom-header.is-open .custom-header__menu li {
@@ -468,5 +649,47 @@ html.custom-header-open body {
 	.custom-header__button:active {
 		padding: 10px 20px;
 	}
-}
 
+	/* The language switch grown with the rest, a decision: the pill 32 deep,
+	   8 in, the globe 14, the code at 11, the chevron 9 by 6; the list 100
+	   across, 10 inside, corners of 8, rows 9 inside with corners of 4, at
+	   13; standing 32 up from the bottom. */
+	.custom-header.is-open .custom-header__language {
+		bottom: 32px;
+	}
+
+	.custom-header__language-toggle,
+	.custom-header__language-toggle:hover,
+	.custom-header__language-toggle:focus,
+	.custom-header__language-toggle:active {
+		gap: 6px;
+		height: 32px;
+		padding: 0 8px;
+		font-size: 11px;
+	}
+
+	.custom-header__language-globe {
+		width: 14px;
+		height: 14px;
+	}
+
+	.custom-header__language-chevron {
+		width: 9px;
+		height: 6px;
+	}
+
+	.custom-header__language-menu {
+		width: 100px;
+		padding: 10px;
+		border-radius: 8px;
+	}
+
+	.custom-header__language-menu a,
+	.custom-header__language-menu a:hover,
+	.custom-header__language-menu a:focus,
+	.custom-header__language-menu a:active {
+		padding: 9px;
+		border-radius: 4px;
+		font-size: 13px;
+	}
+}

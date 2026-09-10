@@ -110,9 +110,82 @@
 		root.classList.toggle( 'is-scrolled', window.pageYOffset > 0 || root.classList.contains( 'is-open' ) );
 	}
 
+	// The language list opens from its pill and shuts on a press anywhere
+	// else, on Escape, and when the window changes. On the wide tier the
+	// list stands against the window, placed under the pill each time it
+	// opens, since the menu's own box clips whatever leaves it.
+	function language( root ) {
+		var block  = root.querySelector( '.custom-header__language' );
+		var toggle = block ? block.querySelector( '.custom-header__language-toggle' ) : null;
+		var list   = block ? block.querySelector( '.custom-header__language-menu' ) : null;
+
+		if ( ! block || ! toggle || ! list ) {
+			return function () {};
+		}
+
+		function place() {
+			if ( window.innerWidth > 1024 ) {
+				var at = toggle.getBoundingClientRect();
+
+				list.style.top  = Math.round( at.bottom + 4 ) + 'px';
+				list.style.left = Math.round( at.left ) + 'px';
+			} else {
+				list.style.top  = '';
+				list.style.left = '';
+			}
+		}
+
+		function set( open ) {
+			block.classList.toggle( 'is-open', open );
+			toggle.setAttribute( 'aria-expanded', open ? 'true' : 'false' );
+
+			if ( open ) {
+				place();
+			}
+		}
+
+		toggle.addEventListener( 'click', function () {
+			set( ! block.classList.contains( 'is-open' ) );
+		} );
+
+		document.addEventListener( 'click', function ( event ) {
+			if ( block.classList.contains( 'is-open' ) && ! block.contains( event.target ) ) {
+				set( false );
+			}
+		} );
+
+		// Escape shuts the list and nothing else: the menu behind it, on the
+		// narrow tiers, waits for the next press.
+		document.addEventListener( 'keydown', function ( event ) {
+			if ( event.key === 'Escape' && block.classList.contains( 'is-open' ) ) {
+				event.stopImmediatePropagation();
+				set( false );
+				toggle.focus();
+			}
+		} );
+
+		window.addEventListener( 'resize', function () {
+			set( false );
+		} );
+
+		var nav = root.querySelector( '.custom-header__menu' );
+
+		if ( nav ) {
+			nav.addEventListener( 'scroll', function () {
+				if ( window.innerWidth > 1024 ) {
+					set( false );
+				}
+			} );
+		}
+
+		return function () {
+			set( false );
+		};
+	}
+
 	// The menu is opened and shut by its own mark, shut by the Escape key, by
 	// choosing a page, and by the window growing past the tiers it belongs to.
-	function menu( root ) {
+	function menu( root, shutLanguage ) {
 		var toggle = root.querySelector( '.custom-header__toggle' );
 
 		if ( ! toggle ) {
@@ -120,6 +193,7 @@
 		}
 
 		function set( open ) {
+			shutLanguage();
 			root.classList.toggle( 'is-open', open );
 			document.documentElement.classList.toggle( 'custom-header-open', open );
 			toggle.setAttribute( 'aria-expanded', open ? 'true' : 'false' );
@@ -166,7 +240,7 @@
 		root.dataset.wired = '1';
 
 		measure( root );
-		menu( root );
+		menu( root, language( root ) );
 		pull( root );
 
 		// Measured once and never again, the band keeps whatever the bar came to
