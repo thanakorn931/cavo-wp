@@ -64,7 +64,7 @@ class Event_Past_Events extends Event_Widget {
 	protected function design_text() {
 		return array(
 			'heading'     => esc_html__( 'Past Events', 'custom-elementor-widgets' ),
-			'button_text' => esc_html__( 'See All Past Events', 'custom-elementor-widgets' ),
+			'button_text' => esc_html__( 'See More Past Events', 'custom-elementor-widgets' ),
 			'action_text' => esc_html__( 'Reserve a Table', 'custom-elementor-widgets' ),
 		);
 	}
@@ -178,9 +178,9 @@ class Event_Past_Events extends Event_Widget {
 				'label'          => esc_html__( 'How many more each press brings', 'custom-elementor-widgets' ),
 				'type'           => Controls_Manager::NUMBER,
 				'min'            => 0,
-				'default'        => 0,
-				'tablet_default' => 2,
-				'mobile_default' => 2,
+				'default'        => 6,
+				'tablet_default' => 4,
+				'mobile_default' => 4,
 				'description'    => esc_html__( 'Nought brings the rest at once.', 'custom-elementor-widgets' ),
 			)
 		);
@@ -366,7 +366,7 @@ class Event_Past_Events extends Event_Widget {
 
 		$items = $this->items( $settings );
 		$shows = $this->per_tier( $settings, 'shown', array( 'desktop' => 3, 'tablet' => 2, 'mobile' => 2 ) );
-		$steps = $this->per_tier( $settings, 'step', array( 'desktop' => 0, 'tablet' => 2, 'mobile' => 2 ), 0 );
+		$steps = $this->per_tier( $settings, 'step', array( 'desktop' => 6, 'tablet' => 4, 'mobile' => 4 ), 0 );
 		$shown = $shows['desktop'];
 		$tag   = isset( $settings['heading_tag'] ) ? $settings['heading_tag'] : 'h2';
 		$tag   = in_array( $tag, array( 'h2', 'h3', 'span' ), true ) ? $tag : 'h2';
