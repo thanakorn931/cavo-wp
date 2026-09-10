@@ -1950,6 +1950,12 @@ function kadence_child_form_submit() {
 			kadence_child_form_back( $back, 'no', $typed );
 		}
 
+		// A type is a rule to check, here as well as in the browser: what the
+		// browser refused can still be posted by whatever is not a browser.
+		if ( '' !== $value && ! kadence_child_form_value_fits( (string) $field['type'], $value ) ) {
+			kadence_child_form_back( $back, 'no', $typed );
+		}
+
 		// Two fields that share a label are told apart before either is stored.
 		$key = kadence_child_form_token( isset( $written_as[ $index ]['label'] ) ? $written_as[ $index ]['label'] : $label );
 		$key = isset( $seen[ $key ] ) ? substr( $key, 0, -1 ) . '_' . ( ++$seen[ $key ] ) . '}' : $key;
@@ -2014,6 +2020,29 @@ function kadence_child_form_submit() {
 }
 add_action( 'admin_post_nopriv_cavo_form', 'kadence_child_form_submit' );
 add_action( 'admin_post_cavo_form', 'kadence_child_form_submit' );
+
+/**
+ * Whether an answer is the shape its field's type asks for.
+ *
+ * Words and choices take anything; an address is an address, a number a
+ * number's marks, a date a date.
+ *
+ * @param string $type  The field's type.
+ * @param string $value What was typed.
+ * @return bool
+ */
+function kadence_child_form_value_fits( $type, $value ) {
+	switch ( $type ) {
+		case 'email':
+			return (bool) is_email( $value );
+		case 'tel':
+			return (bool) preg_match( '/^\+?[0-9][0-9\s().-]{4,}$/', $value );
+		case 'date':
+			return false !== strtotime( $value );
+		default:
+			return true;
+	}
+}
 
 /**
  * Post, then redirect, then render — and where it did not go through, what they
