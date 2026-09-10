@@ -103,12 +103,42 @@ body.admin-bar .custom-header__bar {
 	opacity: 1;
 }
 
+/* The menu takes what is left between the logo and the buttons. A menu with
+   more in it than that can be pulled across — by hand or by wheel — and never
+   pushes the buttons or stands over its own items; the bar shows no scrollbar
+   for it. What fits stands in the middle, as the file draws it. */
+.custom-header__menu {
+	flex: 1 1 auto;
+	min-width: 0;
+	margin: 0 24px;
+	overflow-x: auto;
+	overflow-y: hidden;
+	-ms-overflow-style: none;
+	scrollbar-width: none;
+	touch-action: pan-y;
+}
+
+.custom-header__menu::-webkit-scrollbar {
+	display: none;
+}
+
+.custom-header__menu.is-overflowing {
+	cursor: grab;
+}
+
+.custom-header__menu.is-dragging {
+	cursor: grabbing;
+	user-select: none;
+	-webkit-user-select: none;
+}
+
 .custom-header__menu ul {
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	gap: 36px;
-	margin: 0;
+	width: max-content;
+	margin: 0 auto;
 	padding: 0;
 	list-style: none;
 }
@@ -331,13 +361,18 @@ html.custom-header-open body {
 		order: 3;
 		display: block;
 		width: 100%;
+		margin: 0;
+		overflow: visible;
 		border-top: 1px solid #e1d8b1;
+		cursor: auto;
 	}
 
 	.custom-header.is-open .custom-header__menu ul {
 		flex-direction: column;
 		align-items: stretch;
 		gap: 0;
+		width: auto;
+		margin: 0;
 		border-bottom: 1px solid #e1d8b1;
 	}
 
@@ -383,3 +418,55 @@ html.custom-header-open body {
 		border: 1px solid transparent;
 	}
 }
+
+/* Tablet — 768 to 1024 — is not drawn. It takes mobile's arrangement with the
+   marks and buttons grown to sit between mobile's and the wide tier's: the bar
+   56 (44 / 72), the logo 72 by 30 (53 by 22 / 154 by 64), the mark 32 (24),
+   the pages 52 deep once open (44), the buttons 10 by 20 inside (8 by 16 /
+   12 by 24) with their type at 12 on the control (9 / 14). A decision. */
+@media ( min-width: 768px ) and ( max-width: 1024px ) {
+	.custom-header__row {
+		height: 56px;
+	}
+
+	.custom-header__logo {
+		width: 72px;
+		height: 56px;
+	}
+
+	.custom-header__logo-box {
+		width: 72px;
+		height: 30px;
+	}
+
+	.custom-header__toggle,
+	.custom-header__toggle:hover,
+	.custom-header__toggle:focus,
+	.custom-header__toggle:active,
+	.custom-header__toggle svg {
+		width: 32px;
+		height: 32px;
+	}
+
+	.custom-header.is-open .custom-header__logo {
+		height: 61px;
+	}
+
+	.custom-header.is-open .custom-header__menu a {
+		height: 52px;
+		padding: 12px 10px;
+	}
+
+	.custom-header.is-open .custom-header__actions {
+		gap: 8px;
+		margin-top: 28px;
+	}
+
+	.custom-header__button,
+	.custom-header__button:hover,
+	.custom-header__button:focus,
+	.custom-header__button:active {
+		padding: 10px 20px;
+	}
+}
+

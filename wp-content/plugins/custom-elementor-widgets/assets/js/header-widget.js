@@ -22,6 +22,88 @@
 		spacer.style.height = bar.offsetHeight + 'px';
 	}
 
+	// A menu with more in it than its room is pulled across by hand. A pull
+	// that moved it is not a press on the page it ended over.
+	function pull( root ) {
+		var nav = root.querySelector( '.custom-header__menu' );
+
+		if ( ! nav ) {
+			return;
+		}
+
+		var startX = 0;
+		var startLeft = 0;
+		var moved = false;
+		var held = false;
+
+		function room() {
+			nav.classList.toggle( 'is-overflowing', ! root.classList.contains( 'is-open' ) && nav.scrollWidth > nav.clientWidth + 1 );
+		}
+
+		nav.addEventListener( 'pointerdown', function ( event ) {
+			if ( root.classList.contains( 'is-open' ) || nav.scrollWidth <= nav.clientWidth + 1 ) {
+				return;
+			}
+
+			held      = true;
+			moved     = false;
+			startX    = event.clientX;
+			startLeft = nav.scrollLeft;
+		} );
+
+		window.addEventListener( 'pointermove', function ( event ) {
+			if ( ! held ) {
+				return;
+			}
+
+			var dx = event.clientX - startX;
+
+			if ( ! moved && Math.abs( dx ) > 4 ) {
+				moved = true;
+				nav.classList.add( 'is-dragging' );
+			}
+
+			if ( moved ) {
+				nav.scrollLeft = startLeft - dx;
+				event.preventDefault();
+			}
+		} );
+
+		function release() {
+			if ( ! held ) {
+				return;
+			}
+
+			held = false;
+			nav.classList.remove( 'is-dragging' );
+		}
+
+		window.addEventListener( 'pointerup', release );
+		window.addEventListener( 'pointercancel', release );
+
+		nav.addEventListener( 'click', function ( event ) {
+			if ( moved ) {
+				moved = false;
+				event.preventDefault();
+				event.stopPropagation();
+			}
+		}, true );
+
+		nav.addEventListener( 'dragstart', function ( event ) {
+			event.preventDefault();
+		} );
+
+		room();
+		window.addEventListener( 'resize', room );
+		window.addEventListener( 'load', room );
+
+		if ( document.fonts && document.fonts.ready ) {
+			document.fonts.ready.then( room );
+		}
+
+		root.addEventListener( 'custom-header:toggled', room );
+	}
+
 	function state( root ) {
 		// The design begins the moment the page has moved at all — and the
 		// menu, open, takes the moved bar's colours whatever the page has done.
@@ -47,6 +129,7 @@
 			}
 
 			measure( root );
+			root.dispatchEvent( new Event( 'custom-header:toggled' ) );
 		}
 
 		toggle.addEventListener( 'click', function () {
@@ -84,6 +167,7 @@
 
 		measure( root );
 		menu( root );
+		pull( root );
 
 		// Measured once and never again, the band keeps whatever the bar came to
 		// before the fonts arrived or while the window was some other size — and
