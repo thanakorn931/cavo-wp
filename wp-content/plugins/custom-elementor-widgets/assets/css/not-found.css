@@ -1,0 +1,107 @@
+/**
+ * 404, page not found — one section, the whole of the page it stands on.
+ *
+ * Not drawn in the file. Arranged to suit the site's other pages, and every
+ * figure here is a decision: the band 160 above and below on the wide tier,
+ * the four things standing in a column in the middle of it 16 apart, and the
+ * button 40 under the line above it. Colour and type are the controls'.
+ *
+ * The space between them is the column's, not a margin on a text: the shared
+ * sheet takes the theme's margin off every text the plugin prints, and takes
+ * it with more weight than a section's own class carries.
+ */
+
+.custom-not-found {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	min-height: 60vh;
+	padding: 160px calc( 48px + max( 0px, calc( ( 100% - 1440px ) / 2 ) ) );
+	gap: 16px;
+	box-sizing: border-box;
+	text-align: center;
+}
+
+.custom-not-found__code {
+	margin: 0;
+	padding: 0;
+	letter-spacing: 0.02em;
+}
+
+.custom-not-found__heading {
+	margin: 0;
+	padding: 0;
+	max-width: 640px;
+	text-transform: uppercase;
+}
+
+.custom-not-found__body {
+	margin: 0;
+	padding: 0;
+	max-width: 480px;
+}
+
+/* The site's filled button: 12 by 24 inside, its corners a full 24, and the
+   same in every state it can be pressed into. */
+.custom-not-found__button,
+.custom-not-found__button:hover,
+.custom-not-found__button:focus,
+.custom-not-found__button:active {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	margin-top: 24px;
+	padding: 12px 24px;
+	border: 0;
+	border-radius: 24px;
+	color: inherit;
+	text-decoration: none;
+	white-space: nowrap;
+	transition: opacity 300ms ease-in-out;
+}
+
+.custom-not-found__button:hover,
+.custom-not-found__button:focus-visible {
+	opacity: 0.85;
+}
+
+@media ( prefers-reduced-motion: reduce ) {
+	.custom-not-found__button {
+		transition: none;
+	}
+}
+
+/* Tablet and mobile — the band 96 above and below on tablet and 64 on mobile,
+   16 in from either edge, the column 12 apart and the button 32 under the
+   line, at the site's narrow figures: 10 by 20 inside on tablet, 8 by 16 on
+   mobile. Decisions, as above. */
+@media ( max-width: 1024px ) {
+	.custom-not-found {
+		min-height: 0;
+		padding: 64px 16px;
+		gap: 12px;
+	}
+
+	.custom-not-found__button,
+	.custom-not-found__button:hover,
+	.custom-not-found__button:focus,
+	.custom-not-found__button:active {
+		margin-top: 20px;
+		padding: 8px 16px;
+	}
+}
+
+@media ( min-width: 768px ) and ( max-width: 1024px ) {
+	.custom-not-found {
+		padding: 96px 16px;
+	}
+
+	.custom-not-found__button,
+	.custom-not-found__button:hover,
+	.custom-not-found__button:focus,
+	.custom-not-found__button:active {
+		padding: 10px 20px;
+	}
+}
