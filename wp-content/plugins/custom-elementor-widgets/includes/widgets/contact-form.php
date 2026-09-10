@@ -323,8 +323,9 @@ class Contact_Form extends Base_Widget {
 			?></<?php echo esc_attr( $tag ); ?>>
 
 			<div class="custom-contact-form__column">
-				<form class="custom-contact-form__form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+				<form class="custom-contact-form__form" id="cavo-form-<?php echo esc_attr( $this->get_id() ); ?>" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 					<input type="hidden" name="action" value="cavo_form" />
+					<input type="hidden" name="cavo_at" value="cavo-form-<?php echo esc_attr( $this->get_id() ); ?>" />
 					<input type="hidden" name="cavo_form" value="<?php echo esc_attr( $slug ); ?>" />
 					<?php
 					wp_nonce_field( 'cavo_form_' . $slug, 'cavo_nonce' );

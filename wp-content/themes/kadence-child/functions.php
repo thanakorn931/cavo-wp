@@ -2071,6 +2071,20 @@ function kadence_child_form_value_fits( $type, $value ) {
 }
 
 /**
+ * Where on the page the form that was pressed stands, so the page comes back
+ * to it and what it says back is in front of the eye rather than a screen
+ * above it.
+ *
+ * @param string $url Where the reader is being sent.
+ * @return string The same, at the form.
+ */
+function kadence_child_form_at( $url ) {
+	$at = isset( $_POST['cavo_at'] ) ? sanitize_key( wp_unslash( $_POST['cavo_at'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Missing -- an anchor on the reader's own page, checked by the caller.
+
+	return '' !== $at ? $url . '#' . $at : $url;
+}
+
+/**
  * Post, then redirect, then render — and where it did not go through, what they
  * typed comes back with the page.
  *
@@ -2089,7 +2103,7 @@ function kadence_child_form_back( $back, $result, $typed ) {
 		$args['typed'] = $token;
 	}
 
-	wp_safe_redirect( add_query_arg( $args, remove_query_arg( array( 'sent', 'typed' ), $back ) ) );
+	wp_safe_redirect( kadence_child_form_at( add_query_arg( $args, remove_query_arg( array( 'sent', 'typed' ), $back ) ) ) );
 	exit;
 }
 
@@ -2851,7 +2865,7 @@ function kadence_child_subscribe_back( $back, $state, $email = '' ) {
 		5 * MINUTE_IN_SECONDS
 	);
 
-	wp_safe_redirect( add_query_arg( 'cavo_signup', $key, $back ) );
+	wp_safe_redirect( kadence_child_form_at( add_query_arg( 'cavo_signup', $key, $back ) ) );
 	exit;
 }
 
