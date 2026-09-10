@@ -2194,13 +2194,6 @@ function kadence_child_inbox_columns( $columns ) {
 	}
 
 	$mine['cavo_sender'] = esc_html__( 'Reply to', 'kadence-child' );
-
-	// A second language makes two kinds of reader sit in one list; the team
-	// answers in the one the message came in.
-	if ( ! empty( kadence_child_languages() ) ) {
-		$mine['cavo_lang'] = esc_html__( 'Language', 'kadence-child' );
-	}
-
 	$mine['cavo_said']   = esc_html__( 'Message', 'kadence-child' );
 	$mine['cavo_mail']   = esc_html__( 'Notified', 'kadence-child' );
 	$mine['date']        = esc_html__( 'Received', 'kadence-child' );
@@ -2227,14 +2220,6 @@ function kadence_child_inbox_column( $column, $post_id ) {
 
 	if ( 'cavo_form' === $column ) {
 		echo esc_html( get_post_meta( $post_id, 'cavo_form_name', true ) );
-
-		return;
-	}
-
-	if ( 'cavo_lang' === $column ) {
-		$lang = (string) get_post_meta( $post_id, 'cavo_lang', true );
-
-		echo '' !== $lang ? esc_html( kadence_child_language_name( $lang ) ) : '—';
 
 		return;
 	}
