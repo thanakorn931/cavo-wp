@@ -695,17 +695,197 @@ function kadence_child_enquiry_forms() {
 }
 
 /**
- * One form's fields, as the client left them.
+ * The site's languages, as Polylang has them, once there is more than one.
  *
- * @param string $slug The form's slug.
+ * A form's words are written once per language; its shape is written once.
+ * With one language, or none, there is nothing here and nothing changes.
+ *
+ * @return array Slug to name.
+ */
+function kadence_child_languages() {
+	if ( ! function_exists( 'pll_languages_list' ) || ! function_exists( 'pll_default_language' ) ) {
+		return array();
+	}
+
+	$slugs = (array) pll_languages_list( array( 'fields' => 'slug' ) );
+	$names = (array) pll_languages_list( array( 'fields' => 'name' ) );
+
+	if ( count( $slugs ) < 2 || count( $slugs ) !== count( $names ) ) {
+		return array();
+	}
+
+	return array_combine( $slugs, $names );
+}
+
+/**
+ * The language a form's words are written in first.
+ *
+ * @return string
+ */
+function kadence_child_default_language() {
+	return empty( kadence_child_languages() ) ? '' : (string) pll_default_language();
+}
+
+/**
+ * The languages a form's words are written in again.
+ *
+ * @return array Slug to name.
+ */
+function kadence_child_other_languages() {
+	$languages = kadence_child_languages();
+
+	unset( $languages[ kadence_child_default_language() ] );
+
+	return $languages;
+}
+
+/**
+ * The language the reader is reading in: the page's on the site, and the
+ * default anywhere a page is not being read.
+ *
+ * @return string
+ */
+function kadence_child_current_language() {
+	if ( empty( kadence_child_languages() ) ) {
+		return '';
+	}
+
+	$current = function_exists( 'pll_current_language' ) ? (string) pll_current_language( 'slug' ) : '';
+
+	return '' !== $current ? $current : kadence_child_default_language();
+}
+
+/**
+ * A language a form was sent in, read back from the form.
+ *
+ * @param array $post What was sent.
+ * @return string
+ */
+function kadence_child_posted_language( $post ) {
+	$lang = isset( $post['cavo_lang'] ) ? sanitize_key( $post['cavo_lang'] ) : '';
+
+	return array_key_exists( $lang, kadence_child_languages() ) ? $lang : kadence_child_default_language();
+}
+
+/**
+ * The words a reader sees, in the language they are reading in.
+ *
+ * Each word is written for the default language under its own name, and for
+ * every other language under that name and the language's slug. Read for
+ * another language, a word written there stands in; one left empty falls
+ * back to the default's, so a translation half done is still a whole form.
+ *
+ * @param array       $row  The stored row.
+ * @param array       $keys Which of its words are the reader's.
+ * @param string|null $lang The language, or the reader's own.
+ * @return array The row, its words in that language.
+ */
+function kadence_child_in_language( $row, $keys, $lang = null ) {
+	$row  = (array) $row;
+	$lang = null === $lang ? kadence_child_current_language() : (string) $lang;
+
+	if ( '' === $lang || $lang === kadence_child_default_language() ) {
+		return $row;
+	}
+
+	foreach ( $keys as $key ) {
+		$said = isset( $row[ $key . '_' . $lang ] ) ? trim( (string) $row[ $key . '_' . $lang ] ) : '';
+
+		if ( '' !== $said ) {
+			$row[ $key ] = $said;
+		}
+	}
+
+	return $row;
+}
+
+/**
+ * The same words asked for once per language, on a tab per language.
+ *
+ * Handed what one language's fields are, it returns them for the default
+ * language as they are, and for every other language once more under that
+ * language's slug — each set behind a tab named for its language. With one
+ * language there are no tabs, and the fields stand as they always did.
+ *
+ * @param string   $key   What the keys are built on.
+ * @param callable $words Builds one language's fields from a suffix.
  * @return array
  */
-function kadence_child_form_definition( $slug ) {
+function kadence_child_words_per_language( $key, $words ) {
+	$others = kadence_child_other_languages();
+
+	if ( empty( $others ) ) {
+		return $words( '' );
+	}
+
+	$default = kadence_child_default_language();
+	$fields  = array(
+		array(
+			'key'   => 'field_cavo_lang_tab_' . $key . '_' . $default,
+			'label' => kadence_child_language_name( $default ),
+			'type'  => 'tab',
+		),
+	);
+	$fields  = array_merge( $fields, $words( '' ) );
+
+	foreach ( $others as $slug => $name ) {
+		$fields[] = array(
+			'key'   => 'field_cavo_lang_tab_' . $key . '_' . $slug,
+			'label' => $name,
+			'type'  => 'tab',
+		);
+		$fields   = array_merge( $fields, $words( '_' . $slug ) );
+	}
+
+	return $fields;
+}
+
+/**
+ * A language's name, from its slug.
+ *
+ * @param string $slug The language.
+ * @return string
+ */
+function kadence_child_language_name( $slug ) {
+	$languages = kadence_child_languages();
+
+	return isset( $languages[ $slug ] ) ? $languages[ $slug ] : $slug;
+}
+
+/**
+ * The language a form is read in, sent back with it.
+ *
+ * What the reader is answered with and what is written to them is in the
+ * language they read the form in, which the form says rather than the
+ * server guessing it after the page is gone.
+ */
+function kadence_child_form_language_field() {
+	$lang = kadence_child_current_language();
+
+	if ( '' !== $lang ) {
+		printf( '<input type="hidden" name="cavo_lang" value="%s" />', esc_attr( $lang ) );
+	}
+}
+
+/**
+ * One form's fields, as the client left them, worded for the reader.
+ *
+ * @param string      $slug The form's slug.
+ * @param string|null $lang The language, or the reader's own.
+ * @return array
+ */
+function kadence_child_form_definition( $slug, $lang = null ) {
 	if ( ! function_exists( 'get_field' ) ) {
 		return array();
 	}
 
-	return (array) get_field( 'form_fields_' . $slug, 'option' );
+	$fields = array();
+
+	foreach ( (array) get_field( 'form_fields_' . $slug, 'option' ) as $index => $field ) {
+		$fields[ $index ] = kadence_child_in_language( $field, array( 'label', 'placeholder', 'choices' ), $lang );
+	}
+
+	return $fields;
 }
 
 /**
@@ -1009,14 +1189,10 @@ function kadence_child_form_fields_repeater( $key ) {
 		'layout'       => 'block',
 		'collapsed'    => 'field_cavo_label_' . $key,
 		'button_label' => esc_html__( 'Add field', 'kadence-child' ),
-		'sub_fields'   => array(
+		// What a field is — its type, its width, whether it is asked for — is
+		// one thing in every language. What it says is asked once per language.
+		'sub_fields'   => array_merge(
 			array(
-				'key'      => 'field_cavo_label_' . $key,
-				'label'    => esc_html__( 'Label', 'kadence-child' ),
-				'name'     => 'label',
-				'type'     => 'text',
-				'required' => 1,
-			),
 			array(
 				'key'           => 'field_cavo_type_' . $key,
 				'label'         => esc_html__( 'Type', 'kadence-child' ),
@@ -1048,20 +1224,35 @@ function kadence_child_form_fields_repeater( $key ) {
 				'ui'            => 1,
 				'default_value' => 0,
 			),
-			array(
-				'key'   => 'field_cavo_placeholder_' . $key,
-				'label' => esc_html__( 'Placeholder', 'kadence-child' ),
-				'name'  => 'placeholder',
-				'type'  => 'text',
 			),
-			array(
-				'key'               => 'field_cavo_choices_' . $key,
-				'label'             => esc_html__( 'Options', 'kadence-child' ),
-				'name'              => 'choices',
-				'type'              => 'textarea',
-				'rows'              => 5,
-				'conditional_logic' => array( array( array( 'field' => 'field_cavo_type_' . $key, 'operator' => '==', 'value' => 'select' ) ) ),
-			),
+			kadence_child_words_per_language(
+				'field_' . $key,
+				function ( $suffix ) use ( $key ) {
+					return array(
+						array(
+							'key'      => 'field_cavo_label_' . $key . $suffix,
+							'label'    => esc_html__( 'Label', 'kadence-child' ),
+							'name'     => 'label' . $suffix,
+							'type'     => 'text',
+							'required' => '' === $suffix ? 1 : 0,
+						),
+						array(
+							'key'   => 'field_cavo_placeholder_' . $key . $suffix,
+							'label' => esc_html__( 'Placeholder', 'kadence-child' ),
+							'name'  => 'placeholder' . $suffix,
+							'type'  => 'text',
+						),
+						array(
+							'key'               => 'field_cavo_choices_' . $key . $suffix,
+							'label'             => esc_html__( 'Options', 'kadence-child' ),
+							'name'              => 'choices' . $suffix,
+							'type'              => 'textarea',
+							'rows'              => 5,
+							'conditional_logic' => array( array( array( 'field' => 'field_cavo_type_' . $key, 'operator' => '==', 'value' => 'select' ) ) ),
+						),
+					);
+				}
+			)
 		),
 	);
 }
@@ -1173,7 +1364,8 @@ function kadence_child_form_notification_fields( $key ) {
 			'label'      => esc_html__( 'Notifications › Client', 'kadence-child' ),
 			'name'       => 'client_' . $key,
 			'type'       => 'group',
-			'sub_fields' => array(
+			'sub_fields' => array_merge(
+				array(
 				array(
 					'key'           => 'field_cavo_client_copy_' . $key,
 					'label'         => esc_html__( 'Send a copy', 'kadence-child' ),
@@ -1183,19 +1375,6 @@ function kadence_child_form_notification_fields( $key ) {
 					'default_value' => 1,
 				),
 				array(
-					'key'   => 'field_cavo_client_subject_' . $key,
-					'label' => esc_html__( 'Subject', 'kadence-child' ),
-					'name'  => 'subject',
-					'type'  => 'text',
-				),
-				array(
-					'key'   => 'field_cavo_client_body_' . $key,
-					'label' => esc_html__( 'Body', 'kadence-child' ),
-					'name'  => 'body',
-					'type'  => 'textarea',
-					'rows'  => 5,
-				),
-				array(
 					'key'           => 'field_cavo_client_answers_' . $key,
 					'label'         => esc_html__( 'Include their answers', 'kadence-child' ),
 					'name'          => 'answers',
@@ -1203,6 +1382,29 @@ function kadence_child_form_notification_fields( $key ) {
 					'ui'            => 1,
 					'default_value' => 0,
 				),
+				),
+				// What is written to the reader is written in the language they
+				// wrote in. What the team hears is in the team's.
+				kadence_child_words_per_language(
+					'client_' . $key,
+					function ( $suffix ) use ( $key ) {
+						return array(
+							array(
+								'key'   => 'field_cavo_client_subject_' . $key . $suffix,
+								'label' => esc_html__( 'Subject', 'kadence-child' ),
+								'name'  => 'subject' . $suffix,
+								'type'  => 'text',
+							),
+							array(
+								'key'   => 'field_cavo_client_body_' . $key . $suffix,
+								'label' => esc_html__( 'Body', 'kadence-child' ),
+								'name'  => 'body' . $suffix,
+								'type'  => 'textarea',
+								'rows'  => 5,
+							),
+						);
+					}
+				)
 			),
 		),
 	);
@@ -1217,19 +1419,24 @@ function kadence_child_form_settings_fields( $key ) {
 			'label'      => esc_html__( 'Submit result', 'kadence-child' ),
 			'name'       => 'result_' . $key,
 			'type'       => 'group',
-			'sub_fields' => array(
-				array(
-					'key'   => 'field_cavo_success_' . $key,
-					'label' => esc_html__( 'Success', 'kadence-child' ),
-					'name'  => 'success',
-					'type'  => 'text',
-				),
-				array(
-					'key'   => 'field_cavo_fail_' . $key,
-					'label' => esc_html__( 'Fail', 'kadence-child' ),
-					'name'  => 'fail',
-					'type'  => 'text',
-				),
+			'sub_fields' => kadence_child_words_per_language(
+				'result_' . $key,
+				function ( $suffix ) use ( $key ) {
+					return array(
+						array(
+							'key'   => 'field_cavo_success_' . $key . $suffix,
+							'label' => esc_html__( 'Success', 'kadence-child' ),
+							'name'  => 'success' . $suffix,
+							'type'  => 'text',
+						),
+						array(
+							'key'   => 'field_cavo_fail_' . $key . $suffix,
+							'label' => esc_html__( 'Fail', 'kadence-child' ),
+							'name'  => 'fail' . $suffix,
+							'type'  => 'text',
+						),
+					);
+				}
 			),
 		),
 		array(
@@ -1263,16 +1470,26 @@ function kadence_child_form_settings_fields( $key ) {
  * missing: off is a value, and a helper that hands back the default cannot tell
  * the two apart.
  *
- * @param string $slug  The form's slug.
- * @param string $group Which group.
+ * What the reader is told or written is read in their language; what the
+ * team is told, and how the form is checked, has no language.
+ *
+ * @param string      $slug  The form's slug.
+ * @param string      $group Which group.
+ * @param string|null $lang  The language, or the reader's own.
  * @return array
  */
-function kadence_child_form_settings( $slug, $group ) {
+function kadence_child_form_settings( $slug, $group, $lang = null ) {
 	if ( ! function_exists( 'get_field' ) ) {
 		return array();
 	}
 
-	return (array) get_field( $group . '_' . $slug, 'option' );
+	$read  = (array) get_field( $group . '_' . $slug, 'option' );
+	$words = array(
+		'client' => array( 'subject', 'body' ),
+		'result' => array( 'success', 'confirm', 'fail' ),
+	);
+
+	return isset( $words[ $group ] ) ? kadence_child_in_language( $read, $words[ $group ], $lang ) : $read;
 }
 
 /**
@@ -1471,7 +1688,9 @@ function kadence_child_form_submit() {
 		kadence_child_form_back( $back, 'no', array() );
 	}
 
-	$definition = kadence_child_form_definition( $slug );
+	// Answered and written to in the language they read the form in.
+	$lang       = kadence_child_posted_language( wp_unslash( $_POST ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- read against the site's own list.
+	$definition = kadence_child_form_definition( $slug, $lang );
 	$answers    = array();
 	$typed      = array();
 	$sender     = '';
@@ -1545,10 +1764,11 @@ function kadence_child_form_submit() {
 	update_post_meta( $message, 'cavo_form_name', $forms[ $slug ] );
 	update_post_meta( $message, 'cavo_sender', $sender );
 	update_post_meta( $message, 'cavo_answers', wp_json_encode( $answers ) );
+	update_post_meta( $message, 'cavo_lang', $lang );
 	update_post_meta( $message, 'cavo_unread', 1 );
 
 	// Mail second.
-	kadence_child_form_mail( $slug, $forms[ $slug ], $sender, $name, $answers, $message );
+	kadence_child_form_mail( $slug, $forms[ $slug ], $sender, $name, $answers, $message, $lang );
 
 	kadence_child_form_back( $back, 'yes', array() );
 }
@@ -1587,8 +1807,9 @@ function kadence_child_form_back( $back, $result, $typed ) {
  * @param string $name    What they called themselves, where they said.
  * @param array  $answers What they wrote.
  * @param int    $message The record already stored.
+ * @param string $lang    The language they wrote in.
  */
-function kadence_child_form_mail( $slug, $form, $sender, $name, $answers, $message ) {
+function kadence_child_form_mail( $slug, $form, $sender, $name, $answers, $message, $lang = '' ) {
 	$domain = preg_replace( '/^www\./', '', (string) wp_parse_url( home_url(), PHP_URL_HOST ) );
 
 	// From is the domain. The sender's own address goes in Reply-To, where it
@@ -1633,7 +1854,7 @@ function kadence_child_form_mail( $slug, $form, $sender, $name, $answers, $messa
 		)
 	);
 
-	$client = kadence_child_form_settings( $slug, 'client' );
+	$client = kadence_child_form_settings( $slug, 'client', '' !== $lang ? $lang : null );
 
 	if ( '' === $sender || empty( $client['copy'] ) ) {
 		update_post_meta( $message, 'cavo_client_mail', 'nothing' );
@@ -1699,6 +1920,13 @@ function kadence_child_inbox_columns( $columns ) {
 	}
 
 	$mine['cavo_sender'] = esc_html__( 'Reply to', 'kadence-child' );
+
+	// A second language makes two kinds of reader sit in one list; the team
+	// answers in the one the message came in.
+	if ( ! empty( kadence_child_languages() ) ) {
+		$mine['cavo_lang'] = esc_html__( 'Language', 'kadence-child' );
+	}
+
 	$mine['cavo_said']   = esc_html__( 'Said', 'kadence-child' );
 	$mine['cavo_mail']   = esc_html__( 'Notified', 'kadence-child' );
 	$mine['date']        = esc_html__( 'Received', 'kadence-child' );
@@ -1725,6 +1953,14 @@ function kadence_child_inbox_column( $column, $post_id ) {
 
 	if ( 'cavo_form' === $column ) {
 		echo esc_html( get_post_meta( $post_id, 'cavo_form_name', true ) );
+
+		return;
+	}
+
+	if ( 'cavo_lang' === $column ) {
+		$lang = (string) get_post_meta( $post_id, 'cavo_lang', true );
+
+		echo '' !== $lang ? esc_html( kadence_child_language_name( $lang ) ) : '—';
 
 		return;
 	}
@@ -2216,6 +2452,8 @@ function kadence_child_form_trap() {
 		absint( time() )
 	);
 
+	kadence_child_form_language_field();
+
 	printf(
 		'<div class="cavo-trap" aria-hidden="true" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;">' .
 		'<label>%1$s<input type="text" name="cavo_website" value="" tabindex="-1" autocomplete="off" /></label></div>',
@@ -2363,7 +2601,7 @@ function kadence_child_subscribe_submit() {
 		kadence_child_subscribe_confirm_mail( $added );
 	}
 
-	kadence_child_subscribe_notify( $slug, $email );
+	kadence_child_subscribe_notify( $slug, $email, kadence_child_posted_language( wp_unslash( $_POST ) ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- read against the site's own list.
 
 	kadence_child_subscribe_back( $back, 'pending' === $status ? 'confirm' : 'ok' );
 }
@@ -3420,28 +3658,33 @@ function kadence_child_signup_field_group( $key ) {
 		'label'      => esc_html__( 'Field', 'kadence-child' ),
 		'name'       => 'signup_' . $key,
 		'type'       => 'group',
-		'sub_fields' => array(
-			array(
-				'key'         => 'field_cavo_signup_label_' . $key,
-				'label'       => esc_html__( 'Label', 'kadence-child' ),
-				'name'        => 'label',
-				'type'        => 'text',
-				'placeholder' => esc_html__( 'Email address', 'kadence-child' ),
-			),
-			array(
-				'key'         => 'field_cavo_signup_placeholder_' . $key,
-				'label'       => esc_html__( 'Placeholder', 'kadence-child' ),
-				'name'        => 'placeholder',
-				'type'        => 'text',
-				'placeholder' => esc_html__( 'Enter your email', 'kadence-child' ),
-			),
-			array(
-				'key'         => 'field_cavo_signup_button_' . $key,
-				'label'       => esc_html__( 'Button', 'kadence-child' ),
-				'name'        => 'button',
-				'type'        => 'text',
-				'placeholder' => esc_html__( 'Submit', 'kadence-child' ),
-			),
+		'sub_fields' => kadence_child_words_per_language(
+			'signup_' . $key,
+			function ( $suffix ) use ( $key ) {
+				return array(
+					array(
+						'key'         => 'field_cavo_signup_label_' . $key . $suffix,
+						'label'       => esc_html__( 'Label', 'kadence-child' ),
+						'name'        => 'label' . $suffix,
+						'type'        => 'text',
+						'placeholder' => esc_html__( 'Email address', 'kadence-child' ),
+					),
+					array(
+						'key'         => 'field_cavo_signup_placeholder_' . $key . $suffix,
+						'label'       => esc_html__( 'Placeholder', 'kadence-child' ),
+						'name'        => 'placeholder' . $suffix,
+						'type'        => 'text',
+						'placeholder' => esc_html__( 'Enter your email', 'kadence-child' ),
+					),
+					array(
+						'key'         => 'field_cavo_signup_button_' . $key . $suffix,
+						'label'       => esc_html__( 'Button', 'kadence-child' ),
+						'name'        => 'button' . $suffix,
+						'type'        => 'text',
+						'placeholder' => esc_html__( 'Submit', 'kadence-child' ),
+					),
+				);
+			}
 		),
 	);
 }
@@ -3464,25 +3707,30 @@ function kadence_child_signup_settings_fields( $key ) {
 			'label'      => esc_html__( 'Submit result', 'kadence-child' ),
 			'name'       => 'result_' . $key,
 			'type'       => 'group',
-			'sub_fields' => array(
-				array(
-					'key'         => 'field_cavo_success_' . $key,
-					'label'       => esc_html__( 'Success', 'kadence-child' ),
-					'name'        => 'success',
-					'type'        => 'text',
-				),
-				array(
-					'key'         => 'field_cavo_confirm_' . $key,
-					'label'       => esc_html__( 'Sent to confirm', 'kadence-child' ),
-					'name'        => 'confirm',
-					'type'        => 'text',
-				),
-				array(
-					'key'         => 'field_cavo_fail_' . $key,
-					'label'       => esc_html__( 'Fail', 'kadence-child' ),
-					'name'        => 'fail',
-					'type'        => 'text',
-				),
+			'sub_fields' => kadence_child_words_per_language(
+				'result_' . $key,
+				function ( $suffix ) use ( $key ) {
+					return array(
+						array(
+							'key'   => 'field_cavo_success_' . $key . $suffix,
+							'label' => esc_html__( 'Success', 'kadence-child' ),
+							'name'  => 'success' . $suffix,
+							'type'  => 'text',
+						),
+						array(
+							'key'   => 'field_cavo_confirm_' . $key . $suffix,
+							'label' => esc_html__( 'Sent to confirm', 'kadence-child' ),
+							'name'  => 'confirm' . $suffix,
+							'type'  => 'text',
+						),
+						array(
+							'key'   => 'field_cavo_fail_' . $key . $suffix,
+							'label' => esc_html__( 'Fail', 'kadence-child' ),
+							'name'  => 'fail' . $suffix,
+							'type'  => 'text',
+						),
+					);
+				}
 			),
 		),
 		array(
@@ -3521,7 +3769,7 @@ function kadence_child_signup_word( $slug, $which ) {
 		return '';
 	}
 
-	$said = (array) get_field( 'signup_' . $slug, 'option' );
+	$said = kadence_child_in_language( get_field( 'signup_' . $slug, 'option' ), array( 'label', 'placeholder', 'button' ) );
 
 	return isset( $said[ $which ] ) ? trim( (string) $said[ $which ] ) : '';
 }
@@ -3567,8 +3815,9 @@ function kadence_child_signup_answer( $slug, $state ) {
  *
  * @param string $slug  The form's slug.
  * @param string $email What they typed.
+ * @param string $lang  The language they signed up in.
  */
-function kadence_child_subscribe_notify( $slug, $email ) {
+function kadence_child_subscribe_notify( $slug, $email, $lang = '' ) {
 	$domain  = preg_replace( '/^www\./', '', (string) wp_parse_url( home_url(), PHP_URL_HOST ) );
 	$name    = wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES );
 	$forms   = kadence_child_forms();
@@ -3602,7 +3851,7 @@ function kadence_child_subscribe_notify( $slug, $email ) {
 		);
 	}
 
-	$client = kadence_child_form_settings( $slug, 'client' );
+	$client = kadence_child_form_settings( $slug, 'client', '' !== $lang ? $lang : null );
 
 	if ( empty( $client['copy'] ) || ! is_email( $email ) ) {
 		return;
