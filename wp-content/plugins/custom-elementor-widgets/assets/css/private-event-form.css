@@ -108,9 +108,17 @@
 	appearance: none;
 }
 
-.custom-private-form__input.custom-private-form__input:focus {
+/* Reached, held or pressed, a field keeps what it was resting in: the theme
+   answers a focused input with an edge and an ink of its own, one step
+   heavier than a resting rule, so the resting rule is said again here. */
+.custom-private-form__input.custom-private-form__input:hover,
+.custom-private-form__input.custom-private-form__input:focus,
+.custom-private-form__input.custom-private-form__input:active {
 	outline: none;
 	border-bottom-color: currentColor;
+	background-color: transparent;
+	color: inherit;
+	box-shadow: none;
 }
 
 .custom-private-form__input.custom-private-form__input::placeholder {

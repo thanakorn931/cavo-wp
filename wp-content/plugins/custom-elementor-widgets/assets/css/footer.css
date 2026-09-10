@@ -121,6 +121,19 @@
 	opacity: 1;
 }
 
+/* Reached, held or pressed, the field keeps what it was resting in: the theme
+   answers a focused input with an edge and an ink of its own, at the same
+   weight as the rule above, so it is said again one step heavier. */
+.custom-footer input.custom-footer__field:hover,
+.custom-footer input.custom-footer__field:focus,
+.custom-footer input.custom-footer__field:active {
+	outline: none;
+	border-color: currentColor;
+	background: transparent;
+	color: inherit;
+	box-shadow: none;
+}
+
 .custom-footer .custom-footer__submit,
 .custom-footer button.custom-footer__submit {
 	display: inline-flex;
