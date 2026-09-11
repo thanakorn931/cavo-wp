@@ -155,12 +155,23 @@ final class Field_Tag extends Tag {
 			return $value;
 		}
 
+		// The day is read as it was stored, not as it is shown: shown, it is in
+		// the page's language — `11 ก.ย. 2026` — and no parser reads that, so a
+		// Thai page would count every event from the day it was written.
+		$stored = function_exists( 'get_field' ) ? get_field( $key, $id, false ) : '';
+		$stored = is_scalar( $stored ) ? trim( (string) $stored ) : '';
+		$utc    = new \DateTimeZone( 'UTC' );
+		$shape  = 'date_picker' === $field['type'] ? '!Ymd' : 'Y-m-d H:i:s';
+		$day    = '' !== $stored ? \DateTimeImmutable::createFromFormat( $shape, $stored, $utc ) : false;
+
 		// Read and written in the one frame, so the day that comes back is the
 		// day that was written down.
-		try {
-			$day = new \DateTimeImmutable( $value, new \DateTimeZone( 'UTC' ) );
-		} catch ( \Exception $e ) {
-			return $value;
+		if ( ! $day ) {
+			try {
+				$day = new \DateTimeImmutable( $value, $utc );
+			} catch ( \Exception $e ) {
+				return $value;
+			}
 		}
 
 		return $day->format( 'Y-m-d H:i:s' );

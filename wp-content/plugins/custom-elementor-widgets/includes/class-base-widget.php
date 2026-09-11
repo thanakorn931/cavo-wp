@@ -395,7 +395,11 @@ abstract class Base_Widget extends \Elementor\Widget_Base {
 			return $value;
 		}
 
-		return $day->format( 'd M Y' );
+		// Written in the page's own language: `11 Sep 2026` on an English page,
+		// `11 ก.ย. 2026` on a Thai one.
+		return function_exists( 'wp_date' )
+			? wp_date( 'd M Y', $day->getTimestamp(), new \DateTimeZone( 'UTC' ) )
+			: $day->format( 'd M Y' );
 	}
 
 	/**
