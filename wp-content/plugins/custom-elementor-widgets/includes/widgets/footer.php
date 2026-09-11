@@ -74,7 +74,6 @@ class Footer extends Base_Widget {
 		$this->register_contact_controls();
 		$this->register_menu_controls();
 		$this->register_social_controls();
-		$this->register_bottom_controls();
 		$this->register_footer_style_controls();
 		$this->register_signup_style_controls();
 		$this->register_menu_style_controls();
@@ -259,21 +258,6 @@ class Footer extends Base_Widget {
 		foreach ( $this->social_places() as $which => $label ) {
 			$this->add_link_controls( $this, $which . '_link', $label );
 		}
-
-		$this->end_controls_section();
-	}
-
-	/**
-	 * Content → Bottom.
-	 */
-	private function register_bottom_controls() {
-		$this->start_controls_section(
-			'section_bottom',
-			array(
-				'label' => esc_html__( 'Bottom', 'custom-elementor-widgets' ),
-				'tab'   => Controls_Manager::TAB_CONTENT,
-			)
-		);
 
 		$this->end_controls_section();
 	}
