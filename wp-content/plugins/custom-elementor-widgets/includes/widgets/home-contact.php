@@ -549,7 +549,7 @@ class Home_Contact extends Base_Widget {
 			<?php endif; ?>
 
 			<?php if ( '' !== $body ) : ?>
-				<p class="custom-home-contact__body"><?php echo esc_html( $body ); ?></p>
+				<p class="custom-home-contact__body"><?php echo $this->lines( $body ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in lines(). ?></p>
 			<?php endif; ?>
 		</div>
 		<?php

@@ -275,7 +275,7 @@ class Home_Hero extends Base_Widget {
 			<span class="custom-home-hero__veil" aria-hidden="true"></span>
 
 			<<?php echo esc_attr( $tag ); ?> class="custom-home-hero__heading"><?php
-				echo esc_html( $this->text( $settings, 'heading' ) );
+				echo $this->lines( $this->text( $settings, 'heading' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in lines().
 			?></<?php echo esc_attr( $tag ); ?>>
 
 			<?php if ( '' !== $button ) : ?>

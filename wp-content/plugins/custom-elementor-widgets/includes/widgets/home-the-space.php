@@ -605,7 +605,7 @@ class Home_The_Space extends Base_Widget {
 				?></p>
 
 				<p class="custom-home-space__body"><?php
-					echo esc_html( isset( $area['body'] ) ? $area['body'] : '' );
+					echo $this->lines( isset( $area['body'] ) ? $area['body'] : '' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in lines().
 				?></p>
 
 				<div class="custom-home-space__actions">

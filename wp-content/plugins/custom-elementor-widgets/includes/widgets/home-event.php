@@ -326,7 +326,7 @@ class Home_Event extends Base_Widget {
 		<div class="custom-home-event">
 			<div class="custom-home-event__aside">
 				<<?php echo esc_attr( $tag ); ?> class="custom-home-event__heading"><?php
-					echo esc_html( $this->text( $settings, 'heading' ) );
+					echo $this->lines( $this->text( $settings, 'heading' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in lines().
 				?></<?php echo esc_attr( $tag ); ?>>
 
 				<?php if ( count( $items ) > 1 ) : ?>

@@ -507,7 +507,7 @@ class Membership_Hero extends Base_Widget {
 					echo esc_html( $this->text( $settings, 'heading' ) );
 				?></<?php echo esc_attr( $tag ); ?>>
 
-				<p class="custom-membership-hero__body"><?php echo esc_html( $this->text( $settings, 'body' ) ); ?></p>
+				<p class="custom-membership-hero__body"><?php echo $this->lines( $this->text( $settings, 'body' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in lines(). ?></p>
 			</div>
 
 			<div class="custom-membership-hero__plans">

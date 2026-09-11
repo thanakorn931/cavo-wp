@@ -68,7 +68,8 @@ class Contact_Form extends Base_Widget {
 	 */
 	protected function design_text() {
 		return array(
-			'heading' => esc_html__( 'Get in touch', 'custom-elementor-widgets' ),
+			'heading'   => esc_html__( 'Get in touch', 'custom-elementor-widgets' ),
+			'send_text' => esc_html__( 'Submit', 'custom-elementor-widgets' ),
 		);
 	}
 
@@ -155,6 +156,17 @@ class Contact_Form extends Base_Widget {
 			array(
 				'label' => esc_html__( 'Picture', 'custom-elementor-widgets' ),
 				'type'  => Controls_Manager::MEDIA,
+			)
+		);
+
+		$this->add_control(
+			'send_text',
+			array(
+				'label'       => esc_html__( 'Button text', 'custom-elementor-widgets' ),
+				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
+				'placeholder' => $this->design_text()['send_text'],
+				'separator'   => 'before',
 			)
 		);
 
@@ -353,7 +365,7 @@ class Contact_Form extends Base_Widget {
 
 					<div class="custom-contact-form__actions">
 						<button type="submit" class="custom-contact-form__send"><?php
-							echo esc_html__( 'Submit', 'custom-elementor-widgets' );
+							echo esc_html( $this->text( $settings, 'send_text' ) );
 						?></button>
 					</div>
 

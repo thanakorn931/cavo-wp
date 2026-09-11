@@ -404,7 +404,7 @@ class Private_Event_Form extends Base_Widget {
 				?></<?php echo esc_attr( $tag ); ?>>
 
 				<?php if ( '' !== $body ) : ?>
-					<p class="custom-private-form__body"><?php echo esc_html( $body ); ?></p>
+					<p class="custom-private-form__body"><?php echo $this->lines( $body ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in lines(). ?></p>
 				<?php endif; ?>
 
 				<form class="custom-private-form__form" id="cavo-form-<?php echo esc_attr( $this->get_id() ); ?>" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">

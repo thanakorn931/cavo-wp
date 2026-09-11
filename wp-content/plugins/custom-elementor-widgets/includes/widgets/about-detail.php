@@ -447,14 +447,14 @@ class About_Detail extends Base_Widget {
 				<div class="custom-about-detail__vision">
 					<h3><?php echo esc_html( $this->text( $settings, 'vision_title' ) ); ?></h3>
 					<p class="custom-about-detail__vision-body"><?php
-						echo esc_html( isset( $settings['vision_body'] ) ? $settings['vision_body'] : '' );
+						echo $this->lines( isset( $settings['vision_body'] ) ? $settings['vision_body'] : '' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in lines().
 					?></p>
 				</div>
 
 				<div class="custom-about-detail__mission">
 					<h3><?php echo esc_html( $this->text( $settings, 'mission_title' ) ); ?></h3>
 					<p class="custom-about-detail__mission-body"><?php
-						echo esc_html( isset( $settings['mission_body'] ) ? $settings['mission_body'] : '' );
+						echo $this->lines( isset( $settings['mission_body'] ) ? $settings['mission_body'] : '' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in lines().
 					?></p>
 				</div>
 			</div>
@@ -465,7 +465,7 @@ class About_Detail extends Base_Widget {
 						<div class="custom-about-detail__block">
 							<h3><?php echo esc_html( $this->text( $settings, $which . '_title' ) ); ?></h3>
 							<p class="custom-about-detail__block-body"><?php
-								echo esc_html( isset( $settings[ $which . '_body' ] ) ? $settings[ $which . '_body' ] : '' );
+								echo $this->lines( isset( $settings[ $which . '_body' ] ) ? $settings[ $which . '_body' ] : '' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in lines().
 							?></p>
 						</div>
 					<?php endforeach; ?>

@@ -152,15 +152,6 @@ class Contact_Detail extends Base_Widget {
 			)
 		);
 
-		$this->add_control(
-			'location_note',
-			array(
-				'label'   => esc_html__( 'Beneath the address', 'custom-elementor-widgets' ),
-				'type'    => Controls_Manager::TEXT,
-				'dynamic' => array( 'active' => true ),
-			)
-		);
-
 		foreach ( array(
 			'getting' => esc_html__( 'Getting here', 'custom-elementor-widgets' ),
 			'station' => esc_html__( 'Station', 'custom-elementor-widgets' ),
@@ -433,25 +424,21 @@ class Contact_Detail extends Base_Widget {
 		$settings = $this->get_settings_for_display();
 
 		$map  = isset( $settings['map'] ) ? (string) $settings['map'] : '';
-		$note = isset( $settings['location_note'] ) ? trim( (string) $settings['location_note'] ) : '';
 		?>
 		<div class="custom-contact-detail">
 			<div class="custom-contact-detail__column">
 				<div class="custom-contact-detail__block">
 					<h3><?php echo esc_html( $this->text( $settings, 'location_title' ) ); ?></h3>
 					<p class="custom-contact-detail__block-body"><?php
-						echo esc_html( isset( $settings['location_body'] ) ? $settings['location_body'] : '' );
+						echo $this->lines( isset( $settings['location_body'] ) ? $settings['location_body'] : '' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in lines().
 					?></p>
-					<?php if ( '' !== $note ) : ?>
-						<p><?php echo esc_html( $note ); ?></p>
-					<?php endif; ?>
 				</div>
 
 				<?php foreach ( array( 'getting', 'station' ) as $which ) : ?>
 					<div class="custom-contact-detail__block">
 						<h3><?php echo esc_html( $this->text( $settings, $which . '_title' ) ); ?></h3>
 						<p class="custom-contact-detail__block-body"><?php
-							echo esc_html( isset( $settings[ $which . '_body' ] ) ? $settings[ $which . '_body' ] : '' );
+							echo $this->lines( isset( $settings[ $which . '_body' ] ) ? $settings[ $which . '_body' ] : '' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in lines().
 						?></p>
 					</div>
 				<?php endforeach; ?>

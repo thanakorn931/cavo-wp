@@ -248,7 +248,7 @@ class About_Hero extends Base_Widget {
 					echo esc_html( $this->text( $settings, 'heading' ) );
 				?></<?php echo esc_attr( $tag ); ?>>
 
-				<p class="custom-about-hero__body"><?php echo esc_html( $this->text( $settings, 'body' ) ); ?></p>
+				<p class="custom-about-hero__body"><?php echo $this->lines( $this->text( $settings, 'body' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in lines(). ?></p>
 			</div>
 
 			<span class="custom-about-hero__picture"><?php $this->media( $picture ); ?></span>

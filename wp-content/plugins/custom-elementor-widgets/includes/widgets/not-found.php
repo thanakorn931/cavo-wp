@@ -360,7 +360,7 @@ class Not_Found extends Base_Widget {
 			<<?php echo esc_attr( $tag ); ?> class="custom-not-found__heading"><?php
 				echo esc_html( $this->say( $settings, 'heading', $words['heading'] ) );
 			?></<?php echo esc_attr( $tag ); ?>>
-			<p class="custom-not-found__body"><?php echo esc_html( $this->say( $settings, 'body', $words['body'] ) ); ?></p>
+			<p class="custom-not-found__body"><?php echo $this->lines( $this->say( $settings, 'body', $words['body'] ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in lines(). ?></p>
 			<a class="custom-not-found__button"<?php echo $link; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in link_attributes() or esc_url(). ?>><?php
 				echo esc_html( $this->say( $settings, 'button_text', $words['button'] ) );
 			?></a>

@@ -215,7 +215,7 @@ class Private_Event_Introduce extends Base_Widget {
 
 			<div class="custom-private-introduce__words">
 				<p class="custom-private-introduce__body"><?php
-					echo esc_html( $this->text( $settings, 'body' ) );
+					echo $this->lines( $this->text( $settings, 'body' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in lines().
 				?></p>
 
 				<a class="custom-private-introduce__button"<?php

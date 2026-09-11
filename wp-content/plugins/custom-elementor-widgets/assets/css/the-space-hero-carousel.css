@@ -41,6 +41,9 @@
 }
 
 .custom-space-hero__words {
+	/* A line the client begins is a line the page begins; the script swaps
+	   the words in as text, so the style keeps their breaks. */
+	white-space: pre-line;
 	display: -webkit-box;
 	-webkit-box-orient: vertical;
 	-webkit-line-clamp: 3;

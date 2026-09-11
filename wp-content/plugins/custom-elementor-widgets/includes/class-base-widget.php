@@ -403,6 +403,19 @@ abstract class Base_Widget extends \Elementor\Widget_Base {
 	}
 
 	/**
+	 * What a text area holds, with its lines kept.
+	 *
+	 * A line the client begins in a text area is a line the page begins:
+	 * escaped as words, then each break it holds set down as a break.
+	 *
+	 * @param string $value What was typed.
+	 * @return string Escaped, its breaks kept.
+	 */
+	protected function lines( $value ) {
+		return nl2br( esc_html( trim( (string) $value ) ), false );
+	}
+
+	/**
 	 * The mark on a button that turns a row, as the file draws it.
 	 *
 	 * The file draws two, not one turned about: the way back and the way on are

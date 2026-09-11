@@ -359,7 +359,7 @@ class Membership_Benefit extends Base_Widget {
 									?></h3>
 
 									<p class="custom-membership-benefit__body"><?php
-										echo esc_html( isset( $benefit['body'] ) ? $benefit['body'] : '' );
+										echo $this->lines( isset( $benefit['body'] ) ? $benefit['body'] : '' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in lines().
 									?></p>
 								</div>
 

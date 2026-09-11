@@ -287,7 +287,7 @@ class Nightlife_Hero extends Base_Widget {
 				echo esc_html( $this->text( $settings, 'heading' ) );
 			?></<?php echo esc_attr( $tag ); ?>>
 
-			<p class="custom-nightlife-hero__body"><?php echo esc_html( $this->text( $settings, 'body' ) ); ?></p>
+			<p class="custom-nightlife-hero__body"><?php echo $this->lines( $this->text( $settings, 'body' ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in lines(). ?></p>
 
 			<a class="custom-nightlife-hero__button"<?php
 				echo $this->link_from( $settings, 'button_link' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in link_attributes().
