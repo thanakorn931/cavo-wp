@@ -3871,9 +3871,29 @@ function kadence_child_broadcast_run( $broadcast ) {
 		return;
 	}
 
-	$cursor = (int) get_post_meta( $broadcast, 'cavo_cursor', true );
+	// The next turn is set before this one sends anything. The scheduler takes
+	// a turn off its list before running it, so a turn the host cuts short
+	// halfway would otherwise leave none after it, and the list would stand at
+	// "Going out" for good. The next one starts from the last address reached.
+	wp_schedule_single_event( time() + 60, 'cavo_broadcast_run', array( $broadcast ) );
 
 	global $wpdb;
+
+	// Two turns never send at once: a turn that runs past the minute meets the
+	// next one here, and that one leaves the rest to the turn after it. The
+	// database lets go of the lock itself when the turn holding it ends, however
+	// it ends. A database that cannot lock answers nothing, and the turn sends.
+	$lock = 'cavo_broadcast_' . md5( DB_NAME . $wpdb->prefix . $broadcast );
+
+	if ( '0' === (string) $wpdb->get_var( $wpdb->prepare( 'SELECT GET_LOCK( %s, 0 )', $lock ) ) ) { // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- a lock is not data.
+		return;
+	}
+
+	if ( function_exists( 'set_time_limit' ) ) {
+		set_time_limit( 300 );
+	}
+
+	$cursor = (int) get_post_meta( $broadcast, 'cavo_cursor', true );
 
 	// Walked by id rather than by page. A page is counted from the start of the
 	// list every time, so a row removed mid-run slides the next page up and
@@ -3891,6 +3911,8 @@ function kadence_child_broadcast_run( $broadcast ) {
 
 	if ( empty( $people ) ) {
 		update_post_meta( $broadcast, 'cavo_state', 'done' );
+		wp_clear_scheduled_hook( 'cavo_broadcast_run', array( $broadcast ) );
+		$wpdb->query( $wpdb->prepare( 'SELECT RELEASE_LOCK( %s )', $lock ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- a lock is not data.
 
 		return;
 	}
@@ -3929,9 +3951,44 @@ function kadence_child_broadcast_run( $broadcast ) {
 		update_post_meta( $broadcast, 'cavo_cursor', $who );
 	}
 
-	wp_schedule_single_event( time() + 60, 'cavo_broadcast_run', array( $broadcast ) );
+	$wpdb->query( $wpdb->prepare( 'SELECT RELEASE_LOCK( %s )', $lock ) ); // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- a lock is not data.
 }
 add_action( 'cavo_broadcast_run', 'kadence_child_broadcast_run' );
+
+/**
+ * Once an hour, any list still going out with no turn to come is given one —
+ * whatever lost it its turn, and one left standing before this was written.
+ */
+function kadence_child_broadcast_watch() {
+	$running = get_posts(
+		array(
+			'post_type'      => 'cavo_broadcast',
+			'post_status'    => 'any',
+			'posts_per_page' => 50,
+			'fields'         => 'ids',
+			'no_found_rows'  => true,
+			'meta_key'       => 'cavo_state', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- the few still going out.
+			'meta_value'     => 'running', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_value -- as above.
+		)
+	);
+
+	foreach ( $running as $broadcast ) {
+		if ( ! wp_next_scheduled( 'cavo_broadcast_run', array( (int) $broadcast ) ) ) {
+			wp_schedule_single_event( time(), 'cavo_broadcast_run', array( (int) $broadcast ) );
+		}
+	}
+}
+add_action( 'cavo_broadcast_watch', 'kadence_child_broadcast_watch' );
+
+/**
+ * The hourly look is set once and runs from then on, first at once.
+ */
+function kadence_child_broadcast_watch_schedule() {
+	if ( ! wp_next_scheduled( 'cavo_broadcast_watch' ) ) {
+		wp_schedule_event( time(), 'hourly', 'cavo_broadcast_watch' );
+	}
+}
+add_action( 'init', 'kadence_child_broadcast_watch_schedule' );
 
 
 /**
