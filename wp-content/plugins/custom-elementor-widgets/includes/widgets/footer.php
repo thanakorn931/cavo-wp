@@ -799,13 +799,13 @@ class Footer extends Base_Widget {
 			'<a class="custom-footer__maker" href="%1$s" target="_blank" rel="%2$s">%3$s</a>',
 			esc_url( 'https://yeswebdesignstudio.com/' ),
 			esc_attr( $rel ),
-			esc_html__( 'Yes Web Design.', 'custom-elementor-widgets' )
+			esc_html__( 'YWDS.', 'custom-elementor-widgets' )
 		);
 		?>
 		<p class="custom-footer__copyright"><?php
 			printf(
 				/* translators: %s: the maker's name, as a link. */
-				esc_html__( '© 2026 CAVO design by %s', 'custom-elementor-widgets' ),
+				esc_html__( '© 2026 CAVO. ALL Rights Reserved. Designed by %s', 'custom-elementor-widgets' ),
 				$maker // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- built above from escaped parts.
 			);
 		?></p>
