@@ -382,6 +382,10 @@ body.admin-bar .custom-header__bar {
 	background: none;
 	color: inherit;
 	cursor: pointer;
+	/* The theme gives every button a change of everything, place in the row
+	   among it; opened, the mark would travel across the row to its end. Only
+	   its ink changes over time. */
+	transition: color 300ms ease-in-out;
 }
 
 .custom-header__toggle:focus-visible {
@@ -460,6 +464,53 @@ html.custom-header-open body {
 	.custom-header.is-open .custom-header__bar {
 		bottom: 0;
 		overflow-y: auto;
+	}
+
+	/* Opening, the menu comes down from under the bar's own row, which never
+	   moves: the mark and the button that shuts it stay where they are, and
+	   what lies beneath is uncovered from the top down, the pages and the
+	   buttons coming down with it. Shutting, it goes back up the same way.
+	   The row is the depth the open bar gives it on this tier. */
+	.custom-header {
+		--custom-header-row: 49px;
+	}
+
+	.custom-header.is-open .custom-header__bar {
+		animation: custom-header-down 300ms ease-in-out both;
+	}
+
+	.custom-header.is-open.is-closing .custom-header__bar {
+		animation-name: custom-header-up;
+	}
+
+	.custom-header.is-open .custom-header__menu,
+	.custom-header.is-open .custom-header__actions {
+		animation: custom-header-in 300ms ease-in-out both;
+	}
+
+	/* The pages come down from inside their own room, never up into the row. */
+	.custom-header.is-open .custom-header__middle {
+		overflow: hidden;
+	}
+
+	.custom-header.is-open.is-closing .custom-header__menu,
+	.custom-header.is-open.is-closing .custom-header__actions {
+		animation-name: custom-header-out;
+	}
+	/* The bar's change of colour is for the page moving. Opening, the menu
+	   comes down already in its own colours. */
+	.custom-header.is-opening .custom-header__bar,
+	.custom-header.is-opening .custom-header__bar * {
+		transition: none;
+	}
+
+	/* Pressed to shut, the mark is the one that opens again at once. */
+	.custom-header.is-open.is-closing .custom-header__toggle-open {
+		display: block;
+	}
+
+	.custom-header.is-open.is-closing .custom-header__toggle-shut {
+		display: none;
 	}
 
 	.custom-header.is-open .custom-header__row {
@@ -629,6 +680,10 @@ html.custom-header-open body {
 		height: 32px;
 	}
 
+	.custom-header {
+		--custom-header-row: 61px;
+	}
+
 	.custom-header.is-open .custom-header__logo {
 		height: 61px;
 	}
@@ -691,5 +746,58 @@ html.custom-header-open body {
 		padding: 9px;
 		border-radius: 4px;
 		font-size: 13px;
+	}
+}
+
+@keyframes custom-header-down {
+	from {
+		clip-path: inset( 0 0 calc( 100% - var( --custom-header-row ) ) 0 );
+	}
+
+	to {
+		clip-path: inset( 0 );
+	}
+}
+
+@keyframes custom-header-up {
+	from {
+		clip-path: inset( 0 );
+	}
+
+	to {
+		clip-path: inset( 0 0 calc( 100% - var( --custom-header-row ) ) 0 );
+	}
+}
+
+@keyframes custom-header-in {
+	from {
+		opacity: 0;
+		transform: translateY( -24px );
+	}
+
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+@keyframes custom-header-out {
+	from {
+		opacity: 1;
+		transform: none;
+	}
+
+	to {
+		opacity: 0;
+		transform: translateY( -24px );
+	}
+}
+
+/* A reader who has asked for less movement is shown the menu at once. */
+@media ( prefers-reduced-motion: reduce ) {
+	.custom-header.is-open .custom-header__bar,
+	.custom-header.is-open .custom-header__menu,
+	.custom-header.is-open .custom-header__actions {
+		animation: none;
 	}
 }

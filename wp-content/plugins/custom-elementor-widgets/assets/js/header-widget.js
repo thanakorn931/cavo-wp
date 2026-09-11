@@ -192,8 +192,47 @@
 			return;
 		}
 
+		// How long the menu takes to go back up; it is taken down only after.
+		var SHUT = 300;
+		var closing = 0;
+		var opening = 0;
+
+		function moves() {
+			return window.innerWidth <= 1024 && ! ( window.matchMedia && window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches );
+		}
+
 		function set( open ) {
 			shutLanguage();
+			window.clearTimeout( closing );
+			window.clearTimeout( opening );
+			root.classList.remove( 'is-closing', 'is-opening' );
+
+			// Shut, the menu goes back up before it is taken away; the button
+			// says it is shut from the moment it is pressed.
+			if ( ! open && root.classList.contains( 'is-open' ) && moves() ) {
+				root.classList.add( 'is-closing' );
+				toggle.setAttribute( 'aria-expanded', 'false' );
+				closing = window.setTimeout( function () {
+					root.classList.remove( 'is-closing' );
+					apply( false );
+				}, SHUT );
+
+				return;
+			}
+
+			// Opened, the menu comes down already in its own colours, not
+			// turning into them on the way.
+			if ( open && ! root.classList.contains( 'is-open' ) && moves() ) {
+				root.classList.add( 'is-opening' );
+				opening = window.setTimeout( function () {
+					root.classList.remove( 'is-opening' );
+				}, SHUT );
+			}
+
+			apply( open );
+		}
+
+		function apply( open ) {
 			root.classList.toggle( 'is-open', open );
 			document.documentElement.classList.toggle( 'custom-header-open', open );
 			toggle.setAttribute( 'aria-expanded', open ? 'true' : 'false' );
@@ -207,11 +246,11 @@
 		}
 
 		toggle.addEventListener( 'click', function () {
-			set( ! root.classList.contains( 'is-open' ) );
+			set( ! root.classList.contains( 'is-open' ) || root.classList.contains( 'is-closing' ) );
 		} );
 
 		document.addEventListener( 'keydown', function ( event ) {
-			if ( event.key === 'Escape' && root.classList.contains( 'is-open' ) ) {
+			if ( event.key === 'Escape' && root.classList.contains( 'is-open' ) && ! root.classList.contains( 'is-closing' ) ) {
 				set( false );
 				toggle.focus();
 			}
