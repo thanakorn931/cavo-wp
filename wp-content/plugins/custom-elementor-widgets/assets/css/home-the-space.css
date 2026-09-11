@@ -160,6 +160,10 @@
 	pointer-events: none;
 }
 
+/* The words stand above the second picture and end 24 short of it, the
+   same gap they keep between themselves. The buttons stand at the foot of
+   that room whatever is written above them; words longer than the room are
+   cut at their last whole line, never the buttons moved. */
 .custom-home-space__panel {
 	position: absolute;
 	left: 70.486%;
@@ -169,6 +173,7 @@
 	align-items: flex-start;
 	gap: 24px;
 	width: 27.222%;
+	height: 278px;
 }
 
 .custom-home-space__title,
@@ -180,13 +185,28 @@
 }
 
 .custom-home-space__title {
+	flex: 0 0 auto;
 	text-transform: uppercase;
 }
 
+.custom-home-space__body {
+	flex: 0 1 auto;
+	min-height: 0;
+	overflow: hidden;
+}
+
+/* Cut at a whole line, with the mark that says there was more. */
+.custom-home-space__body.is-cut {
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+}
+
 .custom-home-space__actions {
+	flex: 0 0 auto;
 	display: flex;
 	align-items: center;
 	gap: 16px;
+	margin-top: auto;
 }
 
 .custom-home-space__space {
@@ -408,13 +428,22 @@
 		display: none;
 	}
 
+	/* In the flow here, the words run their whole length and the buttons
+	   follow them. */
 	.custom-home-space__panel {
 		position: relative;
 		left: auto;
 		top: auto;
 		width: 100%;
+		height: auto;
 		margin-top: 24px;
 		gap: 16px;
+	}
+
+	.custom-home-space__body,
+	.custom-home-space__body.is-cut {
+		display: block;
+		overflow: visible;
 	}
 
 	/* The band stands its children in an order of its own here, and the picture

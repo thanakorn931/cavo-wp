@@ -23,6 +23,61 @@
 
 		var current = 0;
 
+		// On the wide tier the words have a room of their own above the second
+		// picture. Where they run past it they are cut at the last line that
+		// fits whole, so no line stands half shown and the buttons stay put.
+		function cut() {
+			var bodies = root.querySelectorAll( '.custom-home-space__body' );
+
+			for ( var i = 0; i < bodies.length; i++ ) {
+				var body = bodies[ i ];
+
+				body.classList.remove( 'is-cut' );
+				body.style.webkitLineClamp = '';
+
+				if ( window.innerWidth <= 1024 || body.closest( '[hidden]' ) ) {
+					continue;
+				}
+
+				if ( body.scrollHeight <= body.clientHeight + 1 ) {
+					continue;
+				}
+
+				// The lines are read off the words themselves, each where it
+				// stands: a line of one script is not the height of a line of
+				// another, so no single measure counts them.
+				var room  = body.clientHeight;
+				var top   = body.getBoundingClientRect().top;
+				var range = document.createRange();
+				var foot  = {};
+
+				range.selectNodeContents( body );
+
+				var boxes = range.getClientRects();
+
+				for ( var k = 0; k < boxes.length; k++ ) {
+					if ( boxes[ k ].height <= 0 ) {
+						continue;
+					}
+
+					var at = Math.round( boxes[ k ].top - top );
+
+					foot[ at ] = Math.max( foot[ at ] || 0, boxes[ k ].bottom - top );
+				}
+
+				var whole = 0;
+
+				Object.keys( foot ).forEach( function ( at ) {
+					if ( foot[ at ] <= room + 0.5 ) {
+						whole++;
+					}
+				} );
+
+				body.classList.add( 'is-cut' );
+				body.style.webkitLineClamp = String( Math.max( 1, whole ) );
+			}
+		}
+
 		function show( index ) {
 			// The tabs are a ring: past the last is the first again.
 			current = ( index + areas.length ) % areas.length;
@@ -36,6 +91,8 @@
 				tabs[ j ].classList.toggle( 'is-here', j === current );
 				tabs[ j ].setAttribute( 'aria-selected', j === current ? 'true' : 'false' );
 			}
+
+			cut();
 		}
 
 		root.addEventListener( 'click', function ( event ) {
@@ -55,6 +112,13 @@
 		} );
 
 		show( 0 );
+
+		window.addEventListener( 'resize', cut );
+		window.addEventListener( 'load', cut );
+
+		if ( document.fonts && document.fonts.ready ) {
+			document.fonts.ready.then( cut );
+		}
 	}
 
 	function start() {
