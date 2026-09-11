@@ -118,7 +118,7 @@ class Private_Event_Virtual_Tour extends Base_Widget {
 		<div class="custom-private-tour" id="<?php echo esc_attr( self::ANCHOR ); ?>">
 			<div class="custom-private-tour__stage">
 				<div class="custom-private-tour__media">
-					<?php $this->media( $url ); ?>
+					<?php $this->media( $url, '', true ); ?>
 				</div>
 			</div>
 

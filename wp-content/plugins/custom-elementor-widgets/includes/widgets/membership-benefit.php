@@ -337,7 +337,7 @@ class Membership_Benefit extends Base_Widget {
 		$tag = in_array( $tag, array( 'h2', 'h3', 'span' ), true ) ? $tag : 'h2';
 		?>
 		<div class="custom-membership-benefit">
-			<span class="custom-membership-benefit__picture" aria-hidden="true"><?php $this->media( $picture ); ?></span>
+			<span class="custom-membership-benefit__picture" aria-hidden="true"><?php $this->media( $picture, '', true ); ?></span>
 			<span class="custom-membership-benefit__veil" aria-hidden="true"></span>
 
 			<<?php echo esc_attr( $tag ); ?> class="custom-membership-benefit__heading"><?php
@@ -349,7 +349,7 @@ class Membership_Benefit extends Base_Widget {
 					<?php foreach ( $benefits as $index => $benefit ) : ?>
 						<div class="custom-membership-benefit__slide<?php echo 0 === $index ? ' is-current' : ''; ?>">
 							<div class="custom-membership-benefit__stage"><?php
-								$this->media( isset( $benefit['wide_picture']['url'] ) ? $benefit['wide_picture']['url'] : '' );
+								$this->media( isset( $benefit['wide_picture']['url'] ) ? $benefit['wide_picture']['url'] : '', '', true );
 							?></div>
 
 							<div class="custom-membership-benefit__side">
@@ -364,7 +364,7 @@ class Membership_Benefit extends Base_Widget {
 								</div>
 
 								<div class="custom-membership-benefit__thumb">
-									<?php $this->media( isset( $benefit['thumb_picture']['url'] ) ? $benefit['thumb_picture']['url'] : '' ); ?>
+									<?php $this->media( isset( $benefit['thumb_picture']['url'] ) ? $benefit['thumb_picture']['url'] : '', '', true ); ?>
 									<span class="custom-membership-benefit__thumb-veil" aria-hidden="true"></span>
 								</div>
 							</div>

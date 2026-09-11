@@ -318,7 +318,7 @@ class Nightlife_Membership extends Base_Widget {
 		$tag     = in_array( $tag, array( 'h2', 'h3', 'span' ), true ) ? $tag : 'h2';
 		?>
 		<div class="custom-nightlife-membership">
-			<span class="custom-nightlife-membership__picture" aria-hidden="true"><?php $this->media( $picture ); ?></span>
+			<span class="custom-nightlife-membership__picture" aria-hidden="true"><?php $this->media( $picture, '', true ); ?></span>
 			<span class="custom-nightlife-membership__veil" aria-hidden="true"></span>
 
 			<<?php echo esc_attr( $tag ); ?> class="custom-nightlife-membership__heading"><?php
@@ -328,7 +328,7 @@ class Nightlife_Membership extends Base_Widget {
 			<div class="custom-nightlife-membership__panels">
 				<div class="custom-nightlife-membership__panel custom-nightlife-membership__panel--wide">
 					<span class="custom-nightlife-membership__panel-picture" aria-hidden="true"><?php
-						$this->media( isset( $settings['panel_picture']['url'] ) ? $settings['panel_picture']['url'] : '' );
+						$this->media( isset( $settings['panel_picture']['url'] ) ? $settings['panel_picture']['url'] : '', '', true );
 					?></span>
 
 					<a class="custom-nightlife-membership__button"<?php
@@ -344,7 +344,7 @@ class Nightlife_Membership extends Base_Widget {
 						?>
 					>
 						<span class="custom-nightlife-membership__panel-picture" aria-hidden="true"><?php
-							$this->media( isset( $settings[ 'side_' . $which . '_picture' ]['url'] ) ? $settings[ 'side_' . $which . '_picture' ]['url'] : '' );
+							$this->media( isset( $settings[ 'side_' . $which . '_picture' ]['url'] ) ? $settings[ 'side_' . $which . '_picture' ]['url'] : '', '', true );
 						?></span>
 						<span class="custom-nightlife-membership__panel-veil" aria-hidden="true"></span>
 					</a>

@@ -129,10 +129,16 @@ abstract class Base_Widget extends \Elementor\Widget_Base {
 		// starts without being asked. Whether it holds still for a reader who
 		// wants less movement is settled by the shared script, which finds it
 		// by the attribute printed here.
+		//
+		// It is the heaviest thing a page carries and never the first thing
+		// read, so it is printed without its file: the shared script hands it
+		// over once the page has finished loading, or — for one further down
+		// — once the reader nears it.
 		if ( $this->is_film( $url ) ) {
 			printf(
-				'<video src="%s" autoplay loop muted playsinline preload="auto" data-custom-plays="1"></video>',
-				esc_url( $url )
+				'<video data-src="%1$s" loop muted playsinline preload="none" data-custom-plays="1" data-custom-wait="%2$s"></video>',
+				esc_url( $url ),
+				$lazy ? 'near' : 'page'
 			);
 
 			return;

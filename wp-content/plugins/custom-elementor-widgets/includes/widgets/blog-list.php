@@ -425,9 +425,14 @@ class Blog_List extends Blog_Widget {
 			<div class="custom-blog-list__band">
 				<div class="custom-blog-list__cards">
 					<?php
+					// The first row stands in the first screen at the widest
+					// tier, and the first two at the narrowest; those load with
+					// the page, and the rest wait for the reader.
+					$place = 0;
+
 					while ( $query->have_posts() ) {
 						$query->the_post();
-						$this->render_card();
+						$this->render_card( $place++ < 3 );
 					}
 
 					wp_reset_postdata();

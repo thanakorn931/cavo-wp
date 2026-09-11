@@ -168,6 +168,22 @@ class Home_Hero extends Base_Widget {
 			)
 		);
 
+		// The film waits for the page to finish loading, so for a moment the
+		// band stands without it; its ground keeps the words on it readable
+		// until the film arrives.
+		$this->add_control(
+			'ground_color',
+			array(
+				'label'       => esc_html__( 'Background', 'custom-elementor-widgets' ),
+				'type'        => Controls_Manager::COLOR,
+				'default'     => '#3A2114',
+				'description' => esc_html__( 'Seen until the picture or film has arrived.', 'custom-elementor-widgets' ),
+				'selectors'   => array(
+					'{{WRAPPER}} .custom-home-hero' => 'background-color: {{VALUE}};',
+				),
+			)
+		);
+
 		$this->add_control(
 			'veil_color',
 			array(

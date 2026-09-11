@@ -345,7 +345,7 @@ class Nightlife_Beat extends Base_Widget {
 
 			<?php $strip = isset( $settings['strip']['url'] ) ? trim( (string) $settings['strip']['url'] ) : ''; ?>
 			<?php if ( '' !== $strip ) : ?>
-				<span class="custom-nightlife-beat__strip"><?php $this->media( $strip ); ?></span>
+				<span class="custom-nightlife-beat__strip"><?php $this->media( $strip, '', true ); ?></span>
 			<?php endif; ?>
 		</div>
 		<?php
@@ -372,9 +372,9 @@ class Nightlife_Beat extends Base_Widget {
 					<?php if ( '' === $picture ) : ?>
 						<?php $this->media( '' ); ?>
 					<?php elseif ( $now ) : ?>
-						<img src="<?php echo esc_url( $picture ); ?>" alt="<?php echo esc_attr( $name ); ?>" />
+						<img src="<?php echo esc_url( $picture ); ?>" alt="<?php echo esc_attr( $name ); ?>" loading="lazy" />
 					<?php else : ?>
-						<img data-src="<?php echo esc_url( $picture ); ?>" alt="<?php echo esc_attr( $name ); ?>" />
+						<img data-src="<?php echo esc_url( $picture ); ?>" alt="<?php echo esc_attr( $name ); ?>" loading="lazy" />
 					<?php endif; ?>
 				</span>
 

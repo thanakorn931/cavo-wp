@@ -226,13 +226,13 @@ abstract class Event_Widget extends Base_Widget {
 	 * @param \WP_Post $post   The item.
 	 * @param bool     $hidden Whether it waits for the button before it shows.
 	 */
-	protected function render_card( $post, $hidden = false ) {
+	protected function render_card( $post, $hidden = false, $now = false ) {
 		$picture = get_the_post_thumbnail_url( $post, 'large' );
 		$title   = get_the_title( $post );
 		?>
 		<article class="custom-event-card<?php echo $hidden ? ' is-waiting' : ''; ?>"<?php echo $hidden ? ' hidden' : ''; ?>>
 			<span class="custom-event-card__picture">
-				<?php $this->media( $picture, $title, true ); ?>
+				<?php $this->media( $picture, $title, ! $now ); ?>
 				<span class="custom-event-card__badge" aria-hidden="true"></span>
 			</span>
 

@@ -529,7 +529,7 @@ class Home_The_Space extends Base_Widget {
 		$tag = in_array( $tag, array( 'h2', 'h3', 'span' ), true ) ? $tag : 'h2';
 		?>
 		<div class="custom-home-space">
-			<span class="custom-home-space__picture" aria-hidden="true"><?php $this->media( $picture ); ?></span>
+			<span class="custom-home-space__picture" aria-hidden="true"><?php $this->media( $picture, '', true ); ?></span>
 
 			<<?php echo esc_attr( $tag ); ?> class="custom-home-space__heading"><?php
 				echo esc_html( $this->text( $settings, 'heading' ) );
@@ -591,11 +591,11 @@ class Home_The_Space extends Base_Widget {
 		?>
 		<div class="custom-home-space__area<?php echo $here ? ' is-here' : ''; ?>"<?php echo $here ? '' : ' hidden'; ?>>
 			<span class="custom-home-space__large">
-				<?php $this->media( isset( $area['picture']['url'] ) ? $area['picture']['url'] : '' ); ?>
+				<?php $this->media( isset( $area['picture']['url'] ) ? $area['picture']['url'] : '', '', true ); ?>
 			</span>
 
 			<span class="custom-home-space__small">
-				<?php $this->media( isset( $area['thumb']['url'] ) ? $area['thumb']['url'] : '' ); ?>
+				<?php $this->media( isset( $area['thumb']['url'] ) ? $area['thumb']['url'] : '', '', true ); ?>
 				<span class="custom-home-space__small-veil" aria-hidden="true"></span>
 			</span>
 

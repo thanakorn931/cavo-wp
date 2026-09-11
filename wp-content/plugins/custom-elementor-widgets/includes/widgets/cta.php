@@ -289,7 +289,7 @@ class Cta extends Base_Widget {
 		?>
 		<div class="custom-cta">
 			<span class="custom-cta__picture" aria-hidden="true">
-				<?php $this->media( $picture ); ?>
+				<?php $this->media( $picture, '', true ); ?>
 			</span>
 			<span class="custom-cta__veil" aria-hidden="true"></span>
 

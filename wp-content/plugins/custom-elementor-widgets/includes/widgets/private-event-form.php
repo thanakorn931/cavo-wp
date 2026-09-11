@@ -396,7 +396,7 @@ class Private_Event_Form extends Base_Widget {
 		$typed  = $this->typed();
 		?>
 		<div class="custom-private-form">
-			<div class="custom-private-form__picture"><?php $this->media( $picture ); ?></div>
+			<div class="custom-private-form__picture"><?php $this->media( $picture, '', true ); ?></div>
 
 			<div class="custom-private-form__column">
 				<<?php echo esc_attr( $tag ); ?> class="custom-private-form__heading"><?php

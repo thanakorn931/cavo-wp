@@ -327,7 +327,7 @@ class Contact_Form extends Base_Widget {
 		$typed  = $this->typed();
 		?>
 		<div class="custom-contact-form">
-			<span class="custom-contact-form__picture" aria-hidden="true"><?php $this->media( $picture ); ?></span>
+			<span class="custom-contact-form__picture" aria-hidden="true"><?php $this->media( $picture, '', true ); ?></span>
 			<span class="custom-contact-form__veil" aria-hidden="true"></span>
 
 			<<?php echo esc_attr( $tag ); ?> class="custom-contact-form__heading"><?php

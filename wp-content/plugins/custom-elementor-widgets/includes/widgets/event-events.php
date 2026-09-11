@@ -271,7 +271,11 @@ class Event_Events extends Event_Widget {
 				<?php if ( ! empty( $items ) ) : ?>
 					<div class="custom-event-list__grid">
 						<?php foreach ( $items as $index => $item ) : ?>
-							<?php $this->render_card( $item, $index >= $step ); ?>
+							<?php
+							// The first beneath the newest stands in the first
+							// screen on a phone, and loads with the page.
+							$this->render_card( $item, $index >= $step, 0 === $index );
+							?>
 						<?php endforeach; ?>
 					</div>
 				<?php endif; ?>

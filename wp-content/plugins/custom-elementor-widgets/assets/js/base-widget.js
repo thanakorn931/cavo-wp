@@ -5,6 +5,10 @@
  * reader whose system has asked for less movement. CSS cannot stop a loop, so
  * the asking is answered here — and answered again the moment they change
  * their mind.
+ *
+ * It arrives without its file. One in the first screen is handed it once the
+ * page has finished loading; one further down, once the reader nears it —
+ * the page is never kept waiting on a film.
  */
 ( function () {
 	'use strict';
@@ -13,7 +17,8 @@
 	var asked = null;
 
 	function settle( film ) {
-		if ( ! asked ) {
+		// Not handed its file yet: there is nothing to play or to hold.
+		if ( ! asked || film.hasAttribute( 'data-src' ) ) {
 			return;
 		}
 
@@ -35,6 +40,42 @@
 		}
 	}
 
+	// The file is handed over, and the video plays or holds as asked.
+	function arrive( film ) {
+		if ( ! film.hasAttribute( 'data-src' ) ) {
+			return;
+		}
+
+		film.preload = 'auto';
+		film.src     = film.getAttribute( 'data-src' );
+		film.removeAttribute( 'data-src' );
+
+		settle( film );
+	}
+
+	// When: at once for one in the first screen, the page having loaded; for
+	// one further down, as the reader comes within a screen of it.
+	function when( film ) {
+		if ( 'near' === film.getAttribute( 'data-custom-wait' ) && 'IntersectionObserver' in window ) {
+			var near = new window.IntersectionObserver( function ( entries ) {
+				for ( var i = 0; i < entries.length; i++ ) {
+					if ( entries[ i ].isIntersecting ) {
+						near.disconnect();
+						arrive( film );
+
+						return;
+					}
+				}
+			}, { rootMargin: '100% 0px' } );
+
+			near.observe( film );
+
+			return;
+		}
+
+		arrive( film );
+	}
+
 	function watch( film ) {
 		if ( ! film || film.dataset.wired ) {
 			return;
@@ -42,7 +83,19 @@
 
 		film.dataset.wired = '1';
 
-		settle( film );
+		if ( ! film.hasAttribute( 'data-src' ) ) {
+			settle( film );
+
+			return;
+		}
+
+		if ( 'complete' === document.readyState ) {
+			when( film );
+		} else {
+			window.addEventListener( 'load', function () {
+				when( film );
+			} );
+		}
 	}
 
 	function start( root ) {

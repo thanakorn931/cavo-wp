@@ -64,12 +64,15 @@ abstract class Blog_Widget extends Base_Widget {
 
 	/**
 	 * One post, as a card. Called from inside the loop.
+	 *
+	 * @param bool $now Whether it stands in the first screen, and so loads with
+	 *                  the page rather than waiting for the reader.
 	 */
-	protected function render_card() {
+	protected function render_card( $now = false ) {
 		?>
 		<a class="custom-blog-card" href="<?php echo esc_url( $this->card_url() ); ?>">
 			<span class="custom-blog-card__picture">
-				<?php $this->media( get_the_post_thumbnail_url( null, 'large' ), '', true ); ?>
+				<?php $this->media( get_the_post_thumbnail_url( null, 'large' ), '', ! $now ); ?>
 			</span>
 
 			<span class="custom-blog-card__body">

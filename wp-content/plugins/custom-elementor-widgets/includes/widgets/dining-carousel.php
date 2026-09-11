@@ -229,7 +229,7 @@ class Dining_Carousel extends Base_Widget {
 						foreach ( $slides as $slide ) :
 							?>
 							<div class="custom-dining-carousel__slide"<?php echo 1 === $run || 1 === $runs ? '' : ' aria-hidden="true"'; ?>>
-								<?php $this->media( isset( $slide['slide_picture']['url'] ) ? $slide['slide_picture']['url'] : '' ); ?>
+								<?php $this->media( isset( $slide['slide_picture']['url'] ) ? $slide['slide_picture']['url'] : '', '', true ); ?>
 							</div>
 							<?php
 						endforeach;
