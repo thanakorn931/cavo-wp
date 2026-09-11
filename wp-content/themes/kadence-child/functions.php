@@ -33,6 +33,19 @@ function kadence_child_enqueue_styles() {
 add_action( 'wp_enqueue_scripts', 'kadence_child_enqueue_styles', 20 );
 
 /**
+ * Tell the browser the page is light, and only light.
+ *
+ * A phone or browser set to a dark theme may repaint any page that has not
+ * said what it is: grounds inverted, the design's colours gone. Declaring the
+ * scheme, in the head before any style, is how a page says it has already
+ * chosen. The stylesheet says the same, for the browsers that read it there.
+ */
+function kadence_child_color_scheme() {
+	echo '<meta name="color-scheme" content="only light">' . "\n";
+}
+add_action( 'wp_head', 'kadence_child_color_scheme', 0 );
+
+/**
  * Give every post type the classic editor.
  *
  * Pages are built in Elementor, so the block canvas is a second place to put

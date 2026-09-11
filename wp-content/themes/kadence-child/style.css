@@ -11,3 +11,9 @@ Text Domain: kadence-child
 */
 
 /* Project styles go here. Loaded after the parent's, so these win. */
+
+/* The page is light, and only light: a browser set to a dark theme leaves
+   its colours as designed. The head says the same, earlier. */
+:root {
+	color-scheme: only light;
+}
