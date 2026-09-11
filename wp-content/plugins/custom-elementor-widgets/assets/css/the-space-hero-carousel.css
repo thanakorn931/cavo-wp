@@ -96,6 +96,11 @@
 	gap: 4px;
 }
 
+/* A slide with no tour to go to shows no way to it. */
+.custom-space-hero__tour[hidden] {
+	display: none;
+}
+
 .custom-space-hero__tour-link {
 	display: flex;
 	flex-direction: column;

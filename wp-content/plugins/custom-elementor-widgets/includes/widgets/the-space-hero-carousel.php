@@ -487,7 +487,7 @@ class The_Space_Hero_Carousel extends Base_Widget {
 				echo $this->link_from( $first, 'slide_host_link' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in link_attributes().
 			?>><?php echo esc_html( $button ); ?></a>
 
-			<span class="custom-space-hero__tour">
+			<span class="custom-space-hero__tour"<?php echo '' === trim( (string) ( isset( $first['slide_link'] ) ? $first['slide_link'] : '' ) ) ? ' hidden' : ''; ?>>
 				<a class="custom-space-hero__tour-link"<?php
 					echo $this->link_from( $first, 'slide_link' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in link_attributes().
 				?>><?php echo esc_html( $tour ); ?></a>

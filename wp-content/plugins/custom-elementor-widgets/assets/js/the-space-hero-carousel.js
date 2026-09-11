@@ -159,6 +159,11 @@
 
 			follow( tour, slide, 'link' );
 			follow( host, slide, 'host' );
+
+			// A slide with no tour to go to shows no way to it.
+			if ( tour && tour.parentNode ) {
+				tour.parentNode.hidden = ! slide.getAttribute( 'data-link' );
+			}
 		}
 
 		function mark() {

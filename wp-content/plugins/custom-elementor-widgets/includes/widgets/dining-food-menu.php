@@ -313,12 +313,12 @@ class Dining_Food_Menu extends Base_Widget {
 					echo esc_html( $this->text( $settings, 'body' ) );
 				?></p>
 
-				<a
-					class="custom-dining-menu__button"
-					<?php if ( '' !== $file ) : ?>
+				<?php if ( '' !== trim( (string) $file ) ) : ?>
+					<a
+						class="custom-dining-menu__button"
 						href="<?php echo esc_url( $file ); ?>" target="_blank" rel="noopener noreferrer"
-					<?php endif; ?>
-				><?php echo esc_html( $this->text( $settings, 'button_text' ) ); ?></a>
+					><?php echo esc_html( $this->text( $settings, 'button_text' ) ); ?></a>
+				<?php endif; ?>
 			</div>
 
 			<div class="custom-dining-menu__gallery">

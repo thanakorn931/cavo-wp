@@ -615,7 +615,7 @@ class Home_The_Space extends Base_Widget {
 						?>><?php echo esc_html( $space ); ?></a>
 					<?php endif; ?>
 
-					<?php if ( '' !== $tour ) : ?>
+					<?php if ( '' !== $tour && '' !== trim( (string) ( isset( $area['tour_link'] ) ? $area['tour_link'] : '' ) ) ) : ?>
 						<span class="custom-home-space__tour">
 							<a class="custom-home-space__tour-link"<?php
 								echo $this->link_from( $area, 'tour_link' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in link_attributes().
