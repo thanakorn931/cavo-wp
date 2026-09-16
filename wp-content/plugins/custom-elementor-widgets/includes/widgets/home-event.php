@@ -30,6 +30,11 @@ class Home_Event extends Base_Widget {
 	const HOW_MANY = 12;
 
 	/**
+	 * The fewest it stands with — the row the design draws across the band.
+	 */
+	const LEAST = 4;
+
+	/**
 	 * The widget's name, and its asset handle's suffix.
 	 *
 	 * @return string
@@ -382,35 +387,60 @@ class Home_Event extends Base_Widget {
 		$today = (int) strtotime( 'today', current_time( 'timestamp' ) ); // phpcs:ignore WordPress.DateTime.CurrentTimeTimestamp.Requested -- the client's day, not UTC's.
 
 		$coming = array();
+		$gone   = array();
 
 		foreach ( $posts as $place => $post ) {
 			$when = $this->item_starts( $post );
 
-			if ( $when < $today ) {
-				continue;
-			}
-
-			$coming[] = array(
+			$row = array(
 				'when'  => $when,
 				'place' => $place,
 				'post'  => $post,
 			);
+
+			if ( $when < $today ) {
+				$gone[] = $row;
+				continue;
+			}
+
+			$coming[] = $row;
 		}
 
 		$way = isset( $settings['order'] ) && 'ASC' === $settings['order'] ? 1 : -1;
 
-		usort(
-			$coming,
-			function ( $a, $b ) use ( $way ) {
-				if ( $a['when'] === $b['when'] ) {
-					return $a['place'] - $b['place'];
-				}
+		usort( $coming, $this->by_day( $way ) );
 
-				return $a['when'] < $b['when'] ? -$way : $way;
-			}
-		);
+		// Nothing coming empties the rail, and the band closes on its heading
+		// alone. Where what is coming falls short of the row the design draws,
+		// the nights just gone stand in behind it, the most recent first.
+		$short = self::LEAST - count( $coming );
+
+		if ( $short > 0 && ! empty( $gone ) ) {
+			usort( $gone, $this->by_day( -1 ) );
+
+			$coming = array_merge( $coming, array_slice( $gone, 0, $short ) );
+		}
 
 		return array_slice( wp_list_pluck( $coming, 'post' ), 0, self::HOW_MANY );
+	}
+
+	/**
+	 * The order two items fall in.
+	 *
+	 * Two on the same day keep the order the source gave them, whichever way
+	 * round the list is being read.
+	 *
+	 * @param int $way 1 for the earliest day first, -1 for the latest.
+	 * @return callable
+	 */
+	private function by_day( $way ) {
+		return function ( $a, $b ) use ( $way ) {
+			if ( $a['when'] === $b['when'] ) {
+				return $a['place'] - $b['place'];
+			}
+
+			return $a['when'] < $b['when'] ? -$way : $way;
+		};
 	}
 
 	/**

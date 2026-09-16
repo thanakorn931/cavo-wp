@@ -21,6 +21,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Event_Events extends Event_Widget {
 
 	/**
+	 * The fewest the band stands with: the one across its width, and a row of
+	 * three beneath it.
+	 */
+	const LEAST = 4;
+
+	/**
 	 * The widget's name, and its asset handle's suffix.
 	 *
 	 * @return string
@@ -63,6 +69,17 @@ class Event_Events extends Event_Widget {
 	 */
 	protected function shows() {
 		return 'coming';
+	}
+
+	/**
+	 * Nothing coming leaves the band with no card across it and no row under
+	 * it, which is the design broken rather than the design empty. Events just
+	 * gone stand in behind what is coming until there are four.
+	 *
+	 * @return int
+	 */
+	protected function least() {
+		return self::LEAST;
 	}
 
 	/**

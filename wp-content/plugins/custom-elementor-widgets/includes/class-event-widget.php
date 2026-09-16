@@ -118,41 +118,80 @@ abstract class Event_Widget extends Base_Widget {
 		$shows = $this->shows();
 
 		$standing = array();
+		$spare    = array();
 
 		foreach ( $posts as $place => $post ) {
 			$when = $this->item_starts( $post );
 
-			if ( 'coming' === $shows && $when < $today ) {
-				continue;
-			}
-
-			if ( 'past' === $shows && $when >= $today ) {
-				continue;
-			}
-
-			$standing[] = array(
+			$row = array(
 				'when'  => $when,
 				'place' => $place,
 				'post'  => $post,
 			);
+
+			if ( 'coming' === $shows && $when < $today ) {
+				$spare[] = $row;
+				continue;
+			}
+
+			if ( 'past' === $shows && $when >= $today ) {
+				$spare[] = $row;
+				continue;
+			}
+
+			$standing[] = $row;
 		}
 
 		$way = isset( $settings['order'] ) && 'ASC' === $settings['order'] ? 1 : -1;
 
-		usort(
-			$standing,
-			function ( $a, $b ) use ( $way ) {
-				// Two on the same day keep the order the source gave them,
-				// whichever way round the list is being read.
-				if ( $a['when'] === $b['when'] ) {
-					return $a['place'] - $b['place'];
-				}
+		usort( $standing, $this->by_day( $way ) );
 
-				return $a['when'] < $b['when'] ? -$way : $way;
-			}
-		);
+		// A section that faces one way can find nothing on that side, and a
+		// section with nothing in it is not a shorter design but a broken one.
+		// Where its own side falls short of what the design draws, the nearest
+		// days from the other side stand in behind what it has.
+		$short = (int) $this->least() - count( $standing );
+
+		if ( $short > 0 && ! empty( $spare ) ) {
+			// Nearest to today first, whichever side those days are on.
+			usort( $spare, $this->by_day( 'coming' === $shows ? -1 : 1 ) );
+
+			$standing = array_merge( $standing, array_slice( $spare, 0, $short ) );
+		}
 
 		return wp_list_pluck( $standing, 'post' );
+	}
+
+	/**
+	 * The fewest items the section stands with.
+	 *
+	 * Nought is no floor at all: the section shows what its own side holds and
+	 * nothing more. A section the design breaks without says how many it must
+	 * have, and days from the other side make the number up.
+	 *
+	 * @return int
+	 */
+	protected function least() {
+		return 0;
+	}
+
+	/**
+	 * The order two items fall in.
+	 *
+	 * Two on the same day keep the order the source gave them, whichever way
+	 * round the list is being read.
+	 *
+	 * @param int $way 1 for the earliest day first, -1 for the latest.
+	 * @return callable
+	 */
+	protected function by_day( $way ) {
+		return function ( $a, $b ) use ( $way ) {
+			if ( $a['when'] === $b['when'] ) {
+				return $a['place'] - $b['place'];
+			}
+
+			return $a['when'] < $b['when'] ? -$way : $way;
+		};
 	}
 
 	/**

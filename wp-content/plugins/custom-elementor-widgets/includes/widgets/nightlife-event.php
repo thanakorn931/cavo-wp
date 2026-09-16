@@ -103,6 +103,17 @@ class Nightlife_Event extends Event_Widget {
 	}
 
 	/**
+	 * The three the design draws, whether or not three are still to come: a
+	 * grid with one card in it, or none, is not the section the design draws.
+	 * Nights just gone make the number up.
+	 *
+	 * @return int
+	 */
+	protected function least() {
+		return self::SHOWN;
+	}
+
+	/**
 	 * The Content tab and the Style tab.
 	 */
 	protected function register_controls() {
