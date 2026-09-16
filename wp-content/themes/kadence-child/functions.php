@@ -1068,20 +1068,20 @@ function kadence_child_form_pages() {
 add_action( 'acf/init', 'kadence_child_form_pages' );
 
 /**
- * The sidebar carries the menu's name and nothing under it.
+ * The sidebar carries the same screens the tabs do, in the same order.
+ *
+ * The tabs across the top are how a screen is left once one is open; the
+ * sidebar is how the first of them is reached, so the five stand in both
+ * places rather than only on a screen somebody is already looking at.
+ *
+ * Only Add New goes: a message is a record of what somebody sent, and nothing
+ * anybody writes here.
  *
  * The list is trimmed as the sidebar is about to be drawn, not while the menu is
  * being built: until the screen has been let in, WordPress is still reading that
  * same list to work out which parent the screen hangs from.
  */
 function kadence_child_form_sidebar() {
-	foreach ( kadence_child_form_tabs() as $tab ) {
-		remove_submenu_page(
-			'edit.php?post_type=cavo_message',
-			'edit-cavo_message' === $tab['page'] ? 'edit.php?post_type=cavo_message' : $tab['page']
-		);
-	}
-
 	remove_submenu_page( 'edit.php?post_type=cavo_message', 'post-new.php?post_type=cavo_message' );
 }
 add_action( 'admin_head', 'kadence_child_form_sidebar' );
