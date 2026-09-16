@@ -1797,6 +1797,9 @@ function kadence_child_captcha_keys( $version ) {
 /**
  * Whatever the captcha needs on the page, printed where the form is.
  *
+ * The form carries only its own box or its own empty token; Google's script is
+ * the page's, and is decided once the page knows every form it holds.
+ *
  * @param string $slug The form's slug.
  */
 function kadence_child_form_captcha_field( $slug ) {
@@ -1806,28 +1809,153 @@ function kadence_child_form_captcha_field( $slug ) {
 		return;
 	}
 
-	$keys = kadence_child_captcha_keys( $version );
-	$site = $keys['site'];
+	$site = kadence_child_captcha_keys( $version )['site'];
+
+	kadence_child_captcha_wanted( $version );
 
 	if ( 'v2' === $version ) {
-		wp_enqueue_script( 'cavo-recaptcha', 'https://www.google.com/recaptcha/api.js', array(), null, true ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion -- Google's own script carries no version.
-		printf( '<div class="g-recaptcha" data-sitekey="%s"></div>', esc_attr( $site ) );
+		// Drawn by the page's script rather than found by Google's: with a v3
+		// form on the same page, Google no longer looks for boxes itself.
+		printf( '<div data-cavo-recaptcha-box data-sitekey="%s"></div>', esc_attr( $site ) );
+	} else {
+		printf(
+			'<input type="hidden" name="g-recaptcha-response" value="" data-cavo-recaptcha="%s" />',
+			esc_attr( $site )
+		);
+	}
 
+	// A form drawn once the footer has begun is too late for the hook below.
+	if ( did_action( 'wp_footer' ) ) {
+		kadence_child_captcha_script();
+	}
+}
+
+/**
+ * The versions the forms on this page have asked for.
+ *
+ * @param string|null $version A version to add, or nothing to only read.
+ * @return array Version to true.
+ */
+function kadence_child_captcha_wanted( $version = null ) {
+	static $wanted = array();
+
+	if ( null !== $version ) {
+		$wanted[ $version ] = true;
+	}
+
+	return $wanted;
+}
+
+/**
+ * Google's script, once for the page, however many forms and versions it holds.
+ *
+ * Both versions share one script, and the script is loaded one way: a v3 form
+ * needs its key in the address, and a v2 box then has to be drawn by hand. So
+ * the address carries the v3 key where any form is v3, and `explicit` where
+ * none is, and every v2 box is drawn by the same few lines either way.
+ *
+ * A v3 token lasts two minutes and a form takes longer than that to fill, so
+ * each form asks for its own token as it is sent rather than as the page
+ * opens. Only then do the section's own send handlers run, so what they do to
+ * the button happens to the press that goes.
+ */
+function kadence_child_captcha_script() {
+	static $done = false;
+
+	$wanted = kadence_child_captcha_wanted();
+
+	if ( $done || empty( $wanted ) ) {
 		return;
 	}
 
-	wp_enqueue_script( 'cavo-recaptcha', 'https://www.google.com/recaptcha/api.js?render=' . rawurlencode( $site ), array(), null, true ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion -- Google's own script carries no version.
+	$done   = true;
+	$render = isset( $wanted['v3'] ) ? kadence_child_captcha_keys( 'v3' )['site'] : 'explicit';
 
-	printf(
-		'<input type="hidden" name="g-recaptcha-response" value="" data-cavo-recaptcha="%s" />',
-		esc_attr( $site )
-	);
+	wp_enqueue_script( 'cavo-recaptcha', 'https://www.google.com/recaptcha/api.js?render=' . rawurlencode( $render ), array(), null, true ); // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion -- Google's own script carries no version.
 
 	wp_add_inline_script(
 		'cavo-recaptcha',
-		'grecaptcha.ready(function(){document.querySelectorAll("[data-cavo-recaptcha]").forEach(function(f){grecaptcha.execute(f.dataset.cavoRecaptcha,{action:"submit"}).then(function(t){f.value=t;});});});'
+		<<<'JS'
+(function () {
+	function draw() {
+		document.querySelectorAll( '[data-cavo-recaptcha-box]' ).forEach( function ( box ) {
+			if ( box.dataset.cavoDrawn ) {
+				return;
+			}
+			box.dataset.cavoDrawn = '1';
+			grecaptcha.render( box, { sitekey: box.dataset.sitekey } );
+		} );
+	}
+
+	// Caught on the way down, before any listener on the form itself, so the
+	// section's own send handlers only ever see the press that goes.
+	function sending( event ) {
+		var form  = event.target;
+		var field = form && form.querySelector ? form.querySelector( '[data-cavo-recaptcha]' ) : null;
+
+		if ( ! field ) {
+			return;
+		}
+
+		if ( '1' === form.dataset.cavoTokened ) {
+			form.dataset.cavoTokened = '';
+			return;
+		}
+
+		event.preventDefault();
+		event.stopPropagation();
+
+		if ( form.dataset.cavoAsking ) {
+			return;
+		}
+		form.dataset.cavoAsking = '1';
+
+		var by   = event.submitter && event.submitter.form === form ? event.submitter : null;
+		var sent = false;
+
+		function send() {
+			if ( sent ) {
+				return;
+			}
+			sent = true;
+			form.dataset.cavoAsking  = '';
+			form.dataset.cavoTokened = '1';
+
+			if ( form.requestSubmit ) {
+				if ( by ) {
+					form.requestSubmit( by );
+				} else {
+					form.requestSubmit();
+				}
+				// Refused by the browser, the press never came back down; the
+				// next one asks for a token of its own.
+				form.dataset.cavoTokened = '';
+			} else {
+				HTMLFormElement.prototype.submit.call( form );
+			}
+		}
+
+		// Google not answering still sends; the server then says no.
+		window.setTimeout( send, 8000 );
+
+		grecaptcha.ready( function () {
+			grecaptcha.execute( field.dataset.cavoRecaptcha, { action: 'submit' } ).then(
+				function ( token ) {
+					field.value = token;
+					send();
+				},
+				send
+			);
+		} );
+	}
+
+	document.addEventListener( 'submit', sending, true );
+	grecaptcha.ready( draw );
+}());
+JS
 	);
 }
+add_action( 'wp_footer', 'kadence_child_captcha_script', 1 );
 
 /**
  * Whether the captcha is satisfied.
