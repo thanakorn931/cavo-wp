@@ -21,6 +21,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Nightlife_Program extends Base_Widget {
 
 	/**
+	 * The fewest nights the card stands with. A week with nothing dated in it
+	 * leaves the card empty and the band closed on its heading, so the nearest
+	 * night to today stands in rather than none at all.
+	 */
+	const LEAST = 1;
+
+	/**
 	 * The widget's name, and its asset handle's suffix.
 	 *
 	 * @return string
@@ -391,19 +398,28 @@ class Nightlife_Program extends Base_Widget {
 		$from = (int) strtotime( 'today', $now );
 		$to   = $from + ( 8 * DAY_IN_SECONDS );
 
-		$week = array();
+		$week  = array();
+		$spare = array();
 
 		foreach ( $posts as $post ) {
 			$when = $this->night_starts( $post );
 
-			if ( 0 === $when || $when < $from || $when >= $to ) {
+			// A night with no day set has no place in a week.
+			if ( 0 === $when ) {
 				continue;
 			}
 
-			$week[] = array(
+			$night = array(
 				'when' => $when,
 				'post' => $post,
 			);
+
+			if ( $when < $from || $when >= $to ) {
+				$spare[] = $night;
+				continue;
+			}
+
+			$week[] = $night;
 		}
 
 		usort(
@@ -415,6 +431,24 @@ class Nightlife_Program extends Base_Widget {
 
 		if ( isset( $settings['order'] ) && 'DESC' === $settings['order'] ) {
 			$week = array_reverse( $week );
+		}
+
+		// Where the week ahead holds less than the card stands with, the nights
+		// nearest to today stand in behind it — the ones just beyond the week
+		// before the ones just gone, where both are the same distance off.
+		$short = self::LEAST - count( $week );
+
+		if ( $short > 0 && ! empty( $spare ) ) {
+			usort(
+				$spare,
+				function ( $a, $b ) use ( $from ) {
+					$near = abs( $a['when'] - $from ) - abs( $b['when'] - $from );
+
+					return 0 !== $near ? $near : $b['when'] - $a['when'];
+				}
+			);
+
+			$week = array_merge( $week, array_slice( $spare, 0, $short ) );
 		}
 
 		return wp_list_pluck( $week, 'post' );
