@@ -407,8 +407,7 @@ class Private_Event_Form extends Base_Widget {
 					<p class="custom-private-form__body"><?php echo $this->lines( $body ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in lines(). ?></p>
 				<?php endif; ?>
 
-				<form class="custom-private-form__form" id="cavo-form-<?php echo esc_attr( $this->get_id() ); ?>" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-					<input type="hidden" name="cavo_at" value="cavo-form-<?php echo esc_attr( $this->get_id() ); ?>" />
+				<form class="custom-private-form__form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 					<input type="hidden" name="action" value="cavo_form" />
 					<input type="hidden" name="cavo_form" value="<?php echo esc_attr( $slug ); ?>" />
 					<?php
@@ -473,11 +472,10 @@ class Private_Event_Form extends Base_Widget {
 		$required    = ! empty( $field['required'] );
 		$placeholder = isset( $field['placeholder'] ) ? (string) $field['placeholder'] : '';
 		$name        = 'field_' . (int) $index;
-		$id          = 'cavo-' . $this->get_id() . '-' . (int) $index;
 		$was         = isset( $typed[ $name ] ) ? (string) $typed[ $name ] : '';
 		?>
 		<div class="custom-private-form__field custom-private-form__field--<?php echo esc_attr( $width ); ?>">
-			<label class="custom-private-form__label" for="<?php echo esc_attr( $id ); ?>"><?php
+			<label class="custom-private-form__label"><?php
 				echo esc_html( $label );
 				echo $required ? '*' : '';
 			?></label>
@@ -485,8 +483,8 @@ class Private_Event_Form extends Base_Widget {
 			<?php if ( 'textarea' === $type ) : ?>
 				<textarea
 					class="custom-private-form__input"
-					id="<?php echo esc_attr( $id ); ?>"
 					name="<?php echo esc_attr( $name ); ?>"
+					aria-label="<?php echo esc_attr( $label ); ?>"
 					rows="1"
 					placeholder="<?php echo esc_attr( $placeholder ); ?>"
 					<?php echo $required ? 'required' : ''; ?>
@@ -494,8 +492,8 @@ class Private_Event_Form extends Base_Widget {
 			<?php elseif ( 'select' === $type ) : ?>
 				<select
 					class="custom-private-form__input"
-					id="<?php echo esc_attr( $id ); ?>"
 					name="<?php echo esc_attr( $name ); ?>"
+					aria-label="<?php echo esc_attr( $label ); ?>"
 					<?php echo $required ? 'required' : ''; ?>
 				>
 					<option value=""><?php echo esc_html( '' !== $placeholder ? $placeholder : __( 'Select one …', 'custom-elementor-widgets' ) ); ?></option>
@@ -506,8 +504,8 @@ class Private_Event_Form extends Base_Widget {
 			<?php else : ?>
 				<input
 					class="custom-private-form__input"
-					id="<?php echo esc_attr( $id ); ?>"
 					name="<?php echo esc_attr( $name ); ?>"
+					aria-label="<?php echo esc_attr( $label ); ?>"
 					type="<?php echo esc_attr( in_array( $type, array( 'email', 'tel', 'date' ), true ) ? $type : 'text' ); ?>"
 					value="<?php echo esc_attr( $was ); ?>"
 					placeholder="<?php echo esc_attr( $placeholder ); ?>"

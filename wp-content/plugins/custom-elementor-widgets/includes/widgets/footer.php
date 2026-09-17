@@ -672,16 +672,12 @@ class Footer extends Base_Widget {
 		$answer = '' !== $said ? kadence_child_signup_answer( 'newsletter', $said ) : '';
 		?>
 		<div class="custom-footer__actions">
-		<form class="custom-footer__form" id="cavo-form-<?php echo esc_attr( $this->get_id() ); ?>" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
-			<input type="hidden" name="cavo_at" value="cavo-form-<?php echo esc_attr( $this->get_id() ); ?>" />
+		<form class="custom-footer__form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 			<?php kadence_child_subscribe_fields( 'newsletter' ); ?>
-			<label class="screen-reader-text" for="custom-footer-email-<?php echo esc_attr( $this->get_id() ); ?>">
-				<?php echo esc_html( $label ); ?>
-			</label>
-			<input
+						<input
 				class="custom-footer__field"
-				id="custom-footer-email-<?php echo esc_attr( $this->get_id() ); ?>"
 				type="email"
+				aria-label="<?php echo esc_attr( $label ); ?>"
 				name="email"
 				required
 				value="<?php echo esc_attr( isset( $result['email'] ) ? $result['email'] : '' ); ?>"

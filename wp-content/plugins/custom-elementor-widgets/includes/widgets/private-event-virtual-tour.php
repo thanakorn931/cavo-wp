@@ -20,11 +20,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Private_Event_Virtual_Tour extends Base_Widget {
 
 	/**
-	 * What the section answers to, so a link on the page can reach it.
-	 */
-	const ANCHOR = 'virtual-tour';
-
-	/**
 	 * The widget's name, and its asset handle's suffix.
 	 *
 	 * @return string
@@ -82,16 +77,6 @@ class Private_Event_Virtual_Tour extends Base_Widget {
 			)
 		);
 
-		$this->add_control(
-			'anchor_note',
-			array(
-				'type'            => Controls_Manager::RAW_HTML,
-				/* translators: %s: the anchor the section answers to. */
-				'raw'             => sprintf( esc_html__( 'This section answers to %s, so a link on the page can reach it.', 'custom-elementor-widgets' ), '<code>#' . self::ANCHOR . '</code>' ),
-				'content_classes' => 'elementor-descriptor',
-			)
-		);
-
 		$this->end_controls_section();
 
 		$this->start_controls_section(
@@ -115,7 +100,7 @@ class Private_Event_Virtual_Tour extends Base_Widget {
 
 		$url = isset( $settings['video']['url'] ) ? trim( (string) $settings['video']['url'] ) : '';
 		?>
-		<div class="custom-private-tour" id="<?php echo esc_attr( self::ANCHOR ); ?>">
+		<div class="custom-private-tour">
 			<div class="custom-private-tour__stage">
 				<div class="custom-private-tour__media">
 					<?php $this->media( $url, '', true ); ?>

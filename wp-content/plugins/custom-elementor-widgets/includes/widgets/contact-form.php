@@ -335,9 +335,8 @@ class Contact_Form extends Base_Widget {
 			?></<?php echo esc_attr( $tag ); ?>>
 
 			<div class="custom-contact-form__column">
-				<form class="custom-contact-form__form" id="cavo-form-<?php echo esc_attr( $this->get_id() ); ?>" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
+				<form class="custom-contact-form__form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
 					<input type="hidden" name="action" value="cavo_form" />
-					<input type="hidden" name="cavo_at" value="cavo-form-<?php echo esc_attr( $this->get_id() ); ?>" />
 					<input type="hidden" name="cavo_form" value="<?php echo esc_attr( $slug ); ?>" />
 					<?php
 					wp_nonce_field( 'cavo_form_' . $slug, 'cavo_nonce' );
@@ -396,11 +395,10 @@ class Contact_Form extends Base_Widget {
 		$required    = ! empty( $field['required'] );
 		$placeholder = isset( $field['placeholder'] ) ? (string) $field['placeholder'] : '';
 		$name        = 'field_' . (int) $index;
-		$id          = 'cavo-' . $this->get_id() . '-' . (int) $index;
 		$was         = isset( $typed[ $name ] ) ? (string) $typed[ $name ] : '';
 		?>
 		<div class="custom-contact-form__field custom-contact-form__field--<?php echo esc_attr( $width ); ?>">
-			<label class="custom-contact-form__label" for="<?php echo esc_attr( $id ); ?>"><?php
+			<label class="custom-contact-form__label"><?php
 				echo esc_html( $label );
 				echo $required ? '*' : '';
 			?></label>
@@ -408,16 +406,16 @@ class Contact_Form extends Base_Widget {
 			<?php if ( 'textarea' === $type ) : ?>
 				<textarea
 					class="custom-contact-form__input custom-contact-form__input--area"
-					id="<?php echo esc_attr( $id ); ?>"
 					name="<?php echo esc_attr( $name ); ?>"
+					aria-label="<?php echo esc_attr( $label ); ?>"
 					placeholder="<?php echo esc_attr( $placeholder ); ?>"
 					<?php echo $required ? 'required' : ''; ?>
 				><?php echo esc_textarea( $was ); ?></textarea>
 			<?php elseif ( 'select' === $type ) : ?>
 				<select
 					class="custom-contact-form__input"
-					id="<?php echo esc_attr( $id ); ?>"
 					name="<?php echo esc_attr( $name ); ?>"
+					aria-label="<?php echo esc_attr( $label ); ?>"
 					<?php echo $required ? 'required' : ''; ?>
 				>
 					<option value=""><?php echo esc_html( '' !== $placeholder ? $placeholder : __( 'Select one …', 'custom-elementor-widgets' ) ); ?></option>
@@ -428,8 +426,8 @@ class Contact_Form extends Base_Widget {
 			<?php else : ?>
 				<input
 					class="custom-contact-form__input"
-					id="<?php echo esc_attr( $id ); ?>"
 					name="<?php echo esc_attr( $name ); ?>"
+					aria-label="<?php echo esc_attr( $label ); ?>"
 					type="<?php echo esc_attr( in_array( $type, array( 'email', 'tel', 'date' ), true ) ? $type : 'text' ); ?>"
 					value="<?php echo esc_attr( $was ); ?>"
 					placeholder="<?php echo esc_attr( $placeholder ); ?>"

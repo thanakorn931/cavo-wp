@@ -126,10 +126,7 @@ class Private_Event_Introduce extends Base_Widget {
 		$this->add_link_controls(
 			$this,
 			'button_link',
-			esc_html__( 'Button link', 'custom-elementor-widgets' ),
-			array(
-				'description' => esc_html__( 'The tour section on this page answers to #virtual-tour.', 'custom-elementor-widgets' ),
-			)
+			esc_html__( 'Button link', 'custom-elementor-widgets' )
 		);
 
 		$this->add_control(
