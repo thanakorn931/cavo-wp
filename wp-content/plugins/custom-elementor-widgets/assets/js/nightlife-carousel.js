@@ -2,14 +2,15 @@
  * Nightlife, atmosphere.
  *
  * The row is moved by taking hold of it, with a finger or a mouse, and let go:
- * pulled a little either way it moves one slide that way and comes to rest
- * on it, and pulled hardly at all it settles back. It never moves more than
- * one slide for one hold, however far the hold travelled, and while it is
- * held it follows the hand no further than that one slide.
+ * held, it follows the hand as far as the hand goes, and let go it comes to
+ * rest on the nearest picture, carrying on the way it was thrown for as long
+ * as the throw was worth.
  *
- * The run is written three times and the row is put back a run whenever it
- * leaves the middle one. Where the row stands is a number rather than a
- * journey, so putting it back takes no time and is never seen.
+ * The row never ends. The run is written three times, and where a band is
+ * wider than one run the row is written out further until a run is wider than
+ * the band — otherwise where the run ends would come into view. The row is put
+ * back a run whenever it leaves the middle one; where it stands is a number
+ * rather than a journey, so putting it back takes no time and is never seen.
  */
 ( function () {
 	'use strict';
@@ -45,25 +46,77 @@
 		// How far a hold must travel before it counts as a pull.
 		var PULL = 24;
 
+		// How long a throw goes on being worth something after the hand has
+		// left the row, in milliseconds of the speed it let go at.
+		var THROW = 220;
+
+		// The hand's last moment: where it was, when, and how fast.
+		var lastX  = 0;
+		var lastAt = 0;
+		var speed  = 0;
+
 		// The move under way. A hold that begins before it has arrived is not
 		// taken: the row finishes coming to rest first, and is taken hold of
 		// from rest.
 		var flight = { frame: 0, clock: 0 };
 		var moving = false;
 
-		// What one run is worth: as many slides as the client gave, each of them
-		// a slide and the space beside it.
+		// The pictures as the client gave them, before any were written out
+		// again. Every copy is made from these.
+		var given = [];
+
+		for ( var g = 0; g < many && g < slides.length; g++ ) {
+			given.push( slides[ g ] );
+		}
+
+		// A run must be wider than the band, or where it ends comes into view.
+		// Where the client gave too few pictures for that, the row is written
+		// out again until one run covers the band, and three of those runs
+		// stand in the row as three did before.
+		function fill() {
+			if ( ! track || many <= 0 || pitch <= 0 || given.length < many ) {
+				return;
+			}
+
+			var block = Math.max( 1, Math.ceil( ( stage.clientWidth + pitch ) / ( many * pitch ) ) );
+			var want  = block * many * 3;
+			var have  = track.children.length;
+
+			for ( var i = have; i < want; i++ ) {
+				var copy = given[ i % many ].cloneNode( true );
+
+				copy.setAttribute( 'aria-hidden', 'true' );
+
+				// A copy is made after the page has handed out its films, so
+				// it is handed its own here rather than waiting for a hand
+				// that has already been given out.
+				var film = copy.querySelector( 'video[data-src]' );
+
+				if ( film ) {
+					film.src = film.getAttribute( 'data-src' );
+					film.removeAttribute( 'data-src' );
+				}
+
+				track.appendChild( copy );
+			}
+
+			if ( want > have ) {
+				slides = root.querySelectorAll( '.custom-nightlife-carousel__slide' );
+			}
+
+			runs = 3;
+			run  = block * many * pitch;
+		}
+
+		// What one run is worth, once the row is long enough to hold three.
 		function measure() {
-			if ( runs < 2 || slides.length === 0 || ! track ) {
+			if ( slides.length === 0 || ! track || many <= 0 ) {
 				run = 0;
 
 				return;
 			}
 
-			var wide = slides[ 0 ].offsetWidth;
-			var gap  = parseFloat( window.getComputedStyle( track ).columnGap ) || 0;
-
-			run = many * ( wide + gap );
+			fill();
 		}
 
 		// A slide and the space beside it, whether or not there is more than
@@ -185,8 +238,9 @@
 		// row, it is the width of nothing, and every move after is measured
 		// against that.
 		function measureAll() {
-			measure();
+			// What a slide is worth is read first: a run is a count of them.
 			measurePitch();
+			measure();
 		}
 
 		window.addEventListener( 'resize', function () {
@@ -223,6 +277,9 @@
 			holding = true;
 			startX  = event.clientX;
 			startAt = stage.scrollLeft;
+			lastX   = event.clientX;
+			lastAt  = Date.now();
+			speed   = 0;
 
 			stage.classList.add( 'is-holding' );
 
@@ -234,9 +291,8 @@
 			}
 		} );
 
-		// Held, the row follows the hand, but no further than one slide either
-		// way: a long pull shows the next slide arriving and no more, so that
-		// letting go never has far to come back from.
+		// Held, the row follows the hand as far as the hand goes: a long pull
+		// carries the row past as many pictures as it travelled.
 		stage.addEventListener( 'pointermove', function ( event ) {
 			if ( ! holding ) {
 				return;
@@ -244,13 +300,17 @@
 
 			event.preventDefault();
 
-			var pulled = event.clientX - startX;
+			var now = Date.now();
 
-			if ( pitch > 0 ) {
-				pulled = Math.max( -pitch, Math.min( pitch, pulled ) );
+			// How fast the hand is going, read from the last moment of it
+			// alone: what it did earlier is not where it is throwing the row.
+			if ( now > lastAt ) {
+				speed  = ( event.clientX - lastX ) / ( now - lastAt );
+				lastX  = event.clientX;
+				lastAt = now;
 			}
 
-			stage.scrollLeft = startAt - pulled;
+			stage.scrollLeft = startAt - ( event.clientX - startX );
 		} );
 
 		// Let go, the row goes one slide the way it was pulled, or settles back
@@ -267,10 +327,21 @@
 				// the two the snap would take the row.
 				if ( pitch > 0 ) {
 					var pulled = name === 'pointercancel' ? 0 : event.clientX - startX;
-					var from   = Math.round( startAt / pitch );
-					var step   = Math.abs( pulled ) >= PULL ? ( pulled < 0 ? 1 : -1 ) : 0;
 
-					restOn( from + step );
+					// Where the row stands now, and where the throw carries it
+					// on to: a hand that was still when it let go leaves the
+					// row on the nearest picture.
+					var thrown = name === 'pointercancel' ? 0 : -speed * THROW;
+					var lands  = ( stage.scrollLeft + thrown ) / pitch;
+					var rest   = Math.round( lands );
+
+					// A pull too small to count for a picture still counts as
+					// the one it was reaching for.
+					if ( rest === Math.round( startAt / pitch ) && Math.abs( pulled ) >= PULL ) {
+						rest += pulled < 0 ? 1 : -1;
+					}
+
+					restOn( rest );
 				}
 
 				stage.classList.remove( 'is-holding' );
