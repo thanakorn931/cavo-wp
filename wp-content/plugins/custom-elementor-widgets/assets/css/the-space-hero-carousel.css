@@ -149,10 +149,11 @@
 	position: relative;
 	margin-top: 20px;
 	width: 100%;
-	/* The run is cut to the width the file draws the band at. Left to the width
-	   of the screen it simply grows wider than the run, and every slide shows
-	   at once instead of the one being read with its neighbours at the edges. */
-	max-width: 1440px;
+	/* The cut is the slide being read and the one either side of it, whole:
+	   1080 between two 840s with 56 between each. A screen narrower than that
+	   cuts the neighbours as it always did; a wider one shows the three and
+	   stops, so the fourth never comes into view. */
+	max-width: 2872px;
 	margin-left: auto;
 	margin-right: auto;
 	height: 720px;

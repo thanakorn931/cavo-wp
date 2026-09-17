@@ -13,13 +13,15 @@
 	display: flex;
 	align-items: flex-start;
 	width: 100%;
-	/* The row is drawn wider than the band and runs off its right edge, where it
-	   is cut. Cut at the window instead, it carries on past every other section
-	   on the page. */
+	/* The row is drawn wider than the band and runs off its right edge. Where it
+	   begins is held to 1440; where it ends is the window, so a screen wider
+	   than the file's band shows more cards rather than cutting the row short
+	   of its own edge. The rail it runs in does the cutting, so nothing here
+	   reaches past the window. */
 	padding-top: 96px;
 	padding-bottom: 44px;
 	padding-left: calc( 48px + max( 0px, calc( ( 100% - 1440px ) / 2 ) ) );
-	padding-right: max( 0px, calc( ( 100% - 1440px ) / 2 ) );
+	padding-right: 0;
 	box-sizing: border-box;
 
 	/* The band's own gradient, read from the file. */

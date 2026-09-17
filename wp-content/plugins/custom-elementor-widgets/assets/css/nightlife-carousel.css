@@ -11,7 +11,10 @@
 	align-items: stretch;
 	gap: 16px;
 	width: 100%;
-	padding: 96px max( 0px, calc( ( 100% - 1440px ) / 2 ) ) 64px max( 0px, calc( ( 100% - 1440px ) / 2 ) );
+	/* The row is not held to the band's own width: the stage below cuts it, and
+	   it cuts to the picture being read with its neighbours whole. Held here as
+	   well, the neighbours would be cut at the band's edge instead. */
+	padding: 96px 0 64px 0;
 	box-sizing: border-box;
 
 	background-image: linear-gradient( 180deg, #29180e 0%, #e8e4db 100% );
@@ -29,6 +32,12 @@
 
 .custom-nightlife-carousel__stage {
 	width: 100%;
+	/* The cut is the picture being read and the one either side of it, whole:
+	   three 840s with 48 between each. A wider screen shows the three and
+	   stops, so the fourth never comes into view. */
+	max-width: 2616px;
+	margin-left: auto;
+	margin-right: auto;
 	height: 640px;
 	overflow-x: auto;
 	overflow-y: hidden;
