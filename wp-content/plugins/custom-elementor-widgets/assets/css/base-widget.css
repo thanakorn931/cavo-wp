@@ -111,3 +111,24 @@ h6[ class*="custom-" ][ class*="custom-" ] {
 	margin-top: 0;
 	margin-bottom: 0;
 }
+
+/* A row that follows the hand (base-widget.js). Sideways is the row's; up and
+   down stays the page's, so a finger scrolling past it is never caught. */
+.custom-pull {
+	touch-action: pan-y;
+}
+
+.custom-pull.is-pullable {
+	cursor: grab;
+}
+
+.custom-pull.is-holding {
+	cursor: grabbing;
+	user-select: none;
+	-webkit-user-select: none;
+}
+
+.custom-pull.is-holding a,
+.custom-pull.is-holding img {
+	cursor: grabbing;
+}

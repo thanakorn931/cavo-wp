@@ -496,3 +496,132 @@
 		}
 	} );
 }() );
+
+
+/**
+ * A row that follows the hand.
+ *
+ * A section marks the part of itself that can be pulled with `custom-pull`, and
+ * says it can be pulled right now with `is-pullable`. Pressed there and moved
+ * sideways — by a mouse, a finger or a pen — it is told so through a
+ * `custom-pull` event, whose detail says the phase (begin, move, end) and how
+ * far the hand has gone. What the row does with that is the section's own: one
+ * row follows the hand and settles on a card, another turns to the next slide.
+ *
+ * A press that barely moves stays a press, so the link or card under it still
+ * answers; a pull that ends on a link does not open it. Up and down the page
+ * stays the page's own, so a finger scrolling past the row is never caught.
+ */
+( function () {
+	'use strict';
+
+	// How far the hand goes before a press becomes a pull.
+	var BEGIN = 6;
+
+	var hold = null;
+
+	function tell( area, phase, by ) {
+		var said;
+
+		try {
+			said = new window.CustomEvent( 'custom-pull', { detail: { phase: phase, by: by } } );
+		} catch ( error ) {
+			said = document.createEvent( 'CustomEvent' );
+			said.initCustomEvent( 'custom-pull', false, false, { phase: phase, by: by } );
+		}
+
+		area.dispatchEvent( said );
+	}
+
+	document.addEventListener( 'pointerdown', function ( event ) {
+		var area = event.target.closest ? event.target.closest( '.custom-pull.is-pullable' ) : null;
+
+		// A button inside the row — an arrow — is pressed, never pulled.
+		if ( ! area || event.button || event.target.closest( 'button, input, select, textarea' ) ) {
+			return;
+		}
+
+		hold = {
+			area: area,
+			id: event.pointerId,
+			x: event.clientX,
+			y: event.clientY,
+			moved: false,
+		};
+	} );
+
+	window.addEventListener( 'pointermove', function ( event ) {
+		if ( ! hold || event.pointerId !== hold.id ) {
+			return;
+		}
+
+		var by   = event.clientX - hold.x;
+		var down = event.clientY - hold.y;
+
+		if ( ! hold.moved ) {
+			// Going up or down the page first: that was never a pull.
+			if ( Math.abs( down ) > BEGIN && Math.abs( down ) > Math.abs( by ) ) {
+				hold = null;
+
+				return;
+			}
+
+			if ( Math.abs( by ) <= BEGIN ) {
+				return;
+			}
+
+			hold.moved = true;
+			hold.area.classList.add( 'is-holding' );
+			tell( hold.area, 'begin', 0 );
+		}
+
+		event.preventDefault();
+		tell( hold.area, 'move', by );
+	}, { passive: false } );
+
+	function letGo( event ) {
+		if ( ! hold || event.pointerId !== hold.id ) {
+			return;
+		}
+
+		var was = hold;
+
+		hold = null;
+
+		if ( ! was.moved ) {
+			return;
+		}
+
+		was.area.classList.remove( 'is-holding' );
+
+		// The press that ends a pull is not a press on whatever it ended over.
+		was.area.dataset.customPulled = '1';
+		window.setTimeout( function () {
+			delete was.area.dataset.customPulled;
+		}, 0 );
+
+		// The browser taking the pointer back for itself leaves the row where
+		// it was.
+		tell( was.area, 'end', 'pointercancel' === event.type ? 0 : event.clientX - was.x );
+	}
+
+	window.addEventListener( 'pointerup', letGo );
+	window.addEventListener( 'pointercancel', letGo );
+
+	document.addEventListener( 'click', function ( event ) {
+		var area = event.target.closest ? event.target.closest( '.custom-pull' ) : null;
+
+		if ( area && area.dataset.customPulled ) {
+			event.preventDefault();
+			event.stopPropagation();
+		}
+	}, true );
+
+	// A picture or a link in the row is part of the row, not something to carry
+	// off it.
+	document.addEventListener( 'dragstart', function ( event ) {
+		if ( event.target.closest && event.target.closest( '.custom-pull' ) ) {
+			event.preventDefault();
+		}
+	} );
+}() );

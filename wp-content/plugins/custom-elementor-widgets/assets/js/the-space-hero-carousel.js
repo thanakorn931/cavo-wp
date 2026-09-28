@@ -241,6 +241,52 @@
 			settle.timer = window.setTimeout( settle, 800 );
 		}
 
+		// Pulled sideways, the run follows the hand; a pull long enough turns it
+		// one slide, as an arrow does, and a shorter one lets it back.
+		var TURN   = 40;
+		var from   = 0;
+		var ignore = false;
+
+		stage.classList.add( 'custom-pull', 'is-pullable' );
+
+		stage.addEventListener( 'custom-pull', function ( event ) {
+			var by = event.detail.by;
+
+			if ( 'begin' === event.detail.phase ) {
+				// A slide still on its way is left to arrive.
+				ignore = moving;
+
+				if ( ignore ) {
+					return;
+				}
+
+				var at = /translateX\((-?[\d.]+)px\)/.exec( track.style.transform );
+
+				from = at ? parseFloat( at[ 1 ] ) : 0;
+				track.style.transition = 'none';
+
+				return;
+			}
+
+			if ( ignore ) {
+				return;
+			}
+
+			if ( 'move' === event.detail.phase ) {
+				track.style.transform = 'translateX(' + ( from + by ) + 'px)';
+
+				return;
+			}
+
+			track.style.transition = '';
+
+			if ( Math.abs( by ) >= TURN ) {
+				step( by < 0 ? 1 : -1 );
+			} else {
+				place( true );
+			}
+		} );
+
 		root.addEventListener( 'click', function ( event ) {
 			if ( event.target.closest( '.custom-space-hero__arrow--prev' ) ) {
 				step( -1 );

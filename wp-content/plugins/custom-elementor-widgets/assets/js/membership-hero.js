@@ -23,6 +23,10 @@
 
 		root.dataset.wired = '1';
 
+		var pull = root.querySelector( '.custom-membership-hero__stage' ) || root;
+
+		pull.classList.add( 'custom-pull' );
+
 		var current = 0;
 
 		function last() {
@@ -49,6 +53,8 @@
 			if ( next ) {
 				next.disabled = current === last();
 			}
+
+			pull.classList.toggle( 'is-pullable', last() > 0 );
 		}
 
 		root.addEventListener( 'click', function ( event ) {
@@ -57,6 +63,65 @@
 			} else if ( event.target.closest( '.custom-membership-hero__arrow--next' ) ) {
 				show( current + 1 );
 			}
+		} );
+
+		// Pulled sideways, the row follows the hand and settles on the plan the
+		// pull reached, as an arrow leaves it on a plan.
+		var TURN = 40;
+		var from = 0;
+
+		function offset( index ) {
+			return cards[ index ].offsetLeft - cards[ 0 ].offsetLeft;
+		}
+
+		// Past either end the row gives half of what the hand asks, so the end
+		// of the row is felt rather than struck.
+		function give( to ) {
+			var far = -offset( last() );
+
+			if ( to > 0 ) {
+				return to / 2;
+			}
+
+			return to < far ? far + ( to - far ) / 2 : to;
+		}
+
+		// The plan nearest where the hand left the row; a pull too short to
+		// reach the next one still counts as reaching for it.
+		function land( at, by ) {
+			var best = current;
+
+			for ( var i = 0; i <= last(); i++ ) {
+				if ( Math.abs( -offset( i ) - at ) < Math.abs( -offset( best ) - at ) ) {
+					best = i;
+				}
+			}
+
+			if ( best === current && Math.abs( by ) >= TURN ) {
+				best += by < 0 ? 1 : -1;
+			}
+
+			return best;
+		}
+
+		pull.addEventListener( 'custom-pull', function ( event ) {
+			var by = event.detail.by;
+
+			if ( 'begin' === event.detail.phase ) {
+				from = -offset( current );
+				track.style.transition = 'none';
+
+				return;
+			}
+
+			if ( 'move' === event.detail.phase ) {
+				track.style.transform = 'translateX(' + give( from + by ) + 'px)';
+
+				return;
+			}
+
+			track.style.transition = '';
+			show( land( from + by, by ) );
 		} );
 
 		window.addEventListener( 'resize', function () {

@@ -111,6 +111,23 @@
 			}
 		} );
 
+		// How far a pull goes before it turns the row, as an arrow would.
+		var TURN = 40;
+
+		// Pulled sideways, the areas turn as the arrows turn them.
+		var pull = root.querySelector( '.custom-home-space__stage' ) || root;
+
+		pull.classList.add( 'custom-pull' );
+		pull.classList.toggle( 'is-pullable', areas.length > 1 );
+
+		pull.addEventListener( 'custom-pull', function ( event ) {
+			var by = event.detail.by;
+
+			if ( 'end' === event.detail.phase && Math.abs( by ) >= TURN ) {
+				show( current + ( by < 0 ? 1 : -1 ) );
+			}
+		} );
+
 		show( 0 );
 
 		window.addEventListener( 'resize', cut );
