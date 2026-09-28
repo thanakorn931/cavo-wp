@@ -173,10 +173,14 @@
 	white-space: nowrap;
 }
 
+/* What stands under the form keeps the form's own width: a line of it ends
+   where the button that sends the form ends, and turns rather than running on
+   past it. */
 .custom-footer__contact {
 	display: flex;
 	align-items: flex-start;
 	gap: 24px;
+	max-width: 508px;
 }
 
 .custom-footer__contact-column {
@@ -205,6 +209,9 @@
 .custom-footer__contact-label,
 .custom-footer__contact-column p {
 	margin: 0;
+	/* Said in one run with nowhere to break, a line still cannot leave its
+	   column. */
+	overflow-wrap: anywhere;
 }
 
 /* Right — the links. */

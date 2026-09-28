@@ -127,6 +127,19 @@
 	overflow: hidden;
 	overflow-x: clip;
 	overflow-y: visible;
+	/* The row is pulled by hand as well as sent by the arrows; up and down the
+	   page stays the page's own. */
+	touch-action: pan-y;
+}
+
+.custom-home-event__rail.is-pullable {
+	cursor: grab;
+}
+
+.custom-home-event__rail.is-holding {
+	cursor: grabbing;
+	user-select: none;
+	-webkit-user-select: none;
 }
 
 .custom-home-event__track {

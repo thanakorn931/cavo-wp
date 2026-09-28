@@ -51,6 +51,8 @@
 			if ( next ) {
 				next.disabled = current === last();
 			}
+
+			rail.classList.toggle( 'is-pullable', last() > 0 );
 		}
 
 		root.addEventListener( 'click', function ( event ) {
@@ -59,6 +61,102 @@
 			} else if ( event.target.closest( '.custom-home-event__arrow--next' ) ) {
 				show( current + 1 );
 			}
+		} );
+
+		// The row goes where a hand takes it as well as where an arrow sends it:
+		// pressed and pulled, it follows, and settles on the card the pull
+		// reached.
+		var PULL    = 24;
+		var holding = false;
+		var moved   = false;
+		var startX  = 0;
+		var startAt = 0;
+
+		// Past either end the row gives half of what the hand asks, so the end
+		// of the row is felt rather than struck.
+		function give( to ) {
+			var far = -last() * step();
+
+			if ( to > 0 ) {
+				return to / 2;
+			}
+
+			return to < far ? far + ( to - far ) / 2 : to;
+		}
+
+		// The hold is not taken from the card under the hand: a pointer held by
+		// the row would have the press that ends on a card answered by the row
+		// instead, and the card would never open. The window says where the
+		// hand goes and when it lets go, wherever it is by then.
+		rail.addEventListener( 'pointerdown', function ( event ) {
+			if ( last() === 0 || event.button ) {
+				return;
+			}
+
+			holding = true;
+			moved   = false;
+			startX  = event.clientX;
+			startAt = -current * step();
+		} );
+
+		// The row follows the hand only once the hand has gone somewhere: a
+		// press that barely moves is a press, and the card under it answers.
+		window.addEventListener( 'pointermove', function ( event ) {
+			if ( ! holding ) {
+				return;
+			}
+
+			var pulled = event.clientX - startX;
+
+			if ( ! moved && Math.abs( pulled ) > 4 ) {
+				moved = true;
+				track.style.transition = 'none';
+				rail.classList.add( 'is-holding' );
+			}
+
+			if ( ! moved ) {
+				return;
+			}
+
+			event.preventDefault();
+			track.style.transform = 'translateX(' + give( startAt + pulled ) + 'px)';
+		} );
+
+		[ 'pointerup', 'pointercancel' ].forEach( function ( name ) {
+			window.addEventListener( name, function ( event ) {
+				if ( ! holding ) {
+					return;
+				}
+
+				holding = false;
+				track.style.transition = '';
+				rail.classList.remove( 'is-holding' );
+
+				var pulled = 'pointercancel' === name ? 0 : event.clientX - startX;
+				var lands  = Math.round( -( startAt + pulled ) / step() );
+
+				// A pull too small to carry a whole card still counts as the
+				// card it was reaching for.
+				if ( lands === current && Math.abs( pulled ) >= PULL ) {
+					lands += pulled < 0 ? 1 : -1;
+				}
+
+				show( lands );
+			} );
+		} );
+
+		// The hand let go over a card, but what it did was move the row.
+		rail.addEventListener( 'click', function ( event ) {
+			if ( moved ) {
+				moved = false;
+				event.preventDefault();
+				event.stopPropagation();
+			}
+		}, true );
+
+		// A picture is part of the row here, not something to carry off it.
+		rail.addEventListener( 'dragstart', function ( event ) {
+			event.preventDefault();
 		} );
 
 		window.addEventListener( 'resize', function () {
