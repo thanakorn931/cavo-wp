@@ -12,7 +12,11 @@
 	align-items: center;
 	gap: 16px;
 	width: 100%;
-	padding: 130px calc( 254px + max( 0px, calc( ( 100% - 1440px ) / 2 ) ) ) 134px calc( 254px + max( 0px, calc( ( 100% - 1440px ) / 2 ) ) );
+	/* The line the band carries is one line: at the file's own 254 either side
+	   it comes to the width left over exactly, and a word turns for want of a
+	   pixel. The band keeps its shoulders and gives the line room to say
+	   itself. */
+	padding: 130px calc( 200px + max( 0px, calc( ( 100% - 1440px ) / 2 ) ) ) 134px calc( 200px + max( 0px, calc( ( 100% - 1440px ) / 2 ) ) );
 	box-sizing: border-box;
 	overflow: hidden;
 }
