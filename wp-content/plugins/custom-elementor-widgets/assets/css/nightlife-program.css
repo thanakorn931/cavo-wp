@@ -102,11 +102,36 @@
 	text-decoration: none;
 	white-space: nowrap;
 	box-sizing: border-box;
-	transition: opacity 300ms ease-in-out;
+	transition:
+		background-color 300ms ease-in-out,
+		border-color 300ms ease-in-out,
+		color 300ms ease-in-out,
+		opacity 300ms ease-in-out;
 }
 
-.custom-nightlife-program__button:hover {
-	opacity: 0.8;
+/* The design's hover for a clear press on a light ground fills it with the
+   brown of its outline, and turns its words to the paper colour. The
+   Style control writes the resting ground at the widget's own weight, out of a
+   stylesheet's reach, and no control answers for the hover, so it is said above
+   that weight here. A touch screen keeps a hover after the tap, so only a
+   pointer that can hover is given one. */
+@media ( hover: hover ) {
+	.custom-nightlife-program__button--outline:hover {
+		background-color: #3a2114 !important;
+		border-color: #3a2114 !important;
+		color: #faf6ea !important;
+	}
+}
+
+/* The design's hover for a brown press is a lighter brown of its own, not a fade. The
+   Style control writes the resting ground at the widget's own weight, out of a
+   stylesheet's reach, and no control answers for the hover, so it is said above
+   that weight here. A touch screen keeps a hover after the tap, so only a
+   pointer that can hover is given one. */
+@media ( hover: hover ) {
+	.custom-nightlife-program__button--solid:hover {
+		background-color: #64311a !important;
+	}
 }
 
 /* The stamp, and the holes punched down its seam. */
@@ -187,7 +212,7 @@
    pointer that can hover is given one. */
 @media ( hover: hover ) {
 	.custom-nightlife-program__arrow:hover {
-		background-color: #d4c894 !important;
+		background-color: #e1d8b1 !important;
 	}
 }
 

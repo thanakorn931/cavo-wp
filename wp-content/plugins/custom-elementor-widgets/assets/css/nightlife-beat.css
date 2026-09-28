@@ -61,7 +61,7 @@
 	background-image: linear-gradient(
 		-36.817deg,
 		#3a2114 0.483%,
-		#d4c894 50%,
+		#e1d8b1 50%,
 		#faf6ea 99.517%
 	);
 }
@@ -219,7 +219,7 @@
    pointer that can hover is given one. */
 @media ( hover: hover ) {
 	.custom-nightlife-beat__arrow:not( [disabled] ):hover {
-		background-color: #d4c894 !important;
+		background-color: #e1d8b1 !important;
 	}
 }
 

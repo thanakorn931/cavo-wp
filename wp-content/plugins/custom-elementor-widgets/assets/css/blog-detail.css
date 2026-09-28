@@ -124,7 +124,7 @@
    pointer that can hover is given one. */
 @media ( hover: hover ) {
 	.custom-blog-detail__mark:hover {
-		background-color: #d4c894 !important;
+		background-color: #e1d8b1 !important;
 	}
 }
 

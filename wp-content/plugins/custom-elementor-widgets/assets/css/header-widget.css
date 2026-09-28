@@ -317,8 +317,37 @@ body.admin-bar .custom-header__bar {
    that weight here. A touch screen keeps a hover after the tap, so only a
    pointer that can hover is given one. */
 @media ( hover: hover ) {
-	.custom-header:not( .is-scrolled ) .custom-header__button--solid:hover {
-		background-color: #d4c894 !important;
+	.custom-header--scroll:not( .is-scrolled ) .custom-header__button--solid:hover {
+		background-color: #e1d8b1 !important;
+	}
+}
+
+/* The design's hover for a clear press on a dark ground is a veil of the paper
+   colour, not a fade. The
+   Style control writes the resting ground at the widget's own weight, out of a
+   stylesheet's reach, and no control answers for the hover, so it is said above
+   that weight here. A touch screen keeps a hover after the tap, so only a
+   pointer that can hover is given one. */
+@media ( hover: hover ) {
+	.custom-header--scroll:not( .is-scrolled ) .custom-header__button--outline:hover {
+		background-color: rgba( 250, 246, 234, 0.4 ) !important;
+	}
+}
+
+/* The header that stays put, and the one that has moved off the top, draw
+   their presses in brown: the solid one takes the lighter brown, the clear one
+   is filled with the brown of its outline. */
+@media ( hover: hover ) {
+	.custom-header--fixed .custom-header__button--solid:hover,
+	.custom-header--scroll.is-scrolled .custom-header__button--solid:hover {
+		background-color: #64311a !important;
+	}
+
+	.custom-header--fixed .custom-header__button--outline:hover,
+	.custom-header--scroll.is-scrolled .custom-header__button--outline:hover {
+		background-color: #3a2114 !important;
+		border-color: #3a2114 !important;
+		color: #faf6ea !important;
 	}
 }
 
@@ -349,6 +378,7 @@ body.admin-bar .custom-header__bar {
 .custom-header__logo-box {
 	transition:
 		background-color 300ms ease-in-out,
+		border-color 300ms ease-in-out,
 		box-shadow 300ms ease-in-out,
 		color 300ms ease-in-out,
 		opacity 300ms ease-in-out;

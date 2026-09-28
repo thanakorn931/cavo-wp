@@ -221,7 +221,9 @@
 	text-decoration: none;
 	white-space: nowrap;
 	box-sizing: border-box;
-	transition: opacity 300ms ease-in-out;
+	transition:
+		background-color 300ms ease-in-out,
+		opacity 300ms ease-in-out;
 }
 
 .custom-home-space__tour {
@@ -293,8 +295,16 @@
 		opacity 300ms ease-in-out;
 }
 
-.custom-home-space__space:hover {
-	opacity: 0.85;
+/* The design's hover for a clear press on a dark ground is a veil of the paper
+   colour, not a fade. The
+   Style control writes the resting ground at the widget's own weight, out of a
+   stylesheet's reach, and no control answers for the hover, so it is said above
+   that weight here. A touch screen keeps a hover after the tap, so only a
+   pointer that can hover is given one. */
+@media ( hover: hover ) {
+	.custom-home-space__space:hover {
+		background-color: rgba( 250, 246, 234, 0.4 ) !important;
+	}
 }
 
 /* The design's hover for a light press is a ground of its own, not a fade. The
@@ -304,7 +314,7 @@
    pointer that can hover is given one. */
 @media ( hover: hover ) {
 	.custom-home-space__reserve:hover {
-		background-color: #d4c894 !important;
+		background-color: #e1d8b1 !important;
 	}
 }
 
@@ -357,7 +367,7 @@
    pointer that can hover is given one. */
 @media ( hover: hover ) {
 	.custom-home-space__arrow:hover {
-		background-color: #d4c894 !important;
+		background-color: #e1d8b1 !important;
 	}
 }
 

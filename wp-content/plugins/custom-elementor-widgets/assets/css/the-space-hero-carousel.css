@@ -88,6 +88,19 @@
 	border-radius: 24px;
 	text-decoration: none;
 	white-space: nowrap;
+	transition:
+		background-color 300ms ease-in-out;
+}
+
+/* The design's hover for a brown press is a lighter brown of its own, not a fade. The
+   Style control writes the resting ground at the widget's own weight, out of a
+   stylesheet's reach, and no control answers for the hover, so it is said above
+   that weight here. A touch screen keeps a hover after the tap, so only a
+   pointer that can hover is given one. */
+@media ( hover: hover ) {
+	.custom-space-hero__button:hover {
+		background-color: #64311a !important;
+	}
 }
 
 .custom-space-hero__tour {
@@ -236,7 +249,7 @@
    pointer that can hover is given one. */
 @media ( hover: hover ) {
 	.custom-space-hero__arrow:hover {
-		background-color: #d4c894 !important;
+		background-color: #e1d8b1 !important;
 	}
 }
 

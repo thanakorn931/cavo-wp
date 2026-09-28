@@ -73,6 +73,18 @@
 	margin-top: 42px;
 }
 
+/* The design's hover for a brown press is a lighter brown of its own, not a fade. The
+   Style control writes the resting ground at the widget's own weight, out of a
+   stylesheet's reach, and no control answers for the hover, so it is said above
+   that weight here. A touch screen keeps a hover after the tap, so only a
+   pointer that can hover is given one. */
+@media ( hover: hover ) {
+	.custom-event-past .custom-event-more:hover {
+		background-color: #64311a !important;
+		opacity: 1;
+	}
+}
+
 @media ( prefers-reduced-motion: reduce ) {
 	.custom-event-past__action {
 		transition: none;

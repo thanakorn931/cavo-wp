@@ -63,6 +63,17 @@
 		opacity 300ms ease-in-out;
 }
 
+/* The design's hover for a brown press is a lighter brown of its own, not a fade. The
+   Style control writes the resting ground at the widget's own weight, out of a
+   stylesheet's reach, and no control answers for the hover, so it is said above
+   that weight here. A touch screen keeps a hover after the tap, so only a
+   pointer that can hover is given one. */
+@media ( hover: hover ) {
+	.custom-dining-menu__button:hover {
+		background-color: #64311a !important;
+	}
+}
+
 /* The pictures, and the dots that say which one is showing.
 
    The picture starts below the statement beside it, not level with it: the

@@ -70,11 +70,25 @@
 	text-decoration: none;
 	text-transform: uppercase;
 	white-space: nowrap;
-	transition: opacity 300ms ease-in-out;
+	transition:
+		background-color 300ms ease-in-out,
+		border-color 300ms ease-in-out,
+		color 300ms ease-in-out,
+		opacity 300ms ease-in-out;
 }
 
-.custom-private-introduce__button:hover {
-	opacity: 0.75;
+/* The design's hover for a clear press on a light ground fills it with the
+   brown of its outline, and turns its words to the paper colour. The
+   Style control writes the resting ground at the widget's own weight, out of a
+   stylesheet's reach, and no control answers for the hover, so it is said above
+   that weight here. A touch screen keeps a hover after the tap, so only a
+   pointer that can hover is given one. */
+@media ( hover: hover ) {
+	.custom-private-introduce__button:hover {
+		background-color: #3a2114 !important;
+		border-color: #3a2114 !important;
+		color: #faf6ea !important;
+	}
 }
 
 .custom-private-introduce__button svg {
