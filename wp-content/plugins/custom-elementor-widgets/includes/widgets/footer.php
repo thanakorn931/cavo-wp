@@ -150,13 +150,21 @@ class Footer extends Base_Widget {
 			)
 		);
 		$this->add_control(
-			'contact_details',
+			'contact_tel',
 			array(
-				'label'       => esc_html__( 'Contact info', 'custom-elementor-widgets' ),
-				'type'        => Controls_Manager::TEXTAREA,
+				'label'       => esc_html__( 'Tel.', 'custom-elementor-widgets' ),
+				'type'        => Controls_Manager::TEXT,
 				'dynamic'     => array( 'active' => true ),
-				'rows'        => 5,
-				'placeholder' => "0xx-xxx-xxxx\nexample@gmail.com",
+				'placeholder' => '0xx-xxx-xxxx',
+			)
+		);
+		$this->add_control(
+			'contact_email',
+			array(
+				'label'       => esc_html__( 'Email', 'custom-elementor-widgets' ),
+				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
+				'placeholder' => 'example@gmail.com',
 			)
 		);
 		$this->add_control(
@@ -551,7 +559,8 @@ class Footer extends Base_Widget {
 			'contact_label'      => esc_html__( 'Contact Info', 'custom-elementor-widgets' ),
 			'location_label'     => esc_html__( 'Location', 'custom-elementor-widgets' ),
 			'contact_address'    => esc_html__( 'Town Hall Sukhumvit 49, Sukhumvit 49, Khlong Tan Nuea, Watthana, Bangkok 10110', 'custom-elementor-widgets' ),
-			'contact_details'    => "0xx-xxx-xxxx\nexample@gmail.com",
+			'contact_tel'        => '0xx-xxx-xxxx',
+			'contact_email'      => 'example@gmail.com',
 		);
 	}
 
@@ -708,15 +717,36 @@ class Footer extends Base_Widget {
 	 * @param array $settings The widget's settings.
 	 */
 	private function render_contact( $settings ) {
+		$tel    = $this->contact( $settings, 'contact_tel' );
+		$email  = $this->contact( $settings, 'contact_email' );
+		$design = $this->design_text();
+
+		// The design's example is shown as it stands and goes nowhere: it is
+		// nobody's number, and nobody's address.
+		$reach = array_filter(
+			array(
+				$design['contact_tel'] === $tel ? esc_html( $tel ) : $this->tel_line( $tel ),
+				$design['contact_email'] === $email ? esc_html( $email ) : $this->email_line( $email ),
+			)
+		);
+
+		$address = array();
+
+		foreach ( preg_split( '/\r\n|\r|\n/', $this->text( $settings, 'contact_address' ) ) as $line ) {
+			if ( '' !== trim( $line ) ) {
+				$address[] = esc_html( $line );
+			}
+		}
+
 		$columns = array(
-			array( $this->text( $settings, 'contact_label' ), $this->text( $settings, 'contact_details' ) ),
-			array( $this->text( $settings, 'location_label' ), $this->text( $settings, 'contact_address' ) ),
+			array( $this->text( $settings, 'contact_label' ), $reach ),
+			array( $this->text( $settings, 'location_label' ), $address ),
 		);
 
 		$columns = array_filter(
 			$columns,
 			static function ( $column ) {
-				return '' !== $column[0] || '' !== $column[1];
+				return '' !== $column[0] || ! empty( $column[1] );
 			}
 		);
 
@@ -730,10 +760,10 @@ class Footer extends Base_Widget {
 					<?php if ( '' !== $column[0] ) : ?>
 						<p class="custom-footer__contact-label"><?php echo esc_html( $column[0] ); ?></p>
 					<?php endif; ?>
-					<?php if ( '' !== $column[1] ) : ?>
+					<?php if ( ! empty( $column[1] ) ) : ?>
 						<div class="custom-footer__contact-lines">
-							<?php foreach ( preg_split( '/\r\n|\r|\n/', $column[1] ) as $line ) : ?>
-								<p><?php echo esc_html( $line ); ?></p>
+							<?php foreach ( $column[1] as $line ) : ?>
+								<p><?php echo $line; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped where each line is made. ?></p>
 							<?php endforeach; ?>
 						</div>
 					<?php endif; ?>
@@ -741,6 +771,80 @@ class Footer extends Base_Widget {
 			<?php endforeach; ?>
 		</div>
 		<?php
+	}
+
+	/**
+	 * A way to reach the venue: what the client typed in its own box, or
+	 * else what they typed before the two had boxes of their own, or else
+	 * what the design shows.
+	 *
+	 * Before tel. and email were asked apart, both were typed into one box,
+	 * a line each. A footer saved then still holds that box; read from it,
+	 * a page put up before anybody has filled the new boxes goes on showing
+	 * the venue's own number and address rather than the design's example.
+	 *
+	 * @param array  $settings The widget's settings.
+	 * @param string $key      contact_tel or contact_email.
+	 * @return string
+	 */
+	private function contact( $settings, $key ) {
+		$typed = isset( $settings[ $key ] ) ? trim( (string) $settings[ $key ] ) : '';
+
+		if ( '' !== $typed ) {
+			return $typed;
+		}
+
+		$before = isset( $settings['contact_details'] ) ? (string) $settings['contact_details'] : '';
+
+		foreach ( preg_split( '/\r\n|\r|\n/', $before ) as $line ) {
+			$line = trim( $line );
+
+			if ( 'contact_email' === $key ? false !== strpos( $line, '@' ) : ( '' !== $line && preg_match( '/^[\d\s+().\-]+$/', $line ) ) ) {
+				return $line;
+			}
+		}
+
+		return $this->text( $settings, $key );
+	}
+
+	/**
+	 * A number, pressed to call it. Written as the client wrote it; dialled
+	 * as its digits alone.
+	 *
+	 * @param string $tel The number.
+	 * @return string Escaped markup, or nothing.
+	 */
+	private function tel_line( $tel ) {
+		if ( '' === $tel ) {
+			return '';
+		}
+
+		$dial = preg_replace( '/[^\d+]/', '', $tel );
+
+		if ( '' === $dial ) {
+			return esc_html( $tel );
+		}
+
+		return sprintf( '<a class="custom-footer__contact-link" href="%1$s">%2$s</a>', esc_url( 'tel:' . $dial, array( 'tel' ) ), esc_html( $tel ) );
+	}
+
+	/**
+	 * An address, pressed to write to it. One that is not an address is
+	 * shown as it was written, and goes nowhere.
+	 *
+	 * @param string $email The address.
+	 * @return string Escaped markup, or nothing.
+	 */
+	private function email_line( $email ) {
+		if ( '' === $email ) {
+			return '';
+		}
+
+		if ( ! is_email( $email ) ) {
+			return esc_html( $email );
+		}
+
+		return sprintf( '<a class="custom-footer__contact-link" href="%1$s">%2$s</a>', esc_url( 'mailto:' . $email, array( 'mailto' ) ), esc_html( $email ) );
 	}
 
 	/**
