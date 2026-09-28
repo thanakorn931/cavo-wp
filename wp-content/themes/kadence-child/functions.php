@@ -1111,6 +1111,39 @@ function kadence_child_form_old_url() {
 add_action( 'admin_init', 'kadence_child_form_old_url' );
 
 /**
+ * Let Elementor's Theme Builder link open from any screen in wp-admin.
+ *
+ * The link carries the screen it was pressed on, for the Theme Builder's own
+ * way back, but carries it unencoded. A screen whose address names a page —
+ * every one of WP Form's, and most plugins' — hands the link a second page,
+ * PHP reads the last of the two, and the press opens the screen it was
+ * pressed on. The way back is written here as the one value it is.
+ *
+ * A link that already carries it as one value is left as it came.
+ *
+ * @param string $url The Theme Builder's link.
+ * @return string The same, its way back encoded.
+ */
+function kadence_child_theme_builder_url( $url ) {
+	$at = strpos( (string) $url, 'return_to=' );
+
+	if ( false === $at ) {
+		return $url;
+	}
+
+	$from = $at + strlen( 'return_to=' );
+	$hash = strpos( $url, '#', $from );
+	$back = false === $hash ? substr( $url, $from ) : substr( $url, $from, $hash - $from );
+
+	if ( ! preg_match( '/[?&=]/', $back ) ) {
+		return $url;
+	}
+
+	return substr( $url, 0, $from ) . rawurlencode( $back ) . ( false === $hash ? '' : substr( $url, $hash ) );
+}
+add_filter( 'elementor/editor-one/menu/theme_builder_url', 'kadence_child_theme_builder_url' );
+
+/**
  * The tabs themselves, across the top of whichever screen is open.
  *
  * They print on the one hook that fires after the heading on both a post-type
