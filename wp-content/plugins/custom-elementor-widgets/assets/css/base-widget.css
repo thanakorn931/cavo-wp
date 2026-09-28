@@ -43,17 +43,16 @@
  * Offering a value, and having filled one in, Chrome paints its own ground
  * behind the words and its own ink on them, in weights a stylesheet cannot
  * outrank — a field drawn as a rule with nothing behind it comes back a dark
- * box with words in black. Its ground is never painted: every field is told,
- * before any of that begins, that a change of ground takes forever, and the
- * offer is painted through that. Its ink is given back through the one
- * property the browser does honour once the value is taken.
+ * box with words in black. Its ground is never painted: a field the browser
+ * offers or fills is told that a change of ground takes forever, and the
+ * browser's ground is painted through that. Its ink is given back through the
+ * one property the browser does honour once the value is taken.
+ *
+ * Only then, and never at rest. Told at rest, a field whose section's own
+ * stylesheet reaches the page after the field was first drawn keeps the
+ * theme's ground and ink forever, since the change to the section's is the
+ * change that takes forever.
  */
-input[ class*="custom-" ],
-textarea[ class*="custom-" ],
-select[ class*="custom-" ] {
-	transition: background-color 2147483647s ease-out 0s, color 2147483647s ease-out 0s;
-}
-
 input[ class*="custom-" ]:-webkit-autofill,
 input[ class*="custom-" ]:-webkit-autofill:hover,
 input[ class*="custom-" ]:-webkit-autofill:focus,
@@ -62,6 +61,7 @@ select[ class*="custom-" ]:-webkit-autofill {
 	-webkit-text-fill-color: currentColor;
 	caret-color: currentColor;
 	box-shadow: none;
+	transition: background-color 2147483647s ease-out 0s, color 2147483647s ease-out 0s;
 }
 
 /* The ring a reader arriving by keyboard needs, drawn in whatever ink the band
