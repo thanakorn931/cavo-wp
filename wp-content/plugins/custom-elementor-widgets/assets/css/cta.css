@@ -14,9 +14,10 @@
 	width: 100%;
 	/* The line the band carries is one line: at the file's own 254 either side
 	   it comes to the width left over exactly, and a word turns for want of a
-	   pixel. The band keeps its shoulders and gives the line room to say
-	   itself. */
-	padding: 130px calc( 200px + max( 0px, calc( ( 100% - 1440px ) / 2 ) ) ) 134px calc( 200px + max( 0px, calc( ( 100% - 1440px ) / 2 ) ) );
+	   pixel. The band keeps its shoulders at 100, so the line has 1240 to say
+	   itself in and room to spare for a client's longer one; on a screen too
+	   narrow even for that it turns, and nothing runs off the band. */
+	padding: 130px calc( 100px + max( 0px, calc( ( 100% - 1440px ) / 2 ) ) ) 134px calc( 100px + max( 0px, calc( ( 100% - 1440px ) / 2 ) ) );
 	box-sizing: border-box;
 	overflow: hidden;
 }
