@@ -323,7 +323,7 @@ class Event_Past_Events extends Event_Widget {
 			array(
 				'label'     => esc_html__( 'Link', 'custom-elementor-widgets' ),
 				'type'      => Controls_Manager::COLOR,
-				'default'   => '#121212',
+				'default'   => '#3A2114',
 				'separator' => 'before',
 				'selectors' => array(
 					'{{WRAPPER}} .custom-event-past__action' => 'color: {{VALUE}}; border: 1px solid {{VALUE}};',

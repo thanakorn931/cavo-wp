@@ -65,6 +65,26 @@
 	width: 100%;
 }
 
+/* The design's hover for a clear press on a light ground fills it with the
+   brown of its outline, and turns its words to the paper colour. The
+   Style control writes the resting ground at the widget's own weight, out of a
+   stylesheet's reach, and no control answers for the hover, so it is said above
+   that weight here. A touch screen keeps a hover after the tap, so only a
+   pointer that can hover is given one. */
+@media ( hover: hover ) {
+	.custom-event-past__action:hover {
+		background-color: #3a2114 !important;
+		border-color: #3a2114 !important;
+		color: #faf6ea !important;
+	}
+}
+
+/* What has been is drawn in black and white: the picture, not the mark on it. */
+.custom-event-past .custom-event-card__picture img,
+.custom-event-past .custom-event-card__picture video {
+	filter: grayscale( 1 );
+}
+
 .custom-event-past__actions {
 	display: flex;
 	align-items: center;
