@@ -92,7 +92,9 @@
 	border-radius: 50%;
 	background-color: #ebe4ca;
 	cursor: pointer;
-	transition: opacity 300ms ease-in-out;
+	transition:
+		background-color 300ms ease-in-out,
+		opacity 300ms ease-in-out;
 }
 
 /* The theme paints a bare button on every state it has; a class alone does not
