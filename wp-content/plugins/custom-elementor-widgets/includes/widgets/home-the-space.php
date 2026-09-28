@@ -2,9 +2,11 @@
 /**
  * Home, the space — one section of the design.
  *
- * One area at a time: the tabs name them, and each carries its own two
- * pictures, its words and the two ways further in. The table is booked from the
- * section rather than from any one area.
+ * One area at a time: the tabs name them, and each carries its own picture,
+ * its words and the two ways further in. The small picture beside it is the
+ * next area's, named, so what comes after is read off the order rather than
+ * entered twice. The table is booked from the section rather than from any one
+ * area.
  *
  * @package Custom_Elementor_Widgets
  */
@@ -141,15 +143,7 @@ class Home_The_Space extends Base_Widget {
 		$area->add_control(
 			'picture',
 			array(
-				'label' => esc_html__( 'Picture, large', 'custom-elementor-widgets' ),
-				'type'  => Controls_Manager::MEDIA,
-			)
-		);
-
-		$area->add_control(
-			'thumb',
-			array(
-				'label' => esc_html__( 'Picture, small', 'custom-elementor-widgets' ),
+				'label' => esc_html__( 'Picture', 'custom-elementor-widgets' ),
 				'type'  => Controls_Manager::MEDIA,
 			)
 		);
@@ -372,12 +366,14 @@ class Home_The_Space extends Base_Widget {
 		$this->add_control(
 			'title_color',
 			array(
-				'label'     => esc_html__( 'Area title', 'custom-elementor-widgets' ),
-				'type'      => Controls_Manager::COLOR,
-				'default'   => '#FAF6EA',
-				'separator' => 'before',
-				'selectors' => array(
-					'{{WRAPPER}} .custom-home-space__title' => 'color: {{VALUE}};',
+				'label'       => esc_html__( 'Area title', 'custom-elementor-widgets' ),
+				'type'        => Controls_Manager::COLOR,
+				'default'     => '#FAF6EA',
+				'separator'   => 'before',
+				'description' => esc_html__( 'The next area is named on the small picture in the same colour.', 'custom-elementor-widgets' ),
+				'selectors'   => array(
+					'{{WRAPPER}} .custom-home-space__title'     => 'color: {{VALUE}};',
+					'{{WRAPPER}} .custom-home-space__next-name' => 'color: {{VALUE}};',
 				),
 			)
 		);
@@ -397,6 +393,21 @@ class Home_The_Space extends Base_Widget {
 						'mobile_default' => array( 'unit' => 'px', 'size' => 24 ),
 					),
 					'font_weight' => array( 'default' => '500' ),
+				),
+			)
+		);
+
+		$this->add_group_control(
+			Group_Control_Typography::get_type(),
+			array(
+				'name'           => 'next_typography',
+				'label'          => esc_html__( 'Next area on the small picture', 'custom-elementor-widgets' ),
+				'selector'       => '{{WRAPPER}} .custom-home-space__next-name',
+				'fields_options' => array(
+					'typography'  => array( 'default' => 'yes' ),
+					'font_family' => array( 'default' => 'Roboto' ),
+					'font_size'   => array( 'default' => array( 'unit' => 'px', 'size' => 16 ) ),
+					'font_weight' => array( 'default' => '700' ),
 				),
 			)
 		);
@@ -549,9 +560,18 @@ class Home_The_Space extends Base_Widget {
 			</div>
 
 			<div class="custom-home-space__stage">
-				<?php foreach ( $areas as $index => $area ) : ?>
-					<?php $this->render_area( $settings, $area, 0 === (int) $index ); ?>
-				<?php endforeach; ?>
+				<?php
+				$list  = array_values( $areas );
+				$count = count( $list );
+
+				foreach ( $list as $index => $area ) {
+					// The ring the arrows turn: after the last comes the first. A
+					// single area has nothing after it.
+					$next = $count > 1 ? $list[ ( $index + 1 ) % $count ] : null;
+
+					$this->render_area( $settings, $area, 0 === $index, $next );
+				}
+				?>
 
 				<?php if ( '' !== $reserve ) : ?>
 					<a class="custom-home-space__reserve"<?php
@@ -577,25 +597,41 @@ class Home_The_Space extends Base_Widget {
 	}
 
 	/**
-	 * One area: its two pictures and what is said about it.
+	 * One area: its picture, the next area's beside it, and what is said about
+	 * it.
 	 *
-	 * @param array $settings The widget's settings.
-	 * @param array $area     The row.
-	 * @param bool  $here     Whether it is the one open.
+	 * @param array      $settings The widget's settings.
+	 * @param array      $area     The row.
+	 * @param bool       $here     Whether it is the one open.
+	 * @param array|null $next     The row after it, or nothing when it stands alone.
 	 */
-	private function render_area( $settings, $area, $here ) {
+	private function render_area( $settings, $area, $here, $next ) {
 		$space = $this->text( $settings, 'space_text' );
 		$tour  = $this->text( $settings, 'tour_text' );
 		$icon  = isset( $settings['tour_icon'] ) ? $settings['tour_icon'] : array();
+
+		// The next area is named by its title, or by its tab where it has none.
+		$next_name = '';
+
+		if ( $next ) {
+			$next_name = isset( $next['title'] ) ? trim( (string) $next['title'] ) : '';
+			$next_name = '' !== $next_name ? $next_name : ( isset( $next['name'] ) ? trim( (string) $next['name'] ) : '' );
+		}
 		?>
 		<div class="custom-home-space__area<?php echo $here ? ' is-here' : ''; ?>"<?php echo $here ? '' : ' hidden'; ?>>
 			<span class="custom-home-space__large">
 				<?php $this->media( isset( $area['picture']['url'] ) ? $area['picture']['url'] : '', '', true ); ?>
 			</span>
 
-			<span class="custom-home-space__small">
-				<?php $this->media( isset( $area['thumb']['url'] ) ? $area['thumb']['url'] : '', '', true ); ?>
-				<span class="custom-home-space__small-veil" aria-hidden="true"></span>
+			<?php // What comes next, shown rather than offered: the tabs and the arrows are the way there. ?>
+			<span class="custom-home-space__small" aria-hidden="true">
+				<?php $this->media( $next && isset( $next['picture']['url'] ) ? $next['picture']['url'] : '', '', true ); ?>
+
+				<?php if ( '' !== $next_name ) : ?>
+					<span class="custom-home-space__next-name"><?php echo esc_html( $next_name ); ?></span>
+				<?php endif; ?>
+
+				<span class="custom-home-space__small-veil"></span>
 			</span>
 
 			<div class="custom-home-space__panel">

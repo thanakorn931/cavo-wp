@@ -153,6 +153,21 @@
 	object-position: center;
 }
 
+/* The next area's name, at the foot of its picture and under the same veil,
+   so it reads as the picture does: set back, the one open being the other.
+   A long name takes a second line upward rather than running off the card. */
+.custom-home-space__next-name {
+	position: absolute;
+	left: 16px;
+	right: 16px;
+	bottom: 8px;
+	margin: 0;
+	text-align: center;
+	text-transform: uppercase;
+	overflow-wrap: anywhere;
+	pointer-events: none;
+}
+
 .custom-home-space__small-veil {
 	position: absolute;
 	inset: 0;
