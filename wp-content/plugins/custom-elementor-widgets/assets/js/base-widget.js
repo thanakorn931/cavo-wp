@@ -357,3 +357,142 @@
 		}
 	} );
 }() );
+
+
+/**
+ * A row of pictures where one stands open.
+ *
+ * Every picture in the row can be the open one. Pressed, a picture opens and
+ * the one that was open closes; left alone, the row turns itself, a picture
+ * every five seconds, and round again. It waits while the reader is on it — a
+ * hand over it, or a key in it — and it does not turn at all for a reader whose
+ * system has asked for less movement, or while the page is not being looked at.
+ */
+( function () {
+	'use strict';
+
+	// How long a picture stands open before the row turns of its own accord.
+	var TURN = 5000;
+
+	function setUp( root ) {
+		if ( ! root || root.dataset.panelsWired ) {
+			return;
+		}
+
+		var panels = root.querySelectorAll( '[data-panel]' );
+
+		if ( panels.length < 2 ) {
+			return;
+		}
+
+		root.dataset.panelsWired = '1';
+
+		var open  = 0;
+		var timer = 0;
+		var held  = false;
+
+		function still() {
+			return window.matchMedia && window.matchMedia( '( prefers-reduced-motion: reduce )' ).matches;
+		}
+
+		function show( index ) {
+			open = ( index + panels.length ) % panels.length;
+
+			for ( var i = 0; i < panels.length; i++ ) {
+				var here = i === open;
+				var pick = panels[ i ].querySelector( '[data-panel-pick]' );
+
+				panels[ i ].classList.toggle( 'is-open', here );
+
+				// The picture already open is not one to ask for.
+				if ( pick ) {
+					pick.disabled = here;
+					pick.setAttribute( 'aria-pressed', here ? 'true' : 'false' );
+				}
+			}
+		}
+
+		function wait() {
+			window.clearTimeout( timer );
+
+			if ( held || still() || document.hidden ) {
+				return;
+			}
+
+			timer = window.setTimeout( function () {
+				show( open + 1 );
+				wait();
+			}, TURN );
+		}
+
+		root.addEventListener( 'click', function ( event ) {
+			var pick = event.target.closest ? event.target.closest( '[data-panel-pick]' ) : null;
+
+			if ( ! pick ) {
+				return;
+			}
+
+			var panel = pick.closest( '[data-panel]' );
+
+			for ( var i = 0; i < panels.length; i++ ) {
+				if ( panels[ i ] === panel ) {
+					show( i );
+					break;
+				}
+			}
+
+			// A picture asked for stands its full five seconds before the row
+			// takes the turn back.
+			wait();
+		} );
+
+		// The row holds still while the reader is on it, and takes up the turn
+		// again once they have left.
+		[ 'pointerenter', 'focusin' ].forEach( function ( name ) {
+			root.addEventListener( name, function () {
+				held = true;
+				window.clearTimeout( timer );
+			} );
+		} );
+
+		[ 'pointerleave', 'focusout' ].forEach( function ( name ) {
+			root.addEventListener( name, function () {
+				held = false;
+				wait();
+			} );
+		} );
+
+		document.addEventListener( 'visibilitychange', wait );
+
+		show( 0 );
+		wait();
+	}
+
+	function start( root ) {
+		var rows = ( root || document ).querySelectorAll( '[data-panels]' );
+
+		for ( var i = 0; i < rows.length; i++ ) {
+			setUp( rows[ i ] );
+		}
+	}
+
+	if ( document.readyState === 'loading' ) {
+		document.addEventListener( 'DOMContentLoaded', function () {
+			start();
+		} );
+	} else {
+		start();
+	}
+
+	// Elementor rebuilds a widget in the editor without reloading the page.
+	window.addEventListener( 'elementor/frontend/init', function () {
+		if ( window.elementorFrontend && window.elementorFrontend.hooks ) {
+			window.elementorFrontend.hooks.addAction(
+				'frontend/element_ready/global',
+				function ( $scope ) {
+					start( $scope[ 0 ] );
+				}
+			);
+		}
+	} );
+}() );

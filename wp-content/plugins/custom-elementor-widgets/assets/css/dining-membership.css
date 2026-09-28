@@ -16,30 +16,55 @@
 	overflow: hidden;
 }
 
-.custom-dining-membership__panel,
-.custom-dining-membership__panel:hover,
-.custom-dining-membership__panel:focus,
-.custom-dining-membership__panel:active {
-	color: inherit;
+/* The row divides four to one to one, and the four is whichever picture is
+   open: every picture can be that one, and the row opens and closes rather
+   than standing where it was drawn. */
+.custom-dining-membership__panel {
 	position: relative;
-	min-width: 0;
-	overflow: hidden;
-}
-
-.custom-dining-membership__panel--wide {
-	flex: 4 1 0;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	justify-content: flex-end;
+	flex: 1 1 0;
+	min-width: 0;
 	padding-bottom: 48px;
+	color: inherit;
+	overflow: hidden;
 	box-sizing: border-box;
+	transition: flex-grow 500ms ease-in-out;
 }
 
-.custom-dining-membership__panel--side {
-	flex: 1 1 0;
-	display: block;
-	text-decoration: none;
+.custom-dining-membership__panel.is-open {
+	flex-grow: 4;
+}
+
+/* The whole picture is the way to open it, and the one already open is not
+   asked for again. */
+.custom-dining-membership__pick,
+.custom-dining-membership__pick:hover,
+.custom-dining-membership__pick:focus,
+.custom-dining-membership__pick:active {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	border-radius: 0;
+	background: none;
+	color: inherit;
+	box-shadow: none;
+	cursor: pointer;
+}
+
+.custom-dining-membership__pick:disabled {
+	cursor: default;
+}
+
+.custom-dining-membership__pick:focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: -4px;
 }
 
 .custom-dining-membership__picture {
@@ -56,10 +81,17 @@
 	object-position: center;
 }
 
+/* The picture that is open is seen plainly; the ones waiting are held under
+   the dark, and come out from under it as they open. */
 .custom-dining-membership__veil {
 	position: absolute;
 	inset: 0;
 	pointer-events: none;
+	transition: opacity 500ms ease-in-out;
+}
+
+.custom-dining-membership__panel.is-open .custom-dining-membership__veil {
+	opacity: 0;
 }
 
 .custom-dining-membership__button,
@@ -67,6 +99,7 @@
 .custom-dining-membership__button:focus,
 .custom-dining-membership__button:active {
 	position: relative;
+	z-index: 1;
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
@@ -76,23 +109,36 @@
 	color: inherit;
 	text-decoration: none;
 	white-space: nowrap;
+	/* The words belong to the picture that is open, and arrive with it. */
+	opacity: 0;
+	transform: translateY( 8px );
+	pointer-events: none;
 	transition:
 		background-color 300ms ease-in-out,
 		color 300ms ease-in-out,
-		opacity 300ms ease-in-out;
+		opacity 500ms ease-in-out,
+		transform 500ms ease-in-out;
 }
 
-.custom-dining-membership__panel--side .custom-dining-membership__picture img {
+.custom-dining-membership__panel.is-open .custom-dining-membership__button {
+	opacity: 1;
+	transform: none;
+	pointer-events: auto;
+}
+
+.custom-dining-membership__panel:not( .is-open ) .custom-dining-membership__picture img {
 	transition: transform 500ms ease-in-out;
 }
 
-.custom-dining-membership__panel--side:hover .custom-dining-membership__picture img {
+.custom-dining-membership__panel:not( .is-open ):hover .custom-dining-membership__picture img {
 	transform: scale( 1.04 );
 }
 
 @media ( prefers-reduced-motion: reduce ) {
 	.custom-dining-membership__button,
-	.custom-dining-membership__panel--side .custom-dining-membership__picture img {
+	.custom-dining-membership__panel,
+	.custom-dining-membership__veil,
+	.custom-dining-membership__panel:not( .is-open ) .custom-dining-membership__picture img {
 		transition: none;
 	}
 }
@@ -113,14 +159,23 @@
 		aspect-ratio: auto;
 	}
 
-	.custom-dining-membership__panel--wide {
-		flex: 0 0 100%;
+	/* The open picture takes a row of its own; each of the two waiting asks for
+	   half the row, which is more than the open one leaves on its line, so the
+	   two take a line of their own. */
+	.custom-dining-membership__panel {
+		display: block;
 		padding-bottom: 0;
 	}
 
-	/* Each asks for half the row, which is more than the wide panel leaves on
-	   its line, so the two take a line of their own. */
-	.custom-dining-membership__panel--side {
+	/* The open picture stands at the top of the band whichever of the three it
+	   is: left where it was drawn, it would come between the two waiting and
+	   put each of them on a line of its own. */
+	.custom-dining-membership__panel.is-open {
+		order: -1;
+		flex: 0 0 100%;
+	}
+
+	.custom-dining-membership__panel:not( .is-open ) {
 		flex: 1 1 50%;
 	}
 
@@ -131,20 +186,27 @@
 		width: 100%;
 	}
 
-	.custom-dining-membership__panel--wide .custom-dining-membership__picture {
+	.custom-dining-membership__panel.is-open .custom-dining-membership__picture {
 		aspect-ratio: 390 / 244;
 	}
 
-	.custom-dining-membership__panel--side .custom-dining-membership__picture {
+	.custom-dining-membership__panel:not( .is-open ) .custom-dining-membership__picture {
 		aspect-ratio: 370 / 242;
 	}
 
+	/* A picture set in a column reads its shape from the file that was uploaded
+	   rather than from the one the design draws, so the panel is a plain block
+	   here and the words are placed against it. */
 	.custom-dining-membership__button,
 	.custom-dining-membership__button:hover,
 	.custom-dining-membership__button:focus,
 	.custom-dining-membership__button:active {
 		position: absolute;
+		right: 0;
 		bottom: 26px;
+		left: 0;
+		width: fit-content;
+		margin: 0 auto;
 		padding: 8px 16px;
 	}
 }
