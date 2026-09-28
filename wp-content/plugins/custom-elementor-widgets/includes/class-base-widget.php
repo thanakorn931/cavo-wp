@@ -731,6 +731,33 @@ abstract class Base_Widget extends \Elementor\Widget_Base {
 	}
 
 	/**
+	 * Where a link goes, where the client typed only a number or an address.
+	 *
+	 * Typed alone, a number is one to call and an email address one to write
+	 * to. Left as typed, the browser reads either as the name of a site, and
+	 * the link goes nowhere. Whatever already says where it goes — a scheme,
+	 * a path, an anchor — is left as it is.
+	 *
+	 * @param string $value What was typed.
+	 * @return string Where it goes.
+	 */
+	protected function link_address( $value ) {
+		if ( preg_match( '#^[a-z][a-z0-9+.\-]*:#i', $value ) || preg_match( '#^[/\#?.]#', $value ) ) {
+			return $value;
+		}
+
+		if ( is_email( $value ) ) {
+			return 'mailto:' . $value;
+		}
+
+		if ( preg_match( '/^\+?[\d\s().\-]+$/', $value ) && preg_match( '/\d/', $value ) ) {
+			return 'tel:' . preg_replace( '/[^\d+]/', '', $value );
+		}
+
+		return $value;
+	}
+
+	/**
 	 * The attributes for one link.
 	 *
 	 * A link field takes a path, an anchor or a whole address; a value with no
@@ -749,7 +776,7 @@ abstract class Base_Widget extends \Elementor\Widget_Base {
 			return '';
 		}
 
-		$attributes = ' href="' . esc_url( $value ) . '"';
+		$attributes = ' href="' . esc_url( $this->link_address( $value ) ) . '"';
 		$rel        = array();
 
 		if ( 'yes' === $blank ) {
