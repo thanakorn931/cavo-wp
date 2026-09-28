@@ -210,6 +210,21 @@
 	object-position: center;
 }
 
+/* Each picture names its slide at its foot, as the file draws the one being
+   read. It travels with its picture, so the slides either side carry theirs
+   too. A long title takes a second line upward rather than running off it. */
+.custom-space-hero__slide-name {
+	position: absolute;
+	left: 24px;
+	right: 24px;
+	bottom: 48px;
+	margin: 0;
+	text-align: center;
+	text-transform: uppercase;
+	overflow-wrap: anywhere;
+	pointer-events: none;
+}
+
 .custom-space-hero__arrow {
 	position: absolute;
 	top: 312px;
@@ -394,7 +409,23 @@
 
 /* Tablet — not drawn. The arrows and the band under the slides come up with
    the run, larger than the narrow tier's and short of the wide tier's. */
+/* Not drawn: the slide is a quarter of the wide tier's across on a phone, and
+   its name keeps to its foot in the same measure. */
+@media ( max-width: 1024px ) {
+	.custom-space-hero__slide-name {
+		left: 8px;
+		right: 8px;
+		bottom: 12px;
+	}
+}
+
 @media ( min-width: 768px ) and ( max-width: 1024px ) {
+	.custom-space-hero__slide-name {
+		left: 16px;
+		right: 16px;
+		bottom: 24px;
+	}
+
 	.custom-space-hero__arrow {
 		top: calc( 50% - 32px );
 		width: 64px;

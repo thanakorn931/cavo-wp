@@ -254,6 +254,38 @@ class The_Space_Hero_Carousel extends Base_Widget {
 			)
 		);
 
+		$this->add_control(
+			'slide_name_color',
+			array(
+				'label'     => esc_html__( 'Title on the picture', 'custom-elementor-widgets' ),
+				'type'      => Controls_Manager::COLOR,
+				'default'   => '#FFFFFF',
+				'separator' => 'before',
+				'selectors' => array(
+					'{{WRAPPER}} .custom-space-hero__slide-name' => 'color: {{VALUE}};',
+				),
+			)
+		);
+
+		$this->add_group_control(
+			Group_Control_Typography::get_type(),
+			array(
+				'name'           => 'slide_name_typography',
+				'label'          => esc_html__( 'Title on the picture', 'custom-elementor-widgets' ),
+				'selector'       => '{{WRAPPER}} .custom-space-hero__slide-name',
+				'fields_options' => array(
+					'typography'  => array( 'default' => 'yes' ),
+					'font_family' => array( 'default' => 'Roboto' ),
+					'font_size'   => array(
+						'default'        => array( 'unit' => 'px', 'size' => 44 ),
+						'tablet_default' => array( 'unit' => 'px', 'size' => 20 ),
+						'mobile_default' => array( 'unit' => 'px', 'size' => 12 ),
+					),
+					'font_weight' => array( 'default' => '700' ),
+				),
+			)
+		);
+
 		$this->end_controls_section();
 	}
 
@@ -438,6 +470,16 @@ class The_Space_Hero_Carousel extends Base_Widget {
 								isset( $slide['slide_picture']['url'] ) ? $slide['slide_picture']['url'] : '',
 								isset( $slide['slide_title'] ) ? $slide['slide_title'] : ''
 							); ?>
+
+							<?php
+							// The picture says whose it is at its foot. The title above
+							// already reads it aloud, so this one is for the eye alone.
+							$name = isset( $slide['slide_title'] ) ? trim( (string) $slide['slide_title'] ) : '';
+
+							if ( '' !== $name ) :
+								?>
+								<span class="custom-space-hero__slide-name" aria-hidden="true"><?php echo esc_html( $name ); ?></span>
+							<?php endif; ?>
 						</div>
 					<?php endforeach; ?>
 				</div>
