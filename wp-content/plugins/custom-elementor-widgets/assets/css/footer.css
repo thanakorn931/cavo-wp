@@ -354,7 +354,10 @@
 		min-width: 0;
 	}
 
-	.custom-footer .custom-footer__field {
+	/* Said at the same weight as the wide tier's, or the box keeps the wide
+	   tier's size beside a button that has taken this one. */
+	.custom-footer .custom-footer__field,
+	.custom-footer input.custom-footer__field {
 		height: 27px;
 		padding: 8px 16px;
 		border-radius: 19px;
