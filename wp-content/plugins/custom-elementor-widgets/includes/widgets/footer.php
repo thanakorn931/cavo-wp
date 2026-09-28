@@ -158,6 +158,7 @@ class Footer extends Base_Widget {
 				'placeholder' => '0xx-xxx-xxxx',
 			)
 		);
+		$this->add_link_controls( $this, 'contact_tel_link', esc_html__( 'Tel. link', 'custom-elementor-widgets' ) );
 		$this->add_control(
 			'contact_email',
 			array(
@@ -165,8 +166,10 @@ class Footer extends Base_Widget {
 				'type'        => Controls_Manager::TEXT,
 				'dynamic'     => array( 'active' => true ),
 				'placeholder' => 'example@gmail.com',
+				'separator'   => 'before',
 			)
 		);
+		$this->add_link_controls( $this, 'contact_email_link', esc_html__( 'Email link', 'custom-elementor-widgets' ) );
 		$this->add_control(
 			'location_label',
 			array(
@@ -717,16 +720,10 @@ class Footer extends Base_Widget {
 	 * @param array $settings The widget's settings.
 	 */
 	private function render_contact( $settings ) {
-		$tel    = $this->contact( $settings, 'contact_tel' );
-		$email  = $this->contact( $settings, 'contact_email' );
-		$design = $this->design_text();
-
-		// The design's example is shown as it stands and goes nowhere: it is
-		// nobody's number, and nobody's address.
 		$reach = array_filter(
 			array(
-				$design['contact_tel'] === $tel ? esc_html( $tel ) : $this->tel_line( $tel ),
-				$design['contact_email'] === $email ? esc_html( $email ) : $this->email_line( $email ),
+				$this->reach_line( $settings, 'contact_tel' ),
+				$this->reach_line( $settings, 'contact_email' ),
 			)
 		);
 
@@ -774,77 +771,30 @@ class Footer extends Base_Widget {
 	}
 
 	/**
-	 * A way to reach the venue: what the client typed in its own box, or
-	 * else what they typed before the two had boxes of their own, or else
-	 * what the design shows.
+	 * One way to reach the venue: its words, and where pressing them goes.
 	 *
-	 * Before tel. and email were asked apart, both were typed into one box,
-	 * a line each. A footer saved then still holds that box; read from it,
-	 * a page put up before anybody has filled the new boxes goes on showing
-	 * the venue's own number and address rather than the design's example.
+	 * The words are what the client typed, or the design's example until they
+	 * do. Where they go is the link typed beside them; with none, the words
+	 * stand as words.
 	 *
 	 * @param array  $settings The widget's settings.
 	 * @param string $key      contact_tel or contact_email.
-	 * @return string
-	 */
-	private function contact( $settings, $key ) {
-		$typed = isset( $settings[ $key ] ) ? trim( (string) $settings[ $key ] ) : '';
-
-		if ( '' !== $typed ) {
-			return $typed;
-		}
-
-		$before = isset( $settings['contact_details'] ) ? (string) $settings['contact_details'] : '';
-
-		foreach ( preg_split( '/\r\n|\r|\n/', $before ) as $line ) {
-			$line = trim( $line );
-
-			if ( 'contact_email' === $key ? false !== strpos( $line, '@' ) : ( '' !== $line && preg_match( '/^[\d\s+().\-]+$/', $line ) ) ) {
-				return $line;
-			}
-		}
-
-		return $this->text( $settings, $key );
-	}
-
-	/**
-	 * A number, pressed to call it. Written as the client wrote it; dialled
-	 * as its digits alone.
-	 *
-	 * @param string $tel The number.
 	 * @return string Escaped markup, or nothing.
 	 */
-	private function tel_line( $tel ) {
-		if ( '' === $tel ) {
+	private function reach_line( $settings, $key ) {
+		$words = $this->text( $settings, $key );
+
+		if ( '' === $words ) {
 			return '';
 		}
 
-		$dial = preg_replace( '/[^\d+]/', '', $tel );
+		$link = $this->link_from( $settings, $key . '_link' );
 
-		if ( '' === $dial ) {
-			return esc_html( $tel );
+		if ( '' === $link ) {
+			return esc_html( $words );
 		}
 
-		return sprintf( '<a class="custom-footer__contact-link" href="%1$s">%2$s</a>', esc_url( 'tel:' . $dial, array( 'tel' ) ), esc_html( $tel ) );
-	}
-
-	/**
-	 * An address, pressed to write to it. One that is not an address is
-	 * shown as it was written, and goes nowhere.
-	 *
-	 * @param string $email The address.
-	 * @return string Escaped markup, or nothing.
-	 */
-	private function email_line( $email ) {
-		if ( '' === $email ) {
-			return '';
-		}
-
-		if ( ! is_email( $email ) ) {
-			return esc_html( $email );
-		}
-
-		return sprintf( '<a class="custom-footer__contact-link" href="%1$s">%2$s</a>', esc_url( 'mailto:' . $email, array( 'mailto' ) ), esc_html( $email ) );
+		return '<a class="custom-footer__contact-link"' . $link . '>' . esc_html( $words ) . '</a>';
 	}
 
 	/**
