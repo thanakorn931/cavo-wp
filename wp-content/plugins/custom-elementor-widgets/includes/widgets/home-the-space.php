@@ -495,7 +495,6 @@ class Home_The_Space extends Base_Widget {
 				'default'   => '#FAF6EA',
 				'selectors' => array(
 					'{{WRAPPER}} .custom-home-space__arrow'       => 'background-color: {{VALUE}};',
-					'{{WRAPPER}} .custom-home-space__arrow:hover' => 'background-color: {{VALUE}};',
 				),
 			)
 		);

@@ -189,11 +189,20 @@ input[ type="date" ].custom-contact-form__input.custom-contact-form__input {
 	cursor: pointer;
 	box-sizing: border-box;
 	white-space: nowrap;
-	transition: opacity 300ms ease-in-out;
+	transition:
+		background-color 300ms ease-in-out,
+		opacity 300ms ease-in-out;
 }
 
-.custom-contact-form__send:hover {
-	opacity: 0.85;
+/* The design's hover for a light press is a ground of its own, not a fade. The
+   Style control writes the resting ground at the widget's own weight, out of a
+   stylesheet's reach, and no control answers for the hover, so it is said above
+   that weight here. A touch screen keeps a hover after the tap, so only a
+   pointer that can hover is given one. */
+@media ( hover: hover ) {
+	.custom-contact-form__send:not( [disabled] ):hover {
+		background-color: #d4c894 !important;
+	}
 }
 
 /* A press that has been heard, and cannot be repeated by accident. */

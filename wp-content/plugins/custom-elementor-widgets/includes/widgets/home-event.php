@@ -297,7 +297,6 @@ class Home_Event extends Base_Widget {
 				'default'   => '#FAF6EA',
 				'selectors' => array(
 					'{{WRAPPER}} .custom-home-event__arrow:not( [disabled] )'       => 'background-color: {{VALUE}};',
-					'{{WRAPPER}} .custom-home-event__arrow:not( [disabled] ):hover' => 'background-color: {{VALUE}};',
 				),
 			)
 		);

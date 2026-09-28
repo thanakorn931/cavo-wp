@@ -107,7 +107,9 @@
 	overflow: hidden;
 	text-decoration: none;
 	cursor: pointer;
-	transition: opacity 300ms ease-in-out;
+	transition:
+		background-color 300ms ease-in-out,
+		opacity 300ms ease-in-out;
 }
 
 .custom-blog-detail__mark:focus-visible {
@@ -115,8 +117,15 @@
 	outline-offset: 2px;
 }
 
-.custom-blog-detail__mark:hover {
-	opacity: 0.7;
+/* The design's hover for a light press is a ground of its own, not a fade. The
+   Style control writes the resting ground at the widget's own weight, out of a
+   stylesheet's reach, and no control answers for the hover, so it is said above
+   that weight here. A touch screen keeps a hover after the tap, so only a
+   pointer that can hover is given one. */
+@media ( hover: hover ) {
+	.custom-blog-detail__mark:hover {
+		background-color: #d4c894 !important;
+	}
 }
 
 .custom-blog-detail__mark svg {

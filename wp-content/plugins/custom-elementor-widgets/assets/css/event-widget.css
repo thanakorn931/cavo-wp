@@ -116,7 +116,9 @@
 	border: 0;
 	border-radius: 24px;
 	cursor: pointer;
-	transition: opacity 300ms ease-in-out;
+	transition:
+		background-color 300ms ease-in-out,
+		opacity 300ms ease-in-out;
 }
 
 .custom-event-more[hidden] {

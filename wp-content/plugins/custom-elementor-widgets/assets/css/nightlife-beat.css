@@ -212,6 +212,17 @@
 	outline-offset: 2px;
 }
 
+/* The design's hover for a light press is a ground of its own, not a fade. The
+   Style control writes the resting ground at the widget's own weight, out of a
+   stylesheet's reach, and no control answers for the hover, so it is said above
+   that weight here. A touch screen keeps a hover after the tap, so only a
+   pointer that can hover is given one. */
+@media ( hover: hover ) {
+	.custom-nightlife-beat__arrow:not( [disabled] ):hover {
+		background-color: #d4c894 !important;
+	}
+}
+
 .custom-nightlife-beat__arrow[disabled] {
 	cursor: default;
 }

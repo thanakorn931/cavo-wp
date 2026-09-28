@@ -175,7 +175,6 @@ class Dining_Carousel extends Base_Widget {
 				'default'   => '#EBE4CA',
 				'selectors' => array(
 					'{{WRAPPER}} .custom-dining-carousel__arrow'        => 'background-color: {{VALUE}};',
-					'{{WRAPPER}} .custom-dining-carousel__arrow:hover'  => 'background-color: {{VALUE}};',
 					'{{WRAPPER}} .custom-dining-carousel__arrow:focus'  => 'background-color: {{VALUE}};',
 					'{{WRAPPER}} .custom-dining-carousel__arrow:active' => 'background-color: {{VALUE}};',
 				),

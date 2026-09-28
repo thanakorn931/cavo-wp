@@ -376,7 +376,6 @@ class The_Space_Hero_Carousel extends Base_Widget {
 				'default'   => '#EBE4CA',
 				'selectors' => array(
 					'{{WRAPPER}} .custom-space-hero__arrow'        => 'background-color: {{VALUE}};',
-					'{{WRAPPER}} .custom-space-hero__arrow:hover'  => 'background-color: {{VALUE}};',
 					'{{WRAPPER}} .custom-space-hero__arrow:focus'  => 'background-color: {{VALUE}};',
 					'{{WRAPPER}} .custom-space-hero__arrow:active' => 'background-color: {{VALUE}};',
 				),

@@ -89,6 +89,18 @@
 	width: 100%;
 }
 
+/* The design's hover for a light press is a ground of its own, not a fade. The
+   Style control writes the resting ground at the widget's own weight, out of a
+   stylesheet's reach, and no control answers for the hover, so it is said above
+   that weight here. A touch screen keeps a hover after the tap, so only a
+   pointer that can hover is given one. */
+@media ( hover: hover ) {
+	.custom-event-list .custom-event-more:hover {
+		background-color: #d4c894 !important;
+		opacity: 1;
+	}
+}
+
 /* The strip the band ends on: the client's picture, 1440 by 198 in the file,
    under a brown veil. */
 .custom-event-list__strip {
