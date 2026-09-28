@@ -149,6 +149,20 @@
 	flex: 0 0 auto;
 	padding: 8px;
 	border-radius: 36px;
+	transition:
+		background-color 300ms ease-in-out;
+}
+
+/* The design's hover for a brown press is a lighter brown of its own, not a fade;
+   here the press is the whole way in and its brown is the mark beside it. The
+   Style control writes the resting ground at the widget's own weight, out of a
+   stylesheet's reach, and no control answers for the hover, so it is said above
+   that weight here. A touch screen keeps a hover after the tap, so only a
+   pointer that can hover is given one. */
+@media ( hover: hover ) {
+	.custom-about-detail__contact:hover .custom-about-detail__contact-mark {
+		background-color: #64311a !important;
+	}
 }
 
 .custom-about-detail__contact-mark svg {
@@ -253,5 +267,11 @@
 @media ( min-width: 768px ) and ( max-width: 1024px ) {
 	.custom-about-detail__map {
 		height: 400px;
+	}
+}
+
+@media ( prefers-reduced-motion: reduce ) {
+	.custom-about-detail__contact-mark {
+		transition: none;
 	}
 }
