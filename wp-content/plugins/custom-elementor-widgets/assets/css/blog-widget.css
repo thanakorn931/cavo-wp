@@ -5,6 +5,10 @@
  * the Style tab can carry are left to the section the card stands in.
  */
 
+.custom-blog-card[hidden] {
+	display: none;
+}
+
 .custom-blog-card {
 	display: flex;
 	flex-direction: column;

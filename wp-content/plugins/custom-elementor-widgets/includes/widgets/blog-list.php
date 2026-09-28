@@ -24,26 +24,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Blog_List extends Blog_Widget {
 
 	/**
-	 * Three to a row, three rows, as the design lays them out.
+	 * How much of the list the page carries. How much of it stands on screen
+	 * at once is the section's own, and the reader's.
 	 */
-	const PER_PAGE = 9;
-
-	/**
-	 * How many numbers the pages offer at once.
-	 */
-	const WINDOW = 4;
-
-	/**
-	 * What names the page in the address.
-	 */
-	const ARG = 'blog_page';
-
-	/**
-	 * How many pages the list came to, worked out once.
-	 *
-	 * @var int|null
-	 */
-	private $pages = null;
+	const MOST = 100;
 
 	/**
 	 * The widget's name, and its asset handle's suffix.
@@ -92,7 +76,7 @@ class Blog_List extends Blog_Widget {
 			'follow_text' => esc_html__( 'Follow us on instagram', 'custom-elementor-widgets' ),
 			'handle_text' => esc_html__( '@CAVO', 'custom-elementor-widgets' ),
 			'press_text'  => esc_html__( 'Press & Media Enquiries', 'custom-elementor-widgets' ),
-			'go_text'     => esc_html__( 'go', 'custom-elementor-widgets' ),
+			'button_text' => esc_html__( 'Load More', 'custom-elementor-widgets' ),
 		);
 	}
 
@@ -152,6 +136,42 @@ class Blog_List extends Blog_Widget {
 					'h2'   => 'H2',
 					'span' => esc_html__( 'None', 'custom-elementor-widgets' ),
 				),
+			)
+		);
+
+		$this->add_control(
+			'button_text',
+			array(
+				'label'       => esc_html__( 'Button text', 'custom-elementor-widgets' ),
+				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
+				'placeholder' => $design['button_text'],
+				'separator'   => 'before',
+			)
+		);
+
+		$this->add_responsive_control(
+			'shown',
+			array(
+				'label'          => esc_html__( 'How many stand before the button is pressed', 'custom-elementor-widgets' ),
+				'type'           => Controls_Manager::NUMBER,
+				'min'            => 1,
+				'default'        => 9,
+				'tablet_default' => 6,
+				'mobile_default' => 3,
+			)
+		);
+
+		$this->add_responsive_control(
+			'step',
+			array(
+				'label'          => esc_html__( 'How many more each press brings', 'custom-elementor-widgets' ),
+				'type'           => Controls_Manager::NUMBER,
+				'min'            => 0,
+				'default'        => 9,
+				'tablet_default' => 6,
+				'mobile_default' => 3,
+				'description'    => esc_html__( 'Nought brings the rest at once.', 'custom-elementor-widgets' ),
 			)
 		);
 
@@ -283,7 +303,7 @@ class Blog_List extends Blog_Widget {
 				'selectors' => array(
 					'{{WRAPPER}} .custom-blog-list__cards'  => 'color: {{VALUE}};',
 					'{{WRAPPER}} .custom-blog-list__close'  => 'color: {{VALUE}};',
-					'{{WRAPPER}} .custom-blog-list__pages'  => 'color: {{VALUE}};',
+					'{{WRAPPER}} .custom-blog-list__more'   => 'color: {{VALUE}};',
 				),
 			)
 		);
@@ -293,7 +313,7 @@ class Blog_List extends Blog_Widget {
 			array(
 				'name'           => 'body_typography',
 				'label'          => esc_html__( 'Dates and lines', 'custom-elementor-widgets' ),
-				'selector'       => '{{WRAPPER}} .custom-blog-card__date, {{WRAPPER}} .custom-blog-list__close, {{WRAPPER}} .custom-blog-list__pages',
+				'selector'       => '{{WRAPPER}} .custom-blog-card__date, {{WRAPPER}} .custom-blog-list__close, {{WRAPPER}} .custom-blog-list__more',
 				'fields_options' => array(
 					'typography'  => array( 'default' => 'yes' ),
 					'font_family' => array( 'default' => 'Roboto' ),
@@ -368,33 +388,33 @@ class Blog_List extends Blog_Widget {
 		$this->end_controls_section();
 
 		$this->start_controls_section(
-			'section_pages_style',
+			'section_more_style',
 			array(
-				'label' => esc_html__( 'Pages', 'custom-elementor-widgets' ),
+				'label' => esc_html__( 'Button', 'custom-elementor-widgets' ),
 				'tab'   => Controls_Manager::TAB_STYLE,
 			)
 		);
 
 		$this->add_control(
-			'page_here_color',
+			'more_color',
 			array(
-				'label'     => esc_html__( 'The page being read', 'custom-elementor-widgets' ),
+				'label'     => esc_html__( 'What it says', 'custom-elementor-widgets' ),
 				'type'      => Controls_Manager::COLOR,
 				'default'   => '#FAF6EA',
 				'selectors' => array(
-					'{{WRAPPER}} .custom-blog-list__page--here' => 'color: {{VALUE}};',
+					'{{WRAPPER}} .custom-blog-list__more' => 'color: {{VALUE}};',
 				),
 			)
 		);
 
 		$this->add_control(
-			'page_here_background',
+			'more_background',
 			array(
-				'label'     => esc_html__( 'The page being read, behind', 'custom-elementor-widgets' ),
+				'label'     => esc_html__( 'Behind it', 'custom-elementor-widgets' ),
 				'type'      => Controls_Manager::COLOR,
 				'default'   => '#3A2114',
 				'selectors' => array(
-					'{{WRAPPER}} .custom-blog-list__page--here' => 'background-color: {{VALUE}};',
+					'{{WRAPPER}} .custom-blog-list__more' => 'background-color: {{VALUE}};',
 				),
 			)
 		);
@@ -411,9 +431,18 @@ class Blog_List extends Blog_Widget {
 		$tag = isset( $settings['heading_tag'] ) ? $settings['heading_tag'] : 'h1';
 		$tag = in_array( $tag, array( 'h1', 'h2', 'span' ), true ) ? $tag : 'h1';
 
-		$total = $this->total( $settings );
-		$here  = $this->here( $total );
-		$query = $this->query( $settings, $here );
+		// Three to a row and three rows on the wide screen, as the design lays
+		// them out; two to a row and one to a row on the narrower ones, so a
+		// press brings a screenful whichever screen it is.
+		$shows = $this->per_tier( $settings, 'shown', array( 'desktop' => 9, 'tablet' => 6, 'mobile' => 3 ) );
+		$steps = $this->per_tier( $settings, 'step', array( 'desktop' => 9, 'tablet' => 6, 'mobile' => 3 ), 0 );
+		$query = $this->query( $settings );
+		$most  = max( $shows );
+
+		// The button stands whenever any screen would have something left to
+		// bring; which screen this is, and so whether it has, is settled by the
+		// script.
+		$waiting = (int) $query->post_count > min( $shows );
 		?>
 		<div class="custom-blog-list">
 			<div class="custom-blog-list__name">
@@ -422,28 +451,40 @@ class Blog_List extends Blog_Widget {
 				?></<?php echo esc_attr( $tag ); ?>>
 			</div>
 
-			<div class="custom-blog-list__band">
+			<div class="custom-blog-list__band" data-feed<?php $this->tier_attributes( 'shown', $shows ); ?><?php $this->tier_attributes( 'step', $steps ); ?>>
 				<div class="custom-blog-list__cards">
 					<?php
 					// The first row stands in the first screen at the widest
-					// tier, and the first two at the narrowest; those load with
-					// the page, and the rest wait for the reader.
+					// tier, and those load with the page; the rest wait for the
+					// reader. Beyond what the widest screen shows at once, a
+					// card waits for the button as well.
 					$place = 0;
 
 					while ( $query->have_posts() ) {
 						$query->the_post();
-						$this->render_card( $place++ < 3 );
+						$this->render_card( $place < 3, $place >= $most );
+						$place++;
 					}
 
 					wp_reset_postdata();
 					?>
 				</div>
 
-				<?php $this->render_pages( $settings, $here, $total ); ?>
+				<?php if ( $waiting ) : ?>
+					<div class="custom-blog-list__actions">
+						<button type="button" class="custom-blog-list__more" data-feed-more>
+							<span class="custom-blog-list__more-text"><?php
+								echo esc_html( $this->text( $settings, 'button_text' ) );
+							?></span>
+							<span class="custom-blog-list__more-spinner" aria-hidden="true"></span>
+						</button>
+					</div>
+				<?php endif; ?>
+
 				<?php $this->render_close( $settings ); ?>
 
 				<?php
-				if ( 0 === (int) $query->found_posts ) {
+				if ( 0 === (int) $query->post_count ) {
 					$this->editor_hint( __( 'Nothing is written yet: the cards are whatever posts the site has.', 'custom-elementor-widgets' ) );
 				}
 				?>
@@ -453,197 +494,20 @@ class Blog_List extends Blog_Widget {
 	}
 
 	/**
-	 * How many pages the list comes to.
+	 * The posts the list carries.
 	 *
 	 * @param array $settings The widget's settings.
-	 * @return int
-	 */
-	private function total( $settings ) {
-		if ( null !== $this->pages ) {
-			return $this->pages;
-		}
-
-		$counted = new \WP_Query(
-			$this->source_query(
-				$settings,
-				array(
-					'posts_per_page'         => self::PER_PAGE,
-					'fields'                 => 'ids',
-					'update_post_meta_cache' => false,
-					'update_post_term_cache' => false,
-				)
-			)
-		);
-
-		$this->pages = max( 1, (int) $counted->max_num_pages );
-
-		return $this->pages;
-	}
-
-	/**
-	 * The posts this page of the list shows.
-	 *
-	 * @param array $settings The widget's settings.
-	 * @param int   $here     The page being read.
 	 * @return \WP_Query
 	 */
-	private function query( $settings, $here ) {
+	private function query( $settings ) {
 		return new \WP_Query(
 			$this->source_query(
 				$settings,
 				array(
-					'posts_per_page' => self::PER_PAGE,
-					'paged'          => (int) $here,
+					'posts_per_page' => self::MOST,
+					'no_found_rows'  => true,
 				)
 			)
-		);
-	}
-
-	/**
-	 * Which page is being read.
-	 *
-	 * A page named past either end is brought into range rather than refused.
-	 *
-	 * @param int $total How many pages there are.
-	 * @return int
-	 */
-	private function here( $total ) {
-		$total = max( 1, (int) $total );
-		$asked = isset( $_GET[ self::ARG ] ) ? (int) $_GET[ self::ARG ] : 1; // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- reading which page is open.
-
-		return max( 1, min( $total, $asked ) );
-	}
-
-	/**
-	 * Where a card leads: the post, and the page of the list it was read at.
-	 *
-	 * @return string
-	 */
-	protected function card_url() {
-		$here = $this->here( $this->total( $this->get_settings_for_display() ) );
-
-		if ( $here < 2 ) {
-			return (string) get_permalink();
-		}
-
-		return add_query_arg( self::ARG, $here, (string) get_permalink() );
-	}
-
-	/**
-	 * The pages, and the field that names one.
-	 *
-	 * @param array $settings The widget's settings.
-	 * @param int   $here     The page being read.
-	 * @param int   $total    How many pages there are.
-	 */
-	private function render_pages( $settings, $here, $total ) {
-		$total = max( 1, $total );
-		?>
-		<nav class="custom-blog-list__pages" aria-label="<?php esc_attr_e( 'Pages', 'custom-elementor-widgets' ); ?>">
-			<?php
-			$this->render_step( $here - 1, $here > 1, 'M10 12L6 8L10 4', __( 'Previous page', 'custom-elementor-widgets' ) );
-
-			foreach ( $this->window( $here, $total ) as $page ) {
-				if ( 0 === $page ) {
-					echo '<span class="custom-blog-list__page custom-blog-list__page--break" aria-hidden="true">…</span>';
-
-					continue;
-				}
-
-				$this->render_number( $page, $page === $here );
-			}
-
-			$this->render_step( $here + 1, $here < $total, 'M6 4L10 8L6 12', __( 'Next page', 'custom-elementor-widgets' ) );
-			?>
-
-			<form class="custom-blog-list__go" method="get" action="<?php echo esc_url( $this->here_url() ); ?>">
-				<?php $this->render_carried(); ?>
-				<input
-					class="custom-blog-list__field"
-					type="number"
-					name="<?php echo esc_attr( self::ARG ); ?>"
-					inputmode="numeric"
-					required
-					aria-label="<?php esc_attr_e( 'Page number', 'custom-elementor-widgets' ); ?>"
-				/>
-				<button class="custom-blog-list__page custom-blog-list__page--go" type="submit"><?php
-					echo esc_html( $this->text( $settings, 'go_text' ) );
-				?></button>
-			</form>
-		</nav>
-		<?php
-	}
-
-	/**
-	 * Which numbers the pages offer.
-	 *
-	 * Four at most. Past four pages three of them start at the page being read
-	 * and the last stands alone behind a break; within four of the end there is
-	 * nothing left to break, and the four are the last four. A break is a nought.
-	 *
-	 * @param int $here  The page being read.
-	 * @param int $total How many pages there are.
-	 * @return array
-	 */
-	private function window( $here, $total ) {
-		if ( $total <= self::WINDOW ) {
-			return range( 1, $total );
-		}
-
-		if ( $here > $total - self::WINDOW ) {
-			return range( $total - self::WINDOW + 1, $total );
-		}
-
-		return array( $here, $here + 1, $here + 2, 0, $total );
-	}
-
-	/**
-	 * One number.
-	 *
-	 * @param int  $page The page it leads to.
-	 * @param bool $here Whether it is the page being read.
-	 */
-	private function render_number( $page, $here ) {
-		printf(
-			'<a class="custom-blog-list__page%1$s" href="%2$s"%3$s>%4$s</a>',
-			$here ? ' custom-blog-list__page--here' : '',
-			esc_url( $this->page_url( $page ) ),
-			$here ? ' aria-current="page"' : '',
-			esc_html( number_format_i18n( $page ) )
-		);
-	}
-
-	/**
-	 * One step either way.
-	 *
-	 * A step with nowhere to go stays where it is and refuses the press: a
-	 * control that disappears moves everything beside it.
-	 *
-	 * @param int    $page  The page it leads to.
-	 * @param bool   $open  Whether there is a page that way.
-	 * @param string $path  The arrow it draws.
-	 * @param string $label What a reader who cannot see it is told.
-	 */
-	private function render_step( $page, $open, $path, $label ) {
-		$arrow = sprintf(
-			'<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true"><path d="%s" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-			esc_attr( $path )
-		);
-
-		if ( ! $open ) {
-			printf(
-				'<span class="custom-blog-list__page custom-blog-list__page--step custom-blog-list__page--shut" aria-hidden="true">%s</span>',
-				$arrow // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- a fixed mark the widget carries.
-			);
-
-			return;
-		}
-
-		printf(
-			'<a class="custom-blog-list__page custom-blog-list__page--step" href="%1$s" aria-label="%2$s">%3$s</a>',
-			esc_url( $this->page_url( $page ) ),
-			esc_attr( $label ),
-			$arrow // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- a fixed mark the widget carries.
 		);
 	}
 
@@ -680,52 +544,6 @@ class Blog_List extends Blog_Widget {
 			<?php endif; ?>
 		</div>
 		<?php
-	}
-
-	/**
-	 * The address of one page of the list.
-	 *
-	 * @param int $page Which page.
-	 * @return string
-	 */
-	private function page_url( $page ) {
-		if ( $page <= 1 ) {
-			return remove_query_arg( self::ARG, $this->here_url() );
-		}
-
-		return add_query_arg( self::ARG, (int) $page, $this->here_url() );
-	}
-
-	/**
-	 * The address the page is being read at.
-	 *
-	 * @return string
-	 */
-	private function here_url() {
-		global $wp;
-
-		// Built from what WordPress resolved rather than from the address as it
-		// arrived, so a site in a folder keeps its folder.
-		return home_url( isset( $wp->request ) ? $wp->request : '' );
-	}
-
-	/**
-	 * Whatever else the address was carrying, so naming a page does not drop it.
-	 */
-	private function render_carried() {
-		foreach ( $_GET as $key => $value ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- carrying the address forward.
-			$key = sanitize_key( $key );
-
-			if ( '' === $key || self::ARG === $key || is_array( $value ) ) {
-				continue;
-			}
-
-			printf(
-				'<input type="hidden" name="%s" value="%s" />',
-				esc_attr( $key ),
-				esc_attr( sanitize_text_field( wp_unslash( $value ) ) )
-			);
-		}
 	}
 
 }

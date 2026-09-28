@@ -65,12 +65,13 @@ abstract class Blog_Widget extends Base_Widget {
 	/**
 	 * One post, as a card. Called from inside the loop.
 	 *
-	 * @param bool $now Whether it stands in the first screen, and so loads with
-	 *                  the page rather than waiting for the reader.
+	 * @param bool $now    Whether it stands in the first screen, and so loads
+	 *                      with the page rather than waiting for the reader.
+	 * @param bool $hidden Whether it waits for the button before it shows.
 	 */
-	protected function render_card( $now = false ) {
+	protected function render_card( $now = false, $hidden = false ) {
 		?>
-		<a class="custom-blog-card" href="<?php echo esc_url( $this->card_url() ); ?>">
+		<a class="custom-blog-card<?php echo $hidden ? ' is-waiting' : ''; ?>" data-feed-card<?php echo $hidden ? ' hidden' : ''; ?> href="<?php echo esc_url( $this->card_url() ); ?>">
 			<span class="custom-blog-card__picture">
 				<?php $this->media( get_the_post_thumbnail_url( null, 'large' ), '', ! $now ); ?>
 			</span>

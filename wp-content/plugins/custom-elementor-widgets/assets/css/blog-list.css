@@ -56,96 +56,61 @@
 	max-width: 1344px;
 }
 
-/* The pages. Square, so they are not read as the round buttons the design
-   gives to what a press sends somewhere. */
-.custom-blog-list__pages {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	flex-wrap: wrap;
-	gap: 8px;
-}
-
-.custom-blog-list__page {
+/* The button that brings more of the list on screen: the round press the
+   design gives elsewhere to the same errand. While it waits on the pictures it
+   keeps its shape and loses its words, so nothing under it moves. */
+.custom-blog-list__more {
+	position: relative;
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	min-width: 40px;
-	height: 40px;
-	padding: 0 8px;
-	border: 1px solid currentColor;
-	border-radius: 0;
-	background: none;
-	color: inherit;
-	font: inherit;
-	text-decoration: none;
-	box-sizing: border-box;
+	padding: 12px 24px;
+	border: 0;
+	border-radius: 24px;
 	cursor: pointer;
-	transition:
-		background-color 300ms ease-in-out,
-		color 300ms ease-in-out,
-		opacity 300ms ease-in-out;
+	transition: opacity 300ms ease-in-out;
 }
 
-.custom-blog-list__page--break {
-	border-color: transparent;
-	cursor: default;
+.custom-blog-list__more[hidden] {
+	display: none;
 }
 
-/* A step with nowhere to go keeps its place and refuses the press. */
-.custom-blog-list__page--shut {
-	opacity: 0.4;
-	cursor: default;
+.custom-blog-list__more:hover {
+	opacity: 0.8;
 }
 
-.custom-blog-list__page:not( .custom-blog-list__page--break ):not( .custom-blog-list__page--shut ):not( .custom-blog-list__page--here ):hover {
-	opacity: 0.7;
-}
-
-/* A state is its own thing to say. A theme's rule on a bare element under a
-   pseudo-class outranks a class that only spoke for the resting state, so what
-   the press looks like while it is pressed is said here too. */
-.custom-blog-list__page:not( .custom-blog-list__page--here ):hover,
-.custom-blog-list__page:not( .custom-blog-list__page--here ):focus,
-.custom-blog-list__page:not( .custom-blog-list__page--here ):active,
-.custom-blog-list__field:hover,
-.custom-blog-list__field:focus,
-.custom-blog-list__field:active {
-	background: none;
-	color: inherit;
-	border-color: currentColor;
-}
-
-.custom-blog-list__page:focus-visible,
-.custom-blog-list__field:focus-visible {
+.custom-blog-list__more:focus-visible {
 	outline: 2px solid currentColor;
 	outline-offset: 2px;
 }
 
-.custom-blog-list__go {
-	display: flex;
-	align-items: center;
-	gap: 8px;
-	margin-left: 8px;
+.custom-blog-list__more.is-working {
+	cursor: progress;
 }
 
-.custom-blog-list__field {
-	width: 72px;
-	height: 40px;
-	padding: 0 8px;
-	border: 1px solid currentColor;
-	border-radius: 0;
-	background: none;
-	color: inherit;
-	font: inherit;
-	box-sizing: border-box;
-	appearance: textfield;
+.custom-blog-list__more.is-working .custom-blog-list__more-text {
+	visibility: hidden;
 }
 
-/* The default ring goes, and one drawn in the band's own ink stands in its
-   place: a press nobody can see they have reached is worse than an ugly one. */
-.custom-blog-list__field:focus:not( :focus-visible ) {
-	outline: none;
+.custom-blog-list__more-spinner {
+	display: none;
+	position: absolute;
+	width: 16px;
+	height: 16px;
+	border: 2px solid currentColor;
+	border-top-color: transparent;
+	border-radius: 50%;
+	animation: custom-blog-spin 700ms linear infinite;
+}
+
+.custom-blog-list__more.is-working .custom-blog-list__more-spinner {
+	display: block;
+}
+
+@keyframes custom-blog-spin {
+	to {
+		transform: rotate( 360deg );
+	}
 }
 
 /* What closes the page off. */
@@ -217,10 +182,14 @@
 }
 
 @media ( prefers-reduced-motion: reduce ) {
-	.custom-blog-list__page,
+	.custom-blog-list__more,
 	.custom-blog-list__handle,
 	.custom-blog-list__press {
 		transition: none;
+	}
+
+	.custom-blog-list__more-spinner {
+		animation-duration: 2s;
 	}
 }
 
@@ -247,24 +216,8 @@
 		row-gap: 76px;
 	}
 
-	.custom-blog-list__pages {
-		gap: 6px;
-	}
-
-	.custom-blog-list__page {
-		min-width: 32px;
-		height: 32px;
-		padding: 0 6px;
-	}
-
-	.custom-blog-list__go {
-		gap: 6px;
-		margin-left: 6px;
-	}
-
-	.custom-blog-list__field {
-		width: 56px;
-		height: 32px;
+	.custom-blog-list__more {
+		padding: 8px 16px;
 	}
 
 	.custom-blog-list__close {

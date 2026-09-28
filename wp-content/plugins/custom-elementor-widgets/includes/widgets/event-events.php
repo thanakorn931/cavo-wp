@@ -279,7 +279,7 @@ class Event_Events extends Event_Widget {
 		// bring; which screen this is, and so whether it has, is settled there.
 		$waiting = count( $items ) > min( $steps );
 		?>
-		<div class="custom-event-list" data-event-feed<?php $this->tier_attributes( 'shown', $steps ); ?><?php $this->tier_attributes( 'step', $steps ); ?>>
+		<div class="custom-event-list" data-feed<?php $this->tier_attributes( 'shown', $steps ); ?><?php $this->tier_attributes( 'step', $steps ); ?>>
 			<div class="custom-event-list__band">
 				<?php if ( $lead ) : ?>
 					<?php $this->render_lead( $lead ); ?>
@@ -325,7 +325,7 @@ class Event_Events extends Event_Widget {
 	private function render_lead( $post ) {
 		$picture = get_the_post_thumbnail_url( $post, 'full' );
 		?>
-		<div class="custom-event-list__lead">
+		<div class="custom-event-list__lead" data-feed-lead>
 			<span class="custom-event-list__lead-picture" aria-hidden="true">
 				<?php $this->media( $picture ); ?>
 				<span class="custom-event-card__badge" aria-hidden="true"></span>

@@ -371,7 +371,7 @@ class Event_Past_Events extends Event_Widget {
 		$tag   = isset( $settings['heading_tag'] ) ? $settings['heading_tag'] : 'h2';
 		$tag   = in_array( $tag, array( 'h2', 'h3', 'span' ), true ) ? $tag : 'h2';
 		?>
-		<div class="custom-event-past" data-event-feed<?php $this->tier_attributes( 'shown', $shows ); ?><?php $this->tier_attributes( 'step', $steps ); ?>>
+		<div class="custom-event-past" data-feed<?php $this->tier_attributes( 'shown', $shows ); ?><?php $this->tier_attributes( 'step', $steps ); ?>>
 			<div class="custom-event-past__head">
 				<<?php echo esc_attr( $tag ); ?> class="custom-event-past__heading"><?php
 					echo esc_html( $this->text( $settings, 'heading' ) );
