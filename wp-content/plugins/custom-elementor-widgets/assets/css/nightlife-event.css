@@ -43,7 +43,9 @@
 
 .custom-nightlife-event__heading {
 	position: relative;
-	max-width: 260px;
+	/* As asked, room enough for a name in Thai, which runs longer than the
+	   English the file sets. */
+	max-width: 340px;
 	margin: 0;
 	padding: 0;
 	text-transform: uppercase;
@@ -120,10 +122,10 @@
 		height: 449px;
 	}
 
-	/* The file keeps the name on two lines here as on the wide tier: 130 is
-	   to 32 what 260 is to 64, with a little over so a word is never split. */
+	/* As asked, room enough for a name in Thai, which runs longer than the
+	   English the file sets. */
 	.custom-nightlife-event__heading {
-		max-width: 140px;
+		max-width: 180px;
 	}
 
 	.custom-nightlife-event__grid {
