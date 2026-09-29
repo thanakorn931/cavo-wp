@@ -211,6 +211,13 @@
    and first card. Tablet is not drawn; it takes the same figures, and the
    cards two to a row, 24 apart across and 48 down. */
 @media ( max-width: 1024px ) {
+	/* Every button's words stand at 12 on the narrow tiers. This one shares
+	   its type control with the dates and the close, which keep their own
+	   size, so it is said above that control's weight here. */
+	.custom-blog-list__more {
+		font-size: 12px !important;
+	}
+
 	.custom-blog-list__name {
 		padding: 10px 16px 34px;
 	}

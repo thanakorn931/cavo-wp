@@ -305,8 +305,8 @@ class Nightlife_Event extends Event_Widget {
 					'font_family' => array( 'default' => 'Roboto' ),
 					'font_size'   => array(
 						'default'        => array( 'unit' => 'px', 'size' => 14 ),
-						'tablet_default' => array( 'unit' => 'px', 'size' => 9 ),
-						'mobile_default' => array( 'unit' => 'px', 'size' => 9 ),
+						'tablet_default' => array( 'unit' => 'px', 'size' => 12 ),
+						'mobile_default' => array( 'unit' => 'px', 'size' => 12 ),
 					),
 				),
 			)

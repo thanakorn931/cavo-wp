@@ -189,8 +189,8 @@ class Private_Event_Introduce extends Base_Widget {
 					'font_family' => array( 'default' => 'Roboto' ),
 					'font_size'   => array(
 						'default'        => array( 'unit' => 'px', 'size' => 14 ),
-						'tablet_default' => array( 'unit' => 'px', 'size' => 8 ),
-						'mobile_default' => array( 'unit' => 'px', 'size' => 8 ),
+						'tablet_default' => array( 'unit' => 'px', 'size' => 12 ),
+						'mobile_default' => array( 'unit' => 'px', 'size' => 12 ),
 					),
 				),
 			)
