@@ -113,10 +113,12 @@ class Membership_Benefit extends Base_Widget {
 
 		$repeater = new Repeater();
 
+		// One picture to a benefit: large while it is the one on show, and
+		// small beside the one before it, as what comes next.
 		$repeater->add_control(
 			'wide_picture',
 			array(
-				'label' => esc_html__( 'Wide picture', 'custom-elementor-widgets' ),
+				'label' => esc_html__( 'Picture', 'custom-elementor-widgets' ),
 				'type'  => Controls_Manager::MEDIA,
 			)
 		);
@@ -137,14 +139,6 @@ class Membership_Benefit extends Base_Widget {
 				'type'    => Controls_Manager::TEXTAREA,
 				'dynamic' => array( 'active' => true ),
 				'rows'    => 5,
-			)
-		);
-
-		$repeater->add_control(
-			'thumb_picture',
-			array(
-				'label' => esc_html__( 'Small picture', 'custom-elementor-widgets' ),
-				'type'  => Controls_Manager::MEDIA,
 			)
 		);
 
@@ -346,7 +340,12 @@ class Membership_Benefit extends Base_Widget {
 
 			<?php if ( ! empty( $benefits ) ) : ?>
 				<div class="custom-membership-benefit__row">
+					<?php
+					$benefits = array_values( $benefits );
+					$count    = count( $benefits );
+					?>
 					<?php foreach ( $benefits as $index => $benefit ) : ?>
+						<?php $next = $count > 1 ? $benefits[ ( $index + 1 ) % $count ] : null; ?>
 						<div class="custom-membership-benefit__slide<?php echo 0 === $index ? ' is-current' : ''; ?>">
 							<div class="custom-membership-benefit__stage"><?php
 								$this->media( isset( $benefit['wide_picture']['url'] ) ? $benefit['wide_picture']['url'] : '', '', true );
@@ -363,8 +362,9 @@ class Membership_Benefit extends Base_Widget {
 									?></p>
 								</div>
 
-								<div class="custom-membership-benefit__thumb">
-									<?php $this->media( isset( $benefit['thumb_picture']['url'] ) ? $benefit['thumb_picture']['url'] : '', '', true ); ?>
+								<?php // The next benefit's picture, and pressed, the way there. It is left out of what is read aloud, where the arrows already go there. ?>
+								<div class="custom-membership-benefit__thumb" aria-hidden="true">
+									<?php $this->media( $next && isset( $next['wide_picture']['url'] ) ? $next['wide_picture']['url'] : '', '', true ); ?>
 									<span class="custom-membership-benefit__thumb-veil" aria-hidden="true"></span>
 								</div>
 							</div>

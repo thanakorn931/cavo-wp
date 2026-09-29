@@ -151,6 +151,8 @@
 	height: 260px;
 	border-radius: 24px;
 	overflow: hidden;
+	/* The next benefit's picture, and pressed, goes to it. */
+	cursor: pointer;
 }
 
 .custom-membership-benefit__thumb img {

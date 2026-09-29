@@ -2,7 +2,8 @@
  * Membership, benefits.
  *
  * One benefit is on show at a time — its picture, its words and the picture
- * beside them turn together. The list runs round.
+ * beside them turn together. The list runs round. The small picture is the
+ * next benefit's, and pressed, goes to it; only the large picture is pulled.
  */
 ( function () {
 	'use strict';
@@ -34,7 +35,7 @@
 		root.addEventListener( 'click', function ( event ) {
 			if ( event.target.closest( '.custom-membership-benefit__arrow--prev' ) ) {
 				show( current - 1 );
-			} else if ( event.target.closest( '.custom-membership-benefit__arrow--next' ) ) {
+			} else if ( event.target.closest( '.custom-membership-benefit__arrow--next' ) || ( slides.length > 1 && event.target.closest( '.custom-membership-benefit__thumb' ) ) ) {
 				show( current + 1 );
 			}
 		} );
@@ -42,19 +43,24 @@
 		// How far a pull goes before it turns the row, as an arrow would.
 		var TURN = 40;
 
-		// Pulled sideways, the benefits turn as the arrows turn them.
-		var pull = root.querySelector( '.custom-membership-benefit__row' ) || root;
+		// Only the large picture is pulled: the words and the small picture
+		// beside them are pressed, never pulled. Pulled sideways, the benefits
+		// turn as the arrows turn them.
+		var pulls = root.querySelectorAll( '.custom-membership-benefit__stage' );
 
-		pull.classList.add( 'custom-pull' );
-		pull.classList.toggle( 'is-pullable', slides.length > 1 );
-
-		pull.addEventListener( 'custom-pull', function ( event ) {
+		function pulled( event ) {
 			var by = event.detail.by;
 
 			if ( 'end' === event.detail.phase && Math.abs( by ) >= TURN ) {
 				show( current + ( by < 0 ? 1 : -1 ) );
 			}
-		} );
+		}
+
+		for ( var p = 0; p < pulls.length; p++ ) {
+			pulls[ p ].classList.add( 'custom-pull' );
+			pulls[ p ].classList.toggle( 'is-pullable', slides.length > 1 );
+			pulls[ p ].addEventListener( 'custom-pull', pulled );
+		}
 
 		show( 0 );
 	}
