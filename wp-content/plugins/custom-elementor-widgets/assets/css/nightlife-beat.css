@@ -446,3 +446,56 @@
 	}
 }
 
+
+/* Mobile — as asked, the card is 160 across rather than the file's 128, and
+   208 deep to keep its shape; the edge, the picture set into it and what
+   stands on the picture grow with it by the same share, a quarter. */
+@media ( max-width: 767px ) {
+	.custom-nightlife-beat__stage {
+		height: 221px;
+	}
+
+	.custom-nightlife-beat__card {
+		width: 160px;
+		height: 208px;
+		border-radius: 11px;
+	}
+
+	.custom-nightlife-beat__inner {
+		top: 4px;
+		left: 3px;
+		width: 154px;
+		height: 200px;
+		padding: 152px 30px 19px 14px;
+		border-radius: 8px;
+	}
+
+	.custom-nightlife-beat__words {
+		gap: 4px;
+	}
+
+	.custom-nightlife-beat__chips {
+		gap: 4px;
+	}
+
+	.custom-nightlife-beat__chip,
+	.custom-nightlife-beat__chip:hover,
+	.custom-nightlife-beat__chip:focus,
+	.custom-nightlife-beat__chip:active {
+		gap: 4px;
+		height: 15px;
+		padding: 5px;
+	}
+
+	.custom-nightlife-beat__chip svg {
+		width: 9px;
+		height: 9px;
+	}
+
+	.custom-nightlife-beat__badge {
+		top: 11px;
+		right: 10px;
+		width: 25px;
+		height: 23px;
+	}
+}
