@@ -397,7 +397,9 @@ class Nightlife_Program extends Base_Widget {
 
 		$now  = current_time( 'timestamp' ); // phpcs:ignore WordPress.DateTime.CurrentTimeTimestamp.Requested -- the client's day, not UTC's.
 		$from = (int) strtotime( 'today', $now );
-		$to   = $from + ( 8 * DAY_IN_SECONDS );
+		// Seven nights, today among them: each night of the week once, never the
+		// same weekday twice.
+		$to   = $from + ( 7 * DAY_IN_SECONDS );
 
 		$week = array();
 
