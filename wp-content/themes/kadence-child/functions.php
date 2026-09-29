@@ -397,17 +397,16 @@ function kadence_child_event_fields() {
 add_action( 'acf/init', 'kadence_child_event_fields' );
 
 /**
- * An event's two ways to a ticket, each with the two toggles every link in
- * the widgets carries.
+ * An event's two ways to a ticket.
  *
  * The address is words rather than WordPress's own address field, as it is in
  * the widgets: that field turns away a path such as /home, and a path is how
  * a link to a page of this site is written. A path, an anchor or a whole
  * address are all taken; one with no scheme stays on this site. Whether it
- * opens in a new tab and whether it is nofollow are the toggles' answers,
- * never the address's.
+ * opens in a new tab and whether it is nofollow are the widget's to say, not
+ * the event's.
  *
- * @return array The fields, three to a ticket.
+ * @return array The two fields.
  */
 function kadence_child_event_ticket_fields() {
 	$fields = array();
@@ -422,27 +421,6 @@ function kadence_child_event_ticket_fields() {
 			'name'         => 'event_' . $which . '_url',
 			'type'         => 'text',
 			'instructions' => esc_html__( 'A page of this site as its path, such as /home, or a whole address for another site.', 'kadence-child' ),
-			'wrapper'      => array( 'width' => '50' ),
-		);
-
-		$fields[] = array(
-			'key'           => 'field_event_' . $which . '_url_blank',
-			'label'         => esc_html__( 'Open in a new tab', 'kadence-child' ),
-			'name'          => 'event_' . $which . '_url_blank',
-			'type'          => 'true_false',
-			'ui'            => 1,
-			'default_value' => 0,
-			'wrapper'       => array( 'width' => '25' ),
-		);
-
-		$fields[] = array(
-			'key'           => 'field_event_' . $which . '_url_nofollow',
-			'label'         => esc_html__( 'nofollow', 'kadence-child' ),
-			'name'          => 'event_' . $which . '_url_nofollow',
-			'type'          => 'true_false',
-			'ui'            => 1,
-			'default_value' => 0,
-			'wrapper'       => array( 'width' => '25' ),
 		);
 	}
 

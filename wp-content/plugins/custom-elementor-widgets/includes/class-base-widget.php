@@ -759,10 +759,10 @@ abstract class Base_Widget extends \Elementor\Widget_Base {
 	}
 
 	/**
-	 * Source → an item's two ways to a ticket, each an address and its two
-	 * toggles, all of them the item's own: pointed at the event's fields, every
-	 * card links where its own event says. A toggle is on where its field says
-	 * so — on, yes or 1.
+	 * Source → an item's two ways to a ticket. The address is the item's own:
+	 * pointed at the event's field, every card links where its own event says.
+	 * Whether it opens in a new tab and whether it is nofollow are the
+	 * section's, the same for every card.
 	 */
 	protected function register_ticket_source_controls() {
 		foreach ( array(
@@ -783,20 +783,18 @@ abstract class Base_Widget extends \Elementor\Widget_Base {
 			$this->add_control(
 				$key . '_url_blank',
 				array(
-					/* translators: %s: which of the two links. */
-					'label'   => sprintf( esc_html__( '%s: open in a new tab', 'custom-elementor-widgets' ), $label ),
-					'type'    => Controls_Manager::TEXT,
-					'dynamic' => array( 'active' => true ),
+					'label'   => esc_html__( 'Open in a new tab', 'custom-elementor-widgets' ),
+					'type'    => Controls_Manager::SWITCHER,
+					'default' => '',
 				)
 			);
 
 			$this->add_control(
 				$key . '_url_nofollow',
 				array(
-					/* translators: %s: which of the two links. */
-					'label'   => sprintf( esc_html__( '%s: nofollow', 'custom-elementor-widgets' ), $label ),
-					'type'    => Controls_Manager::TEXT,
-					'dynamic' => array( 'active' => true ),
+					'label'   => esc_html__( 'nofollow', 'custom-elementor-widgets' ),
+					'type'    => Controls_Manager::SWITCHER,
+					'default' => '',
 				)
 			);
 		}
