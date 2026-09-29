@@ -124,12 +124,15 @@
 	}
 }
 
+/* Beside the slide being read, as the file draws them; on a wide screen short
+   of the file's 1440 that place is past the band's edge, so they stop 16 in
+   from it instead. */
 .custom-dining-carousel__arrow--prev {
-	left: calc( 50% - 644px );
+	left: max( 16px, calc( 50% - 644px ) );
 }
 
 .custom-dining-carousel__arrow--next {
-	left: calc( 50% + 548px );
+	left: min( calc( 100% - 112px ), calc( 50% + 548px ) );
 }
 
 /* The file draws the mark in a 24 box in the middle of the circle, not

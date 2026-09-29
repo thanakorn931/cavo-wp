@@ -127,6 +127,41 @@
 	white-space: nowrap;
 }
 
+/* A wide screen short of the file's 1440 — the two pictures, the room and the
+   words stand at the shares of the band the file gives them (430, 20, 430, 52
+   and 390 of 1322), so they shrink together rather than running off the right
+   edge; each picture keeps its shape, and the hours stay inside the words. From
+   1440 up the figures above stand. */
+@media ( min-width: 1025px ) and ( max-width: 1439px ) {
+	.custom-dining-detail {
+		gap: 3.933%;
+	}
+
+	.custom-dining-detail__pictures {
+		flex: 0 1 66.566%;
+		gap: 2.273%;
+		min-width: 0;
+	}
+
+	.custom-dining-detail__picture {
+		flex: 1 1 0;
+		width: auto;
+		min-width: 0;
+		height: auto;
+		aspect-ratio: 430 / 629;
+	}
+
+	.custom-dining-detail__column {
+		flex: 0 1 29.501%;
+		width: auto;
+		min-width: 0;
+	}
+
+	.custom-dining-detail__hours {
+		max-width: 100%;
+	}
+}
+
 /* Tablet and mobile — the file draws one of them (11167:8671): each picture
    beside its own words, the first on the left and the second on the right,
    and the hours in the middle under both. The pictures and the words are two

@@ -148,6 +148,33 @@
 	}
 }
 
+/* A wide screen short of the file's 1440 — the words, the room and the three
+   pictures stand at the shares of the band the file gives them (390, 74 and
+   880 of 1344), so they shrink together rather than running off the right
+   edge; the pictures keep their shape, and the words stand as deep as they do.
+   From 1440 up the figures above stand. */
+@media ( min-width: 1025px ) and ( max-width: 1439px ) {
+	.custom-dining-beverage__row {
+		align-items: stretch;
+		gap: 5.506%;
+	}
+
+	.custom-dining-beverage__column {
+		flex: 0 1 29.018%;
+		width: auto;
+		min-width: 0;
+		min-height: 0;
+	}
+
+	.custom-dining-beverage__gallery {
+		flex: 0 1 65.476%;
+		width: auto;
+		min-width: 0;
+		height: auto;
+		aspect-ratio: 880 / 785;
+	}
+}
+
 /* Tablet and mobile — the file draws one of them (11167:8699): the words
    over the pictures rather than beside them, 16 in from either edge, the
    band 34 deep above and 54 below, the pictures 320 deep in two columns 8

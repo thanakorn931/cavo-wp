@@ -166,6 +166,34 @@
 	}
 }
 
+/* A wide screen short of the file's 1440 — the statement, the room and the
+   picture stand at the shares of the band the file gives them (578, 126 and
+   640 of 1344), so the three shrink together rather than running off either
+   edge; the picture keeps its shape. From 1440 up the figures above stand. */
+@media ( min-width: 1025px ) and ( max-width: 1439px ) {
+	.custom-dining-menu {
+		gap: 9.375%;
+	}
+
+	.custom-dining-menu__column {
+		flex: 0 1 43.006%;
+		width: auto;
+		min-width: 0;
+	}
+
+	.custom-dining-menu__gallery {
+		flex: 0 1 47.619%;
+		width: auto;
+		height: auto;
+		aspect-ratio: 640 / 548;
+	}
+
+	.custom-dining-menu__gallery img,
+	.custom-dining-menu__gallery .custom-media-empty {
+		height: calc( 100% - 56px );
+	}
+}
+
 /* Tablet and mobile — the file draws one of them (11167:8352): the words
    over the picture rather than beside it, 356 across in the middle of a band
    38 deep above and below, the two 24 apart. The picture is 300 deep here
