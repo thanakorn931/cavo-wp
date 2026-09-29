@@ -3,7 +3,10 @@
  *
  * With more than one picture, one shows at a time and the next takes its place
  * every five seconds, running round. A dot for each says which is showing, and
- * pressed, goes to its picture and starts the five seconds again.
+ * pressed, goes to its picture and starts the five seconds again. The pictures
+ * can be pulled sideways too, by mouse, finger or pen, on every tier: a pull
+ * to the left brings the next, to the right the one before, and the five
+ * seconds start again.
  */
 ( function () {
 	'use strict';
@@ -67,6 +70,24 @@
 			timer = window.setInterval( function () {
 				show( current + 1 );
 			}, EVERY );
+		}
+
+		// Pulled far enough, the gallery turns one picture; a shorter pull is
+		// let go. The shared pull (base-widget.js) tells it how far.
+		var TURN    = 40;
+		var gallery = root.querySelector( '.custom-dining-menu__gallery' );
+
+		if ( gallery ) {
+			gallery.classList.add( 'custom-pull', 'is-pullable' );
+
+			gallery.addEventListener( 'custom-pull', function ( event ) {
+				if ( 'end' !== event.detail.phase || Math.abs( event.detail.by ) < TURN ) {
+					return;
+				}
+
+				show( current + ( event.detail.by < 0 ? 1 : -1 ) );
+				run();
+			} );
 		}
 
 		root.addEventListener( 'click', function ( event ) {
