@@ -108,8 +108,60 @@
 	border-radius: 24px;
 }
 
+/* With more than one picture, one shows at a time and the next fades in over
+   it. With one, it simply stands. */
+.custom-dining-menu__slide {
+	opacity: 0;
+	transition: opacity 600ms ease-in-out;
+}
+
+.custom-dining-menu__slide.is-current {
+	opacity: 1;
+}
+
+/* A dot for each picture, over the foot of the picture, the one showing in
+   white. They are printed only where there is more than one. */
+.custom-dining-menu__dots {
+	position: absolute;
+	left: 50%;
+	bottom: 44px;
+	z-index: 1;
+	display: flex;
+	gap: 6px;
+	transform: translateX( -50% );
+}
+
+/* The theme paints a bare button on every state it has, so each state says
+   the dot's own ground here. */
+.custom-dining-menu__dot,
+.custom-dining-menu__dot:hover,
+.custom-dining-menu__dot:focus,
+.custom-dining-menu__dot:active {
+	width: 8px;
+	height: 8px;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
+	background-color: rgba( 18, 18, 18, 0.4 );
+	box-shadow: none;
+	cursor: pointer;
+	transition: background-color 300ms ease-in-out;
+}
+
+.custom-dining-menu__dot.is-current {
+	background-color: #ffffff;
+}
+
+.custom-dining-menu__dot:focus-visible {
+	outline: 2px solid #ffffff;
+	outline-offset: 2px;
+}
+
 @media ( prefers-reduced-motion: reduce ) {
-	.custom-dining-menu__button {
+	.custom-dining-menu__button,
+	.custom-dining-menu__slide,
+	.custom-dining-menu__dot {
 		transition: none;
 	}
 }
@@ -159,6 +211,11 @@
 		inset: 0;
 		height: 100%;
 		border-radius: 18px;
+	}
+
+	/* The picture fills the box here, so the dots sit at its foot. */
+	.custom-dining-menu__dots {
+		bottom: 16px;
 	}
 }
 

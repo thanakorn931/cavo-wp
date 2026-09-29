@@ -2,7 +2,8 @@
 /**
  * Dining, food menu — one section of the design.
  *
- * The button opens a menu the client has uploaded, in a tab of its own.
+ * The button opens a menu the client has uploaded, in a tab of its own. The
+ * pictures beside it are a list: more than one takes turns, with a dot for each.
  *
  * @package Custom_Elementor_Widgets
  */
@@ -12,6 +13,7 @@ namespace Custom_Elementor_Widgets\Widgets;
 use Custom_Elementor_Widgets\Base_Widget;
 use Elementor\Controls_Manager;
 use Elementor\Group_Control_Typography;
+use Elementor\Repeater;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
@@ -170,11 +172,23 @@ class Dining_Food_Menu extends Base_Widget {
 			)
 		);
 
-		$this->add_control(
+		$picture = new Repeater();
+
+		$picture->add_control(
 			'picture',
 			array(
 				'label' => esc_html__( 'Picture', 'custom-elementor-widgets' ),
 				'type'  => Controls_Manager::MEDIA,
+			)
+		);
+
+		$this->add_control(
+			'pictures',
+			array(
+				'label'       => esc_html__( 'Pictures', 'custom-elementor-widgets' ),
+				'type'        => Controls_Manager::REPEATER,
+				'fields'      => $picture->get_controls(),
+				'title_field' => '{{{ picture && picture.url ? picture.url.split( "/" ).pop() : "" }}}',
 			)
 		);
 
@@ -294,11 +308,45 @@ class Dining_Food_Menu extends Base_Widget {
 	}
 
 	/**
+	 * The pictures the list holds, in order, leaving out a row with none.
+	 *
+	 * Before the pictures were a list the section held one, under `picture`. A
+	 * page saved then still carries it, so while the list is empty that picture
+	 * stands as the list's one: the section keeps what it showed until the
+	 * client puts pictures in the list.
+	 *
+	 * @param array $settings The widget's settings.
+	 * @return string[]
+	 */
+	private function pictures( $settings ) {
+		$pictures = array();
+
+		foreach ( ( isset( $settings['pictures'] ) ? (array) $settings['pictures'] : array() ) as $row ) {
+			$url = isset( $row['picture']['url'] ) ? trim( (string) $row['picture']['url'] ) : '';
+
+			if ( '' !== $url ) {
+				$pictures[] = $url;
+			}
+		}
+
+		if ( empty( $pictures ) ) {
+			$saved = $this->get_data( 'settings' );
+			$url   = isset( $saved['picture']['url'] ) ? trim( (string) $saved['picture']['url'] ) : '';
+
+			if ( '' !== $url ) {
+				$pictures[] = $url;
+			}
+		}
+
+		return $pictures;
+	}
+
+	/**
 	 * Print the section.
 	 */
 	protected function render() {
 		$settings = $this->get_settings_for_display();
-		$picture = isset( $settings['picture']['url'] ) ? $settings['picture']['url'] : '';
+		$pictures = $this->pictures( $settings );
 		$file     = isset( $settings['menu_file']['url'] ) ? $settings['menu_file']['url'] : '';
 		$tag      = isset( $settings['heading_tag'] ) ? $settings['heading_tag'] : 'h2';
 		$tag      = in_array( $tag, array( 'h2', 'h3', 'span' ), true ) ? $tag : 'h2';
@@ -322,7 +370,28 @@ class Dining_Food_Menu extends Base_Widget {
 			</div>
 
 			<div class="custom-dining-menu__gallery">
-				<?php $this->media( $picture ); ?>
+				<?php if ( empty( $pictures ) ) : ?>
+					<?php $this->media( '' ); ?>
+				<?php else : ?>
+					<?php foreach ( $pictures as $index => $picture ) : ?>
+						<div class="custom-dining-menu__slide<?php echo 0 === $index ? ' is-current' : ''; ?>"<?php echo 0 === $index ? '' : ' aria-hidden="true"'; ?>>
+							<?php $this->media( $picture, '', 0 !== $index ); ?>
+						</div>
+					<?php endforeach; ?>
+				<?php endif; ?>
+
+				<?php if ( count( $pictures ) > 1 ) : ?>
+					<div class="custom-dining-menu__dots">
+						<?php foreach ( $pictures as $index => $picture ) : ?>
+							<button
+								type="button"
+								class="custom-dining-menu__dot<?php echo 0 === $index ? ' is-current' : ''; ?>"
+								data-index="<?php echo esc_attr( $index ); ?>"
+								aria-label="<?php echo esc_attr( sprintf( /* translators: %d: the picture's place in the list. */ __( 'Picture %d', 'custom-elementor-widgets' ), $index + 1 ) ); ?>"
+							></button>
+						<?php endforeach; ?>
+					</div>
+				<?php endif; ?>
 			</div>
 		</div>
 		<?php
