@@ -435,9 +435,18 @@
 	}
 
 	.custom-nightlife-beat__arrow {
+		box-shadow: 0 4px 10px rgba( 0, 0, 0, 0.06 );
+	}
+
+	/* Said for every state the narrow tier names, or a pressed arrow keeps
+	   its focus and takes the phone's 12 back. */
+	.custom-nightlife-beat__arrow,
+	.custom-nightlife-beat__arrow:hover,
+	.custom-nightlife-beat__arrow:focus,
+	.custom-nightlife-beat__arrow:focus-visible,
+	.custom-nightlife-beat__arrow:active {
 		width: 40px;
 		height: 40px;
-		box-shadow: 0 4px 10px rgba( 0, 0, 0, 0.06 );
 	}
 
 	.custom-nightlife-beat__arrow svg {
