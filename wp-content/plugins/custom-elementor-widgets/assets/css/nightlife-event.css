@@ -45,7 +45,7 @@
 	position: relative;
 	/* As asked, room enough for a name in Thai, which runs longer than the
 	   English the file sets. */
-	max-width: 340px;
+	max-width: 360px;
 	margin: 0;
 	padding: 0;
 	text-transform: uppercase;
