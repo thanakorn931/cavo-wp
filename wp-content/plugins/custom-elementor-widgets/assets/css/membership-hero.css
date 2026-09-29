@@ -1,8 +1,9 @@
 /**
  * Membership, hero — one section of the design.
  *
- * The page's own words on cream, then the plans running off the right edge of
- * the band beneath. The arrows move the row one plan at a time.
+ * The page's own words on cream, then the band beneath them with the way in to
+ * membership in its middle. The plans that stood in that band — their heading,
+ * the cards and the arrows — were taken out at the client's word.
  */
 
 .custom-membership-hero__intro {
@@ -27,24 +28,20 @@
 	max-width: 1076px;
 }
 
-/* The band the plans run through. The row is drawn wider than the band and runs
-   off its right edge, so the gutter is on the left alone: where it begins is
-   held to 1440, where it ends is not. */
+/* The band beneath the words, the way in standing in its middle. Its glow is
+   the one the file draws, laid over the band's own depth: the cream meets the
+   words above it and darkens to the brown at its foot, as it did when the
+   band was deeper. Written as a share of the band, it keeps that fall whatever
+   the band comes to. */
 .custom-membership-hero__plans {
+	display: flex;
+	align-items: center;
+	justify-content: center;
 	width: 100%;
-	padding-top: 90px;
-	padding-bottom: 91px;
-	padding-left: calc( 48px + max( 0px, calc( ( 100% - 1440px ) / 2 ) ) );
-	padding-right: 0;
+	padding: 120px calc( 48px + max( 0px, calc( ( 100% - 1440px ) / 2 ) ) );
 	box-sizing: border-box;
-	overflow: hidden;
-
-	/* The file draws the glow 1924 across a 1440 band. Written as a share of the
-	   band rather than a number of pixels, it meets the cream above it at the
-	   same point whatever the window is; written in pixels it stops short of a
-	   wider one, and the join shows. */
 	background-image: radial-gradient(
-		133.611% 713px at 50% 0%,
+		133.611% 100% at 50% 0%,
 		#faf6ea 34.84%,
 		#c6bfb3 49.9%,
 		#aca398 57.43%,
@@ -57,119 +54,12 @@
 	);
 }
 
-.custom-membership-hero__inner {
-	display: flex;
-	align-items: flex-start;
-	gap: 48px;
-	height: 532px;
-}
-
-/* The words and the two arrows, and the way in at the foot of them. */
-.custom-membership-hero__aside {
-	display: flex;
-	flex-direction: column;
-	align-items: flex-start;
-	justify-content: space-between;
-	flex: 0 0 359px;
-	height: 532px;
-}
-
-.custom-membership-hero__aside-top {
-	display: flex;
-	flex-direction: column;
-	align-items: flex-start;
-	gap: 24px;
-	width: 100%;
-}
-
-.custom-membership-hero__title {
-	margin: 0;
-	width: 243px;
-	text-transform: uppercase;
-}
-
-.custom-membership-hero__arrows {
-	display: flex;
-	align-items: flex-end;
-	gap: 24px;
-}
-
-.custom-membership-hero__arrow {
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	width: 56px;
-	height: 56px;
-	padding: 0;
-	border: 0;
-	border-radius: 50%;
-	box-shadow: 0 4px 10px rgba( 0, 0, 0, 0.06 );
-	cursor: pointer;
-	transition:
-		background-color 300ms ease-in-out,
-		opacity 300ms ease-in-out;
-}
-
-/* The theme paints a bare button on every state it has; a class alone does not
-   outrank that, so each state says its own ground here. */
-.custom-membership-hero__arrow:hover,
-.custom-membership-hero__arrow:focus,
-.custom-membership-hero__arrow:focus-visible,
-.custom-membership-hero__arrow:active {
-	background: none;
-	border-color: currentColor;
-	box-shadow: none;
-}
-
-.custom-membership-hero__arrow:focus-visible {
-	outline: 2px solid currentColor;
-	outline-offset: 2px;
-}
-
-/* With nowhere to go the file takes the disc away and leaves the mark. The
-   file draws that mark pale (#d1d1d1), which on this ground can hardly be
-   seen; it is drawn in the section's brown instead, as asked. The colours a
-   client may set are asked for the arrow that can be pressed, so this one
-   is the section's own. */
-.custom-membership-hero__arrow[disabled],
-.custom-membership-hero__arrow[disabled]:hover {
-	background: transparent;
-	box-shadow: none;
-	cursor: default;
-}
-
-.custom-membership-hero__arrow[disabled] svg {
-	fill: #3a2114;
-}
-
-/* The design's hover for a brown press is a lighter brown of its own, not a fade. The
-   Style control writes the resting ground at the widget's own weight, out of a
-   stylesheet's reach, and no control answers for the hover, so it is said above
-   that weight here. A touch screen keeps a hover after the tap, so only a
-   pointer that can hover is given one. */
-@media ( hover: hover ) {
-	.custom-membership-hero__arrow:not( [disabled] ):hover {
-		background-color: #d4c894 !important;
-	}
-}
-
-/* The file draws the mark in a box 24 across and 20 down, in the middle of
-   the disc (7036:7259). */
-.custom-membership-hero__arrow svg {
-	display: block;
-	width: 24px;
-	height: 20px;
-}
-
-.custom-membership-hero__arrow--next svg {
-	transform: scaleX( -1 );
-}
-
 .custom-membership-hero__join {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
-	width: 100%;
+	width: 359px;
+	max-width: 100%;
 	height: 48px;
 	padding: 16px 24px;
 	border: 0;
@@ -194,130 +84,7 @@
 	}
 }
 
-/* The plans themselves. */
-/* The row is cut here rather than at the edge of the screen: what runs past the
-   band is out of the section, and the words and arrows beside it are not
-   something the row may be drawn over. */
-.custom-membership-hero__stage {
-	flex: 1 1 0;
-	min-width: 0;
-	overflow: hidden;
-}
-
-.custom-membership-hero__track {
-	display: flex;
-	align-items: flex-start;
-	gap: 27px;
-	transition: transform 500ms ease-in-out;
-	will-change: transform;
-}
-
-.custom-membership-hero__card {
-	position: relative;
-	flex: 0 0 430px;
-	width: 430px;
-	height: 532px;
-	border-radius: 24px;
-	overflow: hidden;
-}
-
-.custom-membership-hero__words {
-	position: absolute;
-	top: 26px;
-	left: 28px;
-	right: 28px;
-	display: flex;
-	flex-direction: column;
-	align-items: stretch;
-	gap: 24px;
-}
-
-.custom-membership-hero__head {
-	display: flex;
-	align-items: flex-end;
-	justify-content: space-between;
-	height: 50px;
-}
-
-.custom-membership-hero__name {
-	margin: 0;
-	text-transform: uppercase;
-}
-
-/* The house mark, carried by the build rather than uploaded. */
-/* The mark the build carries. The file draws it black on every plan, whatever
-   ink the plan sets for its words, so it is not the card's colour. */
-.custom-membership-hero__badge {
-	flex: 0 0 auto;
-	width: 53px;
-	height: 50px;
-	background-color: #000;
-	-webkit-mask-image: url( "../img/event-badge.webp" );
-	mask-image: url( "../img/event-badge.webp" );
-	-webkit-mask-size: contain;
-	mask-size: contain;
-	-webkit-mask-repeat: no-repeat;
-	mask-repeat: no-repeat;
-	-webkit-mask-position: center;
-	mask-position: center;
-}
-
-.custom-membership-hero__rule {
-	height: 1px;
-	background-color: currentColor;
-}
-
-.custom-membership-hero__features {
-	display: flex;
-	flex-direction: column;
-	align-items: flex-start;
-	gap: 16px;
-	margin: 0;
-	padding: 0;
-	list-style: none;
-}
-
-.custom-membership-hero__feature {
-	display: flex;
-	align-items: center;
-	gap: 10px;
-	width: 100%;
-}
-
-.custom-membership-hero__feature svg {
-	display: block;
-	flex: 0 0 auto;
-	width: 24px;
-	height: 24px;
-	fill: currentColor;
-}
-
-.custom-membership-hero__feature-text {
-	width: 165px;
-}
-
-/* The card the plan carries a picture of. */
-.custom-membership-hero__picture {
-	position: absolute;
-	top: 247px;
-	left: 3px;
-	width: 424px;
-	height: 280px;
-	border-radius: 24px;
-	overflow: hidden;
-}
-
-.custom-membership-hero__picture img {
-	display: block;
-	width: 100%;
-	height: 100%;
-	object-fit: cover;
-	object-position: center;
-}
-
 @media ( prefers-reduced-motion: reduce ) {
-	.custom-membership-hero__track,
-	.custom-membership-hero__arrow,
 	.custom-membership-hero__join {
 		transition: none;
 	}
@@ -329,10 +96,9 @@
 }
 
 /* Tablet and mobile — the file draws one of them (11174:11664, 11174:11672).
-   The page's words stand 42 in from either edge; beneath them the name of the
-   row and its two arrows share one line, the plans run off the right edge
-   under that, and the way in stands in the middle under the plans. Tablet is
-   not drawn and takes the same figures. */
+   The page's words stand 42 in from either edge, and the way in stands in the
+   middle of the band beneath them, 12 by 32 inside like every button on these
+   tiers. Tablet is not drawn and takes the same figures. */
 @media ( max-width: 1024px ) {
 	.custom-membership-hero__intro {
 		gap: 24px;
@@ -344,126 +110,19 @@
 	}
 
 	.custom-membership-hero__plans {
-		padding: 38px 0 43px;
-	}
-
-	/* The words, the arrows and the way in are one column on the wide tier;
-	   here that column gives up its own box and the three stand in the band
-	   with the row, in the order the file draws them. */
-	.custom-membership-hero__inner {
-		flex-direction: column;
-		align-items: stretch;
-		gap: 0;
-		height: auto;
-	}
-
-	.custom-membership-hero__aside {
-		display: contents;
-	}
-
-	.custom-membership-hero__aside-top {
-		flex-direction: row;
-		align-items: center;
-		justify-content: space-between;
-		order: 1;
-		gap: 16px;
-		padding: 0 16px 38px;
-		box-sizing: border-box;
-	}
-
-	.custom-membership-hero__title {
-		width: auto;
-		max-width: 243px;
-	}
-
-	.custom-membership-hero__arrows {
-		gap: 16px;
-	}
-
-	.custom-membership-hero__arrow {
-		width: 24px;
-		height: 24px;
-	}
-
-	/* The mark keeps the share of the disc the file gives it. */
-	.custom-membership-hero__arrow svg {
-		width: 10px;
-		height: 9px;
-	}
-
-	.custom-membership-hero__stage {
-		order: 2;
-		flex: 0 0 auto;
-		width: 100%;
-	}
-
-	.custom-membership-hero__track {
-		gap: 24px;
-		padding-left: 16px;
-	}
-
-	.custom-membership-hero__card {
-		flex: 0 0 250px;
-		width: 250px;
-		height: 310px;
-		border-radius: 14px;
-	}
-
-	.custom-membership-hero__words {
-		top: 15px;
-		left: 16px;
-		right: 16px;
-		gap: 14px;
-	}
-
-	.custom-membership-hero__head {
-		height: 29px;
-	}
-
-	.custom-membership-hero__badge {
-		width: 31px;
-		height: 29px;
-	}
-
-	.custom-membership-hero__features {
-		gap: 9px;
-	}
-
-	.custom-membership-hero__feature {
-		gap: 6px;
-	}
-
-	.custom-membership-hero__feature svg {
-		width: 14px;
-		height: 14px;
-	}
-
-	.custom-membership-hero__feature-text {
-		width: 96px;
-	}
-
-	.custom-membership-hero__picture {
-		top: 146px;
-		left: 3px;
-		width: 244px;
-		height: 162px;
-		border-radius: 14px;
+		padding: 64px 16px;
 	}
 
 	.custom-membership-hero__join {
-		order: 3;
-		align-self: center;
 		width: auto;
 		height: auto;
-		margin-top: 44px;
 		padding: 12px 32px;
 		border-radius: 14px;
 	}
 }
 
 /* Tablet — not drawn. The page's words are given more of the width than the
-   narrow tier keeps for them, and the arrows come up with it, short of the
-   wide tier's 56. */
+   narrow tier keeps for them, and the band more depth. */
 @media ( min-width: 768px ) and ( max-width: 1024px ) {
 	.custom-membership-hero__intro {
 		padding: 0 48px 84px;
@@ -473,13 +132,7 @@
 		max-width: 600px;
 	}
 
-	.custom-membership-hero__arrow {
-		width: 40px;
-		height: 40px;
-	}
-
-	.custom-membership-hero__arrow svg {
-		width: 17px;
-		height: 14px;
+	.custom-membership-hero__plans {
+		padding: 96px 48px;
 	}
 }
