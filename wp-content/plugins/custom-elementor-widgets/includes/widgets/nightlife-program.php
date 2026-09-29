@@ -113,8 +113,6 @@ class Nightlife_Program extends Base_Widget {
 			)
 		);
 
-		$this->add_link_controls( $this, 'ticket_link', esc_html__( 'First button link', 'custom-elementor-widgets' ) );
-
 		$this->add_control(
 			'vip_text',
 			array(
@@ -125,7 +123,14 @@ class Nightlife_Program extends Base_Widget {
 			)
 		);
 
-		$this->add_link_controls( $this, 'vip_link', esc_html__( 'Second button link', 'custom-elementor-widgets' ) );
+		$this->add_control(
+			'program_links_note',
+			array(
+				'type'            => Controls_Manager::RAW_HTML,
+				'raw'             => esc_html__( "Where each button goes is the night's own: the Ticket url and Vip ticket url on the Source tab.", 'custom-elementor-widgets' ),
+				'content_classes' => 'elementor-descriptor',
+			)
+		);
 
 		$this->end_controls_section();
 
@@ -361,6 +366,9 @@ class Nightlife_Program extends Base_Widget {
 				)
 			);
 		}
+
+		// Where the two buttons go is each night's own, as its day is.
+		$this->register_ticket_source_controls();
 	}
 
 	/**
@@ -513,21 +521,33 @@ class Nightlife_Program extends Base_Widget {
 								echo esc_html( get_the_excerpt( $post ) );
 							?></p>
 
-							<div class="custom-nightlife-program__actions">
-								<a class="custom-nightlife-program__button custom-nightlife-program__button--solid"<?php
-									echo $this->link_from( $night, 'ticket_link' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in link_attributes().
-								?>><?php
-									$ticket = isset( $night['ticket_text'] ) ? trim( (string) $night['ticket_text'] ) : '';
-									echo esc_html( '' !== $ticket ? $ticket : __( 'Buy a Ticket', 'custom-elementor-widgets' ) );
-								?></a>
+							<?php
+							// Each button goes where the night's own field says; a
+							// night with nothing there shows no button for it.
+							$ticket_link = $this->ticket_link( $night, 'ticket' );
+							$vip_link    = $this->ticket_link( $night, 'vip_ticket' );
+							?>
+							<?php if ( '' !== $ticket_link || '' !== $vip_link ) : ?>
+								<div class="custom-nightlife-program__actions">
+									<?php if ( '' !== $ticket_link ) : ?>
+										<a class="custom-nightlife-program__button custom-nightlife-program__button--solid"<?php
+											echo $ticket_link; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in link_attributes().
+										?>><?php
+											$ticket = isset( $night['ticket_text'] ) ? trim( (string) $night['ticket_text'] ) : '';
+											echo esc_html( '' !== $ticket ? $ticket : __( 'Buy a Ticket', 'custom-elementor-widgets' ) );
+										?></a>
+									<?php endif; ?>
 
-								<a class="custom-nightlife-program__button custom-nightlife-program__button--outline"<?php
-									echo $this->link_from( $night, 'vip_link' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in link_attributes().
-								?>><?php
-									$vip = isset( $night['vip_text'] ) ? trim( (string) $night['vip_text'] ) : '';
-									echo esc_html( '' !== $vip ? $vip : __( 'Book a VIP Ticket', 'custom-elementor-widgets' ) );
-								?></a>
-							</div>
+									<?php if ( '' !== $vip_link ) : ?>
+										<a class="custom-nightlife-program__button custom-nightlife-program__button--outline"<?php
+											echo $vip_link; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in link_attributes().
+										?>><?php
+											$vip = isset( $night['vip_text'] ) ? trim( (string) $night['vip_text'] ) : '';
+											echo esc_html( '' !== $vip ? $vip : __( 'Book a VIP Ticket', 'custom-elementor-widgets' ) );
+										?></a>
+									<?php endif; ?>
+								</div>
+							<?php endif; ?>
 						</div>
 
 						<div class="custom-nightlife-program__stamp"><?php

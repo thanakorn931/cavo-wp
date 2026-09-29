@@ -82,6 +82,8 @@ class Event_Events extends Event_Widget {
 				'description' => esc_html__( "Point it at the event's Highlight field. An event with it on stands in the carousel across the top; the rest stand in the rows beneath.", 'custom-elementor-widgets' ),
 			)
 		);
+
+		$this->register_ticket_source_controls();
 	}
 
 	/**
@@ -120,6 +122,8 @@ class Event_Events extends Event_Widget {
 				'placeholder' => esc_html__( 'See More', 'custom-elementor-widgets' ),
 			)
 		);
+
+		$this->register_ticket_text_controls();
 
 		$this->add_control(
 			'strip',
@@ -310,7 +314,7 @@ class Event_Events extends Event_Widget {
 			<?php if ( ! $nothing ) : ?>
 				<div class="custom-event-list__band">
 					<?php if ( ! empty( $picked ) ) : ?>
-						<?php $this->render_highlights( $picked ); ?>
+						<?php $this->render_highlights( $settings, $picked ); ?>
 					<?php endif; ?>
 
 					<?php if ( ! empty( $items ) ) : ?>
@@ -319,7 +323,7 @@ class Event_Events extends Event_Widget {
 								<?php
 								// The first in the rows stands in the first screen on
 								// a phone, and loads with the page.
-								$this->render_card( $item, $index >= $step, 0 === $index );
+								$this->render_card( $item, $index >= $step, 0 === $index, $this->card_actions( $settings, $item ) );
 								?>
 							<?php endforeach; ?>
 						</div>
@@ -350,15 +354,16 @@ class Event_Events extends Event_Widget {
 	 * The items picked out, one across the band at a time. With more than one
 	 * they turn, and have two arrows (event-events.js).
 	 *
-	 * @param \WP_Post[] $posts The items picked out.
+	 * @param array      $settings The widget's settings.
+	 * @param \WP_Post[] $posts    The items picked out.
 	 */
-	private function render_highlights( $posts ) {
+	private function render_highlights( $settings, $posts ) {
 		$many = count( $posts ) > 1;
 		?>
 		<div class="custom-event-list__highlights"<?php echo $many ? ' data-highlights' : ''; ?>>
 			<div class="custom-event-list__highlight-track">
 				<?php foreach ( array_values( $posts ) as $index => $post ) : ?>
-					<?php $this->render_lead( $post, 0 === $index ); ?>
+					<?php $this->render_lead( $post, 0 === $index, $this->card_actions( $settings, $post ) ); ?>
 				<?php endforeach; ?>
 			</div>
 
@@ -373,13 +378,14 @@ class Event_Events extends Event_Widget {
 	/**
 	 * One item picked out, across the width of the band.
 	 *
-	 * @param \WP_Post $post  The item.
-	 * @param bool     $first Whether it is the one standing when the page opens.
+	 * @param \WP_Post $post    The item.
+	 * @param bool     $first   Whether it is the one standing when the page opens.
+	 * @param array    $actions The ways to a ticket over it, if any.
 	 */
-	private function render_lead( $post, $first = true ) {
+	private function render_lead( $post, $first = true, $actions = array() ) {
 		$picture = get_the_post_thumbnail_url( $post, 'full' );
 		?>
-		<div class="custom-event-list__lead"<?php echo $first ? '' : ' aria-hidden="true"'; ?>>
+		<div class="custom-event-list__lead"<?php echo $first ? '' : ' aria-hidden="true"'; ?><?php echo empty( $actions ) ? '' : ' data-card-actions'; ?>>
 			<span class="custom-event-list__lead-picture" aria-hidden="true">
 				<?php $this->media( $picture, '', ! $first ); ?>
 				<span class="custom-event-card__badge" aria-hidden="true"></span>
@@ -394,6 +400,8 @@ class Event_Events extends Event_Widget {
 
 				<p class="custom-event-card__body"><?php echo esc_html( get_the_excerpt( $post ) ); ?></p>
 			</div>
+
+			<?php $this->render_actions( $actions ); ?>
 		</div>
 		<?php
 	}

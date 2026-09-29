@@ -38,9 +38,104 @@
 	object-position: center;
 }
 
-/* The house mark, carried by the build rather than uploaded. */
+/* The ways to a ticket, over the picture of an event still to come: the dark
+   comes over the picture, #000000 at 60%, and the two buttons stand in its
+   middle, one over the other, 12 apart. A pointer over the picture brings
+   them; on a screen that is touched, a touch on the picture does, and a touch
+   anywhere else takes them away (event-widget.js). Each is a clear press with
+   a light edge, 12 by 24 inside and its words at 14. */
+.custom-event-card__actions {
+	position: absolute;
+	z-index: 2;
+	inset: 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 12px;
+	padding: 16px;
+	background-color: rgba( 0, 0, 0, 0.6 );
+	box-sizing: border-box;
+	opacity: 0;
+	visibility: hidden;
+	transition:
+		opacity 300ms ease-in-out,
+		visibility 300ms ease-in-out;
+}
+
+[data-card-actions].is-open .custom-event-card__actions,
+[data-card-actions]:focus-within .custom-event-card__actions {
+	opacity: 1;
+	visibility: visible;
+}
+
+@media ( hover: hover ) {
+	[data-card-actions]:hover .custom-event-card__actions {
+		opacity: 1;
+		visibility: visible;
+	}
+}
+
+.custom-event-card__action,
+.custom-event-card__action:hover,
+.custom-event-card__action:focus,
+.custom-event-card__action:active {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 12px 24px;
+	border: 1px solid #faf6ea;
+	border-radius: 24px;
+	background-color: transparent;
+	color: #faf6ea;
+	font-family: Roboto, sans-serif;
+	font-size: 14px;
+	font-weight: 400;
+	line-height: 1.2;
+	text-align: center;
+	text-decoration: none;
+	white-space: nowrap;
+	transition: background-color 300ms ease-in-out;
+}
+
+.custom-event-card__action:focus-visible {
+	outline: 2px solid #faf6ea;
+	outline-offset: 2px;
+}
+
+/* The design's hover for a clear press with a light edge is a light veil of
+   its own. A touch screen keeps a hover after the tap, so only a pointer that
+   can hover is given one. */
+@media ( hover: hover ) {
+	.custom-event-card__action:hover {
+		background-color: rgba( 250, 246, 234, 0.4 );
+	}
+}
+
+@media ( prefers-reduced-motion: reduce ) {
+	.custom-event-card__actions,
+	.custom-event-card__action {
+		transition: none;
+	}
+}
+
+/* Tablet and mobile — 12 by 32 inside and the words at 12, as every button
+   is on these tiers. */
+@media ( max-width: 1024px ) {
+	.custom-event-card__action,
+	.custom-event-card__action:hover,
+	.custom-event-card__action:focus,
+	.custom-event-card__action:active {
+		padding: 12px 32px;
+		font-size: 12px;
+	}
+}
+
+/* The house mark, carried by the build rather than uploaded. It stays over
+   the dark the ways to a ticket bring. */
 .custom-event-card__badge {
 	position: absolute;
+	z-index: 3;
 	top: 16px;
 	right: 16px;
 	width: 53px;

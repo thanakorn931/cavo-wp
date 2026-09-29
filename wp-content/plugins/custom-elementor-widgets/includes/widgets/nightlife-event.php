@@ -105,6 +105,14 @@ class Nightlife_Event extends Event_Widget {
 	}
 
 	/**
+	 * Source → the item's own facts, and its two ways to a ticket.
+	 */
+	protected function register_more_source_controls() {
+		parent::register_more_source_controls();
+		$this->register_ticket_source_controls();
+	}
+
+	/**
 	 * The Content tab and the Style tab.
 	 */
 	protected function register_controls() {
@@ -156,6 +164,8 @@ class Nightlife_Event extends Event_Widget {
 		);
 
 		$this->add_link_controls( $this, 'button_link', esc_html__( 'Button link', 'custom-elementor-widgets' ) );
+
+		$this->register_ticket_text_controls();
 
 		$this->end_controls_section();
 
@@ -436,7 +446,7 @@ class Nightlife_Event extends Event_Widget {
 			<?php if ( ! empty( $items ) ) : ?>
 				<div class="custom-nightlife-event__grid">
 					<?php foreach ( $items as $item ) : ?>
-						<?php $this->render_card( $item ); ?>
+						<?php $this->render_card( $item, false, false, $this->card_actions( $settings, $item ) ); ?>
 					<?php endforeach; ?>
 				</div>
 			<?php endif; ?>

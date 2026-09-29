@@ -253,19 +253,104 @@ abstract class Event_Widget extends Base_Widget {
 	}
 
 	/**
+	 * Content → the words on the two ways to a ticket, the section's own and
+	 * the same on every card; where each goes is the event's (Source).
+	 */
+	protected function register_ticket_text_controls() {
+		$this->add_control(
+			'ticket_text',
+			array(
+				'label'       => esc_html__( 'Ticket button text', 'custom-elementor-widgets' ),
+				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
+				'placeholder' => esc_html__( 'Buy a Ticket', 'custom-elementor-widgets' ),
+				'separator'   => 'before',
+			)
+		);
+
+		$this->add_control(
+			'vip_ticket_text',
+			array(
+				'label'       => esc_html__( 'Vip ticket button text', 'custom-elementor-widgets' ),
+				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
+				'placeholder' => esc_html__( 'Reserve a VIP Table', 'custom-elementor-widgets' ),
+			)
+		);
+	}
+
+	/**
+	 * The ways to a ticket a card offers: each the section's words and the
+	 * event's own address, and only where the event has one.
+	 *
+	 * @param array    $settings The widget's settings.
+	 * @param \WP_Post $post     The item.
+	 * @return array Each with text and the link's attributes.
+	 */
+	protected function card_actions( $settings, $post ) {
+		$item    = $this->item_settings( $post );
+		$actions = array();
+
+		foreach ( array(
+			'ticket'     => esc_html__( 'Buy a Ticket', 'custom-elementor-widgets' ),
+			'vip_ticket' => esc_html__( 'Reserve a VIP Table', 'custom-elementor-widgets' ),
+		) as $key => $design ) {
+			$link = $this->ticket_link( $item, $key );
+
+			if ( '' === $link ) {
+				continue;
+			}
+
+			$text = isset( $settings[ $key . '_text' ] ) ? trim( (string) $settings[ $key . '_text' ] ) : '';
+
+			$actions[] = array(
+				'text' => '' !== $text ? $text : $design,
+				'link' => $link,
+			);
+		}
+
+		return $actions;
+	}
+
+	/**
+	 * The ways to a ticket, over the picture: the dark comes over it and the
+	 * two stand in its middle, when a pointer is over the picture, or when a
+	 * finger has touched it (event-widget.js).
+	 *
+	 * @param array $actions What card_actions() gave.
+	 */
+	protected function render_actions( $actions ) {
+		if ( empty( $actions ) ) {
+			return;
+		}
+		?>
+		<span class="custom-event-card__actions">
+			<?php foreach ( $actions as $action ) : ?>
+				<a class="custom-event-card__action"<?php
+					echo $action['link']; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in link_attributes().
+				?>><?php echo esc_html( $action['text'] ); ?></a>
+			<?php endforeach; ?>
+		</span>
+		<?php
+	}
+
+	/**
 	 * One card.
 	 *
-	 * @param \WP_Post $post   The item.
-	 * @param bool     $hidden Whether it waits for the button before it shows.
+	 * @param \WP_Post $post    The item.
+	 * @param bool     $hidden  Whether it waits for the button before it shows.
+	 * @param bool     $now     Whether its picture loads with the page.
+	 * @param array    $actions The ways to a ticket over its picture, if any.
 	 */
-	protected function render_card( $post, $hidden = false, $now = false ) {
+	protected function render_card( $post, $hidden = false, $now = false, $actions = array() ) {
 		$picture = get_the_post_thumbnail_url( $post, 'large' );
 		$title   = get_the_title( $post );
 		?>
 		<article class="custom-event-card<?php echo $hidden ? ' is-waiting' : ''; ?>" data-feed-card<?php echo $hidden ? ' hidden' : ''; ?>>
-			<span class="custom-event-card__picture">
+			<span class="custom-event-card__picture"<?php echo empty( $actions ) ? '' : ' data-card-actions'; ?>>
 				<?php $this->media( $picture, $title, ! $now ); ?>
 				<span class="custom-event-card__badge" aria-hidden="true"></span>
+				<?php $this->render_actions( $actions ); ?>
 			</span>
 
 			<div class="custom-event-card__words">

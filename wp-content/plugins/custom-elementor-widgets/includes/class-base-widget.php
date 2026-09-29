@@ -759,6 +759,71 @@ abstract class Base_Widget extends \Elementor\Widget_Base {
 	}
 
 	/**
+	 * Source → an item's two ways to a ticket, each an address and its two
+	 * toggles, all of them the item's own: pointed at the event's fields, every
+	 * card links where its own event says. A toggle is on where its field says
+	 * so — on, yes or 1.
+	 */
+	protected function register_ticket_source_controls() {
+		foreach ( array(
+			'ticket'     => esc_html__( 'Ticket url', 'custom-elementor-widgets' ),
+			'vip_ticket' => esc_html__( 'Vip ticket url', 'custom-elementor-widgets' ),
+		) as $key => $label ) {
+			$this->add_control(
+				$key . '_url',
+				array(
+					'label'       => $label,
+					'type'        => Controls_Manager::TEXT,
+					'dynamic'     => array( 'active' => true ),
+					'separator'   => 'before',
+					'description' => esc_html__( "Point it at the event's own field. An event with nothing there shows no button for it.", 'custom-elementor-widgets' ),
+				)
+			);
+
+			$this->add_control(
+				$key . '_url_blank',
+				array(
+					/* translators: %s: which of the two links. */
+					'label'   => sprintf( esc_html__( '%s: open in a new tab', 'custom-elementor-widgets' ), $label ),
+					'type'    => Controls_Manager::TEXT,
+					'dynamic' => array( 'active' => true ),
+				)
+			);
+
+			$this->add_control(
+				$key . '_url_nofollow',
+				array(
+					/* translators: %s: which of the two links. */
+					'label'   => sprintf( esc_html__( '%s: nofollow', 'custom-elementor-widgets' ), $label ),
+					'type'    => Controls_Manager::TEXT,
+					'dynamic' => array( 'active' => true ),
+				)
+			);
+		}
+	}
+
+	/**
+	 * One of an item's ways to a ticket, read from the item's own settings.
+	 *
+	 * @param array  $item The item's settings (item_settings()).
+	 * @param string $key  Either ticket or vip_ticket.
+	 * @return string The attributes for that link, or nothing without an address.
+	 */
+	protected function ticket_link( $item, $key ) {
+		$on = function ( $name ) use ( $item ) {
+			$said = isset( $item[ $name ] ) ? strtolower( trim( (string) $item[ $name ] ) ) : '';
+
+			return in_array( $said, array( '1', 'yes', 'true', 'on' ), true ) ? 'yes' : '';
+		};
+
+		return $this->link_attributes(
+			isset( $item[ $key . '_url' ] ) ? $item[ $key . '_url' ] : '',
+			$on( $key . '_url_blank' ),
+			$on( $key . '_url_nofollow' )
+		);
+	}
+
+	/**
 	 * One address and its two toggles, read together.
 	 *
 	 * @param array  $settings The widget's settings, or one repeater row.
