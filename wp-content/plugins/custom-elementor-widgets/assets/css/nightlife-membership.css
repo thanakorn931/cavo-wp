@@ -226,10 +226,14 @@
 }
 
 @media ( max-width: 767px ) {
+	/* The pictures change places here as they open, and a browser that keeps
+	   what is on screen where it was would follow the one it had fixed on and
+	   carry the page up or down with it. Nothing in the row is one to follow. */
 	.custom-nightlife-membership__panels {
 		flex-wrap: wrap;
 		gap: 0;
 		aspect-ratio: auto;
+		overflow-anchor: none;
 	}
 
 	/* The open picture takes a row of its own, and the two waiting divide the
@@ -250,8 +254,12 @@
 		flex: 0 0 100%;
 	}
 
+	/* Each waiting picture asks for exactly half the row, so the two are the
+	   same width at every moment of the turn and the row keeps its depth: asked
+	   for less, the one closing grows into the room left over, and the row
+	   deepens while it does. */
 	.custom-nightlife-membership__panel:not( .is-open ) {
-		flex: 1 1 40%;
+		flex: 1 1 50%;
 	}
 
 	.custom-nightlife-membership__panel-picture {

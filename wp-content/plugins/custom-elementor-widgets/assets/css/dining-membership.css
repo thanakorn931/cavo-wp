@@ -1,8 +1,8 @@
 /**
  * Dining, membership — one section of the design.
  *
- * Three panels dividing the row four to one to one. The wide one carries the
- * button; the two beside it are darkened and lead somewhere of their own.
+ * Three panels dividing the row four to one to one. Each carries the same
+ * button; the two beside the wide one are darkened.
  *
  * Nothing inside sets a height — the panels are pictures — so the band keeps
  * the shape the file gives it as a ratio rather than as a figure.
@@ -165,9 +165,13 @@
    nothing above it once the row wraps, and the section after it started
    before it had ended. */
 @media ( max-width: 767px ) {
+	/* The pictures change places here as they open, and a browser that keeps
+	   what is on screen where it was would follow the one it had fixed on and
+	   carry the page up or down with it. Nothing in the row is one to follow. */
 	.custom-dining-membership {
 		flex-wrap: wrap;
 		aspect-ratio: auto;
+		overflow-anchor: none;
 	}
 
 	/* The open picture takes a row of its own; each of the two waiting asks for

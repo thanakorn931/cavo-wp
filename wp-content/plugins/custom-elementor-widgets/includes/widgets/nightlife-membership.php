@@ -176,30 +176,6 @@ class Nightlife_Membership extends Base_Widget {
 					'separator' => 'before',
 				)
 			);
-
-			$this->add_control(
-				'side_' . $which . '_text',
-				array(
-					'label'       => sprintf(
-						/* translators: %d: which of the two narrow panels. */
-						esc_html__( 'Narrow panel %d button text', 'custom-elementor-widgets' ),
-						$index + 1
-					),
-					'type'        => Controls_Manager::TEXT,
-					'dynamic'     => array( 'active' => true ),
-					'placeholder' => $design['button_text'],
-				)
-			);
-
-			$this->add_link_controls(
-				$this,
-				'side_' . $which . '_link',
-				sprintf(
-					/* translators: %d: which of the two narrow panels. */
-					esc_html__( 'Narrow panel %d button link', 'custom-elementor-widgets' ),
-					$index + 1
-				)
-			);
 		}
 
 		$this->end_controls_section();
@@ -367,30 +343,23 @@ class Nightlife_Membership extends Base_Widget {
 	}
 
 	/**
-	 * The three pictures the row holds, each with the words that stand on it
-	 * and where they lead. A picture whose own words were left empty says what
-	 * the first one says.
+	 * The three pictures the row holds, and the one button every picture
+	 * carries: the same words, leading to the same place.
 	 *
 	 * @param array $settings The widget's settings.
 	 * @return array
 	 */
 	private function panels( $settings ) {
-		$first  = $this->text( $settings, 'button_text' );
-		$panels = array(
-			array( 'picture' => 'panel_picture', 'text' => 'button_text', 'link' => 'button_link' ),
-			array( 'picture' => 'side_one_picture', 'text' => 'side_one_text', 'link' => 'side_one_link' ),
-			array( 'picture' => 'side_two_picture', 'text' => 'side_two_text', 'link' => 'side_two_link' ),
-		);
+		$words = $this->text( $settings, 'button_text' );
+		$link  = $this->link_from( $settings, 'button_link' );
 
 		$standing = array();
 
-		foreach ( $panels as $panel ) {
-			$words = isset( $settings[ $panel['text'] ] ) ? trim( (string) $settings[ $panel['text'] ] ) : '';
-
+		foreach ( array( 'panel_picture', 'side_one_picture', 'side_two_picture' ) as $picture ) {
 			$standing[] = array(
-				'picture' => isset( $settings[ $panel['picture'] ]['url'] ) ? $settings[ $panel['picture'] ]['url'] : '',
-				'text'    => '' !== $words ? $words : $first,
-				'link'    => $this->link_from( $settings, $panel['link'] ),
+				'picture' => isset( $settings[ $picture ]['url'] ) ? $settings[ $picture ]['url'] : '',
+				'text'    => $words,
+				'link'    => $link,
 			);
 		}
 
