@@ -171,6 +171,8 @@ class Nightlife_Carousel extends Base_Widget {
 				echo esc_html( $heading );
 			?></<?php echo esc_attr( $tag ); ?>>
 
+			<?php // The row scrolls, so the arrows stand beside it in a frame of their own rather than in it. ?>
+			<div class="custom-nightlife-carousel__frame">
 			<div class="custom-nightlife-carousel__stage">
 				<div class="custom-nightlife-carousel__track" data-many="<?php echo esc_attr( count( $slides ) ); ?>">
 					<?php
@@ -192,11 +194,36 @@ class Nightlife_Carousel extends Base_Widget {
 			</div>
 
 			<?php
+			// The phone's alone: the wide tier and the tablet are pulled by hand.
+			if ( count( $slides ) > 1 ) {
+				$this->render_arrow( 'prev', __( 'Previous', 'custom-elementor-widgets' ) );
+				$this->render_arrow( 'next', __( 'Next', 'custom-elementor-widgets' ) );
+			}
+			?>
+			</div>
+
+			<?php
 			if ( empty( $slides ) ) {
 				$this->editor_hint( __( 'This carousel is waiting for its pictures, on the Content tab.', 'custom-elementor-widgets' ) );
 			}
 			?>
 		</div>
+		<?php
+	}
+
+	/**
+	 * One of the two arrows.
+	 *
+	 * @param string $side  Which arrow this is.
+	 * @param string $label What a reader who cannot see it is told.
+	 */
+	private function render_arrow( $side, $label ) {
+		?>
+		<button
+			type="button"
+			class="custom-nightlife-carousel__arrow custom-nightlife-carousel__arrow--<?php echo esc_attr( $side ); ?>"
+			aria-label="<?php echo esc_attr( $label ); ?>"
+		><?php $this->render_arrow_mark( $side ); ?></button>
 		<?php
 	}
 }

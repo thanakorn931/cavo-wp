@@ -109,11 +109,23 @@
 	pointer-events: none;
 }
 
+/* The row and the two arrows the phone is given. The frame is the row's own
+   width and depth, so the arrows can stand against the slide. */
+.custom-nightlife-carousel__frame {
+	position: relative;
+	width: 100%;
+}
+
+.custom-nightlife-carousel__arrow {
+	display: none;
+}
+
 /* Tablet and mobile — the file draws one of them (11174:10586): the name in
    a band 38 deep above and below it, the slides under it and 46 left under
-   them. The file draws two arrows on the slide; the wide tier has none and,
-   as asked, neither does this one. The run itself is set apart for each:
-   the tablet's below, and the phone's after it. */
+   them. The file draws two arrows on the slide; the wide tier has none, and
+   as asked the tablet has none either: the phone alone is given them. The
+   run itself is set apart for each: the tablet's below, and the phone's
+   after it. */
 @media ( max-width: 1024px ) {
 	.custom-nightlife-carousel {
 		gap: 38px;
@@ -171,5 +183,70 @@
 		height: auto;
 		aspect-ratio: 3 / 2;
 		border-radius: 6px;
+	}
+
+	/* The arrows, as asked: 24, 12 inside the slide's edges and in the middle
+	   of its depth, as the other carousels give the phone. */
+	.custom-nightlife-carousel__arrow {
+		position: absolute;
+		top: calc( 50% - 12px );
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 24px;
+		height: 24px;
+		padding: 0;
+		border: 0;
+		border-radius: 50%;
+		background-color: #ebe4ca;
+		cursor: pointer;
+		-webkit-tap-highlight-color: transparent;
+		transition: background-color 300ms ease-in-out;
+	}
+
+	/* The theme paints a bare button on every state it has; a class alone
+	   does not outrank that, so each state says its own ground here. */
+	.custom-nightlife-carousel__arrow:hover,
+	.custom-nightlife-carousel__arrow:focus,
+	.custom-nightlife-carousel__arrow:focus-visible,
+	.custom-nightlife-carousel__arrow:active {
+		background-color: #ebe4ca;
+		border-color: transparent;
+		box-shadow: none;
+	}
+
+	.custom-nightlife-carousel__arrow:focus-visible {
+		outline: 2px solid currentColor;
+		outline-offset: 2px;
+	}
+
+	.custom-nightlife-carousel__arrow--prev {
+		left: 28px;
+	}
+
+	.custom-nightlife-carousel__arrow--next {
+		left: calc( 100% - 52px );
+	}
+
+	.custom-nightlife-carousel__arrow svg {
+		display: block;
+		width: 10px;
+		height: 9px;
+		fill: #3d3426;
+	}
+}
+
+/* The design's hover for a light press is a ground of its own, not a fade.
+   A touch screen keeps a hover after the tap, so only a pointer that can
+   hover is given one. */
+@media ( max-width: 767px ) and ( hover: hover ) {
+	.custom-nightlife-carousel__arrow:hover {
+		background-color: #e1d8b1;
+	}
+}
+
+@media ( prefers-reduced-motion: reduce ) {
+	.custom-nightlife-carousel__arrow {
+		transition: none;
 	}
 }

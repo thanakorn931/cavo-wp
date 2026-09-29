@@ -313,6 +313,20 @@
 			stage.scrollLeft = startAt - ( event.clientX - startX );
 		} );
 
+		// The phone's arrows take the row one slide either way, from the slide
+		// it stands on, as a pull would.
+		root.addEventListener( 'click', function ( event ) {
+			var arrow = event.target.closest ? event.target.closest( '.custom-nightlife-carousel__arrow' ) : null;
+
+			if ( ! arrow || pitch <= 0 ) {
+				return;
+			}
+
+			var on = Math.round( stage.scrollLeft / pitch );
+
+			restOn( on + ( arrow.classList.contains( 'custom-nightlife-carousel__arrow--prev' ) ? -1 : 1 ) );
+		} );
+
 		// Let go, the row goes one slide the way it was pulled, or settles back
 		// where it was if it was hardly pulled at all.
 		[ 'pointerup', 'pointercancel', 'pointerleave' ].forEach( function ( name ) {
