@@ -620,6 +620,7 @@ html.custom-header-open body {
 	}
 
 	.custom-header.is-open .custom-header__languages {
+		position: relative;
 		display: flex;
 		gap: 4px;
 		width: 100%;
@@ -639,7 +640,24 @@ html.custom-header-open body {
 		animation-name: custom-header-out;
 	}
 
+	/* The ground under the language being read is one piece, standing under
+	   whichever it is and sliding across to the one pressed. */
+	.custom-header__languages::before {
+		content: "";
+		position: absolute;
+		top: 4px;
+		bottom: 4px;
+		left: 4px;
+		width: calc( ( 100% - 8px - ( var( --custom-languages-count, 2 ) - 1 ) * 4px ) / var( --custom-languages-count, 2 ) );
+		border-radius: 40px;
+		background-color: #b9ad79;
+		transform: translateX( calc( var( --custom-languages-at, 0 ) * ( 100% + 4px ) ) );
+		transition: transform 300ms ease-in-out;
+		pointer-events: none;
+	}
+
 	.custom-header__languages li {
+		position: relative;
 		flex: 1 1 0;
 		min-width: 0;
 		margin: 0;
@@ -674,7 +692,6 @@ html.custom-header-open body {
 	.custom-header__languages .is-current a:hover,
 	.custom-header__languages .is-current a:focus,
 	.custom-header__languages .is-current a:active {
-		background-color: #b9ad79;
 		color: #faf6ea;
 	}
 
@@ -853,5 +870,10 @@ html.custom-header-open body {
 	.custom-header.is-open .custom-header__languages,
 	.custom-header.is-open .custom-header__actions {
 		animation: none;
+	}
+
+	.custom-header__languages::before,
+	.custom-header__languages a {
+		transition: none;
 	}
 }

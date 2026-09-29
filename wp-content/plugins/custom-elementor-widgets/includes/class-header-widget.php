@@ -872,7 +872,16 @@ abstract class Header_Widget extends Base_Widget {
 				<?php endforeach; ?>
 			</ul>
 		</div>
-		<ul class="custom-header__languages" aria-label="<?php esc_attr_e( 'Language', 'custom-elementor-widgets' ); ?>">
+		<?php
+		$at = 0;
+
+		foreach ( array_values( $languages ) as $index => $language ) {
+			if ( $language['current'] ) {
+				$at = $index;
+			}
+		}
+		?>
+		<ul class="custom-header__languages" aria-label="<?php esc_attr_e( 'Language', 'custom-elementor-widgets' ); ?>" style="<?php echo esc_attr( '--custom-languages-at: ' . $at . '; --custom-languages-count: ' . count( $languages ) . ';' ); ?>">
 			<?php foreach ( $languages as $language ) : ?>
 				<li<?php echo $language['current'] ? ' class="is-current"' : ''; ?>>
 					<a href="<?php echo esc_url( $language['url'] ); ?>" lang="<?php echo esc_attr( $language['slug'] ); ?>" hreflang="<?php echo esc_attr( $language['slug'] ); ?>"<?php echo $language['current'] ? ' aria-current="true"' : ''; ?>><?php echo esc_html( strtoupper( $language['slug'] ) ); ?></a>

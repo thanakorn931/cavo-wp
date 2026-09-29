@@ -183,6 +183,49 @@
 		};
 	}
 
+	// The open menu's own switch on the narrow tiers. Pressed on the language
+	// not being read, its ground slides across to it before the page goes
+	// there, so the change is seen as it is asked for. A press that opens the
+	// page elsewhere — a new tab, a new window — is left to the browser, and a
+	// reader who has asked for less movement goes there at once.
+	function languages( root ) {
+		var row = root.querySelector( '.custom-header__languages' );
+
+		if ( ! row ) {
+			return;
+		}
+
+		var SLIDE = 300;
+		var items = row.querySelectorAll( 'li' );
+
+		row.addEventListener( 'click', function ( event ) {
+			var link = event.target.closest ? event.target.closest( 'a' ) : null;
+			var item = link ? link.closest( 'li' ) : null;
+
+			if ( ! item || item.classList.contains( 'is-current' ) || event.button || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey ) {
+				return;
+			}
+
+			var at = Array.prototype.indexOf.call( items, item );
+
+			for ( var i = 0; i < items.length; i++ ) {
+				items[ i ].classList.toggle( 'is-current', i === at );
+			}
+
+			row.style.setProperty( '--custom-languages-at', at );
+
+			if ( window.matchMedia && window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches ) {
+				return;
+			}
+
+			event.preventDefault();
+
+			window.setTimeout( function () {
+				window.location.href = link.href;
+			}, SLIDE );
+		} );
+	}
+
 	// The menu is opened and shut by its own mark, shut by the Escape key, by
 	// choosing a page, and by the window growing past the tiers it belongs to.
 	function menu( root, shutLanguage ) {
@@ -280,6 +323,7 @@
 
 		measure( root );
 		menu( root, language( root ) );
+		languages( root );
 		pull( root );
 
 		// Measured once and never again, the band keeps whatever the bar came to
