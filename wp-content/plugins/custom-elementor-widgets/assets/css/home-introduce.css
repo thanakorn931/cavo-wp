@@ -176,17 +176,48 @@
 	}
 }
 
-/* Tablet — not drawn. The picture is given more of the room it has here than
-   the narrow tier allows, without reaching the height the wide one draws. */
+/* Tablet — not drawn. As asked, it takes the wide tier's shape: the words
+   down the left with the way in at the foot of their column, and the picture
+   beside them in its cut, each half at the share the file gives it. The
+   band's padding and the size of the words stay the narrow tier's. The column
+   stands as deep as the picture, and the way in keeps to its foot there, or
+   follows the words where they need more room. */
 @media ( min-width: 768px ) and ( max-width: 1024px ) {
-	.custom-home-introduce__picture {
-		height: 500px;
+	.custom-home-introduce {
+		flex-direction: row;
+		align-items: stretch;
+		gap: 1.711%;
 	}
 
+	.custom-home-introduce__column {
+		flex: 0 1 49.107%;
+		max-width: 49.107%;
+		width: auto;
+		align-items: flex-start;
+	}
+
+	.custom-home-introduce__body {
+		margin-bottom: 24px;
+	}
+
+	.custom-home-introduce__button {
+		margin-top: auto;
+	}
+
+	/* The wide tier's mark, at the share of the column it takes there. */
 	.custom-home-introduce__mark {
-		left: 60px;
-		top: 420px;
-		width: 300px;
-		height: 286px;
+		left: -3%;
+		top: 36%;
+		width: 59%;
+		height: auto;
+		aspect-ratio: 395 / 376;
+	}
+
+	.custom-home-introduce__picture {
+		flex: 0 1 49.182%;
+		align-self: flex-start;
+		width: auto;
+		height: auto;
+		margin-top: -16px;
 	}
 }
