@@ -157,7 +157,12 @@ body.admin-bar .custom-header__bar {
 	list-style: none;
 }
 
-/* The language switch (6916:1720, 11282:6582): a pill 24 deep with a 1
+/* The language switch's words are Roboto, and a language written in another
+   script is drawn in Noto Sans Thai, as the site's Global Fonts set for every
+   other word on the page: said here, since the switch is not set through
+   Elementor's typography and the theme's own sans would stand in.
+
+   The language switch (6916:1720, 11282:6582): a pill 24 deep with a 1
    edge, 7 in at either end, the globe, the language's code at 11 Roboto
    Medium and a chevron 5 apart; and beneath it, 4 down, the list: 126
    across, 12 inside, a 1 edge and corners of 8, each language on a row 10
@@ -187,7 +192,7 @@ body.admin-bar .custom-header__bar {
 	box-shadow: none;
 	-webkit-tap-highlight-color: transparent;
 	color: inherit;
-	font-family: Roboto, sans-serif;
+	font-family: Roboto, "Noto Sans Thai", sans-serif;
 	font-size: 11px;
 	font-weight: 500;
 	line-height: 1;
@@ -255,7 +260,7 @@ body.admin-bar .custom-header__bar {
 	display: block;
 	padding: 10px;
 	border-radius: 4px;
-	font-family: Roboto, sans-serif;
+	font-family: Roboto, "Noto Sans Thai", sans-serif;
 	font-size: 16px;
 	font-weight: 500;
 	line-height: normal;
@@ -675,7 +680,7 @@ html.custom-header-open body {
 		border-radius: 40px;
 		background-color: transparent;
 		color: inherit;
-		font-family: Roboto, sans-serif;
+		font-family: Roboto, "Noto Sans Thai", sans-serif;
 		font-size: 11px;
 		font-weight: 500;
 		line-height: 1;

@@ -830,7 +830,8 @@ abstract class Header_Widget extends Base_Widget {
 	/**
 	 * The switch between languages: the current one on a pill, the rest in a
 	 * list that opens from it (6916:1720, 11282:6582, 11282:5363); and for the
-	 * open menu on the narrow tiers, every language side by side by its code.
+	 * open menu on the narrow tiers, every language side by side, each named as
+	 * the pill names it: EN, and ไทย in its own script.
 	 *
 	 * @param array $settings The widget's settings.
 	 */
@@ -884,7 +885,7 @@ abstract class Header_Widget extends Base_Widget {
 		<ul class="custom-header__languages" aria-label="<?php esc_attr_e( 'Language', 'custom-elementor-widgets' ); ?>" style="<?php echo esc_attr( '--custom-languages-at: ' . $at . '; --custom-languages-count: ' . count( $languages ) . ';' ); ?>">
 			<?php foreach ( $languages as $language ) : ?>
 				<li<?php echo $language['current'] ? ' class="is-current"' : ''; ?>>
-					<a href="<?php echo esc_url( $language['url'] ); ?>" lang="<?php echo esc_attr( $language['slug'] ); ?>" hreflang="<?php echo esc_attr( $language['slug'] ); ?>"<?php echo $language['current'] ? ' aria-current="true"' : ''; ?>><?php echo esc_html( strtoupper( $language['slug'] ) ); ?></a>
+					<a href="<?php echo esc_url( $language['url'] ); ?>" lang="<?php echo esc_attr( $language['slug'] ); ?>" hreflang="<?php echo esc_attr( $language['slug'] ); ?>"<?php echo $language['current'] ? ' aria-current="true"' : ''; ?>><?php echo esc_html( $language['words'] ); ?></a>
 				</li>
 			<?php endforeach; ?>
 		</ul>
