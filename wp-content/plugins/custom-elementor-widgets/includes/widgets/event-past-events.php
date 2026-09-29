@@ -365,6 +365,11 @@ class Event_Past_Events extends Event_Widget {
 		$settings = $this->get_settings_for_display();
 
 		$items = $this->items( $settings );
+
+		if ( $this->hidden( $items ) ) {
+			return;
+		}
+
 		$shows = $this->per_tier( $settings, 'shown', array( 'desktop' => 3, 'tablet' => 2, 'mobile' => 2 ) );
 		$steps = $this->per_tier( $settings, 'step', array( 'desktop' => 6, 'tablet' => 4, 'mobile' => 4 ), 0 );
 		$shown = $shows['desktop'];

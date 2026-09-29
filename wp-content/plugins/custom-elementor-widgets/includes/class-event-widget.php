@@ -96,10 +96,14 @@ abstract class Event_Widget extends Base_Widget {
 	 * Everything the source holds is fetched; how much of it is on screen at
 	 * once is the section's own.
 	 *
-	 * @param array $settings The widget's settings.
+	 * @param array       $settings The widget's settings.
+	 * @param string|null $shows    Which side of today, where it is not the
+	 *                              section's own (shows()).
+	 * @param int|null    $way      1 for the earliest first, -1 for the latest,
+	 *                              where it is not the Source tab's order.
 	 * @return array
 	 */
-	protected function items( $settings ) {
+	protected function items( $settings, $shows = null, $way = null ) {
 		$posts = get_posts(
 			$this->source_query(
 				$settings,
@@ -115,10 +119,9 @@ abstract class Event_Widget extends Base_Widget {
 		// and gone, and is still to come until then. A day itself counts as
 		// still to come, since it has not finished while it is being read.
 		$today = (int) strtotime( 'today', current_time( 'timestamp' ) ); // phpcs:ignore WordPress.DateTime.CurrentTimeTimestamp.Requested -- the client's day, not UTC's.
-		$shows = $this->shows();
+		$shows = null === $shows ? $this->shows() : $shows;
 
 		$standing = array();
-		$spare    = array();
 
 		foreach ( $posts as $place => $post ) {
 			$when = $this->item_starts( $post );
@@ -130,49 +133,39 @@ abstract class Event_Widget extends Base_Widget {
 			);
 
 			if ( 'coming' === $shows && $when < $today ) {
-				$spare[] = $row;
 				continue;
 			}
 
 			if ( 'past' === $shows && $when >= $today ) {
-				$spare[] = $row;
 				continue;
 			}
 
 			$standing[] = $row;
 		}
 
-		$way = isset( $settings['order'] ) && 'ASC' === $settings['order'] ? 1 : -1;
+		if ( null === $way ) {
+			$way = isset( $settings['order'] ) && 'ASC' === $settings['order'] ? 1 : -1;
+		}
 
 		usort( $standing, $this->by_day( $way ) );
 
-		// A section that faces one way can find nothing on that side, and a
-		// section with nothing in it is not a shorter design but a broken one.
-		// Where its own side falls short of what the design draws, the nearest
-		// days from the other side stand in behind what it has.
-		$short = (int) $this->least() - count( $standing );
-
-		if ( $short > 0 && ! empty( $spare ) ) {
-			// Nearest to today first, whichever side those days are on.
-			usort( $spare, $this->by_day( 'coming' === $shows ? -1 : 1 ) );
-
-			$standing = array_merge( $standing, array_slice( $spare, 0, $short ) );
-		}
-
+		// A section shows what its own side holds and nothing from the other:
+		// a side with nothing on it leaves the section with nothing to show,
+		// and the section is then not drawn at all (hidden()).
 		return wp_list_pluck( $standing, 'post' );
 	}
 
 	/**
-	 * The fewest items the section stands with.
+	 * Whether a section with nothing to show is left out of the page.
 	 *
-	 * Nought is no floor at all: the section shows what its own side holds and
-	 * nothing more. A section the design breaks without says how many it must
-	 * have, and days from the other side make the number up.
+	 * It is, on the page a reader sees. In the editor it stands as a hint
+	 * instead, so it can still be found and chosen.
 	 *
-	 * @return int
+	 * @param array $items What the section would show.
+	 * @return bool
 	 */
-	protected function least() {
-		return 0;
+	protected function hidden( $items ) {
+		return empty( $items ) && ! $this->is_editing();
 	}
 
 	/**

@@ -1,9 +1,9 @@
 /**
  * Event, the list of what is coming — one section of the design.
  *
- * The newest item across the width, then the rest three to a row, then the
- * button that brings more on screen. The strip of picture beneath closes the
- * band; it is the design's own and the build carries it.
+ * The items picked out across the width, one at a time, then the rest three to
+ * a row, then the button that brings more on screen. The strip of picture
+ * beneath closes the band; it is the design's own and the build carries it.
  */
 
 .custom-event-list__band {
@@ -30,9 +30,27 @@
 	);
 }
 
-/* The newest item, across the width, with its words standing on the picture. */
+/* The items picked out, across the width, one at a time: each stands where
+   the design draws the one, and the rest wait beside it out of view. With
+   more than one they slide from one to the next (event-events.js). */
+.custom-event-list__highlights {
+	position: relative;
+	width: 100%;
+	border-radius: 16px;
+	overflow: hidden;
+}
+
+.custom-event-list__highlight-track {
+	display: flex;
+	width: 100%;
+}
+
+/* One item picked out, with its words standing on the picture. */
 .custom-event-list__lead {
 	position: relative;
+	flex: 0 0 100%;
+	transform: translateX( calc( var( --custom-highlights-at, 0 ) * -100% + var( --custom-highlights-pull, 0px ) ) );
+	transition: transform 500ms ease-in-out;
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
@@ -71,6 +89,70 @@
 .custom-event-list__lead .custom-event-card__words {
 	position: relative;
 	width: 367px;
+}
+
+/* Held by the hand, the row follows it at once. */
+.custom-event-list__highlights.is-holding .custom-event-list__lead {
+	transition: none;
+}
+
+/* The two arrows, with more than one item picked out: light discs 48 across,
+   24 in from the row's edges and in the middle of its depth. */
+.custom-event-list__arrow,
+.custom-event-list__arrow:hover,
+.custom-event-list__arrow:focus,
+.custom-event-list__arrow:focus-visible,
+.custom-event-list__arrow:active {
+	position: absolute;
+	z-index: 2;
+	top: calc( 50% - 24px );
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 48px;
+	height: 48px;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
+	background-color: #ebe4ca;
+	box-shadow: none;
+	cursor: pointer;
+	-webkit-tap-highlight-color: transparent;
+	transition: background-color 300ms ease-in-out;
+}
+
+.custom-event-list__arrow:focus-visible {
+	outline: 2px solid currentColor;
+	outline-offset: 2px;
+}
+
+.custom-event-list__arrow--prev {
+	left: 24px;
+}
+
+.custom-event-list__arrow--next {
+	left: calc( 100% - 72px );
+}
+
+.custom-event-list__arrow svg {
+	display: block;
+	width: 20px;
+	height: 17px;
+	fill: #3d3426;
+}
+
+@media ( hover: hover ) {
+	.custom-event-list__arrow:hover {
+		background-color: #e1d8b1;
+	}
+}
+
+@media ( prefers-reduced-motion: reduce ) {
+	.custom-event-list__lead,
+	.custom-event-list__arrow {
+		transition: none;
+	}
 }
 
 /* The rest, three to a row. */
@@ -127,11 +209,11 @@
 	background-color: rgba( 58, 33, 20, 0.5 );
 }
 
-/* Tablet and mobile — the file draws one of them (11174:11073). The client
-   has said every item is to stand the same size here, the newest with the
-   rest: one to a row on a phone, two on a tablet, which the file does not
-   draw. The band itself becomes the grid, so the newest item and the rest
-   share its rows. */
+/* Tablet and mobile — the file draws one of them (11174:11073). The rest
+   stand one to a row on a phone and two on a tablet, which the file does not
+   draw; the band itself becomes the grid. As asked, the items picked out keep
+   the wide tier's shape across the whole of it, their words on the picture,
+   and turn as they do there. */
 @media ( max-width: 1024px ) {
 	.custom-event-list__band {
 		display: grid;
@@ -144,42 +226,55 @@
 		display: contents;
 	}
 
-	.custom-event-list__actions {
+	.custom-event-list__actions,
+	.custom-event-list__highlights {
 		grid-column: 1 / -1;
 	}
 
-	/* The newest item is a card like the others: the picture above, the words
-	   beneath it rather than on it. */
+	/* The item's words keep the wide tier's measure of the picture, and its
+	   type the wide tier's share of the row, short of where it cannot be
+	   read: the row is read from here for that. The words run to two lines at
+	   most. */
+	.custom-event-list__highlights {
+		container-type: inline-size;
+	}
+
 	.custom-event-list__lead {
-		aspect-ratio: auto;
-		justify-content: flex-start;
-		gap: 8px;
-		padding: 0;
-		border-radius: 0;
-		overflow: visible;
-	}
-
-	.custom-event-list__lead-picture {
-		position: relative;
-		inset: auto;
-		display: block;
-		width: 100%;
-		border-radius: 16px;
-		overflow: hidden;
-		pointer-events: auto;
-	}
-
-	.custom-event-list__lead-veil {
-		display: none;
+		padding: max( 12px, 3.574cqw );
 	}
 
 	.custom-event-list__lead .custom-event-card__words {
-		width: 100%;
+		gap: max( 4px, 0.745cqw );
+		width: 60%;
+	}
+
+	.custom-event-list__lead .custom-event-card__meta {
+		font-size: clamp( 9px, 1.191cqw, 16px ) !important;
+		line-height: 1.2 !important;
+	}
+
+	.custom-event-list__lead .custom-event-card__mark {
+		width: clamp( 9px, 1.191cqw, 16px );
+		height: clamp( 9px, 1.191cqw, 16px );
+	}
+
+	.custom-event-list__lead .custom-event-card__title {
+		font-size: clamp( 11px, 1.489cqw, 20px ) !important;
+		line-height: 1.2 !important;
+	}
+
+	.custom-event-list__lead .custom-event-card__body {
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 2;
+		overflow: hidden;
+		font-size: clamp( 9px, 1.489cqw, 20px ) !important;
+		line-height: 1.3 !important;
 	}
 
 	/* Before the script has read which screen this is, no more stand than the
-	   phone shows: the newest and two more. */
-	.custom-event-list__grid > .custom-event-card:nth-child( n + 3 ):not( .is-shown ) {
+	   phone shows: three. */
+	.custom-event-list__grid > .custom-event-card:nth-child( n + 4 ):not( .is-shown ) {
 		display: none;
 	}
 
@@ -189,24 +284,80 @@
 	}
 }
 
-/* Tablet — not drawn. Two to a row; the newest and three more stand at first. */
+/* Tablet — not drawn. Two to a row; four stand at first. The arrows are 40,
+   16 in. */
 @media ( min-width: 768px ) and ( max-width: 1024px ) {
 	.custom-event-list__band {
 		grid-template-columns: repeat( 2, minmax( 0, 1fr ) );
 	}
 
-	.custom-event-list__grid > .custom-event-card:nth-child( 3 ):not( .is-shown ) {
+	.custom-event-list__grid > .custom-event-card:nth-child( 4 ):not( .is-shown ) {
 		display: flex;
 	}
+
+	.custom-event-list__arrow,
+	.custom-event-list__arrow:hover,
+	.custom-event-list__arrow:focus,
+	.custom-event-list__arrow:focus-visible,
+	.custom-event-list__arrow:active {
+		top: calc( 50% - 20px );
+		width: 40px;
+		height: 40px;
+	}
+
+	.custom-event-list__arrow--prev {
+		left: 16px;
+	}
+
+	.custom-event-list__arrow--next {
+		left: calc( 100% - 56px );
+	}
+
+	.custom-event-list__arrow svg {
+		width: 17px;
+		height: 14px;
+	}
 }
 
-/* The mark on the newest item's picture is the narrow tiers' only. */
+/* Mobile — the arrows are 24, 12 in, as the other carousels give the phone.
+   The picture is shallow enough here that its words reach the arrows' height,
+   so where there are arrows the words stand clear of them. */
+@media ( max-width: 767px ) {
+	.custom-event-list__highlights[data-highlights] .custom-event-list__lead {
+		padding-right: 44px;
+		padding-left: 44px;
+	}
+
+	.custom-event-list__highlights[data-highlights] .custom-event-list__lead .custom-event-card__words {
+		width: 100%;
+	}
+
+	.custom-event-list__arrow,
+	.custom-event-list__arrow:hover,
+	.custom-event-list__arrow:focus,
+	.custom-event-list__arrow:focus-visible,
+	.custom-event-list__arrow:active {
+		top: calc( 50% - 12px );
+		width: 24px;
+		height: 24px;
+	}
+
+	.custom-event-list__arrow--prev {
+		left: 12px;
+	}
+
+	.custom-event-list__arrow--next {
+		left: calc( 100% - 36px );
+	}
+
+	.custom-event-list__arrow svg {
+		width: 10px;
+		height: 9px;
+	}
+}
+
+/* The mark on a card's picture is not drawn on the items picked out, which
+   keep the wide tier's look on every screen. */
 .custom-event-list__lead .custom-event-card__badge {
 	display: none;
-}
-
-@media ( max-width: 1024px ) {
-	.custom-event-list__lead .custom-event-card__badge {
-		display: block;
-	}
 }

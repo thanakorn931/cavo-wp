@@ -21,13 +21,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Nightlife_Program extends Base_Widget {
 
 	/**
-	 * The fewest nights the card stands with. A week with nothing dated in it
-	 * leaves the card empty and the band closed on its heading, so the nearest
-	 * night to today stands in rather than none at all.
-	 */
-	const LEAST = 1;
-
-	/**
 	 * The widget's name, and its asset handle's suffix.
 	 *
 	 * @return string
@@ -398,8 +391,7 @@ class Nightlife_Program extends Base_Widget {
 		$from = (int) strtotime( 'today', $now );
 		$to   = $from + ( 8 * DAY_IN_SECONDS );
 
-		$week  = array();
-		$spare = array();
+		$week = array();
 
 		foreach ( $posts as $post ) {
 			$when = $this->night_starts( $post );
@@ -415,7 +407,6 @@ class Nightlife_Program extends Base_Widget {
 			);
 
 			if ( $when < $from || $when >= $to ) {
-				$spare[] = $night;
 				continue;
 			}
 
@@ -433,24 +424,8 @@ class Nightlife_Program extends Base_Widget {
 			$week = array_reverse( $week );
 		}
 
-		// Where the week ahead holds less than the card stands with, the nights
-		// nearest to today stand in behind it — the ones just beyond the week
-		// before the ones just gone, where both are the same distance off.
-		$short = self::LEAST - count( $week );
-
-		if ( $short > 0 && ! empty( $spare ) ) {
-			usort(
-				$spare,
-				function ( $a, $b ) use ( $from ) {
-					$near = abs( $a['when'] - $from ) - abs( $b['when'] - $from );
-
-					return 0 !== $near ? $near : $b['when'] - $a['when'];
-				}
-			);
-
-			$week = array_merge( $week, array_slice( $spare, 0, $short ) );
-		}
-
+		// The week ahead and nothing else: a week with nothing in it leaves the
+		// section out of the page rather than borrowing a night from outside it.
 		return wp_list_pluck( $week, 'post' );
 	}
 
@@ -506,6 +481,11 @@ class Nightlife_Program extends Base_Widget {
 
 		$tag = isset( $settings['heading_tag'] ) ? $settings['heading_tag'] : 'h2';
 		$tag = in_array( $tag, array( 'h2', 'h3', 'span' ), true ) ? $tag : 'h2';
+
+		// Nothing in the week ahead, and the section is left out of the page.
+		if ( empty( $nights ) && ! $this->is_editing() ) {
+			return;
+		}
 		?>
 		<div class="custom-nightlife-program">
 			<<?php echo esc_attr( $tag ); ?> class="custom-nightlife-program__heading"><?php

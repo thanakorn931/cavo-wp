@@ -69,8 +69,10 @@ class Nightlife_Event extends Event_Widget {
 	 */
 	protected function design_text() {
 		return array(
-			'heading'     => esc_html__( 'Upcoming Events', 'custom-elementor-widgets' ),
-			'button_text' => esc_html__( 'See Upcoming Events', 'custom-elementor-widgets' ),
+			'heading'          => esc_html__( 'Upcoming Events', 'custom-elementor-widgets' ),
+			'button_text'      => esc_html__( 'See Upcoming Events', 'custom-elementor-widgets' ),
+			'past_heading'     => esc_html__( 'Past Events', 'custom-elementor-widgets' ),
+			'past_button_text' => esc_html__( 'See More Past Events', 'custom-elementor-widgets' ),
 		);
 	}
 
@@ -100,17 +102,6 @@ class Nightlife_Event extends Event_Widget {
 	 */
 	protected function shows() {
 		return 'coming';
-	}
-
-	/**
-	 * The three the design draws, whether or not three are still to come: a
-	 * grid with one card in it, or none, is not the section the design draws.
-	 * Nights just gone make the number up.
-	 *
-	 * @return int
-	 */
-	protected function least() {
-		return self::SHOWN;
 	}
 
 	/**
@@ -168,6 +159,70 @@ class Nightlife_Event extends Event_Widget {
 
 		$this->end_controls_section();
 
+		$this->start_controls_section(
+			'section_past',
+			array(
+				'label' => esc_html__( 'When nothing is coming', 'custom-elementor-widgets' ),
+				'tab'   => Controls_Manager::TAB_CONTENT,
+			)
+		);
+
+		$this->add_control(
+			'past_note',
+			array(
+				'type'            => Controls_Manager::RAW_HTML,
+				'raw'             => esc_html__( 'With nothing coming, the section shows what has been instead, from the same source, as the Past events section draws it, without its Reserve a Table link. With nothing on either side it is left out of the page.', 'custom-elementor-widgets' ),
+				'content_classes' => 'elementor-descriptor',
+			)
+		);
+
+		$this->add_control(
+			'past_heading',
+			array(
+				'label'       => esc_html__( 'Heading', 'custom-elementor-widgets' ),
+				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
+				'placeholder' => $design['past_heading'],
+			)
+		);
+
+		$this->add_control(
+			'past_button_text',
+			array(
+				'label'       => esc_html__( 'Button text', 'custom-elementor-widgets' ),
+				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
+				'placeholder' => $design['past_button_text'],
+			)
+		);
+
+		$this->add_responsive_control(
+			'past_shown',
+			array(
+				'label'          => esc_html__( 'How many stand before the button is pressed', 'custom-elementor-widgets' ),
+				'type'           => Controls_Manager::NUMBER,
+				'min'            => 1,
+				'default'        => 3,
+				'tablet_default' => 2,
+				'mobile_default' => 2,
+			)
+		);
+
+		$this->add_responsive_control(
+			'past_step',
+			array(
+				'label'          => esc_html__( 'How many more each press brings', 'custom-elementor-widgets' ),
+				'type'           => Controls_Manager::NUMBER,
+				'min'            => 0,
+				'default'        => 6,
+				'tablet_default' => 4,
+				'mobile_default' => 4,
+				'description'    => esc_html__( 'Nought brings the rest at once.', 'custom-elementor-widgets' ),
+			)
+		);
+
+		$this->end_controls_section();
+
 		$this->register_style_controls();
 	}
 
@@ -191,6 +246,7 @@ class Nightlife_Event extends Event_Widget {
 				'default'   => '#3A2114',
 				'selectors' => array(
 					'{{WRAPPER}} .custom-nightlife-event__heading' => 'color: {{VALUE}};',
+					'{{WRAPPER}} .custom-event-past__heading'      => 'color: {{VALUE}};',
 				),
 			)
 		);
@@ -200,7 +256,7 @@ class Nightlife_Event extends Event_Widget {
 			array(
 				'name'           => 'heading_typography',
 				'label'          => esc_html__( 'Heading', 'custom-elementor-widgets' ),
-				'selector'       => '{{WRAPPER}} .custom-nightlife-event__heading',
+				'selector'       => '{{WRAPPER}} .custom-nightlife-event__heading, {{WRAPPER}} .custom-event-past__heading',
 				'fields_options' => array(
 					'typography'  => array( 'default' => 'yes' ),
 					'font_family' => array( 'default' => 'Fenul Compressed' ),
@@ -223,6 +279,7 @@ class Nightlife_Event extends Event_Widget {
 				'separator' => 'before',
 				'selectors' => array(
 					'{{WRAPPER}} .custom-nightlife-event' => 'color: {{VALUE}};',
+					'{{WRAPPER}} .custom-event-past'      => 'color: {{VALUE}};',
 				),
 			)
 		);
@@ -299,7 +356,7 @@ class Nightlife_Event extends Event_Widget {
 			array(
 				'name'           => 'button_typography',
 				'label'          => esc_html__( 'Button', 'custom-elementor-widgets' ),
-				'selector'       => '{{WRAPPER}} .custom-nightlife-event__button',
+				'selector'       => '{{WRAPPER}} .custom-nightlife-event__button, {{WRAPPER}} .custom-event-more',
 				'fields_options' => array(
 					'typography'  => array( 'default' => 'yes' ),
 					'font_family' => array( 'default' => 'Roboto' ),
@@ -321,6 +378,7 @@ class Nightlife_Event extends Event_Widget {
 				'separator' => 'before',
 				'selectors' => array(
 					'{{WRAPPER}} .custom-nightlife-event__button' => 'color: {{VALUE}};',
+					'{{WRAPPER}} .custom-event-more'              => 'color: {{VALUE}};',
 				),
 			)
 		);
@@ -333,6 +391,7 @@ class Nightlife_Event extends Event_Widget {
 				'default'   => '#3A2114',
 				'selectors' => array(
 					'{{WRAPPER}} .custom-nightlife-event__button' => 'background-color: {{VALUE}};',
+					'{{WRAPPER}} .custom-event-more'              => 'background-color: {{VALUE}};',
 				),
 			)
 		);
@@ -349,6 +408,23 @@ class Nightlife_Event extends Event_Widget {
 		$items = array_slice( $this->items( $settings ), 0, self::SHOWN );
 		$tag   = isset( $settings['heading_tag'] ) ? $settings['heading_tag'] : 'h2';
 		$tag   = in_array( $tag, array( 'h2', 'h3', 'span' ), true ) ? $tag : 'h2';
+
+		// With nothing coming, what has been stands instead, from the same
+		// source, the latest first; with nothing on either side the section is
+		// left out of the page.
+		if ( empty( $items ) ) {
+			$past = $this->items( $settings, 'past', -1 );
+
+			if ( ! empty( $past ) ) {
+				$this->render_past( $settings, $past, $tag );
+
+				return;
+			}
+
+			if ( ! $this->is_editing() ) {
+				return;
+			}
+		}
 		?>
 		<div class="custom-nightlife-event">
 			<span class="custom-nightlife-event__mark" aria-hidden="true"></span>
@@ -378,5 +454,53 @@ class Nightlife_Event extends Event_Widget {
 			?>
 		</div>
 		<?php
+	}
+
+	/**
+	 * What has been, drawn as the Past events section draws it, without its
+	 * Reserve a Table link: the heading, the cards three to a row, and the
+	 * button that brings the rest on screen.
+	 *
+	 * @param array      $settings The widget's settings.
+	 * @param \WP_Post[] $items    What has been, the latest first.
+	 * @param string     $tag      The heading's element.
+	 */
+	private function render_past( $settings, $items, $tag ) {
+		$shows = $this->per_tier( $settings, 'past_shown', array( 'desktop' => 3, 'tablet' => 2, 'mobile' => 2 ) );
+		$steps = $this->per_tier( $settings, 'past_step', array( 'desktop' => 6, 'tablet' => 4, 'mobile' => 4 ), 0 );
+		$shown = $shows['desktop'];
+		?>
+		<div class="custom-event-past custom-nightlife-event__past" data-feed<?php $this->tier_attributes( 'shown', $shows ); ?><?php $this->tier_attributes( 'step', $steps ); ?>>
+			<div class="custom-event-past__head">
+				<<?php echo esc_attr( $tag ); ?> class="custom-event-past__heading"><?php
+					echo esc_html( $this->text( $settings, 'past_heading' ) );
+				?></<?php echo esc_attr( $tag ); ?>>
+			</div>
+
+			<div class="custom-event-past__grid">
+				<?php foreach ( $items as $index => $item ) : ?>
+					<?php $this->render_card( $item, $index >= $shown ); ?>
+				<?php endforeach; ?>
+			</div>
+
+			<?php if ( count( $items ) > min( $shows ) ) : ?>
+				<div class="custom-event-past__actions">
+					<?php $this->render_more_button( $this->text( $settings, 'past_button_text' ), $steps['desktop'] ); ?>
+				</div>
+			<?php endif; ?>
+		</div>
+		<?php
+	}
+
+	/**
+	 * The Past events section's stylesheet is this one's too, for what has
+	 * been.
+	 *
+	 * @return array
+	 */
+	public function get_style_depends(): array {
+		$past = \Custom_Elementor_Widgets\Widgets_Loader::HANDLE_PREFIX . 'event-past-events';
+
+		return array_merge( parent::get_style_depends(), wp_style_is( $past, 'registered' ) ? array( $past ) : array() );
 	}
 }

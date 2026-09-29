@@ -30,11 +30,6 @@ class Home_Event extends Base_Widget {
 	const HOW_MANY = 12;
 
 	/**
-	 * The fewest it stands with — the row the design draws across the band.
-	 */
-	const LEAST = 4;
-
-	/**
 	 * The widget's name, and its asset handle's suffix.
 	 *
 	 * @return string
@@ -326,6 +321,11 @@ class Home_Event extends Base_Widget {
 		$tag = in_array( $tag, array( 'h2', 'h3', 'span' ), true ) ? $tag : 'h2';
 
 		$items = $this->items( $settings );
+
+		// Nothing coming, and the section is left out of the page.
+		if ( empty( $items ) && ! $this->is_editing() ) {
+			return;
+		}
 		?>
 		<div class="custom-home-event">
 			<div class="custom-home-event__aside">
@@ -386,7 +386,6 @@ class Home_Event extends Base_Widget {
 		$today = (int) strtotime( 'today', current_time( 'timestamp' ) ); // phpcs:ignore WordPress.DateTime.CurrentTimeTimestamp.Requested -- the client's day, not UTC's.
 
 		$coming = array();
-		$gone   = array();
 
 		foreach ( $posts as $place => $post ) {
 			$when = $this->item_starts( $post );
@@ -398,7 +397,6 @@ class Home_Event extends Base_Widget {
 			);
 
 			if ( $when < $today ) {
-				$gone[] = $row;
 				continue;
 			}
 
@@ -409,17 +407,8 @@ class Home_Event extends Base_Widget {
 
 		usort( $coming, $this->by_day( $way ) );
 
-		// Nothing coming empties the rail, and the band closes on its heading
-		// alone. Where what is coming falls short of the row the design draws,
-		// the nights just gone stand in behind it, the most recent first.
-		$short = self::LEAST - count( $coming );
-
-		if ( $short > 0 && ! empty( $gone ) ) {
-			usort( $gone, $this->by_day( -1 ) );
-
-			$coming = array_merge( $coming, array_slice( $gone, 0, $short ) );
-		}
-
+		// What is coming and nothing else: the nights just gone are not made
+		// to stand in for it.
 		return array_slice( wp_list_pluck( $coming, 'post' ), 0, self::HOW_MANY );
 	}
 

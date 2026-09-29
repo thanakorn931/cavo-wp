@@ -21,12 +21,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Event_Events extends Event_Widget {
 
 	/**
-	 * The fewest the band stands with: the one across its width, and a row of
-	 * three beneath it.
-	 */
-	const LEAST = 4;
-
-	/**
 	 * The widget's name, and its asset handle's suffix.
 	 *
 	 * @return string
@@ -72,14 +66,35 @@ class Event_Events extends Event_Widget {
 	}
 
 	/**
-	 * Nothing coming leaves the band with no card across it and no row under
-	 * it, which is the design broken rather than the design empty. Events just
-	 * gone stand in behind what is coming until there are four.
-	 *
-	 * @return int
+	 * Source → the item's own facts, and one more: whether the item is picked
+	 * out. Pointed at the event's Highlight field, an event whose field is on
+	 * stands in the carousel across the band rather than in the rows beneath.
 	 */
-	protected function least() {
-		return self::LEAST;
+	protected function register_more_source_controls() {
+		parent::register_more_source_controls();
+
+		$this->add_control(
+			'highlight',
+			array(
+				'label'       => esc_html__( 'Highlight', 'custom-elementor-widgets' ),
+				'type'        => Controls_Manager::TEXT,
+				'dynamic'     => array( 'active' => true ),
+				'description' => esc_html__( "Point it at the event's Highlight field. An event with it on stands in the carousel across the top; the rest stand in the rows beneath.", 'custom-elementor-widgets' ),
+			)
+		);
+	}
+
+	/**
+	 * Whether an item is picked out for the carousel.
+	 *
+	 * @param \WP_Post $post The item.
+	 * @return bool
+	 */
+	private function highlighted( $post ) {
+		$item = $this->item_settings( $post );
+		$said = isset( $item['highlight'] ) ? strtolower( trim( (string) $item['highlight'] ) ) : '';
+
+		return in_array( $said, array( '1', 'yes', 'true', 'on' ), true );
 	}
 
 	/**
@@ -126,7 +141,7 @@ class Event_Events extends Event_Widget {
 				'default'        => 6,
 				'tablet_default' => 4,
 				'mobile_default' => 3,
-				'description'    => esc_html__( 'Beneath the newest, before the button is pressed, and again with each press. The design shows two rows of three; on a tablet, where the newest stands with the rest, four in all, and on a phone three.', 'custom-elementor-widgets' ),
+				'description'    => esc_html__( 'Beneath the carousel, before the button is pressed, and again with each press. The design shows two rows of three; four on a tablet, and three on a phone.', 'custom-elementor-widgets' ),
 			)
 		);
 
@@ -266,10 +281,22 @@ class Event_Events extends Event_Widget {
 	protected function render() {
 		$settings = $this->get_settings_for_display();
 
-		// The first item runs the width of the band, as the design draws it. It
-		// is the same list, not a slot of its own.
-		$items = $this->items( $settings );
-		$lead  = ! empty( $items ) ? array_shift( $items ) : null;
+		// The items picked out stand in the carousel across the band, and the
+		// rest in the rows beneath it; each only where it has something.
+		$picked = array();
+		$items  = array();
+
+		foreach ( $this->items( $settings ) as $item ) {
+			if ( $this->highlighted( $item ) ) {
+				$picked[] = $item;
+			} else {
+				$items[] = $item;
+			}
+		}
+
+		// With nothing coming, the band is left out and the strip beneath it
+		// stays: the page goes on from the strip.
+		$nothing = empty( $picked ) && empty( $items ) && ! $this->is_editing();
 
 		$steps   = $this->per_tier( $settings, 'step', array( 'desktop' => 6, 'tablet' => 4, 'mobile' => 3 ) );
 		$step    = $steps['desktop'];
@@ -280,35 +307,37 @@ class Event_Events extends Event_Widget {
 		$waiting = count( $items ) > min( $steps );
 		?>
 		<div class="custom-event-list" data-feed<?php $this->tier_attributes( 'shown', $steps ); ?><?php $this->tier_attributes( 'step', $steps ); ?>>
-			<div class="custom-event-list__band">
-				<?php if ( $lead ) : ?>
-					<?php $this->render_lead( $lead ); ?>
-				<?php endif; ?>
+			<?php if ( ! $nothing ) : ?>
+				<div class="custom-event-list__band">
+					<?php if ( ! empty( $picked ) ) : ?>
+						<?php $this->render_highlights( $picked ); ?>
+					<?php endif; ?>
 
-				<?php if ( ! empty( $items ) ) : ?>
-					<div class="custom-event-list__grid">
-						<?php foreach ( $items as $index => $item ) : ?>
-							<?php
-							// The first beneath the newest stands in the first
-							// screen on a phone, and loads with the page.
-							$this->render_card( $item, $index >= $step, 0 === $index );
-							?>
-						<?php endforeach; ?>
-					</div>
-				<?php endif; ?>
+					<?php if ( ! empty( $items ) ) : ?>
+						<div class="custom-event-list__grid">
+							<?php foreach ( $items as $index => $item ) : ?>
+								<?php
+								// The first in the rows stands in the first screen on
+								// a phone, and loads with the page.
+								$this->render_card( $item, $index >= $step, 0 === $index );
+								?>
+							<?php endforeach; ?>
+						</div>
+					<?php endif; ?>
 
-				<?php if ( $waiting ) : ?>
-					<div class="custom-event-list__actions">
-						<?php $this->render_more_button( $button, $step ); ?>
-					</div>
-				<?php endif; ?>
+					<?php if ( $waiting ) : ?>
+						<div class="custom-event-list__actions">
+							<?php $this->render_more_button( $button, $step ); ?>
+						</div>
+					<?php endif; ?>
 
-				<?php
-				if ( empty( $items ) && ! $lead ) {
-					$this->editor_hint( __( 'This section is waiting for its source, on the Content tab.', 'custom-elementor-widgets' ) );
-				}
-				?>
-			</div>
+					<?php
+					if ( empty( $items ) && empty( $picked ) ) {
+						$this->editor_hint( __( 'Nothing is coming: this band is left out of the page and only the strip stands. Its items are what the Source tab holds.', 'custom-elementor-widgets' ) );
+					}
+					?>
+				</div>
+			<?php endif; ?>
 
 			<span class="custom-event-list__strip" aria-hidden="true">
 				<?php $this->media( isset( $settings['strip']['url'] ) ? $settings['strip']['url'] : '', '', true ); ?>
@@ -318,16 +347,41 @@ class Event_Events extends Event_Widget {
 	}
 
 	/**
-	 * The newest item, across the width of the band.
+	 * The items picked out, one across the band at a time. With more than one
+	 * they turn, and have two arrows (event-events.js).
 	 *
-	 * @param \WP_Post $post The item.
+	 * @param \WP_Post[] $posts The items picked out.
 	 */
-	private function render_lead( $post ) {
+	private function render_highlights( $posts ) {
+		$many = count( $posts ) > 1;
+		?>
+		<div class="custom-event-list__highlights"<?php echo $many ? ' data-highlights' : ''; ?>>
+			<div class="custom-event-list__highlight-track">
+				<?php foreach ( array_values( $posts ) as $index => $post ) : ?>
+					<?php $this->render_lead( $post, 0 === $index ); ?>
+				<?php endforeach; ?>
+			</div>
+
+			<?php if ( $many ) : ?>
+				<button type="button" class="custom-event-list__arrow custom-event-list__arrow--prev" data-highlights-prev aria-label="<?php esc_attr_e( 'Previous', 'custom-elementor-widgets' ); ?>"><?php $this->render_arrow_mark( 'prev' ); ?></button>
+				<button type="button" class="custom-event-list__arrow custom-event-list__arrow--next" data-highlights-next aria-label="<?php esc_attr_e( 'Next', 'custom-elementor-widgets' ); ?>"><?php $this->render_arrow_mark( 'next' ); ?></button>
+			<?php endif; ?>
+		</div>
+		<?php
+	}
+
+	/**
+	 * One item picked out, across the width of the band.
+	 *
+	 * @param \WP_Post $post  The item.
+	 * @param bool     $first Whether it is the one standing when the page opens.
+	 */
+	private function render_lead( $post, $first = true ) {
 		$picture = get_the_post_thumbnail_url( $post, 'full' );
 		?>
-		<div class="custom-event-list__lead" data-feed-lead>
+		<div class="custom-event-list__lead"<?php echo $first ? '' : ' aria-hidden="true"'; ?>>
 			<span class="custom-event-list__lead-picture" aria-hidden="true">
-				<?php $this->media( $picture ); ?>
+				<?php $this->media( $picture, '', ! $first ); ?>
 				<span class="custom-event-card__badge" aria-hidden="true"></span>
 			</span>
 
