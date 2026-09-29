@@ -362,11 +362,31 @@
 	}
 }
 
-/* Tablet — not drawn. The stamp the width of the words is, at this width,
-   deeper than the screen; it keeps half the row. */
+/* Tablet — not drawn. As asked, the card is laid out as the wide tier lays
+   it: the words on the left and the stamp beside them on the right, in the
+   middle of the card's depth, rather than one under the other. The stamp
+   keeps the wide tier's shape (332 by 316) and at most its size, and takes
+   two fifths of the card; the words, the buttons and the perforation are the
+   narrow tier's. */
 @media ( min-width: 768px ) and ( max-width: 1024px ) {
+	.custom-nightlife-program__slide {
+		display: flex;
+		align-items: center;
+		gap: 32px;
+		padding: 40px 48px;
+	}
+
+	.custom-nightlife-program__words {
+		flex: 1 1 0;
+		min-width: 0;
+	}
+
 	.custom-nightlife-program__stamp {
-		width: 50%;
+		flex: 0 0 40%;
+		width: 40%;
+		max-width: 332px;
+		aspect-ratio: 332 / 316;
+		margin-top: 0;
 	}
 }
 
