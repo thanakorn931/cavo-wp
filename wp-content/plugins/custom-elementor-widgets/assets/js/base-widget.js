@@ -367,12 +367,28 @@
  * every five seconds, and round again. It waits while the reader is on it — a
  * hand over it, or a key in it — and it does not turn at all for a reader whose
  * system has asked for less movement, or while the page is not being looked at.
+ *
+ * On the tablet and the phone the same row is a carousel instead: one picture
+ * across the whole row, the next beside it out of view. It does not turn of its
+ * own accord and does not run round — the first has nothing before it and the
+ * last nothing after — and it is moved by its two arrows, or pulled by hand
+ * (the shared pull, further down), sliding from one picture to the next. Which
+ * picture it stands on is the one open, so the wide tier opens that one when
+ * the window grows back.
  */
 ( function () {
 	'use strict';
 
 	// How long a picture stands open before the row turns of its own accord.
 	var TURN = 5000;
+
+	// How far a pull goes before it turns the carousel, as an arrow would.
+	var PULL_TURN = 40;
+
+	// The tiers on which the row is a carousel.
+	function carousel() {
+		return !! ( window.matchMedia && window.matchMedia( '( max-width: 1024px )' ).matches );
+	}
 
 	function setUp( root ) {
 		if ( ! root || root.dataset.panelsWired ) {
@@ -395,8 +411,27 @@
 			return window.matchMedia && window.matchMedia( '( prefers-reduced-motion: reduce )' ).matches;
 		}
 
+		var prev = root.querySelector( '[data-panels-prev]' );
+		var next = root.querySelector( '[data-panels-next]' );
+
 		function show( index ) {
-			open = ( index + panels.length ) % panels.length;
+			// The carousel has ends; the row of the wide tier runs round.
+			if ( carousel() ) {
+				open = Math.max( 0, Math.min( panels.length - 1, index ) );
+			} else {
+				open = ( index + panels.length ) % panels.length;
+			}
+
+			root.style.setProperty( '--custom-panels-at', open );
+
+			// An arrow with nowhere to go says so, and is not pressed.
+			if ( prev ) {
+				prev.disabled = 0 === open;
+			}
+
+			if ( next ) {
+				next.disabled = panels.length - 1 === open;
+			}
 
 			for ( var i = 0; i < panels.length; i++ ) {
 				var here = i === open;
@@ -415,7 +450,7 @@
 		function wait() {
 			window.clearTimeout( timer );
 
-			if ( held || still() || document.hidden ) {
+			if ( held || still() || document.hidden || carousel() ) {
 				return;
 			}
 
@@ -426,6 +461,18 @@
 		}
 
 		root.addEventListener( 'click', function ( event ) {
+			if ( event.target.closest && event.target.closest( '[data-panels-prev]' ) ) {
+				show( open - 1 );
+
+				return;
+			}
+
+			if ( event.target.closest && event.target.closest( '[data-panels-next]' ) ) {
+				show( open + 1 );
+
+				return;
+			}
+
 			var pick = event.target.closest ? event.target.closest( '[data-panel-pick]' ) : null;
 
 			if ( ! pick ) {
@@ -464,6 +511,54 @@
 
 		document.addEventListener( 'visibilitychange', wait );
 
+		// Pulled by hand, the carousel follows the hand, and a pull long enough
+		// turns it one picture, as an arrow does; a shorter one lets it back.
+		// Past either end it gives only a little, and comes back.
+		function pullable() {
+			var on = carousel() && ! still();
+
+			root.classList.toggle( 'custom-pull', on );
+			root.classList.toggle( 'is-pullable', on );
+		}
+
+		root.addEventListener( 'custom-pull', function ( event ) {
+			var by = event.detail.by;
+
+			if ( 'move' === event.detail.phase ) {
+				var past = ( 0 === open && by > 0 ) || ( panels.length - 1 === open && by < 0 );
+
+				root.style.setProperty( '--custom-panels-pull', ( past ? by / 3 : by ) + 'px' );
+
+				return;
+			}
+
+			if ( 'end' === event.detail.phase ) {
+				root.style.removeProperty( '--custom-panels-pull' );
+
+				if ( Math.abs( by ) >= PULL_TURN ) {
+					show( open + ( by < 0 ? 1 : -1 ) );
+				}
+			}
+		} );
+
+		// Crossing between the tiers, the row takes up the ways of the one it
+		// is on: the wide tier turns again, the carousel keeps to its ends.
+		if ( window.matchMedia ) {
+			var tier = window.matchMedia( '( max-width: 1024px )' );
+			var changed = function () {
+				pullable();
+				show( open );
+				wait();
+			};
+
+			if ( tier.addEventListener ) {
+				tier.addEventListener( 'change', changed );
+			} else if ( tier.addListener ) {
+				tier.addListener( changed );
+			}
+		}
+
+		pullable();
 		show( 0 );
 		wait();
 	}

@@ -337,6 +337,10 @@ class Nightlife_Membership extends Base_Widget {
 						<?php endif; ?>
 					</div>
 				<?php endforeach; ?>
+
+				<?php // The tablet's and the phone's alone, where the row is a carousel. ?>
+				<button type="button" class="custom-nightlife-membership__arrow custom-nightlife-membership__arrow--prev" data-panels-prev aria-label="<?php esc_attr_e( 'Previous', 'custom-elementor-widgets' ); ?>"><?php $this->render_arrow_mark( 'prev' ); ?></button>
+				<button type="button" class="custom-nightlife-membership__arrow custom-nightlife-membership__arrow--next" data-panels-next aria-label="<?php esc_attr_e( 'Next', 'custom-elementor-widgets' ); ?>"><?php $this->render_arrow_mark( 'next' ); ?></button>
 			</div>
 		</div>
 		<?php

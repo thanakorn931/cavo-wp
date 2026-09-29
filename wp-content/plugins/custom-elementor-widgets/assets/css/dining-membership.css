@@ -151,85 +151,154 @@
 	}
 }
 
-/* Tablet and mobile — the button's padding, the same as every button's on
-   the narrow tiers. */
-@media ( max-width: 1024px ) {
-	.custom-dining-membership__button,
-	.custom-dining-membership__button:hover,
-	.custom-dining-membership__button:focus,
-	.custom-dining-membership__button:active {
-		padding: 12px 32px;
-	}
+/* The two arrows are the carousel's, on the tablet and the phone alone. */
+.custom-dining-membership__arrow {
+	display: none;
 }
 
-/* Mobile — the file draws the wide panel alone, 390 across and 244 deep
-   (11205:3030), the button standing 26 above its foot. The two beside it are
-   not drawn there; they take a row of their own under it, dividing it in
-   two, at the depth the file gives them (11205:3036). Tablet is not drawn
-   and keeps the wide tier's row of three.
-
-   Each picture stands in the flow here at its own shape, and the row takes
-   its depth from them: a shape given to the band or a panel is read by
-   nothing above it once the row wraps, and the section after it started
-   before it had ended. */
-@media ( max-width: 767px ) {
-	/* The pictures change places here as they open, and a browser that keeps
-	   what is on screen where it was would follow the one it had fixed on and
-	   carry the page up or down with it. Nothing in the row is one to follow. */
+/* Tablet and mobile — as asked, the row is a carousel here: one picture across
+   the whole of it at a time, the shape the file gives the phone's picture, sliding to the next on an arrow or a
+   pull and not running round. Each picture carries its button, 12 by 32
+   inside like every button on these tiers, 26px above its foot. The arrows
+   stand 12 inside the row's edges and in the middle of its depth: the way on
+   is a light disc, and an arrow with nowhere to go is the bare mark. The
+   script says which picture the row stands on (base-widget.js). */
+@media ( max-width: 1024px ) {
+	/* The row is the shape the file gives the phone's picture, 390 by 244. */
 	.custom-dining-membership {
-		flex-wrap: wrap;
-		aspect-ratio: auto;
+		position: relative;
+		aspect-ratio: 390 / 244;
 		overflow-anchor: none;
 	}
 
-	/* The open picture takes a row of its own; each of the two waiting asks for
-	   half the row, which is more than the open one leaves on its line, so the
-	   two take a line of their own. */
-	.custom-dining-membership__panel {
-		display: block;
-		padding-bottom: 0;
-	}
-
-	/* The open picture stands at the top of the band whichever of the three it
-	   is: left where it was drawn, it would come between the two waiting and
-	   put each of them on a line of its own. */
+	.custom-dining-membership__panel,
 	.custom-dining-membership__panel.is-open {
-		order: -1;
 		flex: 0 0 100%;
+		padding-bottom: 26px;
+		transform: translateX( calc( var( --custom-panels-at, 0 ) * -100% + var( --custom-panels-pull, 0px ) ) );
+		transition: transform 400ms ease-in-out;
 	}
 
-	.custom-dining-membership__panel:not( .is-open ) {
-		flex: 1 1 50%;
+	.custom-dining-membership.is-holding .custom-dining-membership__panel,
+	.custom-dining-membership__panels.is-holding .custom-dining-membership__panel {
+		transition: none;
 	}
 
-	.custom-dining-membership__picture {
-		position: relative;
-		inset: auto;
-		display: block;
-		width: 100%;
+	/* No picture is picked here: the row is pulled or stepped instead. */
+	.custom-dining-membership__pick,
+	.custom-dining-membership__pick:hover,
+	.custom-dining-membership__pick:focus,
+	.custom-dining-membership__pick:active {
+		display: none;
 	}
 
-	.custom-dining-membership__panel.is-open .custom-dining-membership__picture {
-		aspect-ratio: 390 / 244;
+	.custom-dining-membership__veil {
+		opacity: 0;
 	}
 
-	.custom-dining-membership__panel:not( .is-open ) .custom-dining-membership__picture {
-		aspect-ratio: 370 / 242;
+	.custom-dining-membership__panel:not( .is-open ):hover .custom-dining-membership__picture img {
+		transform: none;
 	}
 
-	/* A picture set in a column reads its shape from the file that was uploaded
-	   rather than from the one the design draws, so the panel is a plain block
-	   here and the words are placed against it. */
 	.custom-dining-membership__button,
 	.custom-dining-membership__button:hover,
 	.custom-dining-membership__button:focus,
 	.custom-dining-membership__button:active {
-		position: absolute;
-		right: 0;
-		bottom: 26px;
-		left: 0;
-		width: fit-content;
-		margin: 0 auto;
 		padding: 12px 32px;
+	}
+
+	.custom-dining-membership__panel .custom-dining-membership__button {
+		opacity: 1;
+		pointer-events: auto;
+	}
+
+	.custom-dining-membership__arrow,
+	.custom-dining-membership__arrow:hover,
+	.custom-dining-membership__arrow:focus,
+	.custom-dining-membership__arrow:focus-visible,
+	.custom-dining-membership__arrow:active {
+		position: absolute;
+		z-index: 2;
+		top: calc( 50% - 12px );
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 24px;
+		height: 24px;
+		margin: 0;
+		padding: 0;
+		border: 0;
+		border-radius: 50%;
+		background-color: #ebe4ca;
+		box-shadow: none;
+		cursor: pointer;
+		-webkit-tap-highlight-color: transparent;
+	}
+
+	.custom-dining-membership__arrow:focus-visible {
+		outline: 2px solid currentColor;
+		outline-offset: 2px;
+	}
+
+	.custom-dining-membership__arrow--prev {
+		left: 12px;
+	}
+
+	.custom-dining-membership__arrow--next {
+		left: calc( 100% - 36px );
+	}
+
+	.custom-dining-membership__arrow svg {
+		display: block;
+		width: 10px;
+		height: 9px;
+		fill: #3d3426;
+	}
+
+	.custom-dining-membership__arrow:disabled,
+	.custom-dining-membership__arrow:disabled:hover,
+	.custom-dining-membership__arrow:disabled:focus,
+	.custom-dining-membership__arrow:disabled:active {
+		background-color: transparent;
+		cursor: default;
+	}
+
+	.custom-dining-membership__arrow:disabled svg {
+		fill: #faf6ea;
+	}
+}
+
+/* Tablet — the same carousel, its arrows 40 as the other carousels' are. */
+@media ( min-width: 768px ) and ( max-width: 1024px ) {
+	.custom-dining-membership__arrow,
+	.custom-dining-membership__arrow:hover,
+	.custom-dining-membership__arrow:focus,
+	.custom-dining-membership__arrow:focus-visible,
+	.custom-dining-membership__arrow:active {
+		top: calc( 50% - 20px );
+		width: 40px;
+		height: 40px;
+	}
+
+	.custom-dining-membership__arrow--next {
+		left: calc( 100% - 52px );
+	}
+
+	.custom-dining-membership__arrow svg {
+		width: 17px;
+		height: 14px;
+	}
+}
+
+@media ( max-width: 1024px ) and ( hover: hover ) {
+	.custom-dining-membership__arrow:not( :disabled ):hover {
+		background-color: #e1d8b1;
+	}
+}
+
+@media ( max-width: 1024px ) and ( prefers-reduced-motion: reduce ) {
+	.custom-dining-membership__panel,
+	.custom-dining-membership__panel.is-open {
+		transition: none;
 	}
 }

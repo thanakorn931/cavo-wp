@@ -193,25 +193,68 @@
 	}
 }
 
-/* Tablet and mobile — the file draws one of them (11174:10617), and draws
-   it as a row of three that runs off the frame. As asked, the wide panel
-   takes a row of its own, 16 in from either edge, at the shape the file
-   gives it (297 by 217) with its button 16 above the foot, and the two
-   beside it divide a row under it, touching, at the wide panel's shape —
-   a decision, since the file's own shape for them (100 by 217) is a strip.
-   The name stands 23 down the band with 24 above and below it, and 24 is
-   left under the panels. Each picture stands in the flow at its shape, and
-   the row takes its depth from them: a shape given to the panels is read by
-   nothing above it once the row wraps. Tablet is not drawn and keeps the
-   wide tier's row of three. */
+/* Tablet and mobile — the file draws one of them (11174:10617). The name
+   stands 23 down the band with 24 above and below it, and 24 is left under
+   the pictures. As asked, the pictures run the band's whole width here, with
+   nothing at either edge: only the wide tier's 1440 holds them in. */
 @media ( max-width: 1024px ) {
 	.custom-nightlife-membership {
 		gap: 0;
-		padding: 23px 16px 24px;
+		padding: 23px 0 24px;
 	}
 
 	.custom-nightlife-membership__heading {
-		padding: 24px 0;
+		padding: 24px 16px;
+	}
+
+	/* The row is the shape the file gives the phone's picture, 297 by 217. */
+	.custom-nightlife-membership__panels {
+		aspect-ratio: 297 / 217;
+		overflow-anchor: none;
+	}
+}
+
+/* The two arrows are the carousel's, on the tablet and the phone alone. */
+.custom-nightlife-membership__arrow {
+	display: none;
+}
+
+/* Tablet and mobile — as asked, the row is a carousel here: one picture across
+   the whole of it at a time, the shape the file gives the phone's picture, sliding to the next on an arrow or a
+   pull and not running round. Each picture carries its button, 12 by 32
+   inside like every button on these tiers, 16px above its foot. The arrows
+   stand 12 inside the row's edges and in the middle of its depth: the way on
+   is a light disc, and an arrow with nowhere to go is the bare mark. The
+   script says which picture the row stands on (base-widget.js). */
+@media ( max-width: 1024px ) {
+
+	.custom-nightlife-membership__panel,
+	.custom-nightlife-membership__panel.is-open {
+		flex: 0 0 100%;
+		padding-bottom: 16px;
+		transform: translateX( calc( var( --custom-panels-at, 0 ) * -100% + var( --custom-panels-pull, 0px ) ) );
+		transition: transform 400ms ease-in-out;
+	}
+
+	.custom-nightlife-membership.is-holding .custom-nightlife-membership__panel,
+	.custom-nightlife-membership__panels.is-holding .custom-nightlife-membership__panel {
+		transition: none;
+	}
+
+	/* No picture is picked here: the row is pulled or stepped instead. */
+	.custom-nightlife-membership__pick,
+	.custom-nightlife-membership__pick:hover,
+	.custom-nightlife-membership__pick:focus,
+	.custom-nightlife-membership__pick:active {
+		display: none;
+	}
+
+	.custom-nightlife-membership__panel-veil {
+		opacity: 0;
+	}
+
+	.custom-nightlife-membership__panel:not( .is-open ):hover .custom-nightlife-membership__panel-picture img {
+		transform: none;
 	}
 
 	.custom-nightlife-membership__button,
@@ -220,62 +263,99 @@
 	.custom-nightlife-membership__button:active {
 		padding: 12px 32px;
 	}
+
+	.custom-nightlife-membership__panel .custom-nightlife-membership__button {
+		opacity: 1;
+		pointer-events: auto;
+	}
+
+	.custom-nightlife-membership__arrow,
+	.custom-nightlife-membership__arrow:hover,
+	.custom-nightlife-membership__arrow:focus,
+	.custom-nightlife-membership__arrow:focus-visible,
+	.custom-nightlife-membership__arrow:active {
+		position: absolute;
+		z-index: 2;
+		top: calc( 50% - 12px );
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 24px;
+		height: 24px;
+		margin: 0;
+		padding: 0;
+		border: 0;
+		border-radius: 50%;
+		background-color: #ebe4ca;
+		box-shadow: none;
+		cursor: pointer;
+		-webkit-tap-highlight-color: transparent;
+	}
+
+	.custom-nightlife-membership__arrow:focus-visible {
+		outline: 2px solid currentColor;
+		outline-offset: 2px;
+	}
+
+	.custom-nightlife-membership__arrow--prev {
+		left: 12px;
+	}
+
+	.custom-nightlife-membership__arrow--next {
+		left: calc( 100% - 36px );
+	}
+
+	.custom-nightlife-membership__arrow svg {
+		display: block;
+		width: 10px;
+		height: 9px;
+		fill: #3d3426;
+	}
+
+	.custom-nightlife-membership__arrow:disabled,
+	.custom-nightlife-membership__arrow:disabled:hover,
+	.custom-nightlife-membership__arrow:disabled:focus,
+	.custom-nightlife-membership__arrow:disabled:active {
+		background-color: transparent;
+		cursor: default;
+	}
+
+	.custom-nightlife-membership__arrow:disabled svg {
+		fill: #faf6ea;
+	}
 }
 
-@media ( max-width: 767px ) {
-	/* The pictures change places here as they open, and a browser that keeps
-	   what is on screen where it was would follow the one it had fixed on and
-	   carry the page up or down with it. Nothing in the row is one to follow. */
-	.custom-nightlife-membership__panels {
-		flex-wrap: wrap;
-		gap: 0;
-		aspect-ratio: auto;
-		overflow-anchor: none;
+/* Tablet — the same carousel, its arrows 40 as the other carousels' are. */
+@media ( min-width: 768px ) and ( max-width: 1024px ) {
+	.custom-nightlife-membership__arrow,
+	.custom-nightlife-membership__arrow:hover,
+	.custom-nightlife-membership__arrow:focus,
+	.custom-nightlife-membership__arrow:focus-visible,
+	.custom-nightlife-membership__arrow:active {
+		top: calc( 50% - 20px );
+		width: 40px;
+		height: 40px;
 	}
 
-	/* The open picture takes a row of its own, and the two waiting divide the
-	   row beneath it. Each picture stands in the flow here at the shape the
-	   file gives it, and a picture set in a column reads its own shape from the
-	   file that was uploaded instead — so the panel is a plain block here and
-	   the words are placed against it. */
-	.custom-nightlife-membership__panel {
-		display: block;
-		padding-bottom: 0;
+	.custom-nightlife-membership__arrow--next {
+		left: calc( 100% - 52px );
 	}
 
-	/* The open picture stands at the top of the band whichever of the three it
-	   is: left where it was drawn, it would come between the two waiting and
-	   put each of them on a line of its own. */
+	.custom-nightlife-membership__arrow svg {
+		width: 17px;
+		height: 14px;
+	}
+}
+
+@media ( max-width: 1024px ) and ( hover: hover ) {
+	.custom-nightlife-membership__arrow:not( :disabled ):hover {
+		background-color: #e1d8b1;
+	}
+}
+
+@media ( max-width: 1024px ) and ( prefers-reduced-motion: reduce ) {
+	.custom-nightlife-membership__panel,
 	.custom-nightlife-membership__panel.is-open {
-		order: -1;
-		flex: 0 0 100%;
-	}
-
-	/* Each waiting picture asks for exactly half the row, so the two are the
-	   same width at every moment of the turn and the row keeps its depth: asked
-	   for less, the one closing grows into the room left over, and the row
-	   deepens while it does. */
-	.custom-nightlife-membership__panel:not( .is-open ) {
-		flex: 1 1 50%;
-	}
-
-	.custom-nightlife-membership__panel-picture {
-		position: relative;
-		inset: auto;
-		display: block;
-		width: 100%;
-		aspect-ratio: 297 / 217;
-	}
-
-	.custom-nightlife-membership__button,
-	.custom-nightlife-membership__button:hover,
-	.custom-nightlife-membership__button:focus,
-	.custom-nightlife-membership__button:active {
-		position: absolute;
-		right: 0;
-		bottom: 16px;
-		left: 0;
-		width: fit-content;
-		margin: 0 auto;
+		transition: none;
 	}
 }
