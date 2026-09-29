@@ -36,7 +36,7 @@ class Membership_Benefit extends Base_Widget {
 	 * @return string
 	 */
 	public function get_title() {
-		return esc_html__( 'Membership — Benefit', 'custom-elementor-widgets' );
+		return esc_html__( 'Membership — Exclusive area', 'custom-elementor-widgets' );
 	}
 
 	/**
@@ -83,7 +83,7 @@ class Membership_Benefit extends Base_Widget {
 				'label'       => esc_html__( 'Heading', 'custom-elementor-widgets' ),
 				'type'        => Controls_Manager::TEXT,
 				'dynamic'     => array( 'active' => true ),
-				'placeholder' => esc_html__( 'Benefits', 'custom-elementor-widgets' ),
+				'placeholder' => esc_html__( 'EXCLUSIVE AREA', 'custom-elementor-widgets' ),
 			)
 		);
 
@@ -258,6 +258,38 @@ class Membership_Benefit extends Base_Widget {
 		);
 
 		$this->add_control(
+			'stage_name_color',
+			array(
+				'label'     => esc_html__( 'Title on the large picture', 'custom-elementor-widgets' ),
+				'type'      => Controls_Manager::COLOR,
+				'default'   => '#FFFFFF',
+				'separator' => 'before',
+				'selectors' => array(
+					'{{WRAPPER}} .custom-membership-benefit__stage-name' => 'color: {{VALUE}};',
+				),
+			)
+		);
+
+		$this->add_group_control(
+			Group_Control_Typography::get_type(),
+			array(
+				'name'           => 'stage_name_typography',
+				'label'          => esc_html__( 'Title on the large picture', 'custom-elementor-widgets' ),
+				'selector'       => '{{WRAPPER}} .custom-membership-benefit__stage-name',
+				'fields_options' => array(
+					'typography'  => array( 'default' => 'yes' ),
+					'font_family' => array( 'default' => 'Roboto' ),
+					'font_size'   => array(
+						'default'        => array( 'unit' => 'px', 'size' => 44 ),
+						'tablet_default' => array( 'unit' => 'px', 'size' => 28 ),
+						'mobile_default' => array( 'unit' => 'px', 'size' => 20 ),
+					),
+					'font_weight' => array( 'default' => '700' ),
+				),
+			)
+		);
+
+		$this->add_control(
 			'body_color',
 			array(
 				'label'     => esc_html__( 'Text', 'custom-elementor-widgets' ),
@@ -325,7 +357,7 @@ class Membership_Benefit extends Base_Widget {
 		$picture  = isset( $settings['picture']['url'] ) ? $settings['picture']['url'] : '';
 
 		$heading = isset( $settings['heading'] ) ? trim( (string) $settings['heading'] ) : '';
-		$heading = '' !== $heading ? $heading : esc_html__( 'Benefits', 'custom-elementor-widgets' );
+		$heading = '' !== $heading ? $heading : esc_html__( 'EXCLUSIVE AREA', 'custom-elementor-widgets' );
 
 		$tag = isset( $settings['heading_tag'] ) ? $settings['heading_tag'] : 'h2';
 		$tag = in_array( $tag, array( 'h2', 'h3', 'span' ), true ) ? $tag : 'h2';
@@ -349,6 +381,14 @@ class Membership_Benefit extends Base_Widget {
 						<div class="custom-membership-benefit__slide<?php echo 0 === $index ? ' is-current' : ''; ?>">
 							<div class="custom-membership-benefit__stage"><?php
 								$this->media( isset( $benefit['wide_picture']['url'] ) ? $benefit['wide_picture']['url'] : '', '', true );
+
+								// The large picture names its area at its foot, as the
+								// design draws it; the words beside say it for a reader.
+								$name = isset( $benefit['title'] ) ? trim( (string) $benefit['title'] ) : '';
+
+								if ( '' !== $name ) {
+									printf( '<span class="custom-membership-benefit__stage-name" aria-hidden="true">%s</span>', esc_html( $name ) );
+								}
 							?></div>
 
 							<div class="custom-membership-benefit__side">

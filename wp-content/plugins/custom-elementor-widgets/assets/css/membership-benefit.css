@@ -100,6 +100,21 @@
 	object-position: center;
 }
 
+/* The large picture names its area at its foot, in the middle, as the design
+   draws it: 24 in from either edge and 48 up on the wide tier. A long name
+   takes a second line upward rather than running off it. */
+.custom-membership-benefit__stage-name {
+	position: absolute;
+	right: 24px;
+	bottom: 48px;
+	left: 24px;
+	margin: 0;
+	text-align: center;
+	text-transform: uppercase;
+	overflow-wrap: anywhere;
+	pointer-events: none;
+}
+
 /* The words and the second picture down the right. */
 .custom-membership-benefit__side {
 	display: flex;
@@ -332,5 +347,24 @@
 
 	.custom-membership-benefit__arrow {
 		top: 180px;
+	}
+}
+
+/* Tablet — not drawn: the name 16 in and 24 up, with the picture's own share of
+   the wide tier's room. */
+@media ( min-width: 768px ) and ( max-width: 1024px ) {
+	.custom-membership-benefit__stage-name {
+		right: 16px;
+		bottom: 24px;
+		left: 16px;
+	}
+}
+
+/* Mobile — not drawn: the name 12 in and 16 up. */
+@media ( max-width: 767px ) {
+	.custom-membership-benefit__stage-name {
+		right: 12px;
+		bottom: 16px;
+		left: 12px;
 	}
 }
