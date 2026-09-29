@@ -319,7 +319,8 @@ add_action( 'init', 'kadence_child_one_description', 20 );
 /**
  * What an event carries that WordPress has no field for.
  *
- * When it is, from when until when, and the kind of music. When a post is
+ * When it is, from when until when, the kind of music, whether it is one to
+ * pick out, and the ways to a ticket. When a post is
  * published is when it appeared on the site, which is not when the night is;
  * an event set for next week would have to be held back until then to say so.
  * Registered in code so the fields travel with the theme rather than being
@@ -345,7 +346,7 @@ function kadence_child_event_fields() {
 				),
 			),
 			'position' => 'normal',
-			'fields'   => array(
+			'fields'   => array_merge( array(
 				array(
 					'key'                     => 'field_event_date',
 					'label'                   => esc_html__( 'Date', 'kadence-child' ),
@@ -381,11 +382,73 @@ function kadence_child_event_fields() {
 					'name'  => 'event_genre',
 					'type'  => 'text',
 				),
-			),
+				array(
+					'key'           => 'field_event_highlight',
+					'label'         => esc_html__( 'Highlight', 'kadence-child' ),
+					'name'          => 'event_highlight',
+					'type'          => 'true_false',
+					'ui'            => 1,
+					'default_value' => 0,
+				),
+			), kadence_child_event_ticket_fields() ),
 		)
 	);
 }
 add_action( 'acf/init', 'kadence_child_event_fields' );
+
+/**
+ * An event's two ways to a ticket, each with the two toggles every link in
+ * the widgets carries.
+ *
+ * The address is words rather than WordPress's own address field, as it is in
+ * the widgets: that field turns away a path such as /home, and a path is how
+ * a link to a page of this site is written. A path, an anchor or a whole
+ * address are all taken; one with no scheme stays on this site. Whether it
+ * opens in a new tab and whether it is nofollow are the toggles' answers,
+ * never the address's.
+ *
+ * @return array The fields, three to a ticket.
+ */
+function kadence_child_event_ticket_fields() {
+	$fields = array();
+
+	foreach ( array(
+		'ticket'     => esc_html__( 'Ticket url', 'kadence-child' ),
+		'vip_ticket' => esc_html__( 'Vip ticket url', 'kadence-child' ),
+	) as $which => $label ) {
+		$fields[] = array(
+			'key'          => 'field_event_' . $which . '_url',
+			'label'        => $label,
+			'name'         => 'event_' . $which . '_url',
+			'type'         => 'text',
+			'instructions' => esc_html__( 'A page of this site as its path, such as /home, or a whole address for another site.', 'kadence-child' ),
+			'wrapper'      => array( 'width' => '50' ),
+		);
+
+		$fields[] = array(
+			'key'           => 'field_event_' . $which . '_url_blank',
+			'label'         => esc_html__( 'Open in a new tab', 'kadence-child' ),
+			'name'          => 'event_' . $which . '_url_blank',
+			'type'          => 'true_false',
+			'ui'            => 1,
+			'default_value' => 0,
+			'wrapper'       => array( 'width' => '25' ),
+		);
+
+		$fields[] = array(
+			'key'           => 'field_event_' . $which . '_url_nofollow',
+			'label'         => esc_html__( 'nofollow', 'kadence-child' ),
+			'name'          => 'event_' . $which . '_url_nofollow',
+			'type'          => 'true_false',
+			'ui'            => 1,
+			'default_value' => 0,
+			'wrapper'       => array( 'width' => '25' ),
+		);
+	}
+
+	return $fields;
+}
+
 
 /**
  * A post's article: the blocks it is made of, one under another.
