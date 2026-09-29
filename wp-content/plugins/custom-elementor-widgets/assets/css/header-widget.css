@@ -680,6 +680,10 @@ html.custom-header-open body {
 		display: none;
 	}
 
+	/* As much room under the buttons as over them, so that a screen too short
+	   for the menu, a phone turned on its side, scrolls to them with room to
+	   spare instead of ending on their edge; and past a phone's own bar at
+	   the foot of the screen, where it has one. */
 	.custom-header.is-open .custom-header__actions {
 		order: 4;
 		display: flex;
@@ -687,6 +691,7 @@ html.custom-header-open body {
 		width: 100%;
 		gap: 5px;
 		margin-top: 24px;
+		padding-bottom: calc( 24px + env( safe-area-inset-bottom, 0px ) );
 	}
 
 	.custom-header__button,
@@ -751,6 +756,7 @@ html.custom-header-open body {
 	.custom-header.is-open .custom-header__actions {
 		gap: 8px;
 		margin-top: 28px;
+		padding-bottom: calc( 28px + env( safe-area-inset-bottom, 0px ) );
 	}
 
 	.custom-header__button,
