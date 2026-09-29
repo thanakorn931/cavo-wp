@@ -567,7 +567,9 @@ class Home_The_Space extends Base_Widget {
 				foreach ( $list as $index => $area ) {
 					// The ring the arrows turn: after the last comes the first. A
 					// single area has nothing after it.
-					$next = $count > 1 ? $list[ ( $index + 1 ) % $count ] : null;
+					// The one after it, round to the first; an area standing
+					// alone is its own next.
+					$next = $list[ ( $index + 1 ) % $count ];
 
 					$this->render_area( $settings, $area, 0 === $index, $next );
 				}
@@ -603,19 +605,20 @@ class Home_The_Space extends Base_Widget {
 	 * @param array      $settings The widget's settings.
 	 * @param array      $area     The row.
 	 * @param bool       $here     Whether it is the one open.
-	 * @param array|null $next     The row after it, or nothing when it stands alone.
+	 * @param array|null $next     The row after it, or itself when it stands alone.
 	 */
 	private function render_area( $settings, $area, $here, $next ) {
 		$space = $this->text( $settings, 'space_text' );
 		$tour  = $this->text( $settings, 'tour_text' );
 		$icon  = isset( $settings['tour_icon'] ) ? $settings['tour_icon'] : array();
 
-		// The next area is named by its title, or by its tab where it has none.
+		// The next area is named as its tab names it, or by its title where the
+		// tab was left empty — as the tab itself is.
 		$next_name = '';
 
 		if ( $next ) {
-			$next_name = isset( $next['title'] ) ? trim( (string) $next['title'] ) : '';
-			$next_name = '' !== $next_name ? $next_name : ( isset( $next['name'] ) ? trim( (string) $next['name'] ) : '' );
+			$next_name = isset( $next['name'] ) ? trim( (string) $next['name'] ) : '';
+			$next_name = '' !== $next_name ? $next_name : ( isset( $next['title'] ) ? trim( (string) $next['title'] ) : '' );
 		}
 		?>
 		<div class="custom-home-space__area<?php echo $here ? ' is-here' : ''; ?>"<?php echo $here ? '' : ' hidden'; ?>>

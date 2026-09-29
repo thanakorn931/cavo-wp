@@ -377,7 +377,11 @@ class Membership_Benefit extends Base_Widget {
 					$count    = count( $benefits );
 					?>
 					<?php foreach ( $benefits as $index => $benefit ) : ?>
-						<?php $next = $count > 1 ? $benefits[ ( $index + 1 ) % $count ] : null; ?>
+						<?php
+						// The one after it, round to the first; a benefit standing
+						// alone is its own next.
+						$next = $benefits[ ( $index + 1 ) % $count ];
+						?>
 						<div class="custom-membership-benefit__slide<?php echo 0 === $index ? ' is-current' : ''; ?>">
 							<div class="custom-membership-benefit__stage"><?php
 								$this->media( isset( $benefit['wide_picture']['url'] ) ? $benefit['wide_picture']['url'] : '', '', true );
