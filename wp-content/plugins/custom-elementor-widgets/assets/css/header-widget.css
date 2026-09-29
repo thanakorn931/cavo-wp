@@ -183,6 +183,9 @@ body.admin-bar .custom-header__bar {
 	border: 1px solid currentColor;
 	border-radius: 24px;
 	background: none;
+	/* Flat, as the menu's mark is: the theme's lifting shadow is not its. */
+	box-shadow: none;
+	-webkit-tap-highlight-color: transparent;
 	color: inherit;
 	font-family: Roboto, sans-serif;
 	font-size: 11px;
@@ -421,6 +424,11 @@ body.admin-bar .custom-header__bar {
 	padding: 0;
 	border: 0;
 	background: none;
+	/* The theme lifts every button off the page with a shadow once it is
+	   pointed at, focused or pressed, and a touch screen keeps that after the
+	   tap: the mark would float. It is a mark on the bar, and stays flat. */
+	box-shadow: none;
+	-webkit-tap-highlight-color: transparent;
 	color: inherit;
 	cursor: pointer;
 	/* The theme gives every button a change of everything, place in the row
@@ -594,21 +602,27 @@ html.custom-header-open body {
 		border-bottom: 1px solid #e1d8b1;
 	}
 
-	/* The language switch stands at the foot of the open menu, 16 in and 26
-	   up from the bottom of the screen (11282:5363), a pill 27 deep, 6 in at
-	   either end, the globe 12, the code at 9 and the chevron 8 by 5, 5
-	   apart. Its list opens upward, 4 above it: 89 across, 8 inside, corners
-	   of 6, each row 7 inside with corners of 3, at 11. Until the menu is
-	   opened it is not there. */
+	/* The language switch, a pill 27 deep, 6 in at either end, the globe 12,
+	   the code at 9 and the chevron 8 by 5, 5 apart (11282:5363). The file
+	   stands it at the foot of the open menu; as asked, it stands instead in
+	   the open menu's top row, 12 before the mark that shuts it and in the
+	   middle of the row's depth, where a menu longer than the screen cannot
+	   run under it. Its list opens downward, 4 below it and against its right
+	   edge: 89 across, 8 inside, corners of 6, each row 7 inside with corners
+	   of 3, at 11. Until the menu is opened it is not there. */
 	.custom-header__language {
 		display: none;
+	}
+
+	.custom-header.is-open .custom-header__row {
+		position: relative;
 	}
 
 	.custom-header.is-open .custom-header__language {
 		display: block;
 		position: absolute;
-		left: 16px;
-		bottom: 26px;
+		top: calc( ( var( --custom-header-row ) - 27px ) / 2 );
+		right: 36px;
 	}
 
 	.custom-header__language-toggle,
@@ -633,8 +647,8 @@ html.custom-header-open body {
 
 	.custom-header__language-menu {
 		position: absolute;
-		left: 0;
-		bottom: calc( 100% + 4px );
+		top: calc( 100% + 4px );
+		right: 0;
 		width: 89px;
 		padding: 8px;
 		border-radius: 6px;
@@ -749,9 +763,10 @@ html.custom-header-open body {
 	/* The language switch grown with the rest, a decision: the pill 32 deep,
 	   8 in, the globe 14, the code at 11, the chevron 9 by 6; the list 100
 	   across, 10 inside, corners of 8, rows 9 inside with corners of 4, at
-	   13; standing 32 up from the bottom. */
+	   13; standing 16 before the mark, which is 32 across here. */
 	.custom-header.is-open .custom-header__language {
-		bottom: 32px;
+		top: calc( ( var( --custom-header-row ) - 32px ) / 2 );
+		right: 48px;
 	}
 
 	.custom-header__language-toggle,
