@@ -238,6 +238,11 @@ body.admin-bar .custom-header__bar {
 	display: block;
 }
 
+/* The open menu's own switch on the narrow tiers; the wide tier has the pill. */
+.custom-header__languages {
+	display: none;
+}
+
 .custom-header__language-menu li {
 	margin: 0;
 	padding: 0;
@@ -602,65 +607,80 @@ html.custom-header-open body {
 		border-bottom: 1px solid #e1d8b1;
 	}
 
-	/* The language switch, a pill 27 deep, 6 in at either end, the globe 12,
-	   the code at 9 and the chevron 8 by 5, 5 apart (11282:5363). The file
-	   stands it at the foot of the open menu; as asked, it stands instead in
-	   the open menu's top row, 12 before the mark that shuts it and in the
-	   middle of the row's depth, where a menu longer than the screen cannot
-	   run under it. Its list opens downward, 4 below it and against its right
-	   edge: 89 across, 8 inside, corners of 6, each row 7 inside with corners
-	   of 3, at 11. Until the menu is opened it is not there. */
+	/* The language switch the open menu carries is not the wide tier's pill
+	   and its list: as asked, it is a bar holding every language side by
+	   side under the pages, 24 below their rule and 24 above the buttons,
+	   40 deep and at most 320 across in the middle, with a 1 edge in the
+	   menu's ink and 4 inside it. The language being read stands on its own
+	   ground, #B9AD79, in the paper colour; the others are the menu's ink
+	   and a press away. Each is named by its code, at 11 Roboto Medium. The
+	   bar's own ink is the theme's, not the menu's, so the brown is said. */
 	.custom-header__language {
 		display: none;
 	}
 
-	.custom-header.is-open .custom-header__row {
-		position: relative;
+	.custom-header.is-open .custom-header__languages {
+		display: flex;
+		gap: 4px;
+		width: 100%;
+		max-width: 320px;
+		height: 40px;
+		margin: 24px auto 0;
+		padding: 4px;
+		border: 1px solid currentColor;
+		border-radius: 40px;
+		color: #3a2114;
+		list-style: none;
+		box-sizing: border-box;
+		animation: custom-header-in 300ms ease-in-out both;
 	}
 
-	.custom-header.is-open .custom-header__language {
-		display: block;
-		position: absolute;
-		top: calc( ( var( --custom-header-row ) - 27px ) / 2 );
-		right: 36px;
+	.custom-header.is-open.is-closing .custom-header__languages {
+		animation-name: custom-header-out;
 	}
 
-	.custom-header__language-toggle,
-	.custom-header__language-toggle:hover,
-	.custom-header__language-toggle:focus,
-	.custom-header__language-toggle:active {
-		gap: 5px;
-		height: 27px;
-		padding: 0 6px;
-		font-size: 9px;
+	.custom-header__languages li {
+		flex: 1 1 0;
+		min-width: 0;
+		margin: 0;
+		padding: 0;
 	}
 
-	.custom-header__language-globe {
-		width: 12px;
-		height: 12px;
-	}
-
-	.custom-header__language-chevron {
-		width: 8px;
-		height: 5px;
-	}
-
-	.custom-header__language-menu {
-		position: absolute;
-		top: calc( 100% + 4px );
-		right: 0;
-		width: 89px;
-		padding: 8px;
-		border-radius: 6px;
-	}
-
-	.custom-header__language-menu a,
-	.custom-header__language-menu a:hover,
-	.custom-header__language-menu a:focus,
-	.custom-header__language-menu a:active {
-		padding: 7px;
-		border-radius: 3px;
+	.custom-header__languages a,
+	.custom-header__languages a:hover,
+	.custom-header__languages a:focus,
+	.custom-header__languages a:active {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		height: 100%;
+		border-radius: 40px;
+		background-color: transparent;
+		color: inherit;
+		font-family: Roboto, sans-serif;
 		font-size: 11px;
+		font-weight: 500;
+		line-height: 1;
+		text-transform: uppercase;
+		text-decoration: none;
+		white-space: nowrap;
+		-webkit-tap-highlight-color: transparent;
+		transition:
+			background-color 300ms ease-in-out,
+			color 300ms ease-in-out;
+	}
+
+	.custom-header__languages .is-current a,
+	.custom-header__languages .is-current a:hover,
+	.custom-header__languages .is-current a:focus,
+	.custom-header__languages .is-current a:active {
+		background-color: #b9ad79;
+		color: #faf6ea;
+	}
+
+	.custom-header__languages a:focus-visible {
+		outline: 2px solid currentColor;
+		outline-offset: 2px;
 	}
 
 	.custom-header.is-open .custom-header__menu li {
@@ -766,47 +786,18 @@ html.custom-header-open body {
 		padding: 10px 20px;
 	}
 
-	/* The language switch grown with the rest, a decision: the pill 32 deep,
-	   8 in, the globe 14, the code at 11, the chevron 9 by 6; the list 100
-	   across, 10 inside, corners of 8, rows 9 inside with corners of 4, at
-	   13; standing 16 before the mark, which is 32 across here. */
-	.custom-header.is-open .custom-header__language {
-		top: calc( ( var( --custom-header-row ) - 32px ) / 2 );
-		right: 48px;
+	/* The language switch grown with the rest, a decision: 44 deep, at most
+	   360 across, 28 below the pages' rule, the codes at 13. */
+	.custom-header.is-open .custom-header__languages {
+		max-width: 360px;
+		height: 44px;
+		margin-top: 28px;
 	}
 
-	.custom-header__language-toggle,
-	.custom-header__language-toggle:hover,
-	.custom-header__language-toggle:focus,
-	.custom-header__language-toggle:active {
-		gap: 6px;
-		height: 32px;
-		padding: 0 8px;
-		font-size: 11px;
-	}
-
-	.custom-header__language-globe {
-		width: 14px;
-		height: 14px;
-	}
-
-	.custom-header__language-chevron {
-		width: 9px;
-		height: 6px;
-	}
-
-	.custom-header__language-menu {
-		width: 100px;
-		padding: 10px;
-		border-radius: 8px;
-	}
-
-	.custom-header__language-menu a,
-	.custom-header__language-menu a:hover,
-	.custom-header__language-menu a:focus,
-	.custom-header__language-menu a:active {
-		padding: 9px;
-		border-radius: 4px;
+	.custom-header__languages a,
+	.custom-header__languages a:hover,
+	.custom-header__languages a:focus,
+	.custom-header__languages a:active {
 		font-size: 13px;
 	}
 }
@@ -859,6 +850,7 @@ html.custom-header-open body {
 @media ( prefers-reduced-motion: reduce ) {
 	.custom-header.is-open .custom-header__bar,
 	.custom-header.is-open .custom-header__menu,
+	.custom-header.is-open .custom-header__languages,
 	.custom-header.is-open .custom-header__actions {
 		animation: none;
 	}

@@ -829,7 +829,8 @@ abstract class Header_Widget extends Base_Widget {
 
 	/**
 	 * The switch between languages: the current one on a pill, the rest in a
-	 * list that opens from it (6916:1720, 11282:6582, 11282:5363).
+	 * list that opens from it (6916:1720, 11282:6582, 11282:5363); and for the
+	 * open menu on the narrow tiers, every language side by side by its code.
 	 *
 	 * @param array $settings The widget's settings.
 	 */
@@ -871,6 +872,13 @@ abstract class Header_Widget extends Base_Widget {
 				<?php endforeach; ?>
 			</ul>
 		</div>
+		<ul class="custom-header__languages" aria-label="<?php esc_attr_e( 'Language', 'custom-elementor-widgets' ); ?>">
+			<?php foreach ( $languages as $language ) : ?>
+				<li<?php echo $language['current'] ? ' class="is-current"' : ''; ?>>
+					<a href="<?php echo esc_url( $language['url'] ); ?>" lang="<?php echo esc_attr( $language['slug'] ); ?>" hreflang="<?php echo esc_attr( $language['slug'] ); ?>"<?php echo $language['current'] ? ' aria-current="true"' : ''; ?>><?php echo esc_html( strtoupper( $language['slug'] ) ); ?></a>
+				</li>
+			<?php endforeach; ?>
+		</ul>
 		<?php
 	}
 
