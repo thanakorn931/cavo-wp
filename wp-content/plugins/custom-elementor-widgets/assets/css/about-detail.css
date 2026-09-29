@@ -1,54 +1,9 @@
 /**
  * About, detail — one section of the design.
  *
- * What the place stands for across the top, then how to reach it beside the map.
+ * How to reach the place, beside the map. What it stands for — the vision and
+ * the mission — stood across the top and was taken out at the client's word.
  */
-
-.custom-about-detail__intro {
-	display: flex;
-	align-items: flex-start;
-	gap: 64px;
-	width: 100%;
-	padding: 96px calc( 48px + max( 0px, calc( ( 100% - 1440px ) / 2 ) ) );
-	box-sizing: border-box;
-}
-
-.custom-about-detail__vision {
-	flex: 0 0 auto;
-}
-
-.custom-about-detail__mission {
-	flex: 1 1 0;
-	min-width: 0;
-}
-
-.custom-about-detail__vision,
-.custom-about-detail__mission {
-	display: flex;
-	flex-direction: column;
-	align-items: flex-start;
-	gap: 16px;
-}
-
-.custom-about-detail__vision-body {
-	width: 508px;
-	max-width: 100%;
-}
-
-.custom-about-detail__mission-body {
-	width: 100%;
-}
-
-.custom-about-detail__intro h3,
-.custom-about-detail__intro p {
-	margin: 0;
-}
-
-.custom-about-detail__intro h3 {
-	color: inherit;
-	padding: 0;
-	text-transform: uppercase;
-}
 
 /* How to reach it, and the map beside it. The band runs the full width; what
    stands in it is held to 1440 and centred, so the halves are measured from
@@ -189,26 +144,9 @@
 }
 
 /* Tablet and mobile — the file draws one of them (6688:3121, 11186:12190,
-   11205:3053): what the place stands for one part under the other, then how
-   to reach it, then the map the width of the screen. Tablet is not drawn and
+   11205:3053): how to reach it, then the map the width of the screen. Tablet is not drawn and
    takes the same figures, the map deeper. */
 @media ( max-width: 1024px ) {
-	.custom-about-detail__intro {
-		flex-direction: column;
-		gap: 38px;
-		padding: 38px 16px;
-	}
-
-	.custom-about-detail__vision,
-	.custom-about-detail__mission {
-		flex: 0 0 auto;
-		width: 100%;
-	}
-
-	.custom-about-detail__vision-body {
-		width: 100%;
-	}
-
 	.custom-about-detail__split {
 		flex-direction: column;
 	}

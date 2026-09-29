@@ -64,8 +64,6 @@ class About_Detail extends Base_Widget {
 	 */
 	protected function design_text() {
 		return array(
-			'vision_title'  => esc_html__( 'Vision', 'custom-elementor-widgets' ),
-			'mission_title' => esc_html__( 'Mission', 'custom-elementor-widgets' ),
 			'location_title' => esc_html__( 'Location', 'custom-elementor-widgets' ),
 			'getting_title' => esc_html__( 'Getting Here', 'custom-elementor-widgets' ),
 			'station_title' => esc_html__( 'Nearest BTS Station', 'custom-elementor-widgets' ),
@@ -98,41 +96,6 @@ class About_Detail extends Base_Widget {
 	 */
 	protected function register_controls() {
 		$design = $this->design_text();
-
-		$this->start_controls_section(
-			'section_intro',
-			array(
-				'label' => esc_html__( 'Vision and mission', 'custom-elementor-widgets' ),
-				'tab'   => Controls_Manager::TAB_CONTENT,
-			)
-		);
-
-		foreach ( array( 'vision', 'mission' ) as $which ) {
-			$this->add_control(
-				$which . '_title',
-				array(
-					'label'       => 'vision' === $which
-						? esc_html__( 'First heading', 'custom-elementor-widgets' )
-						: esc_html__( 'Second heading', 'custom-elementor-widgets' ),
-					'type'        => Controls_Manager::TEXT,
-					'dynamic'     => array( 'active' => true ),
-					'placeholder' => $design[ $which . '_title' ],
-					'separator'   => 'before',
-				)
-			);
-
-			$this->add_control(
-				$which . '_body',
-				array(
-					'label'   => esc_html__( 'Text', 'custom-elementor-widgets' ),
-					'type'    => Controls_Manager::TEXTAREA,
-					'dynamic' => array( 'active' => true ),
-					'rows'    => 5,
-				)
-			);
-		}
-
-		$this->end_controls_section();
 
 		$this->register_place_controls();
 		$this->register_style_controls();
@@ -294,30 +257,6 @@ class About_Detail extends Base_Widget {
 		);
 
 		$this->add_control(
-			'intro_background',
-			array(
-				'label'     => esc_html__( 'Behind the vision', 'custom-elementor-widgets' ),
-				'type'      => Controls_Manager::COLOR,
-				'default'   => '#C9BCA6',
-				'selectors' => array(
-					'{{WRAPPER}} .custom-about-detail__intro' => 'background-color: {{VALUE}};',
-				),
-			)
-		);
-
-		$this->add_control(
-			'intro_color',
-			array(
-				'label'     => esc_html__( 'Vision text', 'custom-elementor-widgets' ),
-				'type'      => Controls_Manager::COLOR,
-				'default'   => '#1A0F09',
-				'selectors' => array(
-					'{{WRAPPER}} .custom-about-detail__intro' => 'color: {{VALUE}};',
-				),
-			)
-		);
-
-		$this->add_control(
 			'column_color',
 			array(
 				'label'     => esc_html__( 'Text beside the map', 'custom-elementor-widgets' ),
@@ -325,25 +264,6 @@ class About_Detail extends Base_Widget {
 				'default'   => '#3A2114',
 				'selectors' => array(
 					'{{WRAPPER}} .custom-about-detail__column' => 'color: {{VALUE}};',
-				),
-			)
-		);
-
-		$this->add_group_control(
-			Group_Control_Typography::get_type(),
-			array(
-				'name'           => 'intro_title_typography',
-				'label'          => esc_html__( 'Vision heading', 'custom-elementor-widgets' ),
-				'selector'       => '{{WRAPPER}} .custom-about-detail__intro h3',
-				'fields_options' => array(
-					'typography'  => array( 'default' => 'yes' ),
-					'font_family' => array( 'default' => 'Roboto' ),
-					'font_size'   => array(
-						'default'        => array( 'unit' => 'px', 'size' => 24 ),
-						'tablet_default' => array( 'unit' => 'px', 'size' => 16 ),
-						'mobile_default' => array( 'unit' => 'px', 'size' => 16 ),
-					),
-					'font_weight' => array( 'default' => '400' ),
 				),
 			)
 		);
@@ -443,22 +363,7 @@ class About_Detail extends Base_Widget {
 		$map   = isset( $settings['map'] ) ? (string) $settings['map'] : '';
 		?>
 		<div class="custom-about-detail">
-			<div class="custom-about-detail__intro">
-				<div class="custom-about-detail__vision">
-					<h3><?php echo esc_html( $this->text( $settings, 'vision_title' ) ); ?></h3>
-					<p class="custom-about-detail__vision-body"><?php
-						echo $this->lines( isset( $settings['vision_body'] ) ? $settings['vision_body'] : '' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in lines().
-					?></p>
-				</div>
-
-				<div class="custom-about-detail__mission">
-					<h3><?php echo esc_html( $this->text( $settings, 'mission_title' ) ); ?></h3>
-					<p class="custom-about-detail__mission-body"><?php
-						echo $this->lines( isset( $settings['mission_body'] ) ? $settings['mission_body'] : '' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in lines().
-					?></p>
-				</div>
-			</div>
-
+			<?php // The vision and the mission that stood here were taken out at the client's word. ?>
 			<div class="custom-about-detail__split">
 				<div class="custom-about-detail__column">
 					<?php foreach ( array( 'location', 'getting', 'station' ) as $which ) : ?>
