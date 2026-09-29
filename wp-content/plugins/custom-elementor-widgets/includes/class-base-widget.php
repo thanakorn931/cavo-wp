@@ -409,14 +409,69 @@ abstract class Base_Widget extends \Elementor\Widget_Base {
 			wp_reset_postdata();
 		}
 
-		$this->read_items[ $post->ID ] = array_map(
+		$settings = array_map(
 			function ( $value ) {
 				return is_scalar( $value ) ? trim( (string) $value ) : $value;
 			},
 			$settings
 		);
 
+		$this->read_items[ $post->ID ] = $this->own_fields( $post, $settings );
+
 		return $this->read_items[ $post->ID ];
+	}
+
+	/**
+	 * An item's facts the section was not pointed at, read from the item itself.
+	 *
+	 * A control left empty, or pointed at something that answered nothing, is
+	 * given the event's own field of the same fact — its day, hours, kind,
+	 * whether it is picked out, and its ways to a ticket — so a section shows an
+	 * event as its fields say without a tag set for each. A tag can go astray:
+	 * Elementor offers the event's fields as an options page's, since the two
+	 * are registered in code, and read so they answer nothing. A control that
+	 * answers stands as it answered.
+	 *
+	 * Read through ACF where it is there, so each comes as the field writes it
+	 * (the day as `05 Oct 2026`, the hour as `08 : 00 PM`); the stored value
+	 * where it is not.
+	 *
+	 * @param \WP_Post $post     The item.
+	 * @param array    $settings Its settings as read.
+	 * @return array
+	 */
+	private function own_fields( $post, $settings ) {
+		if ( 'event' !== get_post_type( $post ) ) {
+			return $settings;
+		}
+
+		$fields = array(
+			'date'           => 'event_date',
+			'time'           => 'event_time_from',
+			'time_from'      => 'event_time_from',
+			'time_to'        => 'event_time_to',
+			'genre'          => 'event_genre',
+			'highlight'      => 'event_highlight',
+			'ticket_url'     => 'event_ticket_url',
+			'vip_ticket_url' => 'event_vip_ticket_url',
+		);
+
+		foreach ( $fields as $key => $name ) {
+			// Only a fact the section asks for, and only where it was not answered.
+			if ( ! array_key_exists( $key, $settings ) || ( is_scalar( $settings[ $key ] ) && '' !== (string) $settings[ $key ] ) ) {
+				continue;
+			}
+
+			$value = function_exists( 'get_field' ) ? get_field( $name, $post->ID ) : get_post_meta( $post->ID, $name, true );
+
+			if ( is_bool( $value ) ) {
+				$value = $value ? '1' : '';
+			}
+
+			$settings[ $key ] = is_scalar( $value ) ? trim( (string) $value ) : '';
+		}
+
+		return $settings;
 	}
 
 	/**
