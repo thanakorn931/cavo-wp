@@ -229,7 +229,7 @@
 		padding: 0;
 		border: 0;
 		border-radius: 50%;
-		background-color: #ebe4ca;
+		background-color: #faf6ea;
 		box-shadow: none;
 		cursor: pointer;
 		-webkit-tap-highlight-color: transparent;
@@ -292,7 +292,7 @@
 
 @media ( max-width: 1024px ) and ( hover: hover ) {
 	.custom-dining-membership__arrow:not( :disabled ):hover {
-		background-color: #e1d8b1;
+		background-color: #d4c894;
 	}
 }
 

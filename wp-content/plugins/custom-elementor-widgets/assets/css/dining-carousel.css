@@ -90,7 +90,7 @@
 	padding: 0;
 	border: 0;
 	border-radius: 50%;
-	background-color: #ebe4ca;
+	background-color: #faf6ea;
 	cursor: pointer;
 	transition:
 		background-color 300ms ease-in-out,
@@ -103,7 +103,7 @@
 .custom-dining-carousel__arrow:focus,
 .custom-dining-carousel__arrow:focus-visible,
 .custom-dining-carousel__arrow:active {
-	background-color: #ebe4ca;
+	background-color: #faf6ea;
 	border-color: transparent;
 	box-shadow: none;
 }
@@ -120,7 +120,7 @@
    pointer that can hover is given one. */
 @media ( hover: hover ) {
 	.custom-dining-carousel__arrow:hover {
-		background-color: #e1d8b1 !important;
+		background-color: #d4c894 !important;
 	}
 }
 

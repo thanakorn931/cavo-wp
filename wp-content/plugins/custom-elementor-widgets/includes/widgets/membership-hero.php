@@ -468,7 +468,7 @@ class Membership_Hero extends Base_Widget {
 			array(
 				'label'     => esc_html__( 'Arrows', 'custom-elementor-widgets' ),
 				'type'      => Controls_Manager::COLOR,
-				'default'   => '#3A2114',
+				'default'   => '#FAF6EA',
 				'separator' => 'before',
 				'selectors' => array(
 					'{{WRAPPER}} .custom-membership-hero__arrow:not( [disabled] )' => 'background-color: {{VALUE}};',
@@ -481,7 +481,7 @@ class Membership_Hero extends Base_Widget {
 			array(
 				'label'     => esc_html__( 'Arrow mark', 'custom-elementor-widgets' ),
 				'type'      => Controls_Manager::COLOR,
-				'default'   => '#FAF6EA',
+				'default'   => '#3A2114',
 				'selectors' => array(
 					'{{WRAPPER}} .custom-membership-hero__arrow:not( [disabled] ) svg' => 'fill: {{VALUE}};',
 				),

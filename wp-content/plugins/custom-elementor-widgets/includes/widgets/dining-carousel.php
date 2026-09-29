@@ -172,7 +172,7 @@ class Dining_Carousel extends Base_Widget {
 			array(
 				'label'     => esc_html__( 'Arrows', 'custom-elementor-widgets' ),
 				'type'      => Controls_Manager::COLOR,
-				'default'   => '#EBE4CA',
+				'default'   => '#FAF6EA',
 				'selectors' => array(
 					'{{WRAPPER}} .custom-dining-carousel__arrow'        => 'background-color: {{VALUE}};',
 					'{{WRAPPER}} .custom-dining-carousel__arrow:focus'  => 'background-color: {{VALUE}};',

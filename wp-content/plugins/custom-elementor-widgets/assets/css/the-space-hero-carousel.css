@@ -266,7 +266,7 @@
    pointer that can hover is given one. */
 @media ( hover: hover ) {
 	.custom-space-hero__arrow:hover {
-		background-color: #e1d8b1 !important;
+		background-color: #d4c894 !important;
 	}
 }
 

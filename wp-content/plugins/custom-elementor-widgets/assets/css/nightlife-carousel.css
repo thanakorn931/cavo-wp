@@ -198,7 +198,7 @@
 		padding: 0;
 		border: 0;
 		border-radius: 50%;
-		background-color: #ebe4ca;
+		background-color: #faf6ea;
 		cursor: pointer;
 		-webkit-tap-highlight-color: transparent;
 		transition: background-color 300ms ease-in-out;
@@ -210,7 +210,7 @@
 	.custom-nightlife-carousel__arrow:focus,
 	.custom-nightlife-carousel__arrow:focus-visible,
 	.custom-nightlife-carousel__arrow:active {
-		background-color: #ebe4ca;
+		background-color: #faf6ea;
 		border-color: transparent;
 		box-shadow: none;
 	}
@@ -241,7 +241,7 @@
    hover is given one. */
 @media ( max-width: 767px ) and ( hover: hover ) {
 	.custom-nightlife-carousel__arrow:hover {
-		background-color: #e1d8b1;
+		background-color: #d4c894;
 	}
 }
 

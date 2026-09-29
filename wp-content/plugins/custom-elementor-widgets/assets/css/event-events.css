@@ -115,7 +115,7 @@
 	padding: 0;
 	border: 0;
 	border-radius: 50%;
-	background-color: #ebe4ca;
+	background-color: #faf6ea;
 	box-shadow: none;
 	cursor: pointer;
 	-webkit-tap-highlight-color: transparent;
@@ -144,7 +144,7 @@
 
 @media ( hover: hover ) {
 	.custom-event-list__arrow:hover {
-		background-color: #e1d8b1;
+		background-color: #d4c894;
 	}
 }
 
