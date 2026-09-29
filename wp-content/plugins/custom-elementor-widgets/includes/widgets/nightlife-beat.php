@@ -155,17 +155,14 @@ class Nightlife_Beat extends Base_Widget {
 			)
 		);
 
-		$repeater->add_control(
-			'social_text',
-			array(
-				'label'     => esc_html__( 'Social text', 'custom-elementor-widgets' ),
-				'type'      => Controls_Manager::TEXT,
-				'dynamic'   => array( 'active' => true ),
-				'separator' => 'before',
-			)
+		// The card's Instagram, always named so: the box shows only where there
+		// is an address for it.
+		$this->add_link_controls(
+			$repeater,
+			'social_link',
+			esc_html__( 'IG link', 'custom-elementor-widgets' ),
+			array( 'separator' => 'before' )
 		);
-
-		$this->add_link_controls( $repeater, 'social_link', esc_html__( 'Social link', 'custom-elementor-widgets' ) );
 
 		$this->add_control(
 			'cards',
@@ -363,8 +360,7 @@ class Nightlife_Beat extends Base_Widget {
 		$note    = isset( $card['note'] ) ? trim( (string) $card['note'] ) : '';
 		$genre   = isset( $card['genre'] ) ? trim( (string) $card['genre'] ) : '';
 
-		$social = isset( $card['social_text'] ) ? trim( (string) $card['social_text'] ) : '';
-		$social = '' !== $social ? $social : esc_html__( 'Instagram', 'custom-elementor-widgets' );
+		$social = $this->link_from( $card, 'social_link' );
 		?>
 		<article class="custom-nightlife-beat__card">
 			<div class="custom-nightlife-beat__inner">
@@ -384,15 +380,19 @@ class Nightlife_Beat extends Base_Widget {
 					<p class="custom-nightlife-beat__name"><?php echo esc_html( $name ); ?></p>
 					<p class="custom-nightlife-beat__note"><?php echo esc_html( $note ); ?></p>
 
-					<div class="custom-nightlife-beat__chips">
-						<?php if ( '' !== $genre ) : ?>
-							<span class="custom-nightlife-beat__chip"><?php echo esc_html( $genre ); ?></span>
-						<?php endif; ?>
+					<?php if ( '' !== $genre || '' !== $social ) : ?>
+						<div class="custom-nightlife-beat__chips">
+							<?php if ( '' !== $genre ) : ?>
+								<span class="custom-nightlife-beat__chip"><?php echo esc_html( $genre ); ?></span>
+							<?php endif; ?>
 
-						<a class="custom-nightlife-beat__chip custom-nightlife-beat__chip--social"<?php
-							echo $this->link_from( $card, 'social_link' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in link_attributes().
-						?>><?php $this->render_social_mark(); ?><?php echo esc_html( $social ); ?></a>
-					</div>
+							<?php if ( '' !== $social ) : ?>
+								<a class="custom-nightlife-beat__chip custom-nightlife-beat__chip--social"<?php
+									echo $social; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- escaped in link_attributes().
+								?>><?php $this->render_social_mark(); ?><?php esc_html_e( 'Instagram', 'custom-elementor-widgets' ); ?></a>
+							<?php endif; ?>
+						</div>
+					<?php endif; ?>
 				</div>
 			</div>
 
