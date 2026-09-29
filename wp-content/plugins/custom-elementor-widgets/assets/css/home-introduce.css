@@ -68,12 +68,16 @@
 	margin: 0;
 }
 
+/* The words always leave room above the way in, however long they run. */
+.custom-home-introduce__body {
+	margin-bottom: 24px;
+}
+
 .custom-home-introduce__button {
-	position: absolute;
-	left: 0;
 	/* At the foot of the column, which the file draws 672 deep and 624 above
-	   the way in. Where the words need more room than that, it follows them. */
-	bottom: 0;
+	   the way in. Where the words need more room than that, it follows them,
+	   the room above it kept. */
+	margin-top: auto;
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
@@ -151,12 +155,11 @@
 
 	.custom-home-introduce__body {
 		width: 100%;
+		margin-bottom: 0;
 	}
 
-	/* Out of the flow on the wide tier so it can sit against the picture; in it
-	   here, where there is nothing beside it. */
+	/* Straight under the words here, where there is nothing beside it. */
 	.custom-home-introduce__button {
-		position: static;
 		margin-top: 24px;
 		padding: 8px 16px;
 	}
