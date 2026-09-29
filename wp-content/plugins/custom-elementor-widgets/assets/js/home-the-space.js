@@ -2,7 +2,9 @@
  * Home, the space.
  *
  * One area is open; the tabs say which, and the two arrows step through them in
- * the order they were written.
+ * the order they were written. The large picture can be pulled sideways to
+ * turn them too, and the small one beside it, which shows the next area, is
+ * pressed to go there.
  */
 ( function () {
 	'use strict';
@@ -104,9 +106,10 @@
 				return;
 			}
 
+			// The small picture shows the next area, and pressed, goes to it.
 			if ( event.target.closest( '.custom-home-space__arrow--prev' ) ) {
 				show( current - 1 );
-			} else if ( event.target.closest( '.custom-home-space__arrow--next' ) ) {
+			} else if ( event.target.closest( '.custom-home-space__arrow--next' ) || event.target.closest( '.custom-home-space__small' ) ) {
 				show( current + 1 );
 			}
 		} );
@@ -114,19 +117,24 @@
 		// How far a pull goes before it turns the row, as an arrow would.
 		var TURN = 40;
 
-		// Pulled sideways, the areas turn as the arrows turn them.
-		var pull = root.querySelector( '.custom-home-space__stage' ) || root;
+		// Only the large picture is pulled: the words, the buttons and the small
+		// picture beside it are pressed, never pulled. Pulled sideways, the
+		// areas turn as the arrows turn them.
+		var pulls = root.querySelectorAll( '.custom-home-space__large' );
 
-		pull.classList.add( 'custom-pull' );
-		pull.classList.toggle( 'is-pullable', areas.length > 1 );
-
-		pull.addEventListener( 'custom-pull', function ( event ) {
+		function pulled( event ) {
 			var by = event.detail.by;
 
 			if ( 'end' === event.detail.phase && Math.abs( by ) >= TURN ) {
 				show( current + ( by < 0 ? 1 : -1 ) );
 			}
-		} );
+		}
+
+		for ( var p = 0; p < pulls.length; p++ ) {
+			pulls[ p ].classList.add( 'custom-pull' );
+			pulls[ p ].classList.toggle( 'is-pullable', areas.length > 1 );
+			pulls[ p ].addEventListener( 'custom-pull', pulled );
+		}
 
 		show( 0 );
 

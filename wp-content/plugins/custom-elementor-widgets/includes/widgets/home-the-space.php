@@ -623,7 +623,7 @@ class Home_The_Space extends Base_Widget {
 				<?php $this->media( isset( $area['picture']['url'] ) ? $area['picture']['url'] : '', '', true ); ?>
 			</span>
 
-			<?php // What comes next, shown rather than offered: the tabs and the arrows are the way there. ?>
+			<?php // What comes next, and pressed, the way there. It is left out of what is read aloud, where the tabs and the arrows already go there. ?>
 			<span class="custom-home-space__small" aria-hidden="true">
 				<?php $this->media( $next && isset( $next['picture']['url'] ) ? $next['picture']['url'] : '', '', true ); ?>
 
