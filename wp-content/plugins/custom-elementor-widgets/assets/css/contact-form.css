@@ -232,6 +232,10 @@ input[ type="date" ].custom-contact-form__input.custom-contact-form__input {
    beneath them. A field asked to take half the row keeps half on the tablet,
    which the file does not draw, and takes the whole row on a phone. */
 @media ( max-width: 1024px ) {
+	.custom-contact-form__send {
+		padding: 12px 32px;
+	}
+
 	.custom-contact-form {
 		gap: 48px;
 		padding: 38px 16px 50px;

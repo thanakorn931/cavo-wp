@@ -101,7 +101,7 @@
 	.custom-not-found__button:focus,
 	.custom-not-found__button:active {
 		margin-top: 20px;
-		padding: 8px 16px;
+		padding: 12px 32px;
 	}
 }
 
@@ -114,6 +114,6 @@
 	.custom-not-found__button:hover,
 	.custom-not-found__button:focus,
 	.custom-not-found__button:active {
-		padding: 10px 20px;
+		padding: 12px 32px;
 	}
 }

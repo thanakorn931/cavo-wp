@@ -718,7 +718,7 @@ html.custom-header-open body {
 	.custom-header__button:hover,
 	.custom-header__button:focus,
 	.custom-header__button:active {
-		padding: 8px 16px;
+		padding: 12px 32px;
 	}
 
 	/* The file draws both buttons the one height here; the filled one takes
@@ -783,7 +783,7 @@ html.custom-header-open body {
 	.custom-header__button:hover,
 	.custom-header__button:focus,
 	.custom-header__button:active {
-		padding: 10px 20px;
+		padding: 12px 32px;
 	}
 
 	/* The language switch grown with the rest, a decision: 44 deep, at most

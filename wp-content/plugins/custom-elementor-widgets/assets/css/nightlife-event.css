@@ -137,8 +137,8 @@
 
 	.custom-nightlife-event__button {
 		width: auto;
-		height: 27px;
-		padding: 8px 16px;
+		height: auto;
+		padding: 12px 32px;
 	}
 }
 

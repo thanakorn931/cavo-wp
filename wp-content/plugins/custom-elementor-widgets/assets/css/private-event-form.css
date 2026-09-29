@@ -289,7 +289,7 @@ select.custom-private-form__input.custom-private-form__input:invalid {
 
 	.custom-private-form__send {
 		width: auto;
-		padding: 8px 15px;
+		padding: 12px 32px;
 	}
 
 	/* The mark beside what is chosen comes down with the field (11183:12119). */

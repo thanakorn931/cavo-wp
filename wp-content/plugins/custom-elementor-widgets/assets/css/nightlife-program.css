@@ -295,8 +295,8 @@
 
 	.custom-nightlife-program__button {
 		width: auto;
-		height: 27px;
-		padding: 7px 16px;
+		height: auto;
+		padding: 12px 32px;
 	}
 
 	.custom-nightlife-program__stamp {

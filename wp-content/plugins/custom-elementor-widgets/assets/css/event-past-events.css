@@ -133,7 +133,7 @@
 	.custom-event-past__action:hover,
 	.custom-event-past__action:focus,
 	.custom-event-past__action:active {
-		padding: 9px 13px;
+		padding: 12px 32px;
 	}
 
 	.custom-event-past__grid {

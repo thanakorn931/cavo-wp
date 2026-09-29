@@ -107,7 +107,7 @@
 	.custom-cta__button:hover,
 	.custom-cta__button:focus,
 	.custom-cta__button:active {
-		padding: 8px 16px;
+		padding: 12px 32px;
 	}
 }
 

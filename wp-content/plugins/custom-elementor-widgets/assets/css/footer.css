@@ -379,7 +379,8 @@
 	   tier's size beside a button that has taken this one. */
 	.custom-footer .custom-footer__field,
 	.custom-footer input.custom-footer__field {
-		height: 27px;
+		align-self: stretch;
+		height: auto;
 		padding: 8px 16px;
 		border-radius: 19px;
 		font-size: 9px;
@@ -388,9 +389,9 @@
 	.custom-footer .custom-footer__submit,
 	.custom-footer button.custom-footer__submit {
 		flex: 0 0 auto;
-		width: 81px;
-		height: 27px;
-		padding: 8px 16px;
+		width: auto;
+		height: auto;
+		padding: 12px 32px;
 		font-size: 9px;
 	}
 

@@ -178,7 +178,7 @@
 	.custom-dining-beverage__button:hover,
 	.custom-dining-beverage__button:focus,
 	.custom-dining-beverage__button:active {
-		padding: 8px 16px;
+		padding: 12px 32px;
 	}
 
 	/* 358 across and 320 deep in the file — held as that shape, so on tablet

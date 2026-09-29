@@ -154,6 +154,17 @@
 	}
 }
 
+/* Tablet and mobile — the button's padding, the same as every button's on
+   the narrow tiers. */
+@media ( max-width: 1024px ) {
+	.custom-dining-membership__button,
+	.custom-dining-membership__button:hover,
+	.custom-dining-membership__button:focus,
+	.custom-dining-membership__button:active {
+		padding: 12px 32px;
+	}
+}
+
 /* Mobile — the file draws the wide panel alone, 390 across and 244 deep
    (11205:3030), the button standing 26 above its foot. The two beside it are
    not drawn there; they take a row of their own under it, dividing it in
@@ -222,6 +233,6 @@
 		left: 0;
 		width: fit-content;
 		margin: 0 auto;
-		padding: 8px 16px;
+		padding: 12px 32px;
 	}
 }
