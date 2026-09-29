@@ -281,7 +281,9 @@ abstract class Event_Widget extends Base_Widget {
 
 	/**
 	 * The ways to a ticket a card offers: each the section's words and the
-	 * event's own address, and only where the event has one.
+	 * event's own address. As asked, both stand on every card still to come,
+	 * whether or not its event has an address for them yet; one without an
+	 * address goes nowhere until it is given one.
 	 *
 	 * @param array    $settings The widget's settings.
 	 * @param \WP_Post $post     The item.
@@ -296,11 +298,6 @@ abstract class Event_Widget extends Base_Widget {
 			'vip_ticket' => esc_html__( 'Reserve a VIP Table', 'custom-elementor-widgets' ),
 		) as $key => $design ) {
 			$link = $this->ticket_link( $item, $key );
-
-			if ( '' === $link ) {
-				continue;
-			}
-
 			$text = isset( $settings[ $key . '_text' ] ) ? trim( (string) $settings[ $key . '_text' ] ) : '';
 
 			$actions[] = array(
