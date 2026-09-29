@@ -110,10 +110,10 @@
 }
 
 /* Tablet and mobile — the file draws one of them (11174:10586): the name in
-   a band 38 deep above and below it, then the slides 250 by 167 with 16
-   between, the one being read in the middle, and 46 left under them. The
-   file draws two arrows on the slide; the wide tier has none and, as asked,
-   neither does this one. Tablet is not drawn and takes the same figures. */
+   a band 38 deep above and below it, the slides under it and 46 left under
+   them. The file draws two arrows on the slide; the wide tier has none and,
+   as asked, neither does this one. The run itself is set apart for each:
+   the tablet's below, and the phone's after it. */
 @media ( max-width: 1024px ) {
 	.custom-nightlife-carousel {
 		gap: 38px;
@@ -123,43 +123,53 @@
 	.custom-nightlife-carousel__heading {
 		padding: 0 16px;
 	}
-
-	.custom-nightlife-carousel__stage,
-	.custom-nightlife-carousel__track {
-		height: 167px;
-	}
-
-	.custom-nightlife-carousel__track {
-		gap: 16px;
-		padding: 0 calc( 50% - 125px );
-	}
-
-	.custom-nightlife-carousel__slide {
-		width: 250px;
-		height: 167px;
-		border-radius: 6px;
-	}
 }
 
-/* Tablet — not drawn. At 250 the slides stand three abreast and none is the
-   one being read; the slide is given 720 by 480, so one stands whole in the
-   middle with its neighbours showing at either edge, as on the wide tier
-   and the narrow one, and the run still comes to rest on the middle of a
-   slide. */
+/* Tablet — as asked, the wide tier's run at half its size: slides of 420 by
+   280, all one size as the wide tier draws them, 24 between, one in the
+   middle with its neighbours either side of it. */
 @media ( min-width: 768px ) and ( max-width: 1024px ) {
 	.custom-nightlife-carousel__stage,
 	.custom-nightlife-carousel__track {
-		height: 480px;
+		height: 280px;
 	}
 
 	.custom-nightlife-carousel__track {
-		padding: 0 calc( 50% - 360px );
+		gap: 24px;
+		padding: 0 calc( 50% - 210px );
 	}
 
 	.custom-nightlife-carousel__slide {
-		width: 720px;
-		height: 480px;
-		border-radius: 16px;
+		width: 420px;
+		height: 280px;
+		border-radius: 12px;
 	}
 }
 
+/* Mobile — as asked, one slide and nothing either side of it: the slide is
+   the band less 16 at either edge, three by two, and the next stands a whole
+   32 further on, past the band's edge. The row is as wide as its slides, so
+   the slide reads the band's width from the band itself. */
+@media ( max-width: 767px ) {
+	.custom-nightlife-carousel__stage {
+		container-type: inline-size;
+	}
+
+	.custom-nightlife-carousel__stage,
+	.custom-nightlife-carousel__track {
+		height: auto;
+	}
+
+	.custom-nightlife-carousel__track {
+		gap: 32px;
+		padding: 0 16px;
+	}
+
+	.custom-nightlife-carousel__slide {
+		width: calc( 100vw - 32px );
+		width: calc( 100cqw - 32px );
+		height: auto;
+		aspect-ratio: 3 / 2;
+		border-radius: 6px;
+	}
+}

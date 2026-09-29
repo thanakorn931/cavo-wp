@@ -168,12 +168,8 @@
 }
 
 /* Tablet and mobile — neither is drawn: the file leaves the band empty on
-   the narrow frame. What follows is a decision, and says so. The run keeps
-   the wide tier's run scaled to the frame, with every slide at one size,
-   as the file draws the runs it does draw on this tier: 358 across and 240
-   deep on mobile, 18 between, the arrows 24 standing 12 inside the slide's
-   edges and in the middle of its depth. Tablet takes the same at a size
-   that suits its width: 720 by 480, 36 between, the arrows 40. */
+   the narrow frame. What follows is a decision, and says so. The band keeps
+   its title 38 below its top and 16 in from either edge. */
 @media ( max-width: 1024px ) {
 	.custom-dining-carousel {
 		gap: 16px;
@@ -183,25 +179,77 @@
 	.custom-dining-carousel__title {
 		padding: 10px 16px;
 	}
+}
 
+/* Tablet — as asked, the wide tier's run at half its size: the slide being
+   read 540 by 360 between two of 420 by 280, 28 between them, cut by the
+   band's edges as the wide tier cuts them; the arrows 48, in the middle of
+   the run's depth and 4 outside the slide being read. */
+@media ( min-width: 768px ) and ( max-width: 1024px ) {
 	.custom-dining-carousel__stage,
 	.custom-dining-carousel__track {
-		height: 240px;
+		height: 360px;
 	}
 
 	.custom-dining-carousel__track {
-		gap: 18px;
+		gap: 28px;
+	}
+
+	.custom-dining-carousel__slide {
+		width: 420px;
+		height: 280px;
+		border-radius: 16px;
+	}
+
+	.custom-dining-carousel__slide.is-current {
+		width: 540px;
+		height: 360px;
+	}
+
+	.custom-dining-carousel__arrow {
+		top: 156px;
+		width: 48px;
+		height: 48px;
+	}
+
+	.custom-dining-carousel__arrow svg {
+		width: 12px;
+		height: 10px;
+	}
+
+	.custom-dining-carousel__arrow--prev {
+		left: calc( 50% - 322px );
+	}
+
+	.custom-dining-carousel__arrow--next {
+		left: calc( 50% + 274px );
+	}
+}
+
+/* Mobile — as asked, one slide and nothing either side of it: the slide is
+   the band less 16 at either edge, three by two, and the next stands a whole
+   32 further on, past the band's edge. The arrows are 24, 12 inside the
+   slide's edges and in the middle of its depth. */
+@media ( max-width: 767px ) {
+	.custom-dining-carousel__stage,
+	.custom-dining-carousel__track {
+		height: auto;
+	}
+
+	.custom-dining-carousel__track {
+		gap: 32px;
 	}
 
 	.custom-dining-carousel__slide,
 	.custom-dining-carousel__slide.is-current {
-		width: 358px;
-		height: 240px;
+		width: calc( 100% - 32px );
+		height: auto;
+		aspect-ratio: 3 / 2;
 		border-radius: 16px;
 	}
 
 	.custom-dining-carousel__arrow {
-		top: 108px;
+		top: calc( 50% - 12px );
 		width: 24px;
 		height: 24px;
 	}
@@ -212,48 +260,10 @@
 	}
 
 	.custom-dining-carousel__arrow--prev {
-		left: calc( 50% - 167px );
+		left: 28px;
 	}
 
 	.custom-dining-carousel__arrow--next {
-		left: calc( 50% + 143px );
+		left: calc( 100% - 52px );
 	}
 }
-
-@media ( min-width: 768px ) and ( max-width: 1024px ) {
-	.custom-dining-carousel__stage,
-	.custom-dining-carousel__track {
-		height: 480px;
-	}
-
-	.custom-dining-carousel__track {
-		gap: 36px;
-	}
-
-	.custom-dining-carousel__slide,
-	.custom-dining-carousel__slide.is-current {
-		width: 720px;
-		height: 480px;
-		border-radius: 24px;
-	}
-
-	.custom-dining-carousel__arrow {
-		top: 220px;
-		width: 40px;
-		height: 40px;
-	}
-
-	.custom-dining-carousel__arrow svg {
-		width: 17px;
-		height: 14px;
-	}
-
-	.custom-dining-carousel__arrow--prev {
-		left: calc( 50% - 348px );
-	}
-
-	.custom-dining-carousel__arrow--next {
-		left: calc( 50% + 308px );
-	}
-}
-

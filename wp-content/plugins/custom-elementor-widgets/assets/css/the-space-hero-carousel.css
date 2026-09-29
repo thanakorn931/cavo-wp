@@ -317,10 +317,8 @@
    under the slides in a shallower band. Tablet is not drawn and takes the same
    figures.
 
-   The slides are all one size here (11194:2758): 250 across a band of 390,
-   16 apart, each three by two, the one being read in the middle and its
-   neighbours showing a little at either edge. Held as shares of the band the
-   run keeps that arrangement on the tablet too, where the file draws nothing. */
+   The run itself is set apart for each: the tablet's below, and the phone's
+   after it. */
 @media ( max-width: 1024px ) {
 	.custom-space-hero__band {
 		gap: 24px;
@@ -358,42 +356,6 @@
 
 	.custom-space-hero__stage {
 		margin-top: 25px;
-		height: auto;
-	}
-
-	.custom-space-hero__track {
-		gap: 4.103%;
-		height: auto;
-	}
-
-	.custom-space-hero__slide,
-	.custom-space-hero__slide.is-current {
-		width: 64.103%;
-		height: auto;
-		aspect-ratio: 3 / 2;
-		border-radius: 6px;
-	}
-
-	/* The arrows stand inside the slide being read, 8 in from either of its
-	   edges as the file draws them, and in the middle of its height. */
-	.custom-space-hero__arrow {
-		top: calc( 50% - 12px );
-		width: 24px;
-		height: 24px;
-	}
-
-	.custom-space-hero__arrow--prev {
-		left: 20.1%;
-	}
-
-	.custom-space-hero__arrow--next {
-		right: 20.1%;
-	}
-
-	/* The mark keeps the share of the disc the file gives it. */
-	.custom-space-hero__arrow svg {
-		width: 6px;
-		height: 5px;
 	}
 
 	.custom-space-hero__banner {
@@ -426,18 +388,94 @@
 		bottom: 24px;
 	}
 
+	.custom-space-hero__banner {
+		height: 180px;
+	}
+
+	/* As asked, the wide tier's run at half its size: the slide being read 540
+	   by 360 between two of 420 by 280, 28 between them, cut by the band's
+	   edges as the wide tier cuts them; the arrows 48, 38 in from the band's
+	   edges and in the middle of the run's depth. */
+	.custom-space-hero__stage,
+	.custom-space-hero__track {
+		height: 360px;
+	}
+
+	.custom-space-hero__track {
+		gap: 28px;
+	}
+
+	.custom-space-hero__slide {
+		width: 420px;
+		height: 280px;
+		border-radius: 12px;
+	}
+
+	.custom-space-hero__slide.is-current {
+		width: 540px;
+		height: 360px;
+	}
+
 	.custom-space-hero__arrow {
-		top: calc( 50% - 32px );
-		width: 64px;
-		height: 64px;
+		top: 156px;
+		width: 48px;
+		height: 48px;
+	}
+
+	.custom-space-hero__arrow--prev {
+		left: 38px;
+	}
+
+	.custom-space-hero__arrow--next {
+		right: 38px;
 	}
 
 	.custom-space-hero__arrow svg {
-		width: 16px;
-		height: 13px;
+		width: 12px;
+		height: 10px;
+	}
+}
+
+/* Mobile — as asked, one slide and nothing either side of it: the slide is
+   the band less 16 at either edge, three by two, and the next stands a whole
+   32 further on, past the band's edge. The arrows stand inside it, 8 in from
+   either of its edges as the file draws them, and in the middle of its
+   height. */
+@media ( max-width: 767px ) {
+	.custom-space-hero__stage,
+	.custom-space-hero__track {
+		height: auto;
 	}
 
-	.custom-space-hero__banner {
-		height: 180px;
+	.custom-space-hero__track {
+		gap: 32px;
+	}
+
+	.custom-space-hero__slide,
+	.custom-space-hero__slide.is-current {
+		width: calc( 100% - 32px );
+		height: auto;
+		aspect-ratio: 3 / 2;
+		border-radius: 6px;
+	}
+
+	.custom-space-hero__arrow {
+		top: calc( 50% - 12px );
+		width: 24px;
+		height: 24px;
+	}
+
+	.custom-space-hero__arrow--prev {
+		left: 24px;
+	}
+
+	.custom-space-hero__arrow--next {
+		right: 24px;
+	}
+
+	/* The mark keeps the share of the disc the file gives it. */
+	.custom-space-hero__arrow svg {
+		width: 6px;
+		height: 5px;
 	}
 }
