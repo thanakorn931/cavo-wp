@@ -124,3 +124,16 @@
 		padding: 180px 40px 180px;
 	}
 }
+
+/* Mobile — as asked, the band is at least the whole screen, what stands on it
+   in the middle of it. 100vh on a phone is the screen with the browser's bar
+   put away, so the band would run under the bar when the page opens; where the
+   browser knows the screen with its bar shown (svh), that is the height used,
+   and the band ends at the foot of what is seen. */
+@media ( max-width: 767px ) {
+	.custom-home-hero {
+		justify-content: center;
+		min-height: 100vh;
+		min-height: 100svh;
+	}
+}
